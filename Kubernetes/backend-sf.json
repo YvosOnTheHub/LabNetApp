@@ -3,7 +3,7 @@
     "storageDriverName": "solidfire-san",
     "Endpoint": "https://admin:Netapp1!@192.168.0.102/json-rpc/8.0",
     "SVIP": "192.168.0.130:3260",
-    "TenantName": "trident",
+    "TenantName": "k8s",
     "UseCHAP": false,
     "AccessGroups" : [1],
     "Types": [{"Type": "Silver", "Qos": {"minIOPS": 50, "maxIOPS": 5000, "burstIOPS": 5000}},
