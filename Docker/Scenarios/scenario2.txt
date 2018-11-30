@@ -1,0 +1,50 @@
+############################################################################
+#
+# SCENARIO 2: Play around with clones & Apache
+#
+############################################################################
+
+Prerequisites: a docker plugin (ontap-nas) must already be installed & configured
+
+A. Copy on the docker host the content of the github repo:
+
+cd
+git clone https://github.com/YvosOnTheHub/LabNetApp.git
+
+
+B. Create a 1G volume
+
+docker volume create -d ontap-nas --name data -o size=1g
+docker volume ls
+
+
+C. Mount this volume on the host & copy some preconfigured content
+
+mkdir /mnt/data
+mount 192.168.0.135:/docker_nas_data /mnt/data
+cp ~/LabNetApp/Docker/Apache/*  /mnt/data/
+
+You could choose to create our own content or modify what is in the data directory.
+Just remember that Apache is going to look for a index.php file
+
+
+D. Create two Apache containers pointing the data volume you have jus created, & with different ports (obviously)
+
+docker run -d --name demo_php1 -v data:/var/www/html -p 8001:80 php:7.0-apache
+docker run -d --name demo_php2 -v data:/var/www/html -p 8002:80 php:7.0-apache
+
+
+E. Play around with clones (volume creation, container creation & content modification)
+
+docker volume create -d ontap-nas --name data_clone -o from=data
+docker volume ls
+ssh 192.168.0.135 -l vsadmin vol clone show
+
+mkdir /mnt/data_clone
+mount 192.168.0.135:/docker_nas_data_clone /mnt/data_clone
+=> Modify some content
+
+docker run -d --name demo_php3 -v data_clone:/var/www/html -p 8003:80 php:7.0-apache
+
+
+F. Check the result in a browser !
