@@ -18,6 +18,8 @@ if you use the config files from this repo, you need to move them to /etc/netapp
 
 C. Install some plugins
 
+Here, I consider the NetApp platforms to be preconfigured (ie SVM / LIF / iGroup created & configured)
+
 docker plugin install netapp/trident-plugin:18.07 --alias ontap-nas --grant-all-permissions config=config-ontap-nas-default.json
 docker plugin install netapp/trident-plugin:18.10 --alias ontap-nas-eco --grant-all-permissions config=config-ontap-nas-eco-default.json
 docker plugin install netapp/trident-plugin:18.10 --alias ontap-flexgroup --grant-all-permissions config=config-ontap-nas-flexgroup-default.json
