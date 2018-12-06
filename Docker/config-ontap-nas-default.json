@@ -2,7 +2,6 @@
     "version": 1,
     "storageDriverName": "ontap-nas",
     "managementLIF": "192.168.0.135",
-    "dataLIF": "192.168.0.132",
     "storagePrefix": "docker_nas_",
     "svm": "svm1",
     "username": "vsadmin",
