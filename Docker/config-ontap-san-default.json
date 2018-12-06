@@ -2,7 +2,6 @@
     "version": 1,
     "storageDriverName": "ontap-san",
     "managementLIF": "192.168.0.135",
-    "dataLIF": "192.168.0.133",
     "storagePrefix": "docker_san_",
     "igroupName": "trident",
     "svm": "svm1",
