@@ -13,15 +13,16 @@ git clone https://github.com/YvosOnTheHub/LabNetApp.git
 B. Configuration files
 
 Create your own file or use one provided in the LabNetApp directory.
+if you use the config files from this repo, you need to move them to /etc/netappdvp/
 
 
 C. Install some plugins
 
-docker plugin install netapp/trident-plugin:18.07 --alias ontap-nas --grant-all-permissions config=FULL_PATH_TO_THE_FILE_config-ontap-nas-default.json
-docker plugin install netapp/trident-plugin:18.10 --alias ontap-nas-eco --grant-all-permissions config=FULL_PATH_TO_THE_FILE_config-ontap-nas-eco-default.json
-docker plugin install netapp/trident-plugin:18.10 --alias ontap-flexgroup --grant-all-permissions config=FULL_PATH_TO_THE_FILE_config-ontap-nas-flexgroup-default.json
-docker plugin install netapp/trident-plugin:latest --alias ontap-san --grant-all-permissions config=FULL_PATH_TO_THE_FILE_config-ontap-san-default.json
-docker plugin install netapp/trident-plugin:latest --alias solidfire --grant-all-permissions config=FULL_PATH_TO_THE_FILE_config-solidfire-default.json
+docker plugin install netapp/trident-plugin:18.07 --alias ontap-nas --grant-all-permissions config=config-ontap-nas-default.json
+docker plugin install netapp/trident-plugin:18.10 --alias ontap-nas-eco --grant-all-permissions config=config-ontap-nas-eco-default.json
+docker plugin install netapp/trident-plugin:18.10 --alias ontap-flexgroup --grant-all-permissions config=config-ontap-nas-flexgroup-default.json
+docker plugin install netapp/trident-plugin:latest --alias ontap-san --grant-all-permissions config=config-ontap-san-default.json
+docker plugin install netapp/trident-plugin:latest --alias solidfire --grant-all-permissions config=config-solidfire-default.json
 
 => notice I used different plugin labels in the command lines
 => I would recommend to always use the "version" label and not "latest", as it allows you to easily know which version you are actually using ...
