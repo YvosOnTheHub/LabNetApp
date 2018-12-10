@@ -74,3 +74,84 @@ storage-class-nas-ssd         netapp.io/trident   4m
 storage-class-ontap-san       netapp.io/trident   2m
 storage-class-solidfire       netapp.io/trident   3m
 storage-class-storagepool     netapp.io/trident   4m
+
+
+E. Identify what backends each storage class can use
+
+# tridentctl get storageclass -n trident -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
+[
+  {
+    "storageClass": "storage-class-solidfire",
+    "backends": [
+      {
+        "solidfire_192.168.0.130": [
+          "Gold",
+          "Silver"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-ontap-san",
+    "backends": [
+      {
+        "BackendForBlockONTAP": [
+          "aggr1",
+          "aggr2"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-nas",
+    "backends": [
+      {
+        "BackendForNAS-default": [
+          "aggr1",
+          "aggr2"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-nas-qtree",
+    "backends": [
+      {
+        "BackendForNAS-Qtree": [
+          "aggr1",
+          "aggr2"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-nas-ssd",
+    "backends": [
+      {
+        "BackendForNAS-default": [
+          "aggr2"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-storagepool",
+    "backends": [
+      {
+        "BackendForNAS-default": [
+          "aggr1"
+        ]
+      }
+    ]
+  },
+  {
+    "storageClass": "storage-class-nas-flexgroup",
+    "backends": [
+      {
+        "BackendForNAS-FlexGroup": [
+          "svm1"
+        ]
+      }
+    ]
+  }
+]
