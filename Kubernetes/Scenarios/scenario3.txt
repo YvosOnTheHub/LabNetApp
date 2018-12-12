@@ -1,0 +1,113 @@
+############################################################################
+#
+# SCENARIO 3: Quota Management with Kubernetes
+#
+############################################################################
+
+PreRequesites:
+- ONTAP-NAS backend configured
+- Storage Class "storage-class-nas" configured
+
+
+A. Create a namespace for this exercice
+
+kubectl create namespace scenario3
+
+
+B. Create Quotas
+
+We will create 2 types of quotas:
+- limit the number of PVC a user can create
+- limit the total capacity a user can create
+
+# kubectl create -f ./sc-resource-limit.yaml --namespace=scenario3
+resourcequota "sc-count-limit" created
+
+# kubectl create -f ./pvc-count-limit.yaml --namespace=scenario3
+resourcequota "pvc-count-limit" created
+
+
+C. Review the Quotas
+
+# kubectl get resourcequota -n scenario3
+NAME                AGE
+pvc-count-limit     20s
+sc-resource-limit   1m
+
+# kubectl describe quota pvc-count-limit -n scenario3
+Name:                                                                 pvc-count-limit
+Namespace:                                                            scenario3
+Resource                                                              Used  Hard
+--------                                                              ----  ----
+persistentvolumeclaims                                                0     5
+storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  0     3
+
+# kubectl describe quota sc-resource-limit -n scenario3
+Name:                                                           sc-resource-limit
+Namespace:                                                      scenario3
+Resource                                                        Used  Hard
+--------                                                        ----  ----
+requests.storage                                                0     10Gi
+storage-class-nas.storageclass.storage.k8s.io/requests.storage  0     8Gi
+
+
+
+D. Play around with PVC Quotas
+
+[root@rhel3 Kubernetes]# kubectl create -f pvc-sc3-1.yaml -n scenario3
+persistentvolumeclaim "sc3-1" created
+[root@rhel3 Kubernetes]# kubectl create -f pvc-sc3-2.yaml -n scenario3
+persistentvolumeclaim "sc3-2" created
+[root@rhel3 Kubernetes]# kubectl describe quota pvc-count-limit -n scenario3
+Name:                                                                 pvc-count-limit
+Namespace:                                                            scenario3
+Resource                                                              Used  Hard
+--------                                                              ----  ----
+persistentvolumeclaims                                                2     5
+storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  2     3
+[root@rhel3 Kubernetes]# kubectl create -f pvc-sc3-3.yaml -n scenario3
+persistentvolumeclaim "sc3-3" created
+[root@rhel3 Kubernetes]# kubectl describe quota pvc-count-limit -n scenario3
+Name:                                                                 pvc-count-limit
+Namespace:                                                            scenario3
+Resource                                                              Used  Hard
+--------                                                              ----  ----
+persistentvolumeclaims                                                3     5
+storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  3     3
+[root@rhel3 Kubernetes]#
+[root@rhel3 Kubernetes]#
+[root@rhel3 Kubernetes]# kubectl create -f pvc-sc3-4.yaml -n scenario3
+Error from server (Forbidden): error when creating "pvc-sc3-4.yaml": persistentvolumeclaims "sc3-4" is forbidden: exceeded quota: pvc-count-limit, requested: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=1, used: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3, limited: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3
+
+
+E. Clean up the 4 PVC before moving on
+
+[root@rhel3 Kubernetes]# kubectl delete pvc -n scenario3 sc3-1
+persistentvolumeclaim "sc3-1" deleted
+[root@rhel3 Kubernetes]# kubectl delete pvc -n scenario3 sc3-2
+persistentvolumeclaim "sc3-2" deleted
+[root@rhel3 Kubernetes]# kubectl delete pvc -n scenario3 sc3-3
+persistentvolumeclaim "sc3-3" deleted
+
+
+F. Play around with Capacity Quotas
+
+
+[root@rhel3 Kubernetes]# kubectl create -n scenario3 -f pvc-5Gi-1.yaml
+persistentvolumeclaim "5gb-1" created
+[root@rhel3 Kubernetes]# kubectl describe quota sc-resource-limit -n scenario3
+Name:                                                           sc-resource-limit
+Namespace:                                                      scenario3
+Resource                                                        Used  Hard
+--------                                                        ----  ----
+requests.storage                                                5Gi   10Gi
+storage-class-nas.storageclass.storage.k8s.io/requests.storage  5Gi   8Gi
+[root@rhel3 Kubernetes]# kubectl create -n scenario3 -f pvc-5Gi-2.yaml
+Error from server (Forbidden): error when creating "pvc-5Gi-2.yaml": persistentvolumeclaims "5gb-2" is forbidden: exceeded quota: sc-resource-limit, requested: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, used: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, limited: storage-class-nas.storageclass.storage.k8s.io/requests.storage=8Gi
+
+
+E. Clean up
+[root@rhel3 Kubernetes]# kubectl delete pvc 5gb-1 -n scenario3
+persistentvolumeclaim "5gb-1" deleted
+[root@rhel3 Kubernetes]# kubectl delete namespace scenario3
+namespace "scenario3" deleted
