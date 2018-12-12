@@ -19,3 +19,6 @@ The "Kubernetes" directoty contain lots of configuration files to create backend
 
 Scenarios
 ---------
+1. Upgrade Trident
+2. Backends & Storage Classes configuration
+3. Quota Management with Kubernetes
