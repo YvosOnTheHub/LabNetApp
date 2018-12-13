@@ -4,6 +4,9 @@
 #
 ############################################################################
 
+GOAL:
+this scenario is intended to see how easy it is to upgrade Trident.
+
 A. Check the current version
 
 [root@rhel3 Kubernetes]# tridentctl version -n trident
