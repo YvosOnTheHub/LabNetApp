@@ -5,9 +5,13 @@
 ############################################################################
 
 GOAL:
-this scenario is intended to see how easy it is to upgrade Trident.
+This scenario is intended to see how easy it is to upgrade Trident.
+The examples below will guide you in performing an upgrade from 18.04 to 18.10
+
 
 A. Check the current version
+
+tridenctlctl is the tool shipped with Trident in order to manage it.
 
 [root@rhel3 Kubernetes]# tridentctl version -n trident
 +----------------+----------------+
