@@ -4,6 +4,11 @@
 #
 ############################################################################
 
+GOAL:
+This scenarion is intended to demonstrate how to create backends & storage classes for a Kubernetes cluster.
+You can use your own files or download the json & yaml files provided in this GitHub repositoty
+
+
 A. Copy on the docker host the content of the github repo:
 
 cd
@@ -16,6 +21,8 @@ Create your own file or use the ones provided in the LabNetApp directory
 
 
 C. Create some backends
+
+tridenctlctl is the tool shipped with Trident in order to manage it.
 
 cd /root/LabNetApp/Kubernetes
 tridentctl create backend -n trident -f backend-nas-default.json
@@ -77,6 +84,11 @@ storage-class-storagepool     netapp.io/trident   4m
 
 
 E. Identify what backends each storage class can use
+
+The following command is pretty handy when you have multiple Storage Classes & multiple backends.
+It will give you a quick overview of what backends a storage class can use.
+It does require the jq package to work properly
+
 
 # tridentctl get storageclass -n trident -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
 [
