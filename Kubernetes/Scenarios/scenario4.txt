@@ -4,9 +4,20 @@
 #
 ############################################################################
 
+GOAL:
+This scenario can be used to demonstrate 3 new features introduces with Trident 18.10:
+- limitVolumeSize
+- snapshotReserve
+- LimitAggregateUsage
+
+The YAML files used in the scenario are all in the directory: https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes/Scenarios/Scenario4
+
+
 A. Create a backend file for this exercice with "limitVolumeSize" & "snapshotReserve" parameters
 - limitVolumeSize = 20GiB
 - SnapshotReserve = 20%
+
+In the following example, I used the file backend-news-vsadmin-18.10.json .
 
 # tridentctl create backend -n trident -f backend-news-vsadmin-18.10.json
 +---------------------------+----------------+--------+---------+
@@ -18,11 +29,15 @@ A. Create a backend file for this exercice with "limitVolumeSize" & "snapshotRes
 
 B. Create two PVC, one of 10GiB & one of of 20GiB
 
+In the following example, I used the file pvc-10Gi-1.yaml & pvc-20Gi-1.yaml, which request respectively a volume of 10GiB & a volume of 20GiB.
+
 [root@rhel3 Kubernetes]# kubectl create -f pvc-10Gi-1.yaml
 persistentvolumeclaim "10gb-1" created
 
 [root@rhel3 Kubernetes]# kubectl create -f pvc-20Gi-1.yaml
 persistentvolumeclaim "20gb-1" created
+
+Let's look at the status of these 2 volumes
 
 [root@rhel3 Kubernetes]# kubectl get pvc
 NAME      STATUS    VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS        AGE
@@ -30,19 +45,9 @@ NAME      STATUS    VOLUME                 CAPACITY   ACCESS MODES   STORAGECLAS
 20gb-1    Pending 
 
 
-C. SnapshotReserve Validation
+C. limitVolumeSize Validation
 
-cluster1::> vol show k8s_nas_1810_default_10gb_1_e1cd0 -fields percent-snapshot-space
-vserver volume                            percent-snapshot-space
-------- --------------------------------- ----------------------
-svm1    k8s_nas_1810_default_10gb_1_e1cd0 20%
-
-=> the parameter has been set accordingly.
-
-
-D. limitVolumeSize Validation
-
-Notice in the 'kubectl get pvc' command that the PVC is still in 'bound' state.
+Notice in the 'kubectl get pvc' command that the 20GiB PVC is still in 'pending' state.
 Let's look at the details of this PVC, which includes some. logs
 
 [root@rhel3 Kubernetes]# kubectl describe pvc 20gb-1
@@ -67,9 +72,22 @@ Events:
 => the volume cannot be created, and an error is raised.
 
 
+D. SnapshotReserve Validation
+
+Let's connect to the ONTAP platform to validate the snapshot reserve for the 10GiB volume
+
+cluster1::> vol show k8s_nas_1810_default_10gb_1_e1cd0 -fields percent-snapshot-space
+vserver volume                            percent-snapshot-space
+------- --------------------------------- ----------------------
+svm1    k8s_nas_1810_default_10gb_1_e1cd0 20%
+
+=> the parameter has been set accordingly.
+
+
 E. Create a backend file for this exercice with "LimitAggregateUsage"
 - LimitAggregateUsage = 50%
 
+In the following example, I used the file backend-news-admin-18.10.json .
 For this exercise, the previous elements need to be cleaned up.
 
 # tridentctl create backend -n trident -f backend-news-admin-18.10.json
@@ -80,28 +98,35 @@ For this exercise, the previous elements need to be cleaned up.
 +---------------------------+----------------+--------+---------+
 
 => notice that this feature requires to be used with the cluster admin user, not the SVM admin
-=> also, to make this exercise succesful, thick provisioning must be used
+=> also, to make this demo succesful, thick provisioning must be used.
 
 
 F. Create two PVC, one of 10GiB & one of of 20GiB
 
-[root@rhel3 Kubernetes]# kubectl create -f pvc-10Gi-1.yaml
+In the following example, I used the file pvc-10Gi-1.yaml & pvc-20Gi-1.yaml, which request respectively a volume of 10GiB & a volume of 20GiB.
+
+# kubectl create -f pvc-10Gi-1.yaml
 persistentvolumeclaim "10gb-1" created
 
-[root@rhel3 Kubernetes]# kubectl get pvc
+# kubectl get pvc
 NAME      STATUS    VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 10gb-1    Bound     default-10gb-1-1d5a2   10Gi       RWO            storage-class-nas   5s
 
-[root@rhel3 Kubernetes]# kubectl create -f pvc-20Gi-1.yaml
+# kubectl create -f pvc-20Gi-1.yaml
 persistentvolumeclaim "20gb-1" created
 
-[root@rhel3 Kubernetes]# kubectl get pvc
+# kubectl get pvc
 NAME      STATUS    VOLUME                 CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 10gb-1    Bound     default-10gb-1-1d5a2   10Gi       RWO            storage-class-nas   1m
 20gb-1    Pending                                                    storage-class-nas   2s
 
 
-[root@rhel3 Kubernetes]# kubectl describe pvc 20gb-1
+G. limitVolumeSize Validation
+
+Notice in the 'kubectl get pvc' command that the 20GiB PVC is still in 'pending' state.
+Let's look at the details of this PVC, which includes some. logs
+
+# kubectl describe pvc 20gb-1
 Name:          20gb-1
 Namespace:     default
 StorageClass:  storage-class-nas
