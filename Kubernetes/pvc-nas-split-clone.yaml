@@ -4,6 +4,7 @@ metadata:
   name: pvc-nas-split
   annotations:
     trident.netapp.io/splitOnClone: pvc-nas
+    trident.netapp.io/splitFromClone: "true"
 spec:
   accessModes:
     - ReadWriteOnce
