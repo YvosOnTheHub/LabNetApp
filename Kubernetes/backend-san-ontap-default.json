@@ -3,7 +3,6 @@
     "storageDriverName": "ontap-san",
     "backendName": "BackendForBlockONTAP",
     "managementLIF": "192.168.0.135",
-    "dataLIF": "192.168.0.133",
     "storagePrefix": "k8s_san_",
     "svm": "svm1",
     "username": "vsadmin",
