@@ -13,7 +13,7 @@ A. Check the current version
 
 tridenctlctl is the tool shipped with Trident in order to manage it.
 
-[root@rhel3 Kubernetes]# tridentctl version -n trident
+# tridentctl version -n trident
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
@@ -23,7 +23,7 @@ tridenctlctl is the tool shipped with Trident in order to manage it.
 
 B. Uninstall the current version
 
-[root@rhel3 Kubernetes]# tridentctl uninstall -n trident
+# tridentctl uninstall -n trident
 INFO Deleted Trident deployment.
 INFO Deleted cluster role binding.
 INFO Deleted cluster role.
@@ -42,7 +42,8 @@ tar -xf trident-installer-18.10.0.tar.gz
 
 D. Install the new version
 
-[root@rhel3 trident-installer]# tridentctl install -n trident
+# cd trident-installer
+# tridentctl install -n trident
 INFO Created installer service account.            serviceaccount=trident-installer
 INFO Created installer cluster role.               clusterrole=trident-installer
 INFO Created installer cluster role binding.       clusterrolebinding=trident-installer
@@ -72,7 +73,7 @@ INFO Deleted installer service account.
 
 E. Check the current version
 
-[root@rhel3 Kubernetes]# tridentctl version -n trident
+# tridentctl version -n trident
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
