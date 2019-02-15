@@ -15,7 +15,7 @@ Scenarios
 
 # B. Kubernetes
 
-The "Kubernetes" directoty contain lots of configuration files to create backends / storage classes / PVC / PODs
+The "Kubernetes" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
 
 Scenarios
 ---------
