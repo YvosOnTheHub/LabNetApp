@@ -35,6 +35,8 @@ On the following steps, I used the names:
 
 B. Import the volume in Kubernetes
 
+In this exercise, the volume will be managed by Trident.
+
 We will use the pvc.apache.yaml file.
 Notice that the namespace parameter must be set in this yaml file.
 
@@ -68,23 +70,34 @@ You can notice that the volume has been renamed to respect K8S rules
 
 C. Launch an Apache server that used this imported volume.
 
-For this, this we will create a deployment & a service (cf Scenario5 for more details)
+For this, we will create a deployment & a service (cf Scenario5 for more details)
 
-[root@rhel3 Scenario6]# kc -f deployment-apache.yaml
+# kubectl create -f deployment-apache.yaml
 deployment.apps "apache" created
-[root@rhel3 Scenario6]# kc -f svc-apache.yaml
+
+# kubectl create -f svc-apache.yaml
 service "apache" created
-[root@rhel3 Scenario6]# kg deployment -o wide
+
+# kubectl get deployment -o wide
 NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES           SELECTOR
 apache    1         1         1            1           15s       apache       php:7.0-apache   app=apache
-[root@rhel3 Scenario6]# kg pod -o wide
+
+# kubectl get pod -o wide
 NAME                      READY     STATUS    RESTARTS   AGE       IP            NODE
 apache-7cb9dd4bbd-9bgn9   1/1       Running   0          24s       10.244.2.11   rhel1
-[root@rhel3 Scenario6]# kg svc -o wide
+
+# kubectl get svc -o wide
 NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE       SELECTOR
 apache       NodePort    10.109.86.245   <none>        80:30080/TCP   25s       app=apache
 kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        351d      <none>
 
 if you connect with your browser to the node IP address & the port 30080, you will then access the Apache server and its data imported from an ONTAP system.
 
+This import mechanism can be used for tons of use cases, including legacy app migration, DR, cluster reconstruction ...
 
+
+D. Import the volume in Kubernetes, without having it managed by Trident
+
+This will be done following the same steps as "B", with the extra parameter --no-manage.
+The result will create a PVC/PV in Kubernetes with the imported volume.
+Also, the PV will be tagged with the parameter "retain". In this case, if you delete the PVC and then the PV, the volume will remain on the storage.
