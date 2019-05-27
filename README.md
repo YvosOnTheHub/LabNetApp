@@ -24,3 +24,4 @@ Scenarios
 3. Quota Management with Kubernetes
 4. Test new features released in Trident 18.10 (limitVolumeSize, snapshotReserve & limitAggregateUsage)
 5. Create an Apache environment with a Persistent Volume
+6. Test new features released in Trident 19.04 (volume import)
