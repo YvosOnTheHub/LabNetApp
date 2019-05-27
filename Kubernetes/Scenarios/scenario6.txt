@@ -1,0 +1,32 @@
+############################################################################
+#
+# SCENARIO 6: Import a volume into Kubernetes
+#
+############################################################################
+
+GOAL:
+This scenario can be used to demonstrate how a volume sitting on ONTAP can be imported into Kubernetes with Trident
+
+The files used in the scenario are all in the directory: https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes/Scenarios/Scenario6
+
+Prerequisites:
+- Trident v19.04 is already installed & configured
+- A storage class "storage-class-nas" must already be configured
+
+
+A. Let's start by creating a  volume on the ONTAP system
+
+This can be done via GUI.
+In this lab, I would recommend creating a volume, mount it in order to copy some files, and finally clone this volume.
+This is to avoid recreating volumes if you start playing around with the containers, and ultimately delete the PVC, which will obvisouly delete the FlexVol by default.
+Some files are available in the Apache sub-dir. you can use them in order to later create an app using the imported volume as persistent storage.
+
+On the following steps, I used the names:
+- vol_import_origin for the parent volume
+- vol_import_clone for the volume that will be imported into Kubernetes
+
+B. Import the volume in Kubernetes
+
+
+
+tridentctl import volume TridentBackend vol_import_clone -f pvc-apache.yaml -n trident
