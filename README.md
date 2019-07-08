@@ -26,3 +26,4 @@ Scenarios
 5. Create an Apache environment with a Persistent Volume
 6. Test new features released in Trident 19.04 (volume import)
 7. Migrating an app from a legacy Docker environment to a new Kubernetes cluster (to be finished...)
+8. Snapshots management with ONTAP-NAS & ONTAP-NAS-ECONOMY
