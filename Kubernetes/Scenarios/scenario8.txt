@@ -123,7 +123,7 @@ drwxrwxrwx    2 root     root          4096 Jul  8 12:43 snap_qtree
 ...
 -rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree1.txt
 
-E.3 PVC DATA_QTREE1
+E.3 PVC DATA_QTREE2
 [root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree2
 ...
 drwxrwxrwx    3 root     root          4096 Jul  8 12:46 .snapshot
@@ -137,5 +137,22 @@ drwxrwxrwx    2 root     root          4096 Jul  8 12:43 snap_qtree
 ...
 -rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree2.txt
 
+
+F. Before restoring these snapshots, let's modify each txt file.
+
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- sh -c "(echo 'blahblahvol' >> /data_vol/file_vol.txt)"
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- sh -c "(echo 'blahblahqtree1' >> /data_qtree1/file_qtree1.txt)"
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- sh -c "(echo 'blahblahqtree2' >> /data_qtree2/file_qtree2.txt)"
+
+
+G. Now, let's look at restoring snapshots
+
+"oups, i made a mistake in the file hosted in data_vol and the file hosted in data_qtree1"
+=> if you perform a restore operation on the snapshots created earlier, you will find that all txt files are back to their original state (ie empty), even the file in the qtree2, which was correct...
+
+
+CONCLUSION:
+1. While using ONTAP-NAS, snapshots can be accessed manually & restored through the ONTAP commands.
+2. While using ONTAP-NAS-ECONOMY, snapshots can be accessed manually, but files restores can only be done manually by copying files back to the main filesystem, otherwise, all qtrees will be impacted.
 
 
