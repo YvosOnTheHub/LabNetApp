@@ -75,8 +75,67 @@ Mounts:
 ...
 
 the following will tell us how many mounts are done on the SVM we are using (we should get 3 as a result)
-[root@rhel3 Kubernetes]# k exec -it podsnap -- mount | grep 192.168.0.135 | wc -l
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- mount | grep 192.168.0.135 | wc -l
 3
+
+
+C. Let's create a file in each mount
+
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- touch /data_vol/file_vol.txt
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- touch /data_qtree1/file_qtree1.txt
+[root@rhel3 Kubernetes]# kubectl exec -it podsnap -- touch /data_qtree2/file_qtree2.txt
+
+
+D. Let's create snapshots on the storage backend
+
+In our example:
+- the snapshot for the volume linked to the PVC data_vol will be called snap_vol
+- the snapshot for the volume hosting both qtrees will be called snap_qtree
+
+
+E. Let's check we do have access to the snapshots from within the pod
+
+E.1 PVC DATA_VOL
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_vol/
+...
+drwxrwxrwx    3 root     root          4096 Jul  8 12:46 .snapshot
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_vol.txt
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_vol/.snapshot/
+...
+drwxrwxrwx    2 root     root          4096 Jul  8 12:43 snap_vol1
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_vol/.snapshot/snap_vol1
+...
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_vol.txt
+
+E.2 PVC DATA_QTREE1
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree1
+...
+drwxrwxrwx    3 root     root          4096 Jul  8 12:46 .snapshot
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree1.txt
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree1/.snapshot
+...
+drwxrwxrwx    2 root     root          4096 Jul  8 12:43 snap_qtree
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree1/.snapshot/snap_qtree
+...
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree1.txt
+
+E.3 PVC DATA_QTREE1
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree2
+...
+drwxrwxrwx    3 root     root          4096 Jul  8 12:46 .snapshot
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree2.txt
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree2/.snapshot
+...
+drwxrwxrwx    2 root     root          4096 Jul  8 12:43 snap_qtree
+
+[root@rhel3 Kubernetes]# k exec -it podsnap -- ls -la /data_qtree2/.snapshot/snap_qtree
+...
+-rw-r--r--    1 root     root             0 Jul  8 12:43 file_qtree2.txt
 
 
 
