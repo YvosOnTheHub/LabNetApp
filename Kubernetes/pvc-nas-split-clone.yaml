@@ -7,7 +7,7 @@ metadata:
     trident.netapp.io/splitFromClone: "true"
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi

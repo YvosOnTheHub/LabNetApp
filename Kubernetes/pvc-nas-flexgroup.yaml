@@ -4,7 +4,7 @@ metadata:
   name: pvc-nas-flexgroup
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
