@@ -1,0 +1,7 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-nas-qtree
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas-economy"

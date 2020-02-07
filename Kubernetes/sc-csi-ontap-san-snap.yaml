@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-san-snap
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+  storagePools: "BackendForSAN_snap:aggr1,aggr2"
