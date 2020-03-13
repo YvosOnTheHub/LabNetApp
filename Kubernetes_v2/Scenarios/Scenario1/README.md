@@ -1,7 +1,5 @@
 ############################################
-#
 # SCENARIO 1: Trident upgrade
-#
 ############################################
 
 GOAL:
@@ -144,3 +142,30 @@ tbe-f26zw   BackendForSolidFire   d9d6bef6-eef9-4ff0-b5c8-c69d048b739e
 tbe-vs95d   BackendForNAS         e098abb8-8e16-4b4f-a4bc-a6c9557b39b1
 ```
 As you can see, the backends are still present, nothing has been deleted in terms of Trident configuration.
+
+F. Cleanup
+
+As this environment is already configured with different objects (backends, storage classes ...) and it order to get the best out of these learning scenarios, I would recommended to delete these objects
+
+```
+kubectl delete sc --all
+tridentctl -n trident delete backend --all
+```
+
+G. Shortcuts
+
+When you get more & more familiar with Kubernetes, you start wondering how to be more efficient in typing commands...
+The first step would to put a bunch of alias in the .bashrc file
+
+Some examples:
+```
+source <(kubectl completion bash)
+alias k=kubectl
+complete -F __start_kubectl k
+
+alias kc='kubectl create'
+alias kg='kubectl get'
+alias kdel='kubectl delete'
+alias kdesc='kubectl describe'
+```
+don't forget to type in _bash_ in order to take the modifications into account
