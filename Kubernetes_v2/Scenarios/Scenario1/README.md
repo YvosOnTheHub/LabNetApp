@@ -7,7 +7,7 @@ This scenario is intended to see how easy it is to upgrade Trident.
 The examples below will guide you in performing an upgrade from 19.07.1 to 20.01.1
 
 
-A. Check the current version
+## A. Check the current version
 
 *tridenctlctl* is the tool shipped with Trident in order to interact with it.
 It is also recommended to install Trident in its own namespace (usually called *trident*)
@@ -50,7 +50,7 @@ As you can see, some backends are alrady configured.
 A backend is composed of a specific Trident driver & different parameters that will tell Tell where to connect & how.
 
 
-B. Uninstall the current version
+## B. Uninstall the current version
 
 If you keep the default parameters during the installation process, Trident's CRD will remain as is.
 That allows a seamsless upgrade of Trident
@@ -80,7 +80,7 @@ INFO Deleted installer cluster role.
 INFO Deleted installer service account.
 ```
 
-C. Download the version you would like to install
+## C. Download the version you would like to install
 ```
 cd
 mv trident-installer/ trident-installer_19.07
@@ -88,7 +88,7 @@ wget https://github.com/NetApp/trident/releases/download/v20.01.1/trident-instal
 tar -xf trident-installer-20.01.1.tar.gz
 ```
 
-D. Install the new version
+## D. Install the new version
 
 Before moving to the installation, there is some extra cleanup to do.
 Trident 19.07.1 introduced the support of the CSI On-Demand Snapshots Alpha with Kubernetes 1.15.
@@ -123,7 +123,7 @@ INFO Trident REST interface is up.                 version=20.01.1
 INFO Trident installation succeeded.
 ```
 
-E. Check the current version
+## E. Check the current version
 ```
 # tridentctl -n trident version
 +----------------+----------------+
@@ -143,7 +143,7 @@ tbe-vs95d   BackendForNAS         e098abb8-8e16-4b4f-a4bc-a6c9557b39b1
 ```
 As you can see, the backends are still present, nothing has been deleted in terms of Trident configuration.
 
-F. Cleanup
+## F. Cleanup
 
 As this environment is already configured with different objects (backends, storage classes ...) and it order to get the best out of these learning scenarios, I would recommended to delete these objects
 
@@ -152,7 +152,7 @@ kubectl delete sc --all
 tridentctl -n trident delete backend --all
 ```
 
-G. Shortcuts
+## G. Shortcuts
 
 When you get more & more familiar with Kubernetes, you start wondering how to be more efficient in typing commands...
 The first step would to put a bunch of alias in the .bashrc file

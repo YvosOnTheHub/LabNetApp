@@ -1,53 +1,119 @@
-################################################################################
-# SCENARIO 3: Create your first backends for Trident & Storage Classes for Kubernetes
-################################################################################
+##################################################################
+# SCENARIO 3: Configure Grafana & make your first graph
+##################################################################
 
 GOAL:
 
-Trident needs to know where to create volumes.
-This information sits in objects called backends. It basically contains:
-- the driver type (there currently are 10 different drivers available)
-- how to connect to the driver (IP, login, password ...)
-- some default parameters
+Prometheus does not allow you to create a graph with different metrics, you need to use Grafana for that.
+Installing Prometheus with Helm also comes with this tool.
+We will learn how to access Grafana, and configure a graph.
 
-For additional information, please refer to:
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/deploying.html#create-and-verify-your-first-backend 
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/operations/tasks/backends/index.html 
 
-Once you have configured backend, the end user will create PVC against Storage Classes.
-A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
+## A. Expose Grafana
 
-For additional information, please refer to:
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
-
-Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
-
-## A. Create your first backends
-
-You will find in this directory a few backends files.
-You can decide to use all of them, only a subset of them or modify them as you wish
-
-Here are the 4 backends & their corresponding driver:
-- backend-nas-default.json        ONTAP-NAS
-- backend-nas-eco-default.json    ONTAP-NAS-ECONOMY
-- backend-san-default.json        ONTAP-SAN
-- backend-san-eco-default.json    ONTAP-SAN-ECONOMY
-
+With Grafana, we are facing the same issue than with Prometheus with regards to accessing it.
+We will then modify its service in order to access it from anywhere in the lab, with a *NodePort* configuration
 ```
-tridentctl -n trident create backend -f backend-nas-default.json
-tridentctl -n trident create backend -f backend-nas-eco-default.json
-tridentctl -n trident create backend -f backend-san-default.json
-tridentctl -n trident create backend -f backend-san-eco-default.json
+kubectl edit -n monitoring svc prom-operator-grafana
 ```
 
-## B. Create storage classes pointing to each backend
-
-You will also find in this directory a few storage class files.
-You can decide to use all of them, only a subset of them or modify them as you wish
+### BEFORE:
+```
+spec:
+  clusterIP: 10.97.208.231
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: service
+    port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app.kubernetes.io/instance: prom-operator
+    app.kubernetes.io/name: grafana
+  sessionAffinity: None
+  type: ClusterIP
 
 ```
-kubectl create -f sc-csi-ontap-nas.yaml
-kubectl create -f sc-csi-ontap-nas-eco.yaml
-kubectl create -f sc-csi-ontap-san.yaml
-kubectl create -f sc-csi-ontap-san-eco.yaml
+
+### AFTER: (look at the ***nodePort*** & ***type*** lines)
 ```
+spec:
+  clusterIP: 10.97.208.231
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: service
+    nodePort: 30001
+    port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app.kubernetes.io/instance: prom-operator
+    app.kubernetes.io/name: grafana
+  sessionAffinity: None
+  type: NodePort
+```
+
+You can now access the Grafana GUI from the browser using the port 30001 on RHEL3 address (http://192.168.0.63:30001)
+
+
+## B. Login de Grafana
+
+The first time to enter Grafana, you are requested to login with a username & a password ...
+But how to find out what they are ??
+
+Let's look at the pod definition, maybe there is a hint there...
+
+```
+kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana
+NAME                                     READY   STATUS    RESTARTS   AGE
+prom-operator-grafana-7d99d7985c-98qcr   3/3     Running   0          2d23h
+
+kubectl describe pod prom-operator-grafana-7d99d7985c-98qcr -n monitoring
+...
+    Environment:
+      GF_SECURITY_ADMIN_USER:      <set to the key 'admin-user' in secret 'prom-operator-grafana'>      Optional: false
+      GF_SECURITY_ADMIN_PASSWORD:  <set to the key 'admin-password' in secret 'prom-operator-grafana'>  Optional: false
+...
+```
+Let's check what secrets there are in this cluster
+```
+kubectl get secrets -n monitoring -l app.kubernetes.io/name=grafana
+NAME                    TYPE     DATA   AGE
+prom-operator-grafana   Opaque   3      2d23h
+
+
+[root@rhel3 Ghost]# kdesc secrets -n monitoring prom-operator-grafana
+Name:         prom-operator-grafana
+...
+Data
+====
+admin-password:  13 bytes
+admin-user:      5 bytes
+...
+```
+OK, so the data is there, and is encrypted... However, the admin can retrieve this information
+```
+kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-user}" | base64 --decode ; echo
+admin
+
+kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+prom-operator
+```
+
+There you go!
+You can now properly login to Grafana.
+
+
+## E. Configure Grafana
+
+The first step is to tell Grafana where to get data (ie Data Sources).
+In our case, the data source is Prometheus. In its configuration, you then need to put Prometheus's URL (http://192.168.0.63:30000)
+
+
+## F. Create a graph
+
+Click on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
+You can here configure a new graph by adding metrics. By typing 'trident' in the 'Metrics' box, you will see all metrics available.
+By clicking on 'Add Query', you can add another information on the same graph.
+
+

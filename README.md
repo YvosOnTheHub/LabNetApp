@@ -15,7 +15,11 @@ Scenarios
 ---------
 1. Upgrade Trident
 2. Install Prometheus & incorporate Trident's metrics
-3. Configure your first backends & storage classes
+3. Configure Grafana & add your first graphs
+4. Configure your first NAS backends & storage classes
+5. Deploy your first app with File storage
+6. Prepare your lab for block storage
+7. Configure your first iSCSI backends & storage classes
 
 
 ## B. Kubernetes v1 (pre-CSI)
