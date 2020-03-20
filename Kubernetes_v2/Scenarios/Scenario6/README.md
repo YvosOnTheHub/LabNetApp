@@ -1,78 +1,30 @@
-################################################################################
-# SCENARIO 3: Create your first backends for Trident & Storage Classes for Kubernetes
-################################################################################
+################################################################
+# SCENARIO 6: Prepare your ONTAP Backend for Block Storage
+################################################################
 
 GOAL:
+The ONTAP environment in the lab on demand is not setup for block storage just yet.
+You can choose to update the SVM you are already using, or create your own.
 
-Trident needs to know where to create volumes.
-This information sits in objects called backends. It basically contains:
-- the driver type (there currently are 10 different drivers available)
-- how to connect to the driver (IP, login, password ...)
-- some default parameters
+In this scenario, I will just update the current SVM with the following parameters
+- iSCSI Data LIF: 192.168.0.140
+- iSCSI iGroup: trident
 
-For additional information, please refer to:
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/deploying.html#create-and-verify-your-first-backend 
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/operations/tasks/backends/index.html 
+- iSCSI iGroup IQN: iqn.1994-05.com.redhat:rhel1.demo.netapp.com,iqn.1994-05.com.redhat:rhel2.demo.netapp.com,iqn.1994-05.com.redhat:rhel3.demo.netapp.com
 
-Once you have configured backend, the end user will create PVC against Storage Classes.
-A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
+if you feel confortable with ONTAP, you can create the environment by yourself.
+Otherwise, you can use some scripting methods...
 
-For additional information, please refer to:
-- https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
+One way to do so would be to use Ansible roles.
+You can inspire yourself with the lab https://github.com/YvosOnTheHub/LabAnsible if you like.
 
-Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
-
-## A. Create your first backends
-
-You will find in this directory a few backends files.
-You can decide to use all of them, only a subset of them or modify them as you wish
-
-Here are the 4 backends & their corresponding driver:
-- backend-nas-default.json        ONTAP-NAS
-- backend-nas-eco-default.json    ONTAP-NAS-ECONOMY
-- backend-san-default.json        ONTAP-SAN
-- backend-san-eco-default.json    ONTAP-SAN-ECONOMY
+To make it simple, you will find here the different commands to run via SSH.
+Open Putty, connect to "cluster1" and finally enter all the following:
 
 ```
-tridentctl -n trident create backend -f backend-nas-default.json
-+-----------------+----------------+--------------------------------------+--------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+---------+
-| NAS_Vol-default | ontap-nas      | 282b09e5-0ff2-4471-97c8-9fd5224945a1 | online |       0 |
-+-----------------+----------------+--------------------------------------+--------+---------+
-
-tridentctl -n trident create backend -f backend-nas-eco-default.json
-+-----------------+-------------------+--------------------------------------+--------+---------+
-|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
-+-----------------+-------------------+--------------------------------------+--------+---------+
-| NAS_ECO-default | ontap-nas-economy | b21fb2a7-975a-4050-a187-bb4f883d0e97 | online |       0 |
-+-----------------+-------------------+--------------------------------------+--------+---------+
-
-tridentctl -n trident create backend -f backend-san-default.json
-tridentctl -n trident create backend -f backend-san-eco-default.json
-
-kubectl get -n trident tridentbackends
-NAME        BACKEND           BACKEND UUID
-tbe-c874k   NAS_Vol-default   282b09e5-0ff2-4471-97c8-9fd5224945a1
-tbe-d6szt   NAS_ECO-default   b21fb2a7-975a-4050-a187-bb4f883d0e97
-
+vserver modify -vserver svm1 -allowed-protocols nfs,iscsi
+lun igroup create -igroup trident -protocol iscsi -ostype linux -vserver svm1
+net interface create -vserver svm1 -lif svm1_iscsi -data-protocol iscsi -home-node cluster1-01 -home-port e0d -address 192.168.0.140 -netmask 255.255.255.0 -firewall-policy data
+vserver iscsi create -target-alias svm1 -vserver svm1
 ```
 
-## B. Create storage classes pointing to each backend
-
-You will also find in this directory a few storage class files.
-You can decide to use all of them, only a subset of them or modify them as you wish
-
-```
-kubectl create -f sc-csi-ontap-nas.yaml
-storageclass.storage.k8s.io/storage-class-nas created
-
-kubectl create -f sc-csi-ontap-nas-eco.yaml
-storageclass.storage.k8s.io/storage-class-nas-economy created
-
-kubectl create -f sc-csi-ontap-san.yaml
-storageclass.storage.k8s.io/storage-class-san created
-
-kubectl create -f sc-csi-ontap-san-eco.yaml
-storageclass.storage.k8s.io/storage-class-san-economy created
-```

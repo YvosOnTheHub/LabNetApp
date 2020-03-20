@@ -22,7 +22,7 @@ For additional information, please refer to:
 
 Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
 
-## A. Create your first backends
+## A. Create your first NFS backends
 
 You will find in this directory a few backends files.
 You can decide to use all of them, only a subset of them or modify them as you wish

@@ -1,7 +1,7 @@
 {
     "version": 1,
     "storageDriverName": "ontap-san-economy",
-    "backendName": "SAN_Lun-default",
+    "backendName": "SAN_ECO-default",
     "managementLIF": "192.168.0.135",
     "storagePrefix": "san2_",
     "svm": "svm1",

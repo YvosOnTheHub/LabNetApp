@@ -21,7 +21,6 @@ kubectl edit -n monitoring svc prom-operator-grafana
 ```
 spec:
   clusterIP: 10.97.208.231
-  externalTrafficPolicy: Cluster
   ports:
   - name: service
     port: 80
@@ -33,13 +32,13 @@ spec:
   sessionAffinity: None
   type: ClusterIP
 
+
 ```
 
 ### AFTER: (look at the ***nodePort*** & ***type*** lines)
 ```
 spec:
   clusterIP: 10.97.208.231
-  externalTrafficPolicy: Cluster
   ports:
   - name: service
     nodePort: 30001
@@ -108,12 +107,20 @@ You can now properly login to Grafana.
 
 The first step is to tell Grafana where to get data (ie Data Sources).
 In our case, the data source is Prometheus. In its configuration, you then need to put Prometheus's URL (http://192.168.0.63:30000)
+You can also specify in this lab that Prometheus will be the default source.
+Click on 'Save & Test'.
 
 
-## F. Create a graph
+## F. Create your own graph
 
-Click on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
+Hover on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
 You can here configure a new graph by adding metrics. By typing 'trident' in the 'Metrics' box, you will see all metrics available.
-By clicking on 'Add Query', you can add another information on the same graph.
+
+
+## G. Import a graph
+
+Hover on the '+' on left side of the screen, then 'New Dashboard' & 'Import'.
+Copy & paste the content of the Trident_Dashboard_Std.json file in this directory.
+
 
 
