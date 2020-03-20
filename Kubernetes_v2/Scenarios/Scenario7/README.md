@@ -1,23 +1,6 @@
-################################################################################
-# SCENARIO 3: Create your first backends for Trident & Storage Classes for Kubernetes
-################################################################################
-
-[root@rhel3 ~]# tridentctl -n trident create backend -f backend_san.json
-+-------------+----------------+--------------------------------------+--------+---------+
-|    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-------------+----------------+--------------------------------------+--------+---------+
-| SAN-default | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
-+-------------+----------------+--------------------------------------+--------+---------+
-
-[root@rhel3 ~]# tridentctl -n trident create backend -f backend_san_eco.json
-+-----------------+-------------------+--------------------------------------+--------+---------+
-|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
-+-----------------+-------------------+--------------------------------------+--------+---------+
-| SAN_ECO-default | ontap-san-economy | 530f18b1-680b-420f-ad6b-94c96fea84b9 | online |       0 |
-+-----------------+-------------------+--------------------------------------+--------+---------+
-
-
-
+#########################################################################################
+# SCENARIO 7: Create your first SAN backends 
+#########################################################################################
 
 GOAL:
 You understood how to create backends and what they are for.
@@ -56,7 +39,7 @@ tbe-wgs99   SAN-default           ad04f63c-592d-49ae-bfde-21a11db06976
 ...
 ```
 
-## B. Create storage classes pointing to each backend
+## B. Create storage classes pointing to each new backend
 
 You will also find in this directory a few storage class files.
 You can decide to use all of them, only a subset of them or modify them as you wish

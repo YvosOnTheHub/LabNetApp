@@ -20,7 +20,7 @@ Scenarios
 5. Deploy your first app with File storage
 6. Prepare your lab for block storage
 7. Configure your first iSCSI backends & storage classes
-
+8. Deploy your first app with Block storage
 
 ## B. Kubernetes v1 (pre-CSI)
 
