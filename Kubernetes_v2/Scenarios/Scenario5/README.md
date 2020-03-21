@@ -10,6 +10,8 @@ Ghost is a light weight web portal. You will a few YAML files in the Ghost direc
 - a DEPLOYMENT that will define how to manage the app
 - a SERVICE to expose the app
 
+![Scenario5](Images/scenario5.jpg "Scenario5")
+
 ## A. Create the app
 
 We will create this app in its own namespace (also very useful to clean up everything)
@@ -25,16 +27,16 @@ service/blog created
 
 kubectl get all -n ghost
 NAME                       READY   STATUS              RESTARTS   AGE
-pod/blog-57d7d4886-5bsml   0/1     ContainerCreating   0          7s
+pod/blog-57d7d4886-5bsml   1/1     Running             0          50s
 
 NAME           TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/blog   NodePort   10.97.56.215   <none>        80:30080/TCP   7s
+service/blog   NodePort   10.97.56.215   <none>        80:30080/TCP   50s
 
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blog   0/1     1            0           7s
+deployment.apps/blog   1/1     1            1           50s
 
 NAME                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/blog-57d7d4886   1         1         0       7s
+replicaset.apps/blog-57d7d4886   1         1         1       50s
 
 kubectl get pvc,pv -n ghost
 NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE

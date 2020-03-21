@@ -5,6 +5,8 @@
 GOAL:
 We will deploy the same App as in the scenario 5, but instead of using File Storage, we will use Block Storage
 
+![Scenario8](Images/scenario8.jpg "Scenario8")
+
 ## A. Create the app
 
 We will create this app in its own namespace (also very useful to clean up everything)
