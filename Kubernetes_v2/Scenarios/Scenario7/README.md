@@ -7,6 +7,8 @@ You understood how to create backends and what they are for.
 You probably also created a few ones with NFS drivers.
 It is now time to add more backends that can be used for block storage.
 
+![Scenario7](Images/scenario7.jpg "Scenario7")
+
 ## A. Create your first SAN backends
 
 You will find in this directory a few backends files.
