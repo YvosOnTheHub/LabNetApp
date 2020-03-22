@@ -80,6 +80,7 @@ themes
 
 ## D. Cleanup
 
+The PVC will be reused in the scenario9 ('import a volume'). Only clean up if you dont plan to do the scenario9.
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 
 ```

@@ -21,6 +21,7 @@ Scenarios
 6. Prepare your lab for block storage
 7. Configure your first iSCSI backends & storage classes
 8. Deploy your first app with Block storage
+9. Use the 'import' feature of Trident
 
 ## B. Kubernetes v1 (pre-CSI)
 
