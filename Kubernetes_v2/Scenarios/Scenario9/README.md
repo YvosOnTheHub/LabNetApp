@@ -51,6 +51,11 @@ Notice that the volume full name on the storage backend has changed to respect t
 nas1_pvc_ac9ba4b2_7dce_4241_8c8e_a4ced9cf7dcf
 ```
 
+Even though the name of the original PV has changed, you can still see it if you look into its annotations.
+```
+# kubectl describe pvc blog-content-import -n ghostnas | grep importOriginalName
+               trident.netapp.io/importOriginalName: to_import
+```
 
 ## C. Create a new Ghost app.
 

@@ -10,8 +10,6 @@ In this scenario, I will just update the current SVM with the following paramete
 - iSCSI Data LIF: 192.168.0.140
 - iSCSI iGroup: trident
 
-- iSCSI iGroup IQN: iqn.1994-05.com.redhat:rhel1.demo.netapp.com,iqn.1994-05.com.redhat:rhel2.demo.netapp.com,iqn.1994-05.com.redhat:rhel3.demo.netapp.com
-
 if you feel confortable with ONTAP, you can create the environment by yourself.
 Otherwise, you can use some scripting methods...
 
