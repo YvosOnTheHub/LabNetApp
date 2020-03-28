@@ -19,14 +19,14 @@ Here are the 4 backends & their corresponding driver:
 - backend-san-eco-default.json    ONTAP-SAN-ECONOMY
 
 ```
-tridentctl -n trident create backend -f backend_san.json
+tridentctl -n trident create backend -f backend-san-default.json
 +-------------+----------------+--------------------------------------+--------+---------+
 |    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +-------------+----------------+--------------------------------------+--------+---------+
 | SAN-default | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
 +-------------+----------------+--------------------------------------+--------+---------+
 
-tridentctl -n trident create backend -f backend_san_eco.json
+tridentctl -n trident create backend -f backend-san-eco-default.json
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
