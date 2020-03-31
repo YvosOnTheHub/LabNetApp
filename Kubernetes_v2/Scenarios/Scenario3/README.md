@@ -122,5 +122,7 @@ You can here configure a new graph by adding metrics. By typing 'trident' in the
 Hover on the '+' on left side of the screen, then 'New Dashboard' & 'Import'.
 Copy & paste the content of the Trident_Dashboard_Std.json file in this directory.
 
+![Trident Dashboard](Images/trident_dashboard.jpg "Trident Dashboard")
+
 
 
