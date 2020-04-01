@@ -13,15 +13,16 @@ I assume each scenario will be run in its own directory.
 
 Scenarios
 ---------
-1. Upgrade Trident
-2. Install Prometheus & incorporate Trident's metrics
-3. Configure Grafana & add your first graphs
-4. Configure your first NAS backends & storage classes
-5. Deploy your first app with File storage
-6. Prepare your lab for block storage
-7. Configure your first iSCSI backends & storage classes
-8. Deploy your first app with Block storage
-9. Use the 'import' feature of Trident
+1.  Upgrade Trident
+2.  Install Prometheus & incorporate Trident's metrics
+3.  Configure Grafana & add your first graphs
+4.  Configure your first NAS backends & storage classes
+5.  Deploy your first app with File storage
+6.  Prepare your lab for block storage
+7.  Configure your first iSCSI backends & storage classes
+8.  Deploy your first app with Block storage
+9.  Use the 'import' feature of Trident
+10. Consumption control
 
 ## B. Kubernetes v1 (pre-CSI)
 
