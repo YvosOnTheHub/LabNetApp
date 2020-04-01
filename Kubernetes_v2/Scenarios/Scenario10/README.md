@@ -3,9 +3,9 @@
 #########################################################################################
 
 GOAL:
-As Trident dynamically manages persitent volumes & bring lots of goodness to the app level. 
+As Trident dynamically manages persitent volumes & bring lots of goodness to the app level.  
 The first benefit is that end-users do not need to rely on a storage admin to provision volumes on the fly.
-However, this freedom can lead to quickly feel up the storage backend, especially if the user does not tidy up his environment...
+However, this freedom can lead to quickly feel up the storage backend, especially if the user does not tidy up his environment...  
 A good practice is to place some controls to make sure storage is well used.
 We are going to review here different methods to control the storage consumption.
 
@@ -66,7 +66,7 @@ storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  3     3
 Logically, you got the maximum number of PVC allowed for this storage class. Let's see what happens next...
 ```
 # kubectl create -n quota -f pvc-quotasc-4.yaml
-Error from server (Forbidden): error when creating "quotasc-4.yaml": persistentvolumeclaims "quotasc-4" is forbidden: **exceeded quota: pvc-count-limit**, requested: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=1, used: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3, limited: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3
+Error from server (Forbidden): error when creating "quotasc-4.yaml": persistentvolumeclaims "quotasc-4" is forbidden: exceeded quota: pvc-count-limit, requested: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=1, used: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3, limited: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3
 ```
 As expected, you cannot create a new PVC in this storage class...
 Let's clean up the PVC
@@ -103,7 +103,7 @@ storage-class-nas.storageclass.storage.k8s.io/requests.storage  5Gi   8Gi
 Seeing the size of the second PVC file, the creation should fail in this namespace
 ```
 # kubectl create -n quota -f pvc-5Gi-2.yaml
-Error from server (Forbidden): error when creating "pvc-5Gi-2.yaml": persistentvolumeclaims "5gb-2" is forbidden: **exceeded quota: sc-resource-limit**, requested: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, used: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, limited: storage-class-nas.storageclass.storage.k8s.io/requests.storage=8Gi
+Error from server (Forbidden): error when creating "pvc-5Gi-2.yaml": persistentvolumeclaims "5gb-2" is forbidden: exceeded quota: sc-resource-limit, requested: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, used: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, limited: storage-class-nas.storageclass.storage.k8s.io/requests.storage=8Gi
 ```
 
 Before starting the second part of this scenarion, let's clean up
@@ -117,8 +117,8 @@ resourcequota "sc-resource-limit" deleted
 
 ## B. Trident parameters
 
-One parameter stands out in the Trident configuration when it comes to control sizes: limitVolumeSize
-https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident
+One parameter stands out in the Trident configuration when it comes to control sizes: _limitVolumeSize_  
+https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident  
 Depending on the driver, this parameter will
 1. control the PVC Size (ex: driver ONTAP-NAS)
 2. control the size of the ONTAP volume hosting PVC (ex: drivers ONTAP-NAS-ECONOMY or ONTAP-SAN-ECONOMY)
@@ -164,7 +164,7 @@ Events:
   ----     ------                ----                   ----                                                                                     -------
   Normal   Provisioning          2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  External provisioner is provisioning volume for claim "default/10g"
   Normal   ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
-  Warning  ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  failed to provision volume with StorageClass "sclimitvolumesize": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: **requested size: 10737418240 > the size limit: 5368709120**]
+  Warning  ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  failed to provision volume with StorageClass "sclimitvolumesize": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
   Normal   ExternalProvisioning  41s (x26 over 6m47s)   persistentvolume-controller                                                              waiting for a volume to be created, either by external provisioner "csi.trident.netapp.io" or manually created by system administrator
 ```
 The error is now identified... 
@@ -185,7 +185,7 @@ The amount of ONTAP volumes (Flexvols) you can have on a ONTAP cluster depends o
 - version
 - size of the ONTAP cluster (in terms of controllers)
 If the storage platform is also used by other workloads (Databases, Files Services ...), you may want to limit the number of PVC you build in your storage Tenant (ie SVM)
-This can be achieved by setting a parameter on this SVM.
+This can be achieved by setting a parameter on this SVM.  
 https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
 
 Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
@@ -205,6 +205,7 @@ persistentvolumeclaim/quotasc-1 created
 persistentvolumeclaim/quotasc-2 created
 # kubectl create -f pvc-quotasc-3.yaml
 persistentvolumeclaim/quotasc-3 created
+
 # kubectl get pvc
 NAME        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 quotasc-1   Bound     pvc-a74622aa-bb26-4796-a624-bf6d72955de8   1Gi        RWX            storage-class-nas   92s
