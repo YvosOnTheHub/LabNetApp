@@ -38,7 +38,7 @@ persistentvolumeclaims                                                0     5
 storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  0     3
 ```
 Now let's start creating some PVC against the storage class _quota_ & check the resource quota usage
-![Scenario10#1](Images/scenario10_1.jpg "Scenario10#1")
+![Scenario10_1](Images/scenario10_1.jpg "Scenario10_1")
 
 ```
 # kubectl create -n quota -f pvc-quotasc-1.yaml
@@ -80,7 +80,7 @@ persistentvolumeclaim "quotasc-3" deleted
 ```
 
 Time to look at the capacity quotas
-![Scenario10#2](Images/scenario10_2.jpg "Scenario10#2")
+![Scenario10_2](Images/scenario10_2.jpg "Scenario10_2")
 ```
 # kubectl describe quota sc-resource-limit -n quota
 Name:                                                           sc-resource-limit
@@ -126,7 +126,7 @@ Depending on the driver, this parameter will
 1. control the PVC Size (ex: driver ONTAP-NAS)
 2. control the size of the ONTAP volume hosting PVC (ex: drivers ONTAP-NAS-ECONOMY or ONTAP-SAN-ECONOMY)
 
-![Scenario10#3](Images/scenario10_3.jpg "Scenario10#3")
+![Scenario10_3](Images/scenario10_3.jpg "Scenario10_3")
 
 Let's create a backend with this parameter setup (limitVolumeSize = 5g), followed by the storage class that points to it, using the storagePools parameter:
 ```
@@ -193,7 +193,7 @@ If the storage platform is also used by other workloads (Databases, Files Servic
 This can be achieved by setting a parameter on this SVM.  
 https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
 
-![Scenario10#4](Images/scenario10_4.jpg "Scenario10#4")
+![Scenario10_4](Images/scenario10_4.jpg "Scenario10_4")
 
 Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
 You can either login to System Manager & count, or run the following (password Netapp1!)
