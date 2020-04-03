@@ -19,30 +19,32 @@ storageclass.storage.k8s.io/sc-nas-resize created
 
 ## B. Setup the environment
 
-Now let's create a PVC & a Centos POD using this PVC.
+Now let's create a PVC & a Centos POD using this PVC, in their own namespace.
 
 ```
-# kubectl create -f pvc.yaml
+# kubectl create namespace resize
+namespace/resize created
+# kubectl create -n resize -f pvc.yaml
 persistentvolumeclaim/pvc-to-resize created
 
-# kubectl get pvc,pv
+# kubectl -n resize get pvc,pv
 NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
 persistentvolumeclaim/pvc-to-resize   Bound    pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   5Gi        RWX            sc-nas-resize   2s
 
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS    REASON   AGE
-persistentvolume/pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   5Gi        RWX            Delete           Bound    default/pvc-to-resize   sc-nas-resize            1s
+persistentvolume/pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   5Gi        RWX            Delete           Bound    resize/pvc-to-resize   sc-nas-resize            1s
 
-# kubectl create -f pod-centos-nas.yaml
+# kubectl create -n resize -f pod-centos-nas.yaml
 pod/centos created
 
-# kubectl get pod --watch
+# kubectl -n resize get pod --watch
 NAME     READY   STATUS              RESTARTS   AGE
 centos   0/1     ContainerCreating   0          5s
 centos   1/1     Running             0          15s
 ```
 You can now check that the 5G volume is indeed mounted into the POD.
 ```
-# kubectl exec centos -- df -h /data
+# kubectl -n resize exec centos -- df -h /data
 Filesystem                                                    Size  Used Avail Use% Mounted on
 192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55  5.0G  256K  5.0G   1% /data
 ```
@@ -52,9 +54,9 @@ Filesystem                                                    Size  Used Avail U
 Resizing a PVC is done by editing its definition.  
 Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)
 ```
-# kubectl edit pvc pvc-to-resize
+# kubectl -n resize edit pvc pvc-to-resize
 persistentvolumeclaim/pvc-to-resize edited
-```
+
 spec:
   accessModes:
   - ReadWriteMany
@@ -67,12 +69,23 @@ spec:
 ```
 Let's see the result.
 ```
-# kubectl get pvc
+# kubectl -n resize get pvc
 NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
 pvc-to-resize   Bound    pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   15Gi       RWX            sc-nas-resize   144m
 
-# kubectl exec centos -- df -h /data
+# kubectl -n resize exec centos -- df -h /data
 Filesystem                                                    Size  Used Avail Use% Mounted on
 192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55   15G  256K   15G   1% /data
 ```
 As you can see, the resizing was done totally dynamically without any interruption.
+
+## C. Cleanup the environment
+
+```
+# kubectl delete namespace resize
+namespace "resize" deleted
+
+# kubectl delete sc sc-nas-resize
+storageclass.storage.k8s.io "sc-nas-resize" deleted
+
+```
