@@ -81,6 +81,7 @@ persistentvolumeclaim "quotasc-3" deleted
 
 Time to look at the capacity quotas  
 ![Scenario10_2](Images/scenario10_2.JPG "Scenario10_2")
+
 ```
 # kubectl describe quota sc-resource-limit -n quota
 Name:                                                           sc-resource-limit

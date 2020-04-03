@@ -23,6 +23,9 @@ Scenarios
 8.  Deploy your first app with Block storage
 9.  Use the 'import' feature of Trident
 10. Consumption control
+11. Resize a NFS CSI PVC
+12. Using Virtual Storage Pools
+13. StatefulSets & Storage consumption
 
 ## B. Kubernetes v1 (pre-CSI)
 
