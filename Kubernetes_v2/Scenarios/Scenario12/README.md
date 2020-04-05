@@ -55,6 +55,7 @@ sc-vsp3                     csi.trident.netapp.io   46h
 
 ## C. Create a few PVC & a POD in their own namespace
 
+Each of the 3 PVC will point to a different Storage Class.  
 ```
 # kubectl create namespace vsp
 namespace/vsp created
@@ -112,7 +113,7 @@ drwxr-xr-x 2 root root 4.0K Apr  3 16:34 .
 drwxr-xr-x 5 root root   42 Apr  5 14:45 ..
 ```
 
-Conclusion:
+Conclusion:  
 This could have all be done through 3 different backend files, which is also perfectly fine.
 However, the more backends you manage, the more complexity you add. Introducing Virtual Storage Polls allows you to simplify this management.
 

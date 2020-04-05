@@ -214,7 +214,7 @@ persistentvolumeclaim/quotasc-2 created
 # kubectl create -f pvc-quotasc-3.yaml
 persistentvolumeclaim/quotasc-3 created
 
-# kubectl get pvc
+# kubectl get pvc  -l scenario=quotas
 NAME        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 quotasc-1   Bound     pvc-a74622aa-bb26-4796-a624-bf6d72955de8   1Gi        RWX            storage-class-nas   92s
 quotasc-2   Bound     pvc-f2bd901a-35e8-45a1-8294-2135b56abe19   1Gi        RWX            storage-class-nas   22s
@@ -232,9 +232,7 @@ There you go, point demonstrated!
 
 Time to clean up
 ```
-# kubectl delete pvc quotasc-3
-persistentvolumeclaim "quotasc-3" deleted
-# kubectl delete pvc quotasc-2
-persistentvolumeclaim "quotasc-2" deleted
-# kubectl delete pvc quotasc-1
+# kubectl delete pvc -l scenario=quotas
 persistentvolumeclaim "quotasc-1" deleted
+persistentvolumeclaim "quotasc-2" deleted
+persistentvolumeclaim "quotasc-3" deleted
