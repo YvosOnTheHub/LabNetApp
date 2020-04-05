@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-vsp3
+  labels:
+      scenario: vsp
+provisioner: csi.trident.netapp.io
+parameters:
+  selector: "app=myapp3"
