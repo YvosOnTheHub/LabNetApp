@@ -2,7 +2,7 @@
 # ADDENDA 1: Add a node to the cluster
 #########################################################################################
 
-GOAL:
+GOAL:  
 Some exercices may benefit from a bigger cluster size (ex: Scenario13: StatefulSets).  
 The LabOnDemand has 6 unix hosts, but only 3 are part of the Kubernetes cluster.  
 This addenda will provide you with all the commands to run to bring a new node into the Kubernetes cluster.

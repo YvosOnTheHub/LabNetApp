@@ -2,7 +2,7 @@
 # SCENARIO 1: Trident upgrade
 #########################################################################################
 
-GOAL:
+GOAL:  
 This scenario is intended to see how easy it is to upgrade Trident.
 The examples below will guide you in performing an upgrade from 19.07.1 to 20.01.1
 

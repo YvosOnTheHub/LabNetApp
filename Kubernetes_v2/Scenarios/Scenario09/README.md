@@ -2,7 +2,7 @@
 # SCENARIO 9: Use the import feature of Trident
 #########################################################################################
 
-GOAL:
+GOAL:  
 Trident allows you to import a volume sitting in a NetApp backend into Kubernetes.
 We will first copy the volume we used in the Scenario5, import it, and create a new Ghost instance
 

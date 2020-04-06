@@ -2,7 +2,7 @@
 # SCENARIO 10: Consumption control
 #########################################################################################
 
-GOAL:
+GOAL:  
 As Trident dynamically manages persitent volumes & bring lots of goodness to the app level.  
 The first benefit is that end-users do not need to rely on a storage admin to provision volumes on the fly.
 However, this freedom can lead to quickly feel up the storage backend, especially if the user does not tidy up his environment...  

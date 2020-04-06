@@ -2,7 +2,7 @@
 # SCENARIO 7: Create your first SAN backends 
 #########################################################################################
 
-GOAL:
+GOAL:  
 You understood how to create backends and what they are for.
 You probably also created a few ones with NFS drivers.
 It is now time to add more backends that can be used for block storage.
