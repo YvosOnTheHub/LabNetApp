@@ -1,7 +1,4 @@
-## LabNetApp
-
-These files are attended to be used with the NetApp LabOnDemand "Docker & Kubernetes".
-
+# LabNetApp
 
 ## A. Kubernetes v2 (with CSI)
 
@@ -12,7 +9,7 @@ I assume each scenario will be run in its own directory. Also, you will find a R
 
 Scenarios
 ---------
-1.  Upgrade Trident
+[1.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario01)  Upgrade Trident
 2.  Install Prometheus & incorporate Trident's metrics
 3.  Configure Grafana & add your first graphs
 4.  Configure your first NAS backends & storage classes
@@ -28,6 +25,7 @@ Scenarios
 
 ## B. Kubernetes v1 (pre-CSI)
 
+These files are attended to be used with the NetApp LabOnDemand "Using NetApp with Docker and Kubernetes v2.0".
 The "Kubernetes_v1" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
 
 Scenarios
