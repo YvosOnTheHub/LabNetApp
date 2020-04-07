@@ -72,7 +72,7 @@ persistentvolume/pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO      
 
 ## B. Let's write some data in this database!
 
-To connect to MySQL, we will use another POD which will connect to the master DB (mysql-0).
+To connect to MySQL, we will use another POD which will connect to the master DB (mysql-0).  
 Copy & paste the whole block at once:
 ```
 kubectl run mysql-client -n mysql --image=mysql:5.7 -i --rm --restart=Never --\

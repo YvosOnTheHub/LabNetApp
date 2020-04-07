@@ -5,11 +5,10 @@ These files are attended to be used with the NetApp LabOnDemand "Docker & Kubern
 
 ## A. Kubernetes v2 (with CSI)
 
-The "Kubernetes" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
 The section has been tested with the Lab-on-Demand Using "Trident with Kubernetes and ONTAP v3.1" which comes with Trident 19.07 already installed on Kubernetes 1.15.3.
 
 Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).
-I assume each scenario will be run in its own directory.
+I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.
 
 Scenarios
 ---------
@@ -29,7 +28,7 @@ Scenarios
 
 ## B. Kubernetes v1 (pre-CSI)
 
-The "Kubernetes" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
+The "Kubernetes_v1" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
 
 Scenarios
 ---------
