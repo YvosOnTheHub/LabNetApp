@@ -8,10 +8,12 @@ Deployments & DaemonSets use PVC defined outside of them, whereas StatefulSets i
 Said differently, you can see a StatefulSet as a couple (POD + Storage). When it is scaled, both objects will be automatically created.  
 In this exercise, we will create a MySQL StatefulSet & Scale it.  
 
+![Scenario13](Images/scenario13.jpg "Scenario13")
+
 To best benefit from the scenario, you would first need to go through the following Addendum:
-1. Add a node to the cluster
-2. Specify a default storage class
-3. Allow user PODs on the master node
+[1.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
+[2.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
+[3.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
 
 ## A. Let's start by creating the application
 
