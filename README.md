@@ -21,7 +21,7 @@ Scenarios
 [10.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario10) Consumption control  
 [11.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario11) Resize a NFS CSI PVC  
 [12.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario12) Using Virtual Storage Pools  
-[13.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario10) StatefulSets & Storage consumption  
+[13.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario13) StatefulSets & Storage consumption  
 
 ## B. Kubernetes v1 (pre-CSI)
 
