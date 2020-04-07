@@ -9,19 +9,19 @@ I assume each scenario will be run in its own directory. Also, you will find a R
 
 Scenarios
 ---------
-[1.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario01)  Upgrade Trident
-2.  Install Prometheus & incorporate Trident's metrics
-3.  Configure Grafana & add your first graphs
-4.  Configure your first NAS backends & storage classes
-5.  Deploy your first app with File storage
-6.  Prepare your lab for block storage
-7.  Configure your first iSCSI backends & storage classes
-8.  Deploy your first app with Block storage
-9.  Use the 'import' feature of Trident
-10. Consumption control
-11. Resize a NFS CSI PVC
-12. Using Virtual Storage Pools
-13. StatefulSets & Storage consumption
+[1.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario01)  Upgrade Trident  
+[2.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario02)  Install Prometheus & incorporate Trident's metrics  
+[3.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario03)  Configure Grafana & add your first graphs  
+[4.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario04)  Configure your first NAS backends & storage classes  
+[5.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario05)  Deploy your first app with File storage  
+[6.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario06)  Prepare your lab for block storage  
+[7.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario07)  Configure your first iSCSI backends & storage classes  
+[8.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario08)  Deploy your first app with Block storage  
+[9.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario09)  Use the 'import' feature of Trident  
+[10.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario10) Consumption control  
+[11.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario11) Resize a NFS CSI PVC  
+[12.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario12) Using Virtual Storage Pools  
+[13.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario10) StatefulSets & Storage consumption  
 
 ## B. Kubernetes v1 (pre-CSI)
 
