@@ -19,21 +19,21 @@ Here are the 4 backends & their corresponding driver:
 - backend-san-eco-default.json    ONTAP-SAN-ECONOMY
 
 ```
-tridentctl -n trident create backend -f backend-san-default.json
+# tridentctl -n trident create backend -f backend-san-default.json
 +-------------+----------------+--------------------------------------+--------+---------+
 |    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +-------------+----------------+--------------------------------------+--------+---------+
 | SAN-default | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
 +-------------+----------------+--------------------------------------+--------+---------+
 
-tridentctl -n trident create backend -f backend-san-eco-default.json
+# tridentctl -n trident create backend -f backend-san-eco-default.json
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 | SAN_ECO-default | ontap-san-economy | 530f18b1-680b-420f-ad6b-94c96fea84b9 | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 
-[root@rhel3 ~]# kubectl get -n trident tridentbackends
+# kubectl get -n trident tridentbackends
 NAME        BACKEND               BACKEND UUID
 ...
 tbe-7nl8v   SAN_ECO-default       530f18b1-680b-420f-ad6b-94c96fea84b9
@@ -47,9 +47,9 @@ You will also find in this directory a few storage class files.
 You can decide to use all of them, only a subset of them or modify them as you wish
 
 ```
-kubectl create -f sc-csi-ontap-san.yaml
+# kubectl create -f sc-csi-ontap-san.yaml
 storageclass.storage.k8s.io/storage-class-san created
 
-kubectl create -f sc-csi-ontap-san-eco.yaml
+# kubectl create -f sc-csi-ontap-san-eco.yaml
 storageclass.storage.k8s.io/storage-class-san-economy created
 ```

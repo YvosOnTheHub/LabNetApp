@@ -21,8 +21,8 @@ nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
 Now that you know the full name of the volume, you can copy it. This copy will be done in 2 stages (clone & split)
 Open Putty, connect to "cluster1" and finally enter all the following:
 ```
-vol clone create -flexclone to_import -vserver svm1 -parent-volume nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
-vol clone split start -flexclone to_import
+# vol clone create -flexclone to_import -vserver svm1 -parent-volume nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
+# vol clone split start -flexclone to_import
 ```
 In this example, the new volume's name is 'to_import'
 
@@ -97,6 +97,6 @@ Give it a try !
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 
 ```
-kubectl delete ns ghostnas
+# kubectl delete ns ghostnas
 namespace "ghostnas" deleted
 ```

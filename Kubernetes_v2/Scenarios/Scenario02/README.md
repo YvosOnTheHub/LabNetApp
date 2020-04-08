@@ -7,7 +7,7 @@ GOAL:
 Trident 20.01.1 introduced metrics that can be integrated into Prometheus.
 Going through this scenario at this point will be interesting as you will actually see the metrics evolve with all the labs.
 
-You can either follow this scenario or go through the following link:
+You can either follow this scenario or go through the following link:  
 https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/
 
 
@@ -37,7 +37,7 @@ But how can you access from your browser?
 The way Prometheus is installed required it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
 We will modify the Prometheus service in order to access it from anywhere in the lab, with why not a *NodePort* configuration
 ```
-kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
+# kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
 ```
 
 ### BEFORE:
@@ -85,7 +85,8 @@ In substance, we will tell in this object to look at services that have the labe
 The Yaml file has been provided and is available in the Scenario2 sub-directory
 
 ```
-kubectl create -f Trident_ServiceMonitor.yml
+# kubectl create -f Trident_ServiceMonitor.yml
+servicemonitor.monitoring.coreos.com/trident-sm created
 ```
 
 ## E. Check the configuration

@@ -34,21 +34,21 @@ Here are the 2 backends & their corresponding driver:
 - backend-nas-eco-default.json    ONTAP-NAS-ECONOMY
 
 ```
-tridentctl -n trident create backend -f backend-nas-default.json
+# tridentctl -n trident create backend -f backend-nas-default.json
 +-----------------+----------------+--------------------------------------+--------+---------+
 |      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +-----------------+----------------+--------------------------------------+--------+---------+
 | NAS_Vol-default | ontap-nas      | 282b09e5-0ff2-4471-97c8-9fd5224945a1 | online |       0 |
 +-----------------+----------------+--------------------------------------+--------+---------+
 
-tridentctl -n trident create backend -f backend-nas-eco-default.json
+# tridentctl -n trident create backend -f backend-nas-eco-default.json
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 | NAS_ECO-default | ontap-nas-economy | b21fb2a7-975a-4050-a187-bb4f883d0e97 | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 
-kubectl get -n trident tridentbackends
+# kubectl get -n trident tridentbackends
 NAME        BACKEND           BACKEND UUID
 tbe-c874k   NAS_Vol-default   282b09e5-0ff2-4471-97c8-9fd5224945a1
 tbe-d6szt   NAS_ECO-default   b21fb2a7-975a-4050-a187-bb4f883d0e97
@@ -61,13 +61,13 @@ You will also find in this directory a few storage class files.
 You can decide to use all of them, only a subset of them or modify them as you wish
 
 ```
-kubectl create -f sc-csi-ontap-nas.yaml
+# kubectl create -f sc-csi-ontap-nas.yaml
 storageclass.storage.k8s.io/storage-class-nas created
 
-kubectl create -f sc-csi-ontap-nas-eco.yaml
+# kubectl create -f sc-csi-ontap-nas-eco.yaml
 storageclass.storage.k8s.io/storage-class-nas-economy created
 
-kubectl get sc
+# kubectl get sc
 NAME                        PROVISIONER             AGE
 storage-class-nas           csi.trident.netapp.io   2d18h
 storage-class-nas-economy   csi.trident.netapp.io   2d18h

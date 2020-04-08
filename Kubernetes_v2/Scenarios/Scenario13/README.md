@@ -10,7 +10,7 @@ In this exercise, we will create a MySQL StatefulSet & Scale it.
 
 ![Scenario13](Images/scenario13.jpg "Scenario13")
 
-To best benefit from the scenario, you would first need to go through the following Addendum:
+To best benefit from the scenario, you would first need to go through the following Addendum:  
 [1.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
 [2.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
 [3.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
@@ -23,7 +23,7 @@ This application is based on 3 elements:
 - the StatefulSet (3 replicas of the application)
 
 ```
-kubectl create namespace mysql
+# kubectl create namespace mysql
 namespace/mysql created
 
 # kubectl create -n mysql -f mysql-configmap.yaml
@@ -37,8 +37,6 @@ statefulset.apps/mysql created
 It will take a few minutes for all the replicas to be created, I will then suggest using the _watch_ flag:
 ```
 # kubectl -n mysql get pod --watch
-
-[root@rhel3 mysql]# kg pod -o wide --watch
 mysql-0   1/2     Running   0          43s   10.36.0.1   rhel1   <none>           <none>
 mysql-0   2/2     Running   0          52s   10.36.0.1   rhel1   <none>           <none>
 mysql-1   0/2     Pending   0          0s    <none>      <none>   <none>           <none>
@@ -86,7 +84,7 @@ EOF
 ```
 Let's check that the operation was successful by reading the database, through the service called _mysql-read_
 ```
-#kubectl run mysql-client -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- mysql -h mysql-read -e "SELECT * FROM test.messages"
+# kubectl run mysql-client -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- mysql -h mysql-read -e "SELECT * FROM test.messages"
 If you don't see a command prompt, try pressing enter.
 +---------+
 | message |
@@ -102,7 +100,7 @@ In the current setup, _writes_ are done on the master DB, wheareas _reads_ can c
 Let's check this!  
 First, open a new Putty window & connect to RHEL3. You can then run the following, which will display the ID of the database followed by a timestamp. 
 ```
-#kubectl run mysql-client-loop -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- bash -ic "while sleep 1; do mysql -h mysql-read -e 'SELECT @@server_id,NOW()'; done"
+# kubectl run mysql-client-loop -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- bash -ic "while sleep 1; do mysql -h mysql-read -e 'SELECT @@server_id,NOW()'; done"
 +-------------+---------------------+
 | @@server_id | NOW()               |
 +-------------+---------------------+
@@ -121,7 +119,7 @@ Keep this window open for now...
 
 Scaling an application with Kubernetes is pretty straightforward & can be achieved with the following command:
 ```
-kubectl scale statefulset mysql -n mysql --replicas=4
+# kubectl scale statefulset mysql -n mysql --replicas=4
 statefulset.apps/mysql scaled
 ```
 You can use the _kubectl get pod_ with the _--watch_ parameter again to see the new POD starting.  

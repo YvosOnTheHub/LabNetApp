@@ -101,6 +101,7 @@ INFO CRD deleted.                                  CRD=volumesnapshotclasses.sna
 INFO CRD deleted.                                  CRD=volumesnapshotcontents.snapshot.storage.k8s.io
 INFO CRD deleted.                                  CRD=volumesnapshots.snapshot.storage.k8s.io
 ```
+(For some reason, you sometimes need to run this command twice.)  
 More information about this here: https://netapp.io/2020/01/30/alpha-to-beta-snapshots/
 
 Now, let's process with the new version of Trident

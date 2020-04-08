@@ -13,24 +13,24 @@ First, connect to this host with Putty...
 ## A. Prepare the host (firewall, security)
 
 ```
-cat <<EOF >  /etc/sysctl.d/k8s.conf
+# cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 
-reboot
+# reboot
 ```
 Once this host is back online, continue with:
 ```
-setenforce 0
-swapoff -a
+# setenforce 0
+# swapoff -a
 ```
 Last, edit /etc/fstab & comment (\#) the swap line
 
 ## B. Install the kubernetes packages & join the cluster
 
 ```
-cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+# cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -42,17 +42,17 @@ EOF
 ```
 When this document was created, the Kubernetes cluster was running version 1.15.3
 ```
-yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
+# yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
 ```
 Before joining this host, you just need to enable *Kubelet*, which is the local Kubernetes agent
 ```
-systemctl enable kubelet && systemctl start kubelet
-systemctl status kubelet.service
+# systemctl enable kubelet && systemctl start kubelet
+# systemctl status kubelet.service
 ```
 Time to join the cluster!
 ```
-kubeadm reset
-kubeadm join 192.168.0.63:6443 --token 1fpzhb.diqla6g7x83b4iah --discovery-token-ca-cert-hash sha256:8469a0fe236e02b5c4834196a3d85ce1b5352598a824010dced8cb5e0f43f4c5
+# kubeadm reset
+# kubeadm join 192.168.0.63:6443 --token 1fpzhb.diqla6g7x83b4iah --discovery-token-ca-cert-hash sha256:8469a0fe236e02b5c4834196a3d85ce1b5352598a824010dced8cb5e0f43f4c5
 ...
 This node has joined the cluster:
 * Certificate signing request was sent to apiserver and a response was received.

@@ -190,6 +190,7 @@ storageclass.storage.k8s.io "sclimitvolumesize" deleted
 The amount of ONTAP volumes (Flexvols) you can have on a ONTAP cluster depends on several parameters:
 - version
 - size of the ONTAP cluster (in terms of controllers)  
+
 If the storage platform is also used by other workloads (Databases, Files Services ...), you may want to limit the number of PVC you build in your storage Tenant (ie SVM)
 This can be achieved by setting a parameter on this SVM.  
 https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
@@ -199,11 +200,11 @@ https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_co
 Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
 You can either login to System Manager & count, or run the following (password Netapp1!)
 ```
-ssh -l admin 192.168.0.101 vol show -vserver svm1 | grep svm1 | wc -l
+# ssh -l admin 192.168.0.101 vol show -vserver svm1 | grep svm1 | wc -l
 ```
 In my case, in have 10 volumes, I will then set the maximum to 12 for this exercise.
 ```
-ssh -l admin 192.168.0.101 vserver modify -vserver svm1 -max-volumes 12
+# ssh -l admin 192.168.0.101 vserver modify -vserver svm1 -max-volumes 12
 ```
 We will then try to create a few new PVC.
 ```

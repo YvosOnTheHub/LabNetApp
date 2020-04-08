@@ -12,15 +12,15 @@ We will deploy the same App as in the scenario 5, but instead of using File Stor
 We will create this app in its own namespace (also very useful to clean up everything)
 
 ```
-kubectl create namespace ghostsan
+# kubectl create namespace ghostsan
 namespace/ghostsan created
 
-kubectl create -n ghostsan -f Ghost/
+# kubectl create -n ghostsan -f Ghost/
 persistentvolumeclaim/blog-content created
 deployment.apps/blog created
 service/blog created
 
-kubectl get all -n ghostsan
+# kubectl get all -n ghostsan
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/blog-san-58979448dd-6k9ds   1/1     Running   0          21s
 
@@ -33,7 +33,7 @@ deployment.apps/blog-san   1/1     1            1           21s
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/blog-san-58979448dd   1         1         1       21s
 
-kubectl get pvc,pv -n ghostsan
+# kubectl get pvc,pv -n ghostsan
 NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 persistentvolumeclaim/blog-content-san   Bound    pvc-8ff8c1b3-48da-400e-893c-23bc9ec459ff   10Gi       RWO            storage-class-san   4m16s
 
@@ -54,11 +54,11 @@ Give it a try !
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the SAN PVC that was created.
 
 ```
-kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- df /var/lib/ghost/content
+# kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- df /var/lib/ghost/content
 Filesystem           1K-blocks      Used Available Use% Mounted on
 /dev/sdc              10190100     37368   9612060   0% /var/lib/ghost/content
 
-kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- ls /var/lib/ghost/content
+# kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- ls /var/lib/ghost/content
 apps
 data
 images
@@ -74,6 +74,6 @@ themes
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 
 ```
-kubectl delete ns ghostsan
+# kubectl delete ns ghostsan
 namespace "ghostsan" deleted
 ```

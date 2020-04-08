@@ -14,7 +14,7 @@ We will learn how to access Grafana, and configure a graph.
 With Grafana, we are facing the same issue than with Prometheus with regards to accessing it.
 We will then modify its service in order to access it from anywhere in the lab, with a *NodePort* configuration
 ```
-kubectl edit -n monitoring svc prom-operator-grafana
+# kubectl edit -n monitoring svc prom-operator-grafana
 ```
 
 ### BEFORE:
@@ -63,11 +63,11 @@ But how to find out what they are ??
 Let's look at the pod definition, maybe there is a hint there...
 
 ```
-kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana
+# kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana
 NAME                                     READY   STATUS    RESTARTS   AGE
 prom-operator-grafana-7d99d7985c-98qcr   3/3     Running   0          2d23h
 
-kubectl describe pod prom-operator-grafana-7d99d7985c-98qcr -n monitoring
+# kubectl describe pod prom-operator-grafana-7d99d7985c-98qcr -n monitoring
 ...
     Environment:
       GF_SECURITY_ADMIN_USER:      <set to the key 'admin-user' in secret 'prom-operator-grafana'>      Optional: false
@@ -76,12 +76,12 @@ kubectl describe pod prom-operator-grafana-7d99d7985c-98qcr -n monitoring
 ```
 Let's check what secrets there are in this cluster
 ```
-kubectl get secrets -n monitoring -l app.kubernetes.io/name=grafana
+# kubectl get secrets -n monitoring -l app.kubernetes.io/name=grafana
 NAME                    TYPE     DATA   AGE
 prom-operator-grafana   Opaque   3      2d23h
 
 
-[root@rhel3 Ghost]# kdesc secrets -n monitoring prom-operator-grafana
+# kubectl describe secrets -n monitoring prom-operator-grafana
 Name:         prom-operator-grafana
 ...
 Data
@@ -92,10 +92,10 @@ admin-user:      5 bytes
 ```
 OK, so the data is there, and is encrypted... However, the admin can retrieve this information
 ```
-kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-user}" | base64 --decode ; echo
+# kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-user}" | base64 --decode ; echo
 admin
 
-kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+# kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 prom-operator
 ```
 
