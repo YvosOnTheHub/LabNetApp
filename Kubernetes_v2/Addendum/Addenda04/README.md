@@ -7,14 +7,14 @@ Some interesting features require a more recent version than the one you find in
 - iSCSI PVC Resizing
 - "On-Demand Snapshots" & "PVC from Snapshot"
 
-Upgrades can only be done from one _minor_ version to the next. You need to perform to successive upgrade to go from 1.15 to 1.17.  
-This addenda will give you the step by step commands to run, but keep in mind this is only for this lab... If you were to upgrade in a real environment, more care would need to be applied.
+Upgrades can only be done from one _minor_ version to the next. You need to perform two successive upgrades to go from 1.15 to 1.17.  
+This addenda will give you the step by step commands to run, but keep in mind this is only for this lab... If you were to upgrade in a real environment, more care would need to be taken.
 
 The following links were used :
 - Upgrade from 1.15 to 1.16: https://v1-16.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 - Upgrade from 1.16 to 1.17: https://v1-17.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 
-Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [Scenario 1](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario01)  
+Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [(Scenario 1)](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario01)  
 
 
 ## A. Upgrade from 1.15.3 to 1.16.8
@@ -105,12 +105,6 @@ We can now enable _scheduling_ again on the master.
 ```
 # kubectl uncordon rhel3
 node/rhel3 uncordoned
-
-# kubectl get nodes
-NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.15.3
-rhel2   Ready    <none>   214d   v1.15.3
-rhel3   Ready    master   214d   v1.15.3
 ```
 Last, we can now upgrade _kubectl_ & _kubelet_:
 ```
@@ -137,6 +131,7 @@ First, install the new version of Kubeadm:
 # yum install -y kubeadm-1.16.8-0 --disableexcludes=kubernetes
 ```
 Then, from the *master* node, unschedule the creation of new PODs on the worker node
+```
 # kubectl drain rhel1 --ignore-daemonsets
 node/rhel1 cordoned
 WARNING: ignoring DaemonSet-managed Pods: kube-system/kube-proxy-tp986, kube-system/weave-net-xh8wg, trident/trident-csi-zw5h7
