@@ -40,14 +40,19 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 ```
-When this document was created, the Kubernetes cluster was running version 1.15.3
+Depending on the current version of the Kubernetes cluster, you may choose one command or the other.  
+- v1.15.3 is the version that is installed by default in the lab
+- v1.17.4 is the target version if you chose to upgrade the cluster [cf Addenda04](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04)
 ```
 # yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
+```
+OR
+```
+# yum install -y kubelet-1.17.4 kubeadm-1.17.4 kubectl-1.17.4 --nogpgcheck
 ```
 Before joining this host, you just need to enable *Kubelet*, which is the local Kubernetes agent
 ```
 # systemctl enable kubelet && systemctl start kubelet
-# systemctl status kubelet.service
 ```
 Time to join the cluster!
 ```
@@ -74,7 +79,7 @@ rhel4   Ready      <none>   41s    v1.15.3
 Tadaaaa!!
 
 If Trident is already installed, you will see that a new POD will start on this new host.  
-This is totally expected as CSI Trident is partially composed of DaemonSets, which by definition run on every node.
+This is totally expected as CSI Trident is partially composed of DaemonSets, which by definition run on every nodes.
 ```
 # kubectl get pods -n trident -o wide
 NAME                           READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
