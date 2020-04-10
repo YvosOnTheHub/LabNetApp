@@ -105,7 +105,7 @@ The POD rescanned its devices to discover the new size of the volume.
 # kubectl delete namespace resize
 namespace "resize" deleted
 
-# kubectl delete sc sc-nas-resize
-storageclass.storage.k8s.io "sc-nas-resize" deleted
+# kubectl delete sc sc-san-resize
+storageclass.storage.k8s.io "sc-san-resize" deleted
 
 ```
