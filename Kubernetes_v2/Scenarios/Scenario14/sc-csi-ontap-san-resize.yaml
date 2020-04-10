@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-san-resize
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+allowVolumeExpansion: true

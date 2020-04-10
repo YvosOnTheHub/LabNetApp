@@ -4,7 +4,7 @@ metadata:
   name: centos
 spec:
   volumes:
-    - name: nfsstorage
+    - name: blockstorage
       persistentVolumeClaim:
        claimName: pvc-to-resize
   containers:
@@ -16,4 +16,4 @@ spec:
         - "sleep 60m"
       volumeMounts:
         - mountPath: "/data"
-          name: nfsstorage
+          name: blockstorage

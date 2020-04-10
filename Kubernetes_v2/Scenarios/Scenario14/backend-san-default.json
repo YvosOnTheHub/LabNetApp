@@ -1,0 +1,10 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-san",
+    "backendName": "SAN-Resize",
+    "managementLIF": "192.168.0.135",
+    "storagePrefix": "san_",
+    "svm": "svm1",
+    "username": "vsadmin",
+    "password": "Netapp1!"
+}
