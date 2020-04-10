@@ -22,7 +22,7 @@ Scenarios
 [11.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario11) Resize a NFS CSI PVC  
 [12.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario12) Using Virtual Storage Pools  
 [13.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario13) StatefulSets & Storage consumption  
-[14.] Resize a NFS CSI PVC (_soon_)
+[14.] Resize a iSCSI CSI PVC (_soon_)
 [15.] On-Demand Snapshots & Create PVC from Snapshot (_soon_)
 
 ## B. Kubernetes v1 (pre-CSI)
