@@ -11,7 +11,7 @@ Resizing a PVC is made available through the option *allowVolumeExpansion* set i
 
 ![Scenario14](Images/scenario14.jpg "Scenario14")
 
-As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version. This can be achieved by following the [Addenda4.](../Addendum/Addenda04) 
+As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version. This can be achieved by following the [Addenda4.](../../Addendum/Addenda04) 
 
 Also, you will also need to configure your environment for iSCSI if not done yet. That part is described in the [Scenario6](../Scenario06).  
 
