@@ -223,7 +223,14 @@ rhel1   Ready    <none>   214d   v1.16.8
 rhel2   Ready    <none>   214d   v1.16.8
 rhel3   Ready    master   214d   v1.16.8
 ```
-Tadaaa !
+Tadaaa !  
+
+For some reason that remains to be explained, not all features will work (ex: PVC Resize).  Trident needs to be reinstalled in order to re-enable them.  
+This is only true when upgrading Kubernetes from 1.15 to 1.16.
+```
+# tridentctl -n trident uninstall
+# tridentctl -n trident install
+```
 
 
 ## B. Upgrade from 1.16.8 to 1.17.4

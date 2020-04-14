@@ -168,5 +168,6 @@ alias kc='kubectl create'
 alias kg='kubectl get'
 alias kdel='kubectl delete'
 alias kdesc='kubectl describe'
+alias kedit='kubectl edit'
 ```
 don't forget to type in _bash_ in order to take the modifications into account

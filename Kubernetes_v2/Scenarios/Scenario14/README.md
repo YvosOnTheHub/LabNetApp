@@ -13,7 +13,7 @@ Resizing a PVC is made available through the option *allowVolumeExpansion* set i
 
 As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version. This can be achieved by following the [Addenda4.](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04) 
 
-Also, you will also need to configure your environment for iSCSI if not done yet. That part is described in the [Scenario6](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Scenarios/Scenario06).  
+Also, you will also need to configure your environment for iSCSI if not done yet. That part is described in the [Scenario6](../Scenario06).  
 
 ## A. Create a new storage class with the option allowVolumeExpansion.
 
@@ -30,6 +30,10 @@ Next, you can create the Storage Class
 ```
 # kubectl create -f sc.yaml
 storageclass.storage.k8s.io/sc-san-resize created
+
+# kubectl get sc
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+sc-san-resize   csi.trident.netapp.io   Delete          Immediate           true                   3h3m
 ```
 
 ## B. Setup the environment
@@ -82,7 +86,7 @@ spec:
   volumeMode: Filesystem
   volumeName: pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8
 ```
-Let's see the result.
+Let's see the result (it takes about 1 minute to take effect).
 ```
 # kubectl -n resize get pvc,pv
 NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
