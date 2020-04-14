@@ -14,7 +14,7 @@ The following links were used :
 - Upgrade from 1.15 to 1.16: https://v1-16.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 - Upgrade from 1.16 to 1.17: https://v1-17.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 
-Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [(Scenario 1)](../Scenarios/Scenario01)  
+Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [(Scenario 1)](../../Scenarios/Scenario01)  
 
 
 ## A. Upgrade from 1.15.3 to 1.16.8
