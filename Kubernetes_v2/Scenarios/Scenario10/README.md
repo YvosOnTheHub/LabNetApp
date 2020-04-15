@@ -16,7 +16,7 @@ We will then create two types of quotas:
 1. limit the number of PVC a user can create
 2. limit the total capacity a user can create  
 
-We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](Kubernetes_v2/Scenarios/Scenario04))
+We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04))
 
 ```
 # kubectl create namespace quota

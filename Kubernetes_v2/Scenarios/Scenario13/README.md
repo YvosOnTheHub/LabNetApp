@@ -8,7 +8,7 @@ Deployments & DaemonSets use PVC defined outside of them, whereas StatefulSets i
 Said differently, you can see a StatefulSet as a couple (POD + Storage). When it is scaled, both objects will be automatically created.  
 In this exercise, we will create a MySQL StatefulSet & Scale it.  
 
-We consider that a backend & a storage class have already been created. ([ex: Scenario04](Kubernetes_v2/Scenarios/Scenario04)).  
+We consider that a backend & a storage class have already been created. ([ex: Scenario04](../Scenario04)).  
 
 ![Scenario13](Images/scenario13.jpg "Scenario13")
 
