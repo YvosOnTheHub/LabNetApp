@@ -14,14 +14,16 @@ We are going to review here different methods to control the storage consumption
 In order to restrict the tests to a small environment & not affect other projects, we will create a specific namespace called _quota_
 We will then create two types of quotas:
 1. limit the number of PVC a user can create
-2. limit the total capacity a user can create
+2. limit the total capacity a user can create  
+
+We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](Kubernetes_v2/Scenarios/Scenario04))
 
 ```
 # kubectl create namespace quota
 namespace/quota created
-# kubectl create -n quota -f pvc-count-limit.yaml
+# kubectl create -n quota -f rq-pvc-count-limit.yaml
 resourcequota/pvc-count-limit created
-# kubectl create -n quota -f sc-resource-limit.yaml
+# kubectl create -n quota -f rq-sc-resource-limit.yaml
 resourcequota/sc-resource-limit created
 
 # kubectl get resourcequota -n quota
@@ -131,19 +133,19 @@ Depending on the driver, this parameter will
 
 Let's create a backend with this parameter setup (limitVolumeSize = 5g), followed by the storage class that points to it, using the storagePools parameter:
 ```
-# tridentctl -n trident create backend -f backend.json
+# tridentctl -n trident create backend -f backend-nas-limitsize.json
 +------------------+----------------+--------------------------------------+--------+---------+
 |       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +------------------+----------------+--------------------------------------+--------+---------+
 | NAS_LimitVolSize | ontap-nas      | 8b94769a-a759-4840-b936-985a360f2d87 | online |       0 |
 +------------------+----------------+--------------------------------------+--------+---------+
 
-# kubectl create -f sc.yaml
+# kubectl create -f sc-backend-limit.yaml
 storageclass.storage.k8s.io/sclimitvolumesize created
 ```
 Let's see the behavior of the PVC creation, using the pvc-10Gi.yaml file.
 ```
-# kubectl create -f pvc.yaml
+# kubectl create -f pvc-10Gi.yaml
 persistentvolumeclaim/10g created
 
 # kubectl get pvc

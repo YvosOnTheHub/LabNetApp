@@ -9,7 +9,8 @@ We will deploy the same App as in the scenario 5, but instead of using File Stor
 
 ## A. Create the app
 
-We will create this app in its own namespace (also very useful to clean up everything)
+We will create this app in its own namespace (also very useful to clean up everything).  
+We consider that the ONTAP-SAN backend & storage class have already been created. ([cf Scenario07](Kubernetes_v2/Scenarios/Scenario07))
 
 ```
 # kubectl create namespace ghostsan

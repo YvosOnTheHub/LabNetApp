@@ -25,6 +25,14 @@ Scenarios
 [14.](Kubernetes_v2/Scenarios/Scenario14) Resize a iSCSI CSI PVC  
 [15.] On-Demand Snapshots & Create PVC from Snapshot (_soon_)  
 
+Addendum
+--------
+[0.](Kubernetes_v2/Addendum/Addenda00) Useful commands    
+[1.](Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
+[2.](Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
+[3.](Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
+[4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17)  
+
 ## B. Kubernetes v1 (pre-CSI)
 
 These files are attended to be used with the NetApp LabOnDemand "Using NetApp with Docker and Kubernetes v2.0".

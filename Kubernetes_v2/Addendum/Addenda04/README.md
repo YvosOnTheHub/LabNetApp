@@ -225,11 +225,26 @@ rhel3   Ready    master   214d   v1.16.8
 ```
 Tadaaa !  
 
-For some reason that remains to be explained, not all features will work (ex: PVC Resize).  Trident needs to be reinstalled in order to re-enable them.  
-This is only true when upgrading Kubernetes from 1.15 to 1.16.
+When you upgrade Kubernetes, Trident does not automatically upgrade its configuration.  
+Kubernetes 1.16 promoted PVC Expansion to Beta status, which implies a new CSI Sidecar. In order to activate this sidecar, Trident needs to be resintalled.  
+Can you spot the new sidecar in the following output?
 ```
-# tridentctl -n trident uninstall
-# tridentctl -n trident install
+# K8S 1.16 & BEFORE TRIDENT REINSTALL
+# kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-6b778f79bb-4sj4h:  netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0,
+trident-csi-brd4h:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-bwjn7:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-lfdjl:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+
+# tridentctl -n trident uninstall --silent
+# tridentctl -n trident install --silent
+
+#K8S 1.16 & AFTER TRIDENT REINSTALL
+# kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-bc2qt:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-d8667b7fd-df9lr:   netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0,
+trident-csi-jvph8:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-zmfz4:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 ```
 
 
@@ -341,3 +356,25 @@ rhel2   Ready    <none>   214d   v1.17.4
 rhel3   Ready    master   214d   v1.17.4
 ```
 Tadaaa again !
+
+Again, you have to upgrade Trident.  
+Kubernetes 1.17 promoted PVC Snapshot&Restore to Beta status, which implies a new CSI Sidecar.  
+Can you spot the new sidecar in the following output?
+```
+# K8S 1.17 & BEFORE TRIDENT REINSTALL
+# kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-bc2qt:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-d8667b7fd-df9lr:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0,
+trident-csi-jvph8:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-zmfz4:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+
+# tridentctl -n trident uninstall --silent
+# tridentctl -n trident install --silent
+
+# K8S 1.17 & AFTER TRIDENT REINSTALL
+# kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-4gj4j:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-5cd46cff6-5h9h8:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0, quay.io/k8scsi/csi-snapshotter:v2.0.1,
+trident-csi-5vhrv:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+trident-csi-tttn4:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+```

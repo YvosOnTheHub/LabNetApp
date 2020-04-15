@@ -7,13 +7,15 @@ Trident supports the resizing of File (NFS) & Block (iSCSI) PVC, depending on th
 NFS Resizing was introduced in K8S 1.11, while iSCSI resizing was introduced in K8S 1.16.  
 Here we will go through a NFS Resizing ...
 
-Resizing a PVC is made available through the option *allowVolumeExpansion* set in the StorageClass.
+Resizing a PVC is made available through the option *allowVolumeExpansion* set in the StorageClass.  
+
+We consider that the ONTAP-NAS backend has already been created. ([cf Scenario04](Kubernetes_v2/Scenarios/Scenario04))
 
 ![Scenario11](Images/scenario11.jpg "Scenario11")
 
 ## A. Create a new storage class with the option allowVolumeExpansion.
 ```
-# kubectl create -f sc.yaml
+# kubectl create -f sc-csi-ontap-nas-resize.yaml
 storageclass.storage.k8s.io/sc-nas-resize created
 ```
 

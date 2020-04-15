@@ -14,7 +14,8 @@ Ghost is a light weight web portal. You will a few YAML files in the Ghost direc
 
 ## A. Create the app
 
-We will create this app in its own namespace (also very useful to clean up everything)
+We will create this app in its own namespace (also very useful to clean up everything).  
+We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](Kubernetes_v2/Scenarios/Scenario04))
 
 ```
 # kubectl create namespace ghost
