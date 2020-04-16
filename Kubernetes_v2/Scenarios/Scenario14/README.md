@@ -70,7 +70,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 
 ## C. Resize the PVC & check the result
 
-Resizing a PVC is done by editing its definition.  
+Resizing a PVC can be done in different ways. We will here edit the definition of the PVC & manually modify it.  
 Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)
 ```
 # kubectl -n resize edit pvc pvc-to-resize
@@ -101,7 +101,12 @@ Filesystem      Size  Used Avail Use% Mounted on
 /dev/sdd         15G   25M   14G   1% /data
 ```
 As you can see, the resizing was done totally dynamically without any interruption.  
-The POD rescanned its devices to discover the new size of the volume.
+The POD rescanned its devices to discover the new size of the volume.  
+
+This could also have been achieved by using the _kubectl patch_ command. Try the following one:
+```
+# kubectl patch -n resize pvc pvc-to-resize -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
+```
 
 ## C. Cleanup the environment
 

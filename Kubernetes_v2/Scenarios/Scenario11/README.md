@@ -53,7 +53,7 @@ Filesystem                                                    Size  Used Avail U
 
 ## C. Resize the PVC & check the result
 
-Resizing a PVC is done by editing its definition.  
+Resizing a PVC can be done in different ways. We will here edit the definition of the PVC & manually modify it.  
 Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)
 ```
 # kubectl -n resize edit pvc pvc-to-resize
@@ -79,7 +79,12 @@ pvc-to-resize   Bound    pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   15Gi       R
 Filesystem                                                    Size  Used Avail Use% Mounted on
 192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55   15G  256K   15G   1% /data
 ```
-As you can see, the resizing was done totally dynamically without any interruption.
+As you can see, the resizing was done totally dynamically without any interruption.  
+
+This could also have been achieved by using the _kubectl patch_ command. Try the following one:
+```
+# kubectl patch -n resize pvc pvc-to-resize -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
+```
 
 ## C. Cleanup the environment
 
