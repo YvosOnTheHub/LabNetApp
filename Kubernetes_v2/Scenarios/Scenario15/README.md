@@ -2,7 +2,7 @@
 # SCENARIO 15: Test Kubernetes snapshots
 #########################################################################################
 
-GOAL: 
+GOAL:  
 Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
 This is fully supported by Trident 20.01.1.  
 
@@ -11,7 +11,7 @@ This is fully supported by Trident 20.01.1.
 ## A. Prepare the environment
 
 We will create an app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04)).  
+We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario04](../Scenario04)).  
 If you compare the Ghost app definition to the [Scenario05](../Scenario05), you may notice that the _deployment_ has evolved from _v1beta1_ to _v1_ status with Kubernetes 1.17.  
 
 ```
@@ -71,6 +71,10 @@ Finally, you need to create a _VolumeSnapshotClass_ object that points to the Tr
 ```
 # kubectl create -f sc-volumesnapshot.yaml
 volumesnapshotclass.snapshot.storage.k8s.io/csi-snap-class created
+
+# kubectl get volumesnapshotclass
+NAME             DRIVER                  DELETIONPOLICY   AGE
+csi-snap-class   csi.trident.netapp.io   Delete           3s
 ```
 The _volume snapshot_ feature is now ready to be tested.  
 
@@ -125,7 +129,7 @@ If you take a look a the PVC file in the _Ghost/_clone_ directory, you can notic
 ```
 Let's see how that turns out:
 ```
-# kubectl create -n ghost -f Ghost_clone/1_pvc-from-snap.yaml
+# kubectl create -n ghost -f Ghost_clone/1_pvc_from_snap.yaml
 persistentvolumeclaim/pvc-from-snap created
 
 # kubectl get pvc,pv -n ghost
@@ -152,14 +156,14 @@ svm1    nas1_pvc_4d6e8738_a419_405e_96fc_9cf3a0840b56
                                                                  online    RW
 ```
 Now that we have a clone, what can we do with?  
-Well, we could maybe fire up a new Ghost environment with a new version while keeping the same content? This would a good way to test a new release, while not copy all the data for this specific environment. In other words, you would save time by doing so.  
+Well, we could maybe fire up a new Ghost environment with a new version while keeping the same content? This would a good way to test a new release, while not copying all the data for this specific environment. In other words, you would save time by doing so.  
 
 The first deployment uses Ghost v2.6. Let's try with Ghost 3.13 ...
 ```
 # kubectl create -n ghost -f Ghost_clone/2_deploy.yaml
 deployment.apps/blogclone created
 
-kubectl create -n ghost -f Ghost_clone/3_service.yaml
+# kubectl create -n ghost -f Ghost_clone/3_service.yaml
 service/blogclone created
 
 # kubectl get all -n ghost -l scenario=clone
@@ -177,3 +181,9 @@ You can probably notice some differences between both pages...
 Using this type of mechanism in a CI/CD pipeline can definitely save time (that's for Devs) & storage (that's for Ops)!
 
 
+## E. Cleanup
+
+```
+# kubectl delete ns ghost
+namespace "ghost" deleted
+```
