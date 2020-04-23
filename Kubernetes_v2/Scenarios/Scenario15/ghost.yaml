@@ -1,0 +1,65 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blog-content
+  labels:
+    scenario: snap
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nas
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog
+  labels:
+    scenario: snap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog
+  template:
+    metadata:
+      labels:
+        app: blog
+    spec:
+      containers:
+      - name: blog
+        image: ghost:2.6-alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          value: http://my-blog.com
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content
+          name: content
+      volumes:
+      - name: content
+        persistentVolumeClaim:
+          claimName: blog-content
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog
+  labels:
+    scenario: snap
+spec:
+  type: NodePort
+  selector:
+    app: blog
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 2368
+    nodePort: 30080

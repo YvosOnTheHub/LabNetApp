@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogclone
+  labels:
+    scenario: clone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogclone
+  template:
+    metadata:
+      labels:
+        app: blogclone
+    spec:
+      containers:
+      - name: blog
+        image: ghost:3.13-alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          value: http://my-blog-clone.com
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content
+          name: content
+      volumes:
+      - name: content
+        persistentVolumeClaim:
+          claimName: pvc-from-snap
