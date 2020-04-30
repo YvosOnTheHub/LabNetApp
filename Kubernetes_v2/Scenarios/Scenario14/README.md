@@ -28,7 +28,7 @@ If you dont have a ONTAP-SAN Backend, you can use the backend file in this direc
 ```
 Next, you can create the Storage Class
 ```
-# kubectl create -f sc.yaml
+# kubectl create -f sc-csi-ontap-san-resize.yaml
 storageclass.storage.k8s.io/sc-san-resize created
 
 # kubectl get sc
@@ -53,7 +53,7 @@ persistentvolumeclaim/pvc-to-resize   Bound    pvc-0862979c-92ca-49ed-9b1c-15edb
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS    REASON   AGE
 persistentvolume/pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8   5Gi        RWO            Delete           Bound    resize/pvc-to-resize   sc-san-resize            10s
 
-# kubectl create -n resize -f pod-centos-sas.yaml
+# kubectl create -n resize -f pod-centos-san.yaml
 pod/centos created
 
 # kubectl -n resize get pod --watch

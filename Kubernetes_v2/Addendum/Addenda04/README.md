@@ -17,7 +17,7 @@ The following links were used :
 Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [(Scenario 1)](../../Scenarios/Scenario01)  
 
 
-## A. Upgrade from 1.15.3 to 1.16.8
+## A. Upgrade from 1.15.3 to 1.16.9
 
 Let's look at the environment  
 ```
@@ -39,10 +39,10 @@ kubeadm version: &version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.3", GitC
 ```
 Let's start with the master node (*rhel3*)
 ```
-# yum install -y kubeadm-1.16.8-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.16.9-0 --disableexcludes=kubernetes
 
 # kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.8", GitCommit:"ec6eb119b81be488b030e849b9e64fda4caaf33c", GitTreeState:"clean", BuildDate:"2020-03-12T20:57:57Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:42:30Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
 ```
 Next, we need to isolate this node, or avoid any new scheduling on the master node.  
 Please note the following:  
@@ -70,35 +70,35 @@ We can now proceed with the upgrade
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.15.3   v1.16.8
+Kubelet     3 x v1.15.3   v1.16.9
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT   AVAILABLE
-API Server           v1.15.3   v1.16.8
-Controller Manager   v1.15.3   v1.16.8
-Scheduler            v1.15.3   v1.16.8
-Kube Proxy           v1.15.3   v1.16.8
+API Server           v1.15.3   v1.16.9
+Controller Manager   v1.15.3   v1.16.9
+Scheduler            v1.15.3   v1.16.9
+Kube Proxy           v1.15.3   v1.16.9
 CoreDNS              1.3.1     1.6.2
 Etcd                 3.3.10    3.3.15-0
 
 You can now apply the upgrade by executing the following command:
 
-        kubeadm upgrade apply v1.16.8
+        kubeadm upgrade apply v1.16.9
 _____________________________________________________________________
 
-# kubeadm upgrade apply v1.16.8
+# kubeadm upgrade apply v1.16.9
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.16.8"
+[upgrade/version] You have chosen to change the cluster version to "v1.16.9"
 [upgrade/versions] Cluster version: v1.15.3
-[upgrade/versions] kubeadm version: v1.16.8
+[upgrade/versions] kubeadm version: v1.16.9
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.8". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.9". Enjoy!
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
 We can now enable _scheduling_ again on the master.
@@ -108,13 +108,13 @@ node/rhel3 uncordoned
 ```
 Last, we can now upgrade _kubectl_ & _kubelet_:
 ```
-# yum install -y kubelet-1.16.8-0 kubectl-1.16.8-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.16.9-0 kubectl-1.16.9-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 
 # kubectl version
-Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.8", GitCommit:"ec6eb119b81be488b030e849b9e64fda4caaf33c", GitTreeState:"clean", BuildDate:"2020-03-12T21:00:06Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.8", GitCommit:"ec6eb119b81be488b030e849b9e64fda4caaf33c", GitTreeState:"clean", BuildDate:"2020-03-12T20:52:22Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:44:51Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:36:15Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
 ```
 And after a few seconds, you can see the version:
 ```
@@ -122,13 +122,13 @@ And after a few seconds, you can see the version:
 NAME    STATUS   ROLES    AGE    VERSION
 rhel1   Ready    <none>   214d   v1.15.3
 rhel2   Ready    <none>   214d   v1.15.3
-rhel3   Ready    master   214d   v1.16.8
+rhel3   Ready    master   214d   v1.16.9
 ```
 We can now process with the worker nodes, one by one.  
 I will first show the procedure for the first node _rhel1_, which is the node that does not host Trident's replicaSet.  
 First, install the new version of Kubeadm:
 ```
-# yum install -y kubeadm-1.16.8-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.16.9-0 --disableexcludes=kubernetes
 ```
 Then, from the *master* node, unschedule the creation of new PODs on the worker node
 ```
@@ -143,7 +143,7 @@ node/rhel1 evicted
 NAME    STATUS                     ROLES    AGE    VERSION
 rhel1   Ready,SchedulingDisabled   <none>   214d   v1.15.3
 rhel2   Ready                      <none>   214d   v1.15.3
-rhel3   Ready                      master   214d   v1.16.8
+rhel3   Ready                      master   214d   v1.16.9
 ```
 Time to upgrade the worker node
 ```
@@ -155,7 +155,7 @@ Time to upgrade the worker node
 [upgrade] The configuration for this node was successfully updated!
 [upgrade] Now you should go ahead and upgrade the kubelet package using your package manager.
 
-# yum install -y kubelet-1.16.8-0 kubectl-1.16.8-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.16.9-0 kubectl-1.16.9-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 ```
@@ -219,9 +219,9 @@ You will end up with the following:
 ```
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.16.8
-rhel2   Ready    <none>   214d   v1.16.8
-rhel3   Ready    master   214d   v1.16.8
+rhel1   Ready    <none>   214d   v1.16.9
+rhel2   Ready    <none>   214d   v1.16.9
+rhel3   Ready    master   214d   v1.16.9
 ```
 Tadaaa !  
 
@@ -229,7 +229,7 @@ When you upgrade Kubernetes, Trident does not automatically upgrade its configur
 Kubernetes 1.16 promoted PVC Expansion to Beta status, which implies a new CSI Sidecar. In order to activate this sidecar, Trident needs to be resintalled.  
 Can you spot the new sidecar in the following output?
 ```
-# K8S 1.16 & BEFORE TRIDENT REINSTALL
+# K8S 1.16 & BEFORE TRIDENT 20.01.1 REINSTALL
 # kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-6b778f79bb-4sj4h:  netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0,
 trident-csi-brd4h:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
@@ -239,7 +239,7 @@ trident-csi-lfdjl:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-re
 # tridentctl -n trident uninstall --silent
 # tridentctl -n trident install --silent
 
-#K8S 1.16 & AFTER TRIDENT REINSTALL
+#K8S 1.16 & AFTER TRIDENT 20.01.1 REINSTALL
 # kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-bc2qt:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 trident-csi-d8667b7fd-df9lr:   netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0,
@@ -248,14 +248,14 @@ trident-csi-zmfz4:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-re
 ```
 
 
-## B. Upgrade from 1.16.8 to 1.17.4
+## B. Upgrade from 1.16.9 to 1.17.5
 
-The procedure to go from 1.16.8 to 1.17.4 is pretty similar to the previous one.  
+The procedure to go from 1.16.9 to 1.17.5 is pretty similar to the previous one.  
 ```
-# yum install -y kubeadm-1.17.4-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.17.5-0 --disableexcludes=kubernetes
 
 # kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.4", GitCommit:"8d8aa39598534325ad77120c120a22b3a990b5ea", GitTreeState:"clean", BuildDate:"2020-03-12T21:01:11Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.5", GitCommit:"e0fccafd69541e3750d460ba0f9743b90336f24f", GitTreeState:"clean", BuildDate:"2020-04-16T11:41:38Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
 
 # kubectl drain rhel3 --ignore-daemonsets
 node/rhel3 cordoned
@@ -268,46 +268,46 @@ node/rhel3 evicted
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.16.8   v1.17.4
+Kubelet     3 x v1.16.9   v1.17.5
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT   AVAILABLE
-API Server           v1.16.8   v1.17.4
-Controller Manager   v1.16.8   v1.17.4
-Scheduler            v1.16.8   v1.17.4
-Kube Proxy           v1.16.8   v1.17.4
+API Server           v1.16.9   v1.17.5
+Controller Manager   v1.16.9   v1.17.5
+Scheduler            v1.16.9   v1.17.5
+Kube Proxy           v1.16.9   v1.17.5
 CoreDNS              1.6.2     1.6.5
 Etcd                 3.3.15    3.4.3-0
 
 You can now apply the upgrade by executing the following command:
-        kubeadm upgrade apply v1.17.4
+        kubeadm upgrade apply v1.17.5
 
-# kubeadm upgrade apply v1.17.4
+# kubeadm upgrade apply v1.17.5
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.17.4"
-[upgrade/versions] Cluster version: v1.16.8
-[upgrade/versions] kubeadm version: v1.17.4
+[upgrade/version] You have chosen to change the cluster version to "v1.17.5"
+[upgrade/versions] Cluster version: v1.16.9
+[upgrade/versions] kubeadm version: v1.17.5
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.4". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.5". Enjoy!
 
 # kubectl uncordon rhel3
 node/rhel3 uncordoned
 
-# yum install -y kubelet-1.17.4-0 kubectl-1.17.4-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.17.5-0 kubectl-1.17.5-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.16.8
-rhel2   Ready    <none>   214d   v1.16.8
-rhel3   Ready    master   214d   v1.17.4
+rhel1   Ready    <none>   214d   v1.16.9
+rhel2   Ready    <none>   214d   v1.16.9
+rhel3   Ready    master   214d   v1.17.5
 ```
 Let's process with the worker node _rhel1_. Again, you need to start by _draining_ it from the master.
 ```
@@ -328,11 +328,11 @@ trident-csi-zw5h7              2/2     Running   2          133m   192.168.0.61 
 If you remember, Trident's ReplicaSet is on this host. This upgrade procedure does not complain about its volume anymore.  
 Back to _rhel1_:
 ```
-# yum install -y kubeadm-1.17.4-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.17.5-0 --disableexcludes=kubernetes
 
 # kubeadm upgrade node
 
-# yum install -y kubelet-1.17.4-0 kubectl-1.17.4-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.17.5-0 kubectl-1.17.5-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 ```
@@ -343,17 +343,17 @@ node/rhel1 uncordoned
 
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.17.4
-rhel2   Ready    <none>   214d   v1.16.8
-rhel3   Ready    master   214d   v1.17.4
+rhel1   Ready    <none>   214d   v1.17.5
+rhel2   Ready    <none>   214d   v1.16.9
+rhel3   Ready    master   214d   v1.17.5
 ```
 You now can repeat this procedure on the second worker node, until you get to:
 ```
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.17.4
-rhel2   Ready    <none>   214d   v1.17.4
-rhel3   Ready    master   214d   v1.17.4
+rhel1   Ready    <none>   214d   v1.17.5
+rhel2   Ready    <none>   214d   v1.17.5
+rhel3   Ready    master   214d   v1.17.5
 ```
 Tadaaa again !
 
@@ -361,7 +361,7 @@ Again, you have to upgrade Trident.
 Kubernetes 1.17 promoted PVC Snapshot&Restore to Beta status, which implies a new CSI Sidecar.  
 Can you spot the new sidecar in the following output?
 ```
-# K8S 1.17 & BEFORE TRIDENT REINSTALL
+# K8S 1.17 & BEFORE TRIDENT 20.01.1 REINSTALL
 # kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-bc2qt:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 trident-csi-d8667b7fd-df9lr:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0,
@@ -371,7 +371,7 @@ trident-csi-zmfz4:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-r
 # tridentctl -n trident uninstall --silent
 # tridentctl -n trident install --silent
 
-# K8S 1.17 & AFTER TRIDENT REINSTALL
+# K8S 1.17 & AFTER TRIDENT 20.01.1 REINSTALL
 # kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-4gj4j:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 trident-csi-5cd46cff6-5h9h8:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0, quay.io/k8scsi/csi-snapshotter:v2.0.1,
