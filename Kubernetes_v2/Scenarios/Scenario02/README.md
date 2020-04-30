@@ -28,6 +28,12 @@ kubectl create namespace monitoring
 helm repo add stable https://kubernetes-charts.storage.googleapis.com
 helm install prom-operator stable/prometheus-operator  --namespace monitoring
 ```
+You can check the installation with the following command:
+```
+# helm list -n monitoring
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+prom-operator   monitoring      1               2020-04-30 12:43:12.515947662 +0000 UTC deployed        prometheus-operator-8.13.4      0.38.1
+```
 
 ## C. Expose Prometheus
 
