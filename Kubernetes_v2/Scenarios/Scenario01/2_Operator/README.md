@@ -2,13 +2,13 @@
 # SCENARIO 1: Trident installation with an Operator
 #########################################################################################
 
-GOAL:  Trident 20.04 introduced a new way to manage its lifecycle: Operators.
+GOAL:  Trident 20.04 introduced a new way to manage its lifecycle: Operators.  
 For now, this method is only intended for green field environments. We will then first need to delete & clean up the current Trident objects
 
 
 ## A. Cleanup up Trident & Download the new version
 
-*tridenctlctl* is the tool shipped with Trident in order to interact with it.
+*tridenctlctl* is the tool shipped with Trident in order to interact with it.  
 It is also recommended to install Trident in its own namespace (usually called *trident*)
 ```
 # tridentctl -n trident version 
@@ -20,12 +20,13 @@ It is also recommended to install Trident in its own namespace (usually called *
 ```
 In this example, we will remove all objects linked to Trident 19.07.1.
 I will consider that there is no PVC configured with Trident.  
+
 First, let's remove all current Kubernetes storage classes & Tridents' backends (this is optional)
 ```
 kubectl delete sc --all
 tridentctl -n trident delete backend --all
 ```
-First, delete the CRD deployed & used by Trident
+Then, delete the CRD deployed & used by Trident
 ```
 # tridentctl -n trident obliviate crd --yesireallymeanit
 INFO Resources not present.                        CRD=tridentversions.trident.netapp.io
@@ -84,6 +85,7 @@ You have now a clean environment !
 With Trident 20.04, there are new objects in the picture:
 - Trident Operator, which will dynamically manage Trident's resources, automate setup, fix broken elements
 - Trident Provisioner, which is a Custom Resource, and is the object you will use to interact with the Trident Operator for specific tasks (upgrades, enable/disable Trident options, such as _debug_ mode, uninstall)  
+
 You can visualize the *Operator* as being the *Control Tower*, and the *Provisioner* as being the *Mailbox* in which you post configuration requests.
 Other operations, such as Backend management or logs display are currently still managed by Tridentctl
 
@@ -190,7 +192,7 @@ trident   20.04
 ```
 The interesting part of this CRD is that you have access to the current status of Trident.
 This is also where you are going to interact with Trident's deployment.  
-If you want to know more about the different status, please have a look at the following link: 
+If you want to know more about the different status, please have a look at the following link:  
 https://netapp-trident.readthedocs.io/en/stable-v20.04/kubernetes/operator-install.html#observing-the-status-of-the-operator  
   
 If you just want to display part of the description, you can use a filter such as:

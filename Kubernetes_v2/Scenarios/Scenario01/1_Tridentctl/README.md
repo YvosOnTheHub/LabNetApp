@@ -90,9 +90,9 @@ tar -xf trident-installer-20.04.0.tar.gz
 
 ## D. Install the new version
 
-Before moving to the installation, there is some extra cleanup to do.
+Before moving to the installation, there is some extra cleanup to do.  
 Trident 19.07.1 introduced the support of the CSI On-Demand Snapshots Alpha with Kubernetes 1.15.
-This feature has been promoted to Beta with Kubernetes 1.17, which has been supported since Trident 20.01.
+This feature has been promoted to Beta with Kubernetes 1.17, which has been supported since Trident 20.01.  
 This promotion also came with a change of architecture, and the removal of Trident's support for the alpha version.
 The *snapshot* CRD then need to be removed with the following command
 ```
