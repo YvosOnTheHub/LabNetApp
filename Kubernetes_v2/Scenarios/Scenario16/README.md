@@ -9,21 +9,21 @@ Letting Trident manage the export policies allows to reduce the amount of admini
 The configuration of this feature is done in the Trident Backend object. There 2 different json files in this directory that will help you discover how to use it.  
 2 options can be used here:  
 - *autoExportPolicy*: enables the feature
-- *autoExportCIDR*: defines the address blocks to use (optional parameter)
+- *autoExportCIDRs*: defines the address blocks to use (optional parameter)
 
 ## A. Create 2 new backends
 
-The difference between both files lies in the *autoExportCIDR* parameter, one has it while the other one does not.
+The difference between both files lies in the *autoExportCIDRs* parameter, one has it while the other one does not.
 
 ```
-# tridentctl -n trident create backend -f backend.json
+# tridentctl -n trident create backend -f backend-with-CIDR.json
 +------------------+----------------+--------------------------------------+--------+---------+
 |       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +------------------+----------------+--------------------------------------+--------+---------+
 | Export_with_CIDR | ontap-nas      | ebf1efb0-e8c6-457e-8e1a-827b1725ed9e | online |       0 |
 +------------------+----------------+--------------------------------------+--------+---------+
 
-# tridentctl -n trident create backend -f backend2.json
+# tridentctl -n trident create backend -f backend-without-CIDR.json
 +---------------------+----------------+--------------------------------------+--------+---------+
 |        NAME         | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +---------------------+----------------+--------------------------------------+--------+---------+
