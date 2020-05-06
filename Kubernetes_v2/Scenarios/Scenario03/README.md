@@ -123,8 +123,8 @@ There are several ways to bring dashboards into Grafana.
 
 *Manual Import*  
 Hover on the '+' on left side of the screen, then 'New Dashboard' & 'Import'.
-Copy & paste the content of the Trident_Dashboard_Std.json file in this directory.
-The _issue_ with this method is that if the Grafana POD restart, the dashboard will be lost...  
+Copy & paste the content of the _Trident_Dashboard_Std.json_ file in this directory.  
+The _issue_ with this method is that if the Grafana POD restarts, the dashboard will be lost...  
 
 *Persistent Dashboard*  
 The idea here would be to create a ConfigMap pointing to the Trident dashboard json file:  
@@ -135,7 +135,7 @@ configmap/tridentdashboard created
 # kubectl label configmap -n monitoring tridentdashboard grafana_dashboard=1
 configmap/tridentdashboard labeled
 ```
-When Grafana starts, it will automatically load every configmap that has the label _grafan_dashboard_.  
+When Grafana starts, it will automatically load every configmap that has the label _grafana_dashboard_.  
 In the Grafana UI, you will find the dashboard in its own _Trident_ folder.  
 
 ![Trident Dashboard](Images/trident_dashboard.jpg "Trident Dashboard")

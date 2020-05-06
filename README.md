@@ -9,7 +9,7 @@ I assume each scenario will be run in its own directory. Also, you will find a R
 
 Scenarios
 ---------
-[1.](Kubernetes_v2/Scenarios/Scenario01)  Upgrade Trident  
+[1.](Kubernetes_v2/Scenarios/Scenario01)  Install/Upgrade Trident  
 [2.](Kubernetes_v2/Scenarios/Scenario02)  Install Prometheus & incorporate Trident's metrics  
 [3.](Kubernetes_v2/Scenarios/Scenario03)  Configure Grafana & add your first graphs  
 [4.](Kubernetes_v2/Scenarios/Scenario04)  Configure your first NAS backends & storage classes  
