@@ -37,6 +37,14 @@ trident-csi-8j74m:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-r
 trident-csi-fd5qh:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 trident-csi-xfpwd:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 
+# 1.15 with Trident Operator
+# kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-76d6dd5bcb-z68kw:   netapp/trident:20.04, quay.io/k8scsi/csi-provisioner:v1.6.0, quay.io/k8scsi/csi-attacher:v2.2.0,
+trident-csi-fz7dc:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-csi-nfxqp:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-csi-z5vv6:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-operator-78c5b7f97f-pdjgp:      netapp/trident-operator:20.04.0,
+
 # 1.16 without Trident Operator
 # kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-647jc:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
