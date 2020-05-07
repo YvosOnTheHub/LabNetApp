@@ -75,6 +75,14 @@ trident-csi-75l9j:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-reg
 trident-csi-7f769c7875-mwgqc:   netapp/trident:20.04, quay.io/k8scsi/csi-provisioner:v1.6.0, quay.io/k8scsi/csi-attacher:v2.2.0, quay.io/k8scsi/csi-resizer:v0.5.0, quay.io/k8scsi/csi-snapshotter:v2.1.0,
 trident-csi-vxsqx:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
 trident-operator-564d7d66f-f9dh2:       netapp/trident-operator:20.04.0,
+
+# 1.18 with Trident Operator
+kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-25m9j:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-csi-6kqqh:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-csi-788b4d865c-kd82t:   netapp/trident:20.04, quay.io/k8scsi/csi-provisioner:v1.6.0, quay.io/k8scsi/csi-attacher:v2.2.0, quay.io/k8scsi/csi-resizer:v0.5.0, quay.io/k8scsi/csi-snapshotter:v2.1.0,
+trident-csi-shprm:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
+trident-operator-78c5b7f97f-76ppr:      netapp/trident-operator:20.04.0,
 ```
 What is interesting to notice is that when upgrading Kubernetes, new sidecars are added to CSI Trident:
 - Kubernetes 1.16: Volume Expansion (CSI Resizer) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/volume-expansion.html)

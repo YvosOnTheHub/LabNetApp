@@ -7,14 +7,15 @@ Some interesting features require a more recent version than the one you find in
 - iSCSI PVC Resizing
 - "On-Demand Snapshots" & "PVC from Snapshot"
 
-Upgrades can only be done from one _minor_ version to the next. You need to perform two successive upgrades to go from 1.15 to 1.17.  
+Upgrades can only be done from one _minor_ version to the next. You need to perform two successive upgrades to go from 1.15 to 1.18.  
 This addenda will give you the step by step commands to run, but keep in mind this is only for this lab... If you were to upgrade in a real environment, more care would need to be taken.
 
 The following links were used :
 - Upgrade from 1.15 to 1.16: https://v1-16.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 - Upgrade from 1.16 to 1.17: https://v1-17.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
+- Upgrade from 1.17 to 1.18: https://v1-18.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 
-Before upgrade Kubernetes, make sure you have upgraded Trident beforehand, with at least v20.01.1 [(Scenario 1)](../../Scenarios/Scenario01)  
+Before upgrade to a specific version of Kubernetes, make sure you have upgraded Trident beforehand [(Scenario 1)](../../Scenarios/Scenario01)  
 
 
 ## A. Upgrade from 1.15.3 to 1.16.9
@@ -377,4 +378,105 @@ trident-csi-4gj4j:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-r
 trident-csi-5cd46cff6-5h9h8:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0, quay.io/k8scsi/csi-snapshotter:v2.0.1,
 trident-csi-5vhrv:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 trident-csi-tttn4:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
+```
+
+
+## C. Upgrade from 1.17.5 to 1.18.2
+
+The procedure to go from 1.17.5 to 1.18.2 is pretty similar to the previous one.  
+```
+# yum install -y kubeadm-1.18.2-0 --disableexcludes=kubernetes
+
+# kubeadm version
+kubeadm version: &version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.2", GitCommit:"52c56ce7a8272c798dbc29846288d7cd9fbae032", GitTreeState:"clean", BuildDate:"2020-04-16T11:54:15Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+
+# kubectl drain rhel3 --ignore-daemonsets
+node/rhel3 cordoned
+node/rhel3 drained
+
+# kubeadm upgrade plan
+...
+Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
+COMPONENT   CURRENT       AVAILABLE
+Kubelet     4 x v1.17.5   v1.18.2
+
+Upgrade to the latest stable version:
+COMPONENT            CURRENT   AVAILABLE
+API Server           v1.17.5   v1.18.2
+Controller Manager   v1.17.5   v1.18.2
+Scheduler            v1.17.5   v1.18.2
+Kube Proxy           v1.17.5   v1.18.2
+CoreDNS              1.6.5     1.6.7
+Etcd                 3.4.3     3.4.3-0
+
+You can now apply the upgrade by executing the following command:
+        kubeadm upgrade apply v1.18.2
+
+
+# kubeadm upgrade apply v1.18.2
+[upgrade/config] Making sure the configuration is correct:
+[upgrade/config] Reading configuration from the cluster...
+[upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[preflight] Running pre-flight checks.
+[upgrade] Running cluster health checks
+[upgrade/version] You have chosen to change the cluster version to "v1.18.2"
+[upgrade/versions] Cluster version: v1.17.5
+[upgrade/versions] kubeadm version: v1.18.2
+[upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
+...
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.18.2". Enjoy!
+
+# kubectl uncordon rhel3
+node/rhel3 uncordoned
+
+# yum install -y kubelet-1.18.2-0 kubectl-1.18.2-0 --disableexcludes=kubernetes
+
+# systemctl restart kubelet
+
+# kubectl get nodes
+NAME    STATUS   ROLES    AGE    VERSION
+rhel1   Ready    <none>   214d   v1.17.5
+rhel2   Ready    <none>   214d   v1.17.5
+rhel3   Ready    master   214d   v1.18.2
+```
+Let's process with the worker node _rhel1_. Again, you need to start by _draining_ it from the master.
+In some cases, Kubernetes may complain that some PODs have local data attached. _Draining_ such node could have some impact with your applications (but not Trident).  
+If this happens, the option _--delete-local-data_ would need to be used in the _drain_ command.
+```
+# kubectl drain rhel1 --ignore-daemonsets
+node/rhel1 cordoned
+evicting pod "coredns-6955765f44-2rhkh"
+pod/coredns-6955765f44-2rhkh evicted
+node/rhel1 evicted
+```
+Back to _rhel1_:
+```
+# yum install -y kubeadm-1.18.2-0 --disableexcludes=kubernetes
+
+# kubeadm upgrade node
+
+# yum install -y kubelet-1.18.2-0 kubectl-1.18.2-0 --disableexcludes=kubernetes
+
+# systemctl restart kubelet
+```
+Back to the master:  
+```
+# kubectl uncordon rhel1
+node/rhel1 uncordoned
+
+# kubectl get nodes
+NAME    STATUS   ROLES    AGE    VERSION
+rhel1   Ready    <none>   214d   v1.18.2
+rhel2   Ready    <none>   214d   v1.17.5
+rhel3   Ready    master   214d   v1.18.2
+```
+You now can repeat this procedure on the second worker node, until you get to:
+```
+# kubectl get nodes
+NAME    STATUS   ROLES    AGE    VERSION
+rhel1   Ready    <none>   214d   v1.18.2
+rhel2   Ready    <none>   214d   v1.18.2
+rhel3   Ready    master   214d   v1.18.2
+```
+Tadaaa again !
 ```
