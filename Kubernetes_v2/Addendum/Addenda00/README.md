@@ -12,6 +12,7 @@ The first step would to put a bunch of alias in the .bashrc file
 
 Some examples:
 ```
+# cat <<EOT >> ~/.bashrc
 source <(kubectl completion bash)
 alias k=kubectl
 complete -F __start_kubectl k
@@ -21,6 +22,7 @@ alias kg='kubectl get'
 alias kdel='kubectl delete'
 alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
+EOT
 ```
 don't forget to type in _bash_ in order to take the modifications into account
 
