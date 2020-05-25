@@ -31,7 +31,7 @@ Addendum
 [1.](Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
 [2.](Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
 [3.](Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
-[4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)
+[4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage
 
 ## B. Kubernetes v1 (pre-CSI)
