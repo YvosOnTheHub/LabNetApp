@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: blog-content-import
-  namespace: ghostnas
+  name: blog-content-san
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 5Gi
-  storageClassName: storage-class-nas
+  storageClassName: storage-class-san

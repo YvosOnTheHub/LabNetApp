@@ -1,80 +1,102 @@
 #########################################################################################
-# SCENARIO 8: Create your first App with Block storage
+# SCENARIO 8: Use the import feature of Trident
 #########################################################################################
 
 GOAL:  
-We will deploy the same App as in the scenario 5, but instead of using File Storage, we will use Block Storage
+Trident allows you to import a volume sitting in a NetApp backend into Kubernetes.
+We will first copy the volume we used in the [Scenario05](../Scenario05), import it, and create a new Ghost instance
 
 ![Scenario8](Images/scenario8.jpg "Scenario8")
 
-## A. Create the app
+## A. Identify & copy the volume on the NetApp backend.
 
-We will create this app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-SAN backend & storage class have already been created. ([cf Scenario07](../Scenario07))
+The full name of the volume is available in the PV metadata.
+You can retrieve it if with the 'kubectl describe' command, or use the following (note how to use the jsonpath feature!)
 
 ```
-# kubectl create namespace ghostsan
-namespace/ghostsan created
-
-# kubectl create -n ghostsan -f Ghost/
-persistentvolumeclaim/blog-content created
-deployment.apps/blog created
-service/blog created
-
-# kubectl get all -n ghostsan
-NAME                            READY   STATUS    RESTARTS   AGE
-pod/blog-san-58979448dd-6k9ds   1/1     Running   0          21s
-
-NAME               TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-service/blog-san   NodePort   10.99.208.171   <none>        80:30081/TCP   17s
-
-NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blog-san   1/1     1            1           21s
-
-NAME                                  DESIRED   CURRENT   READY   AGE
-replicaset.apps/blog-san-58979448dd   1         1         1       21s
-
-# kubectl get pvc,pv -n ghostsan
-NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/blog-content-san   Bound    pvc-8ff8c1b3-48da-400e-893c-23bc9ec459ff   10Gi       RWO            storage-class-san   4m16s
-
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS        REASON   AGE
-persistentvolume/pvc-8ff8c1b3-48da-400e-893c-23bc9ec459ff   10Gi       RWO            Delete           Bound    ghostsan/blog-content-san   storage-class-san            4m15s
+# kubectl get pv $( kubectl get pvc blog-content -n ghostnas -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}{"\n"}'
+nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
 ```
 
-## B. Access the app
+Now that you know the full name of the volume, you can copy it. This copy will be done in 2 stages (clone & split)
+Open Putty, connect to "cluster1" and finally enter all the following:
+```
+# vol clone create -flexclone to_import -vserver svm1 -parent-volume nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
+# vol clone split start -flexclone to_import
+```
+In this example, the new volume's name is 'to_import'
 
-It takes about 40 seconds for the POD to be in a *running* state
-The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30081.
+
+## B. Import the volume
+
+In the 'Ghost' directory, you will see some yaml files to build a new 'Ghost' app.
+Open the PVC definition file, & notice the difference with the one used in the scenario5.
+```
+# tridentctl -n trident import volume NAS_Vol-default to_import -f Ghost/1_pvc.yaml
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+|                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+| pvc-ac9ba4b2-7dce-4241-8c8e-a4ced9cf7dcf | 5.0 GiB | storage-class-nas | file     | dea226cf-7df7-4795-b1a1-3a4a3318a059 | online | true    |
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+
+# kubectl get pvc -n ghostnas
+NAME                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+blog-content          Bound    pvc-e24c99b7-b4e7-4de1-b952-a8d451e7e735   5Gi        RWX            storage-class-nas   19h
+blog-content-import   Bound    pvc-ac9ba4b2-7dce-4241-8c8e-a4ced9cf7dcf   5Gi        RWX            storage-class-nas   21m
+```
+
+Notice that the volume full name on the storage backend has changed to respect the CSI specifications:
+```
+# kubectl get pv $( kubectl get pvc blog-content-import -n ghostnas -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}{"\n"}'
+nas1_pvc_ac9ba4b2_7dce_4241_8c8e_a4ced9cf7dcf
+```
+
+Even though the name of the original PV has changed, you can still see it if you look into its annotations.
+```
+# kubectl describe pvc blog-content-import -n ghostnas | grep importOriginalName
+               trident.netapp.io/importOriginalName: to_import
+```
+
+## C. Create a new Ghost app.
+
+You can now create the deployment & expose it on a new port
+```
+# kubectl create -n ghostnas -f Ghost/2_deploy.yaml
+deployment.apps/blogimport created
+# kubectl create -n ghostnas -f Ghost/3_service.yaml
+service/blogimport created
+
+# kubectl all -n ghostnas
+NAME                           READY   STATUS    RESTARTS   AGE
+pod/blog-cd5894ddd-d2tqp       1/1     Running   0          20h
+pod/blogimport-66945d9-bsw9b   1/1     Running   0          24m
+
+NAME                 TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/blog         NodePort   10.111.248.112   <none>        80:30080/TCP   20h
+service/blogimport   NodePort   10.104.52.17     <none>        80:30082/TCP   24m
+
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/blog         1/1     1            1           20h
+deployment.apps/blogimport   1/1     1            1           24m
+
+NAME                                 DESIRED   CURRENT   READY   AGE
+replicaset.apps/blog-cd5894ddd       1         1         1       20h
+replicaset.apps/blogimport-66945d9   1         1         1       24m
+```
+
+
+## D. Access the app
+
+The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30082.
 Give it a try !
-=> http://192.168.0.63:30081
+=> http://192.168.0.63:30082
 
 
-## C. Explore the app container
-
-Let's see if the */var/lib/ghost/content* folder is indeed mounted to the SAN PVC that was created.
-
-```
-# kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- df /var/lib/ghost/content
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/sdc              10190100     37368   9612060   0% /var/lib/ghost/content
-
-# kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- ls /var/lib/ghost/content
-apps
-data
-images
-logs
-lost+found
-settings
-themes
-```
-
-
-## D. Cleanup
+## E. Cleanup
 
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 
 ```
-# kubectl delete ns ghostsan
-namespace "ghostsan" deleted
+# kubectl delete ns ghostnas
+namespace "ghostnas" deleted
 ```

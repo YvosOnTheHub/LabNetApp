@@ -14,17 +14,16 @@ Scenarios
 [3.](Kubernetes_v2/Scenarios/Scenario03)  Configure Grafana & add your first graphs  
 [4.](Kubernetes_v2/Scenarios/Scenario04)  Configure your first NAS backends & storage classes  
 [5.](Kubernetes_v2/Scenarios/Scenario05)  Deploy your first app with File storage  
-[6.](Kubernetes_v2/Scenarios/Scenario06)  Prepare your lab for block storage  
-[7.](Kubernetes_v2/Scenarios/Scenario07)  Configure your first iSCSI backends & storage classes  
-[8.](Kubernetes_v2/Scenarios/Scenario08)  Deploy your first app with Block storage  
-[9.](Kubernetes_v2/Scenarios/Scenario09)  Use the 'import' feature of Trident  
-[10.](Kubernetes_v2/Scenarios/Scenario10) Consumption control  
-[11.](Kubernetes_v2/Scenarios/Scenario11) Resize a NFS CSI PVC  
-[12.](Kubernetes_v2/Scenarios/Scenario12) Using Virtual Storage Pools  
-[13.](Kubernetes_v2/Scenarios/Scenario13) StatefulSets & Storage consumption  
-[14.](Kubernetes_v2/Scenarios/Scenario14) Resize a iSCSI CSI PVC  
-[15.](Kubernetes_v2/Scenarios/Scenario15) On-Demand Snapshots & Create PVC from Snapshot  
-[16.](Kubernetes_v2/Scenarios/Scenario16) Dynamic export policy management  
+[6.](Kubernetes_v2/Scenarios/Scenario06)  Configure your first iSCSI backends & storage classes  
+[7.](Kubernetes_v2/Scenarios/Scenario07)  Deploy your first app with Block storage  
+[8.](Kubernetes_v2/Scenarios/Scenario08)  Use the 'import' feature of Trident  
+[9.](Kubernetes_v2/Scenarios/Scenario09) Consumption control  
+[10.](Kubernetes_v2/Scenarios/Scenario10) Resize a NFS CSI PVC  
+[11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  
+[12.](Kubernetes_v2/Scenarios/Scenario12) StatefulSets & Storage consumption  
+[13.](Kubernetes_v2/Scenarios/Scenario13) Resize a iSCSI CSI PVC  
+[14.](Kubernetes_v2/Scenarios/Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
+[15.](Kubernetes_v2/Scenarios/Scenario15) Dynamic export policy management  
 
 Addendum
 --------
@@ -32,7 +31,8 @@ Addendum
 [1.](Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
 [2.](Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
 [3.](Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
-[4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
+[4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)
+[5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage
 
 ## B. Kubernetes v1 (pre-CSI)
 

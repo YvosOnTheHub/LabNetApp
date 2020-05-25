@@ -1,18 +1,18 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: blogimport
+  name: blog-san
   labels:
-    app: blogimport
+    app: blog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blogimport
+      app: blog-san
   template:
     metadata:
       labels:
-        app: blogimport
+        app: blog-san
     spec:
       containers:
       - name: blog
@@ -29,4 +29,4 @@ spec:
       volumes:
       - name: content
         persistentVolumeClaim:
-          claimName: blog-content-import
+          claimName: blog-content-san

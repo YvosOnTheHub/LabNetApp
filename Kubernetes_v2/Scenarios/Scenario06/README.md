@@ -1,28 +1,58 @@
 #########################################################################################
-# SCENARIO 6: Prepare your ONTAP Backend for Block Storage
+# SCENARIO 6: Create your first SAN backends 
 #########################################################################################
 
 GOAL:  
-The ONTAP environment in the lab on demand is not setup for block storage just yet.
-You can choose to update the SVM you are already using, or create your own.
+You understood how to create backends and what they are for.
+You probably also created a few ones with NFS drivers.
+It is now time to add more backends that can be used for block storage.
 
-In this scenario, I will just update the current SVM with the following parameters
-- iSCSI Data LIF: 192.168.0.140
-- iSCSI iGroup: trident
+In order to go through this scenario, you first need to configure iSCSI on the ONTAP backend.  
+If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).
 
-if you feel confortable with ONTAP, you can create the environment by yourself.
-Otherwise, you can use some scripting methods...
+![Scenario6](Images/scenario6.jpg "Scenario6")
 
-One way to do so would be to use Ansible roles.
-You can inspire yourself with the lab https://github.com/YvosOnTheHub/LabAnsible if you like.
+## A. Create your first SAN backends
 
-To make it simple, you will find here the different commands to run via SSH.
-Open Putty, connect to "cluster1" and finally enter all the following:
+You will find in this directory a few backends files.
+You can decide to use all of them, only a subset of them or modify them as you wish
+
+Here are the 4 backends & their corresponding driver:
+- backend-san-default.json        ONTAP-SAN
+- backend-san-eco-default.json    ONTAP-SAN-ECONOMY
 
 ```
-vserver modify -vserver svm1 -allowed-protocols nfs,iscsi
-lun igroup create -igroup trident -protocol iscsi -ostype linux -vserver svm1
-net interface create -vserver svm1 -lif svm1_iscsi -data-protocol iscsi -home-node cluster1-01 -home-port e0d -address 192.168.0.140 -netmask 255.255.255.0 -firewall-policy data
-vserver iscsi create -target-alias svm1 -vserver svm1
+# tridentctl -n trident create backend -f backend-san-default.json
++-------------+----------------+--------------------------------------+--------+---------+
+|    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++-------------+----------------+--------------------------------------+--------+---------+
+| SAN-default | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
++-------------+----------------+--------------------------------------+--------+---------+
+
+# tridentctl -n trident create backend -f backend-san-eco-default.json
++-----------------+-------------------+--------------------------------------+--------+---------+
+|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
++-----------------+-------------------+--------------------------------------+--------+---------+
+| SAN_ECO-default | ontap-san-economy | 530f18b1-680b-420f-ad6b-94c96fea84b9 | online |       0 |
++-----------------+-------------------+--------------------------------------+--------+---------+
+
+# kubectl get -n trident tridentbackends
+NAME        BACKEND               BACKEND UUID
+...
+tbe-7nl8v   SAN_ECO-default       530f18b1-680b-420f-ad6b-94c96fea84b9
+tbe-wgs99   SAN-default           ad04f63c-592d-49ae-bfde-21a11db06976
+...
 ```
 
+## B. Create storage classes pointing to each new backend
+
+You will also find in this directory a few storage class files.
+You can decide to use all of them, only a subset of them or modify them as you wish
+
+```
+# kubectl create -f sc-csi-ontap-san.yaml
+storageclass.storage.k8s.io/storage-class-san created
+
+# kubectl create -f sc-csi-ontap-san-eco.yaml
+storageclass.storage.k8s.io/storage-class-san-economy created
+```

@@ -1,241 +1,98 @@
 #########################################################################################
-# SCENARIO 10: Consumption control
+# SCENARIO 10: NFS Volume resizing
 #########################################################################################
 
 GOAL:  
-As Trident dynamically manages persitent volumes & bring lots of goodness to the app level.  
-The first benefit is that end-users do not need to rely on a storage admin to provision volumes on the fly.
-However, this freedom can lead to quickly feel up the storage backend, especially if the user does not tidy up his environment...  
-A good practice is to place some controls to make sure storage is well used.
-We are going to review here different methods to control the storage consumption.
+Trident supports the resizing of File (NFS) & Block (iSCSI) PVC, depending on the Kubernetes version.  
+NFS Resizing was introduced in K8S 1.11, while iSCSI resizing was introduced in K8S 1.16.  
+Here we will go through a NFS Resizing ...
 
-## A. Kubernetes Resource Quotas
+Resizing a PVC is made available through the option *allowVolumeExpansion* set in the StorageClass.  
 
-In order to restrict the tests to a small environment & not affect other projects, we will create a specific namespace called _quota_
-We will then create two types of quotas:
-1. limit the number of PVC a user can create
-2. limit the total capacity a user can create  
+We consider that the ONTAP-NAS backend has already been created. ([cf Scenario04](../Scenario04))
 
-We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04))
+![Scenario10](Images/scenario10.jpg "Scenario10")
 
+## A. Create a new storage class with the option allowVolumeExpansion.
 ```
-# kubectl create namespace quota
-namespace/quota created
-# kubectl create -n quota -f rq-pvc-count-limit.yaml
-resourcequota/pvc-count-limit created
-# kubectl create -n quota -f rq-sc-resource-limit.yaml
-resourcequota/sc-resource-limit created
-
-# kubectl get resourcequota -n quota
-NAME                CREATED AT
-pvc-count-limit     2020-04-01T08:48:38Z
-sc-resource-limit   2020-04-01T08:48:44Z
-
-# kubectl describe quota pvc-count-limit -n quota
-Name:                                                                 pvc-count-limit
-Namespace:                                                            quota
-Resource                                                              Used  Hard
---------                                                              ----  ----
-persistentvolumeclaims                                                0     5
-storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  0     3
-```
-Now let's start creating some PVC against the storage class _quota_ & check the resource quota usage
-![Scenario10_1](Images/scenario10_1.JPG "Scenario10_1")
-
-```
-# kubectl create -n quota -f pvc-quotasc-1.yaml
-persistentvolumeclaim/quotasc-1 created
-# kubectl create -n quota -f pvc-quotasc-2.yaml
-persistentvolumeclaim/quotasc-2 created
-
-# kubectl describe quota pvc-count-limit -n quota
-Name:                                                                 pvc-count-limit
-Namespace:                                                            quota
-Resource                                                              Used  Hard
---------                                                              ----  ----
-persistentvolumeclaims                                                2     5
-storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  2     3
-
-# kubectl create -n quota -f pvc-quotasc-3.yaml
-persistentvolumeclaim/quotasc-3 created
-
-# kubectl describe quota pvc-count-limit -n quota
-Name:                                                                 pvc-count-limit
-Namespace:                                                            quota
-Resource                                                              Used  Hard
---------                                                              ----  ----
-persistentvolumeclaims                                                3     5
-storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  3     3
-```
-Logically, you got the maximum number of PVC allowed for this storage class. Let's see what happens next...
-```
-# kubectl create -n quota -f pvc-quotasc-4.yaml
-Error from server (Forbidden): error when creating "quotasc-4.yaml": persistentvolumeclaims "quotasc-4" is forbidden: exceeded quota: pvc-count-limit, requested: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=1, used: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3, limited: storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims=3
-```
-As expected, you cannot create a new PVC in this storage class...
-Let's clean up the PVC
-```
-# kubectl delete pvc -n quota --all
-persistentvolumeclaim "quotasc-1" deleted
-persistentvolumeclaim "quotasc-2" deleted
-persistentvolumeclaim "quotasc-3" deleted
+# kubectl create -f sc-csi-ontap-nas-resize.yaml
+storageclass.storage.k8s.io/sc-nas-resize created
 ```
 
-Time to look at the capacity quotas  
-![Scenario10_2](Images/scenario10_2.JPG "Scenario10_2")
+## B. Setup the environment
+
+Now let's create a PVC & a Centos POD using this PVC, in their own namespace.
 
 ```
-# kubectl describe quota sc-resource-limit -n quota
-Name:                                                           sc-resource-limit
-Namespace:                                                      quota
-Resource                                                        Used  Hard
---------                                                        ----  ----
-requests.storage                                                0     10Gi
-storage-class-nas.storageclass.storage.k8s.io/requests.storage  0     8Gi
-```
-Each PVC you are going to use is 5GB.
-```
-# kubectl create -n quota -f pvc-5Gi-1.yaml
-persistentvolumeclaim/5gb-1 created
+# kubectl create namespace resize
+namespace/resize created
+# kubectl create -n resize -f pvc.yaml
+persistentvolumeclaim/pvc-to-resize created
 
-# kubectl describe quota sc-resource-limit -n quota
-Name:                                                           sc-resource-limit
-Namespace:                                                      quota
-Resource                                                        Used  Hard
---------                                                        ----  ----
-requests.storage                                                5Gi   10Gi
-storage-class-nas.storageclass.storage.k8s.io/requests.storage  5Gi   8Gi
-```
-Seeing the size of the second PVC file, the creation should fail in this namespace
-```
-# kubectl create -n quota -f pvc-5Gi-2.yaml
-Error from server (Forbidden): error when creating "pvc-5Gi-2.yaml": persistentvolumeclaims "5gb-2" is forbidden: exceeded quota: sc-resource-limit, requested: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, used: storage-class-nas.storageclass.storage.k8s.io/requests.storage=5Gi, limited: storage-class-nas.storageclass.storage.k8s.io/requests.storage=8Gi
-```
+# kubectl -n resize get pvc,pv
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+persistentvolumeclaim/pvc-to-resize   Bound    pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   5Gi        RWX            sc-nas-resize   2s
 
-Before starting the second part of this scenarion, let's clean up
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS    REASON   AGE
+persistentvolume/pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   5Gi        RWX            Delete           Bound    resize/pvc-to-resize   sc-nas-resize            1s
+
+# kubectl create -n resize -f pod-centos-nas.yaml
+pod/centos created
+
+# kubectl -n resize get pod --watch
+NAME     READY   STATUS              RESTARTS   AGE
+centos   0/1     ContainerCreating   0          5s
+centos   1/1     Running             0          15s
 ```
-# kubeclt delete pvc -n quota 5gb-1
-persistentvolumeclaim "5gb-1" deleted
-# kubectl delete resourcequota -n quota --all
-resourcequota "pvc-count-limit" deleted
-resourcequota "sc-resource-limit" deleted
+You can now check that the 5G volume is indeed mounted into the POD.
+```
+# kubectl -n resize exec centos -- df -h /data
+Filesystem                                                    Size  Used Avail Use% Mounted on
+192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55  5.0G  256K  5.0G   1% /data
 ```
 
-## B. Trident parameters
+## C. Resize the PVC & check the result
 
-One parameter stands out in the Trident configuration when it comes to control sizes: _limitVolumeSize_  
-https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident  
-Depending on the driver, this parameter will
-1. control the PVC Size (ex: driver ONTAP-NAS)
-2. control the size of the ONTAP volume hosting PVC (ex: drivers ONTAP-NAS-ECONOMY or ONTAP-SAN-ECONOMY)
+Resizing a PVC can be done in different ways. We will here edit the definition of the PVC & manually modify it.  
+Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)
+```
+# kubectl -n resize edit pvc pvc-to-resize
+persistentvolumeclaim/pvc-to-resize edited
 
-![Scenario10_3](Images/scenario10_3.JPG "Scenario10_3")
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: sc-nas-resize
+  volumeMode: Filesystem
+  volumeName: pvc-7eeea3f7-1bea-458b-9824-1dd442222d55
+```
+Let's see the result.
+```
+# kubectl -n resize get pvc
+NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+pvc-to-resize   Bound    pvc-7eeea3f7-1bea-458b-9824-1dd442222d55   15Gi       RWX            sc-nas-resize   144m
 
-Let's create a backend with this parameter setup (limitVolumeSize = 5g), followed by the storage class that points to it, using the storagePools parameter:
+# kubectl -n resize exec centos -- df -h /data
+Filesystem                                                    Size  Used Avail Use% Mounted on
+192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55   15G  256K   15G   1% /data
 ```
-# tridentctl -n trident create backend -f backend-nas-limitsize.json
-+------------------+----------------+--------------------------------------+--------+---------+
-|       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+------------------+----------------+--------------------------------------+--------+---------+
-| NAS_LimitVolSize | ontap-nas      | 8b94769a-a759-4840-b936-985a360f2d87 | online |       0 |
-+------------------+----------------+--------------------------------------+--------+---------+
+As you can see, the resizing was done totally dynamically without any interruption.  
 
-# kubectl create -f sc-backend-limit.yaml
-storageclass.storage.k8s.io/sclimitvolumesize created
+This could also have been achieved by using the _kubectl patch_ command. Try the following one:
 ```
-Let's see the behavior of the PVC creation, using the pvc-10Gi.yaml file.
-```
-# kubectl create -f pvc-10Gi.yaml
-persistentvolumeclaim/10g created
-
-# kubectl get pvc
-NAME   STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-10g    Pending                                                                        sclimitvolumesize   10s
-```
-The PVC will remain in the _Pending_ state. You need to look either in the PVC logs or Trident's
-```
-# kubectl describe pvc 10g
-Name:          10g
-Namespace:     default
-StorageClass:  sclimitvolumesize
-Status:        Pending
-Volume:
-Labels:        <none>
-Annotations:   volume.beta.kubernetes.io/storage-provisioner: csi.trident.netapp.io
-Finalizers:    [kubernetes.io/pvc-protection]
-Capacity:
-Access Modes:
-VolumeMode:    Filesystem
-Mounted By:    <none>
-Events:
-  Type     Reason                Age                    From                                                                                     Message
-  ----     ------                ----                   ----                                                                                     -------
-  Normal   Provisioning          2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  External provisioner is provisioning volume for claim "default/10g"
-  Normal   ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
-  Warning  ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  failed to provision volume with StorageClass "sclimitvolumesize": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
-  Normal   ExternalProvisioning  41s (x26 over 6m47s)   persistentvolume-controller                                                              waiting for a volume to be created, either by external provisioner "csi.trident.netapp.io" or manually created by system administrator
-```
-The error is now identified... 
-You can decide to review the size of the PVC, or you can next ask the admin to update the Backend definition in order to go on.
-
-Let's clean up before moving to the last chapter of this scenario.
-```
-# kubectl delete pvc 10g
-persistentvolumeclaim "10g" deleted
-# kubectl delete sc sclimitvolumesize
-storageclass.storage.k8s.io "sclimitvolumesize" deleted
-# tridentctl -n trident delete backend NAS_LimitVolSize
+# kubectl patch -n resize pvc pvc-to-resize -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
 ```
 
-## C. ONTAP parameters
+## C. Cleanup the environment
 
-The amount of ONTAP volumes (Flexvols) you can have on a ONTAP cluster depends on several parameters:
-- version
-- size of the ONTAP cluster (in terms of controllers)  
+```
+# kubectl delete namespace resize
+namespace "resize" deleted
 
-If the storage platform is also used by other workloads (Databases, Files Services ...), you may want to limit the number of PVC you build in your storage Tenant (ie SVM)
-This can be achieved by setting a parameter on this SVM.  
-https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
+# kubectl delete sc sc-nas-resize
+storageclass.storage.k8s.io "sc-nas-resize" deleted
 
-![Scenario10_4](Images/scenario10_4.JPG "Scenario10_4")
-
-Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
-You can either login to System Manager & count, or run the following (password Netapp1!)
 ```
-# ssh -l admin 192.168.0.101 vol show -vserver svm1 | grep svm1 | wc -l
-```
-In my case, in have 10 volumes, I will then set the maximum to 12 for this exercise.
-```
-# ssh -l admin 192.168.0.101 vserver modify -vserver svm1 -max-volumes 12
-```
-We will then try to create a few new PVC.
-```
-# kubectl create -f pvc-quotasc-1.yaml
-persistentvolumeclaim/quotasc-1 created
-# kubectl create -f pvc-quotasc-2.yaml
-persistentvolumeclaim/quotasc-2 created
-# kubectl create -f pvc-quotasc-3.yaml
-persistentvolumeclaim/quotasc-3 created
-
-# kubectl get pvc  -l scenario=quotas
-NAME        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-quotasc-1   Bound     pvc-a74622aa-bb26-4796-a624-bf6d72955de8   1Gi        RWX            storage-class-nas   92s
-quotasc-2   Bound     pvc-f2bd901a-35e8-45a1-8294-2135b56abe19   1Gi        RWX            storage-class-nas   22s
-quotasc-3   Pending                                                                        storage-class-nas   4s
-```
-The PVC will remain in the _Pending_ state. You need to look either in the PVC logs or Trident's
-```
-#kubectl describe pvc quotasc-3
-...
- Warning  ProvisioningFailed    15s                
- API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 12. , Code: 13001
-...
-```
-There you go, point demonstrated!
-
-Time to clean up
-```
-# kubectl delete pvc -l scenario=quotas
-persistentvolumeclaim "quotasc-1" deleted
-persistentvolumeclaim "quotasc-2" deleted
-persistentvolumeclaim "quotasc-3" deleted

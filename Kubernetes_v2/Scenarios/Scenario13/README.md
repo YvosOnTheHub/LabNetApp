@@ -1,177 +1,120 @@
 #########################################################################################
-# SCENARIO 13: StatefulSets & Storage consumption
+# SCENARIO 13: iSCSI Volume resizing
 #########################################################################################
 
 GOAL:  
-StatefulSets work differently that Deployments or DaemonSets when it comes to storage.
-Deployments & DaemonSets use PVC defined outside of them, whereas StatefulSets include the storage in their definition (cf _volumeClaimTemplates_).
-Said differently, you can see a StatefulSet as a couple (POD + Storage). When it is scaled, both objects will be automatically created.  
-In this exercise, we will create a MySQL StatefulSet & Scale it.  
+Trident supports the resizing of File (NFS) & Block (iSCSI) PVC, depending on the Kubernetes version.  
+NFS Resizing was introduced in K8S 1.11, while iSCSI resizing was introduced in K8S 1.16.  
+Here we will go through a iSCSI PVC Expansion ...
 
-We consider that a backend & a storage class have already been created. ([ex: Scenario04](../Scenario04)).  
+Resizing a PVC is made available through the option *allowVolumeExpansion* set in the StorageClass.
 
 ![Scenario13](Images/scenario13.jpg "Scenario13")
 
-To best benefit from the scenario, you would first need to go through the following Addendum:  
-[1.](../../Addendum/Addenda01) Add a node to the cluster  
-[2.](../../Addendum/Addenda02) Specify a default storage class  
-[3.](../../Addendum/Addenda03) Allow user PODs on the master node  
+As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version. This can be achieved by following the [Addenda4](../../Addendum/Addenda04).  
 
-## A. Let's start by creating the application
+Also, you will also need to configure your environment for iSCSI if not done yet. That part is described in the [Addenda5](../../Addendum/Addenda05).  
 
-This application is based on 3 elements:
-- a ConfigMap, which hosts some parameter for the application
-- 2 services
-- the StatefulSet (3 replicas of the application)
+## A. Create a new storage class with the option allowVolumeExpansion.
 
+If you dont have a ONTAP-SAN Backend, you can use the backend file in this directory:
 ```
-# kubectl create namespace mysql
-namespace/mysql created
+# tridentctl -n trident create backend -f backend-san-default.json
++------------+----------------+--------------------------------------+--------+---------+
+|    NAME    | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++------------+----------------+--------------------------------------+--------+---------+
+| SAN-resize | ontap-san      | 2b6a0a14-57bd-4ca8-9a28-07f74833696b | online |       0 |
++------------+----------------+--------------------------------------+--------+---------+
+```
+Next, you can create the Storage Class
+```
+# kubectl create -f sc-csi-ontap-san-resize.yaml
+storageclass.storage.k8s.io/sc-san-resize created
 
-# kubectl create -n mysql -f mysql-configmap.yaml
-configmap/mysql created
-# kubectl create -n mysql -f mysql-services.yaml
-service/mysql created
-service/mysql-read created
-# kubectl create -n mysql -f mysql-statefulset.yaml
-statefulset.apps/mysql created
-```
-It will take a few minutes for all the replicas to be created, I will then suggest using the _watch_ flag:
-```
-# kubectl -n mysql get pod --watch
-mysql-0   1/2     Running   0          43s   10.36.0.1   rhel1   <none>           <none>
-mysql-0   2/2     Running   0          52s   10.36.0.1   rhel1   <none>           <none>
-mysql-1   0/2     Pending   0          0s    <none>      <none>   <none>           <none>
-mysql-1   0/2     Pending   0          0s    <none>      <none>   <none>           <none>
-mysql-1   0/2     Pending   0          4s    <none>      rhel2    <none>           <none>
-mysql-1   0/2     Init:0/2   0          4s    <none>      rhel2    <none>           <none>
-mysql-1   0/2     Init:1/2   0          24s   10.44.0.1   rhel2    <none>           <none>
-mysql-1   0/2     Init:1/2   0          32s   10.44.0.1   rhel2    <none>           <none>
-mysql-1   0/2     PodInitializing   0          40s   10.44.0.1   rhel2    <none>           <none>
-...
-```
-Once you that the third POD is up & running, you are good to go
-```
-# kubectl -n mysql get pod -o wide
-NAME      READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATES
-mysql-0   2/2     Running   0          24h   10.36.0.1   rhel1   <none>           <none>
-mysql-1   2/2     Running   1          24h   10.44.0.1   rhel2   <none>           <none>
-mysql-2   2/2     Running   1          24h   10.39.0.2   rhel4   <none>           <none>
-```
-Now, check the storage. You can see that 3 PVC were created, one per POD.
-```
-# kubectl get -n mysql pvc,pv 
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/data-mysql-0   Bound    pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO            storage-class-nas   5m
-persistentvolumeclaim/data-mysql-1   Bound    pvc-ce114401-5789-454a-ba1c-eb5453fbe026   10Gi       RWO            storage-class-nas   5m
-persistentvolumeclaim/data-mysql-2   Bound    pvc-99f98294-85f6-4a69-8f50-eb454ed00868   10Gi       RWO            storage-class-nas   4m
-
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS        REASON   AGE
-persistentvolume/pvc-99f98294-85f6-4a69-8f50-eb454ed00868   10Gi       RWO            Delete           Bound    mysql/data-mysql-2   storage-class-nas            4m
-persistentvolume/pvc-ce114401-5789-454a-ba1c-eb5453fbe026   10Gi       RWO            Delete           Bound    mysql/data-mysql-1   storage-class-nas            5m
-persistentvolume/pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO            Delete           Bound    mysql/data-mysql-0   storage-class-nas            5m
+# kubectl get sc
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+sc-san-resize   csi.trident.netapp.io   Delete          Immediate           true                   3h3m
 ```
 
-## B. Let's write some data in this database!
+## B. Setup the environment
 
-To connect to MySQL, we will use another POD which will connect to the master DB (mysql-0).  
-Copy & paste the whole block at once:
-```
-kubectl run mysql-client -n mysql --image=mysql:5.7 -i --rm --restart=Never --\
- mysql -h mysql-0.mysql <<EOF
-CREATE DATABASE test;
-CREATE TABLE test.messages (message VARCHAR(250));
-INSERT INTO test.messages VALUES ('hello');
-EOF
-```
-Let's check that the operation was successful by reading the database, through the service called _mysql-read_
-```
-# kubectl run mysql-client -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- mysql -h mysql-read -e "SELECT * FROM test.messages"
-If you don't see a command prompt, try pressing enter.
-+---------+
-| message |
-+---------+
-| hello   |
-+---------+
-pod "mysql-client" deleted
-```
-
-## C. Where are my reads coming from ?
-
-In the current setup, _writes_ are done on the master DB, wheareas _reads_ can come from any DB POD.  
-Let's check this!  
-First, open a new Putty window & connect to RHEL3. You can then run the following, which will display the ID of the database followed by a timestamp. 
-```
-# kubectl run mysql-client-loop -n mysql --image=mysql:5.7 -i -t --rm --restart=Never -- bash -ic "while sleep 1; do mysql -h mysql-read -e 'SELECT @@server_id,NOW()'; done"
-+-------------+---------------------+
-| @@server_id | NOW()               |
-+-------------+---------------------+
-|         100 | 2020-04-07 10:22:32 |
-+-------------+---------------------+
-+-------------+---------------------+
-| @@server_id | NOW()               |
-+-------------+---------------------+
-|         102 | 2020-04-07 10:22:33 |
-+-------------+---------------------+
-```
-As you can see, _reads_ are well distributed between all the PODs.  
-Keep this window open for now...
-
-## D. Let's scale!
-
-Scaling an application with Kubernetes is pretty straightforward & can be achieved with the following command:
-```
-# kubectl scale statefulset mysql -n mysql --replicas=4
-statefulset.apps/mysql scaled
-```
-You can use the _kubectl get pod_ with the _--watch_ parameter again to see the new POD starting.  
-When done, you should have someething similar to this:
-```
-# kubectl get pod -n mysql
-NAME      READY   STATUS    RESTARTS   AGE
-mysql-0   2/2     Running   0          12m
-mysql-1   2/2     Running   0          12m
-mysql-2   2/2     Running   0          11m
-mysql-3   2/2     Running   1          3m13s
-```
-Notice the last POD is _younger_ that the other ones...  
-Again, check the storage. You can see that a new PVC was automatically created.
-```
-# kubectl get -n mysql pvc,pv 
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/data-mysql-0   Bound    pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO            storage-class-nas   15m
-persistentvolumeclaim/data-mysql-1   Bound    pvc-ce114401-5789-454a-ba1c-eb5453fbe026   10Gi       RWO            storage-class-nas   15m
-persistentvolumeclaim/data-mysql-2   Bound    pvc-99f98294-85f6-4a69-8f50-eb454ed00868   10Gi       RWO            storage-class-nas   14m
-persistentvolumeclaim/data-mysql-3   Bound    pvc-8758aaaa-33ab-4b6c-ba42-874ce6028a49   10Gi       RWO            storage-class-nas   6m18s
-
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                STORAGECLASS        REASON   AGE
-persistentvolume/pvc-8758aaaa-33ab-4b6c-ba42-874ce6028a49   10Gi       RWO            Delete           Bound    mysql/data-mysql-3   storage-class-nas            6m17s
-persistentvolume/pvc-99f98294-85f6-4a69-8f50-eb454ed00868   10Gi       RWO            Delete           Bound    mysql/data-mysql-2   storage-class-nas            14m
-persistentvolume/pvc-ce114401-5789-454a-ba1c-eb5453fbe026   10Gi       RWO            Delete           Bound    mysql/data-mysql-1   storage-class-nas            15m
-persistentvolume/pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO            Delete           Bound    mysql/data-mysql-0   storage-class-nas            15m
-```
-Also, if the second window is still open, you should start seeing new _id_ ('103' anyone?):
-```
-+-------------+---------------------+
-| @@server_id | NOW()               |
-+-------------+---------------------+
-|         102 | 2020-04-07 10:25:51 |
-+-------------+---------------------+
-+-------------+---------------------+
-| @@server_id | NOW()               |
-+-------------+---------------------+
-|         103 | 2020-04-07 10:25:53 |
-+-------------+---------------------+
-+-------------+---------------------+
-| @@server_id | NOW()               |
-+-------------+---------------------+
-|         101 | 2020-04-07 10:25:54 |
-+-------------+---------------------+
-```
-
-## E. Clean up
+Now let's create a PVC & a Centos POD using this PVC, in their own namespace.
 
 ```
-# kubectl delete namespace mysql
-namespace "mysql" deleted
+# kubectl create namespace resize
+namespace/resize created
+# kubectl create -n resize -f pvc.yaml
+persistentvolumeclaim/pvc-to-resize created
+
+# kubectl -n resize get pvc,pv
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+persistentvolumeclaim/pvc-to-resize   Bound    pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8   5Gi        RWO            sc-san-resize   11s
+
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS    REASON   AGE
+persistentvolume/pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8   5Gi        RWO            Delete           Bound    resize/pvc-to-resize   sc-san-resize            10s
+
+# kubectl create -n resize -f pod-centos-san.yaml
+pod/centos created
+
+# kubectl -n resize get pod --watch
+NAME     READY   STATUS              RESTARTS   AGE
+centos   0/1     ContainerCreating   0          5s
+centos   1/1     Running             0          15s
+```
+You can now check that the 5G volume is indeed mounted into the POD.
+```
+# kubectl -n resize exec centos -- df -h /data
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdc        4.8G   20M  4.6G   1% /data
+```
+
+## C. Resize the PVC & check the result
+
+Resizing a PVC can be done in different ways. We will here edit the definition of the PVC & manually modify it.  
+Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)
+```
+# kubectl -n resize edit pvc pvc-to-resize
+persistentvolumeclaim/pvc-to-resize edited
+
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: sc-san-resize
+  volumeMode: Filesystem
+  volumeName: pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8
+```
+Let's see the result (it takes about 1 minute to take effect).
+```
+# kubectl -n resize get pvc,pv
+NAME                                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+persistentvolumeclaim/pvc-to-resize   Bound    pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8   15Gi       RWO            sc-san-resize   4m3s
+
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                   STORAGECLASS    REASON   AGE
+persistentvolume/pvc-0862979c-92ca-49ed-9b1c-15edb8f36cb8   15Gi       RWO            Delete           Bound    resize/pvc-to-resize   sc-san-resize            4m2s
+
+
+# kubectl -n resize exec centos -- df -h /data
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sdd         15G   25M   14G   1% /data
+```
+As you can see, the resizing was done totally dynamically without any interruption.  
+The POD rescanned its devices to discover the new size of the volume.  
+
+This could also have been achieved by using the _kubectl patch_ command. Try the following one:
+```
+# kubectl patch -n resize pvc pvc-to-resize -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
+```
+
+## C. Cleanup the environment
+
+```
+# kubectl delete namespace resize
+namespace "resize" deleted
+
+# kubectl delete sc sc-san-resize
+storageclass.storage.k8s.io "sc-san-resize" deleted
+
 ```

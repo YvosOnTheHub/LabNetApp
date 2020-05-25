@@ -1,189 +1,147 @@
 #########################################################################################
-# SCENARIO 15: Test Kubernetes snapshots
+# SCENARIO 15: Dynamic Export Policy Management
 #########################################################################################
 
 GOAL:  
-Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
-This is fully supported by Trident 20.01.1.  
+Trident 20.04 introduced the dynamic export policy feature for the 3 different ONTAP-NAS backends.  
+Letting Trident manage the export policies allows to reduce the amount of administrative tasks, especially when clusters scale up&down.
 
-![Scenario5](Images/scenario15.jpg "Scenario15")
+The configuration of this feature is done in the Trident Backend object. There 2 different json files in this directory that will help you discover how to use it.  
+2 options can be used here:  
+- *autoExportPolicy*: enables the feature
+- *autoExportCIDRs*: defines the address blocks to use (optional parameter)
 
-## A. Prepare the environment
+## A. Create 2 new backends
 
-We will create an app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario04](../Scenario04)).  
-If you compare the Ghost app definition to the [Scenario05](../Scenario05), you may notice that the _deployment_ has evolved from _v1beta1_ to _v1_ status with Kubernetes 1.17.  
-
-```
-# kubectl create namespace ghost
-namespace/ghost created
-
-# kubectl create -n ghost -f ghost.yaml
-persistentvolumeclaim/blog-content created
-deployment.apps/blog created
-service/blog created
-
-# kubectl get all -n ghost
-NAME                       READY   STATUS              RESTARTS   AGE
-pod/blog-57d7d4886-5bsml   1/1     Running             0          50s
-
-NAME           TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/blog   NodePort   10.97.56.215   <none>        80:30080/TCP   50s
-
-NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blog   1/1     1            1           50s
-
-NAME                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/blog-57d7d4886   1         1         1       50s
-
-# kubectl get pvc,pv -n ghost
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/blog-content   Bound    pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            storage-class-nas   4m3s
-
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS        REASON   AGE
-persistentvolume/pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            Delete           Bound    ghost/blog-content          storage-class-nas            4m2s
-```
-Because moving on, let's check we can access the app:  
-=> http://192.168.0.63:30080
-
-
-## B. Configure the snapshot feature.
-
-This [link](https://github.com/kubernetes-csi/external-snapshotter) is a good read if you want to know more details about installing the CSI Snapshotter.  
-You first need to install 3 CRD which you can find in the Kubernetes/CRD directory or in the CSI Snapshotter github repository.
-```
-# kubectl create -f Kubernetes/CRD/
-customresourcedefinition.apiextensions.k8s.io/volumesnapshotclasses.snapshot.storage.k8s.io created
-customresourcedefinition.apiextensions.k8s.io/volumesnapshotcontents.snapshot.storage.k8s.io created
-customresourcedefinition.apiextensions.k8s.io/volumesnapshots.snapshot.storage.k8s.io created
-```
-Then comes the Snapshot Controller, which is in the Kubernetes/Controller directory  or in the CSI Snapshotter github repository.
-```
-# kubectl create -f Kubernetes/Controller/
-serviceaccount/snapshot-controller created
-clusterrole.rbac.authorization.k8s.io/snapshot-controller-runner created
-clusterrolebinding.rbac.authorization.k8s.io/snapshot-controller-role created
-role.rbac.authorization.k8s.io/snapshot-controller-leaderelection created
-rolebinding.rbac.authorization.k8s.io/snapshot-controller-leaderelection created
-statefulset.apps/snapshot-controller created
-```
-Finally, you need to create a _VolumeSnapshotClass_ object that points to the Trident driver.
-```
-# kubectl create -f sc-volumesnapshot.yaml
-volumesnapshotclass.snapshot.storage.k8s.io/csi-snap-class created
-
-# kubectl get volumesnapshotclass
-NAME             DRIVER                  DELETIONPOLICY   AGE
-csi-snap-class   csi.trident.netapp.io   Delete           3s
-```
-The _volume snapshot_ feature is now ready to be tested.  
-
-
-## C. Create a snapshot
+The difference between both files lies in the *autoExportCIDRs* parameter, one has it while the other one does not.
 
 ```
-# kubectl create -n ghost -f pvc-snapshot.yaml
-volumesnapshot.snapshot.storage.k8s.io/blog-snapshot created
+# tridentctl -n trident create backend -f backend-with-CIDR.json
++------------------+----------------+--------------------------------------+--------+---------+
+|       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++------------------+----------------+--------------------------------------+--------+---------+
+| Export_with_CIDR | ontap-nas      | ebf1efb0-e8c6-457e-8e1a-827b1725ed9e | online |       0 |
++------------------+----------------+--------------------------------------+--------+---------+
 
-# kubectl get volumesnapshot -n ghost
-NAME            READYTOUSE   SOURCEPVC      SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-blog-snapshot   true         blog-content                           5Gi           csi-snap-class   snapcontent-21331427-59a4-4b4a-a71f-91ffe2fb39bc   12m            12m
-
-# tridentctl -n trident get volume
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-|                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-| pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d | 5.0 GiB | storage-class-nas | file     | bdc8ce93-2268-4820-9fc5-45a8d9dead2a | online | true    |
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-
-# tridentctl -n trident get snapshot
-+-----------------------------------------------+------------------------------------------+
-|                     NAME                      |                  VOLUME                  |
-+-----------------------------------------------+------------------------------------------+
-| snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc | pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d |
-+-----------------------------------------------+------------------------------------------+
-```
-Your snapshot has been created !  
-But what does it translate to at the storage level?  
-With ONTAP, you will end up with a *ONTAP Snapshot*, a _ReadOnly_ object, which is instantaneous & space efficient!  
-You can see it by browsing through System Manager or connecting with Putty to the _cluster1_ profile (admin/Netapp1!)
-```
-cluster1::> vol snaps show -vserver svm1 -volume nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
-                                                                 ---Blocks---
-Vserver  Volume   Snapshot                                  Size Total% Used%
--------- -------- ------------------------------------- -------- ------ -----
-svm1     nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
-                  snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc
-                                                           180KB     0%   18%
+# tridentctl -n trident create backend -f backend-without-CIDR.json
++---------------------+----------------+--------------------------------------+--------+---------+
+|        NAME         | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++---------------------+----------------+--------------------------------------+--------+---------+
+| Export_without_CIDR | ontap-nas      | f9683c16-e35c-4fea-b185-2e0d7eea0eb3 | online |       0 |
++---------------------+----------------+--------------------------------------+--------+---------+
 ```
 
-## D. Create a clone (ie a _PVC from Snapshot_)
+## B. Check the export policies
 
-Having a snapshot can be useful to create a new PVC.  
-If you take a look a the PVC file in the _Ghost/_clone_ directory, you can notice the reference to the snapshot:
+Now, retrieve the IP adresses of all nodes of the cluster:
 ```
-  dataSource:
-    name: blog-snapshot
-    kind: VolumeSnapshot
-    apiGroup: snapshot.storage.k8s.io
+# kubectl get nodes -o=custom-columns=NODE:.metadata.name,IP:.status.addresses[0].address
+NODE    IP
+rhel1   192.168.0.61
+rhel2   192.168.0.62
+rhel3   192.168.0.63
 ```
-Let's see how that turns out:
+Let's see how that translate into ONTAP. Open a new Putty session on 'cluster1', using admin/Netapp1!  
+What export policies do we see:
 ```
-# kubectl create -n ghost -f Ghost_clone/1_pvc_from_snap.yaml
-persistentvolumeclaim/pvc-from-snap created
-
-# kubectl get pvc,pv -n ghost
-NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-blog-content    Bound    pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d   5Gi        RWX            storage-class-nas   20h
-pvc-from-snap   Bound    pvc-4d6e8738-a419-405e-96fc-9cf3a0840b56   5Gi        RWX            storage-class-nas   6s
-
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS        REASON   AGE
-pvc-4d6e8738-a419-405e-96fc-9cf3a0840b56   5Gi        RWX            Delete           Bound    ghost/pvc-from-snap   storage-class-nas            19s
-pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d   5Gi        RWX            Delete           Bound    ghost/blog-content    storage-class-nas            20h
+cluster1::> export-policy show
+Vserver          Policy Name
+---------------  -------------------
+svm1             default
+svm1             trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+svm1             trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+3 entries were displayed.
 ```
-Your clone has been created, but what does it translate to at the storage level?  
-With ONTAP, you will end up with a *FlexClone*, which is instantaneous & space efficient!  
-Said differently,  you can imagine it as a _ReadWrite_ snapshot...  
-You can see this object by browsing through System Manager or connecting with Putty to the _cluster1_ profile (admin/Netapp1!)
+The _default_ policy is always present, while the 2 other ones where dynamically created by Trident.  
+Notice that the name of the policy contains the UUID of the Trident Backend.  
+
+Now, let's look at the rule set by Trident for the backend _Export_with_CIDR_:  
 ```
-cluster1::> vol clone show
-                      Parent  Parent        Parent
-Vserver FlexClone     Vserver Volume        Snapshot             State     Type
-------- ------------- ------- ------------- -------------------- --------- ----
-svm1    nas1_pvc_4d6e8738_a419_405e_96fc_9cf3a0840b56
-                      svm1    nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
-                                            snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc
-                                                                 online    RW
+cluster1::> export-policy rule show -vserver svm1 -policyname trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             1       nfs      192.168.0.62          any
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             2       nfs      192.168.0.61          any
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             3       nfs      192.168.0.63          any
+3 entries were displayed.
 ```
-Now that we have a clone, what can we do with?  
-Well, we could maybe fire up a new Ghost environment with a new version while keeping the same content? This would a good way to test a new release, while not copying all the data for this specific environment. In other words, you would save time by doing so.  
+You can see that there is a rule for every single node present in the cluster. No other host will be able to mount a resource present on this tenant, unless an admin manually adds more rules.  
 
-The first deployment uses Ghost v2.6. Let's try with Ghost 3.13 ...
+Then, let's look at the rule set by Trident for the backend _Export_without_CIDR_: 
 ```
-# kubectl create -n ghost -f Ghost_clone/2_deploy.yaml
-deployment.apps/blogclone created
-
-# kubectl create -n ghost -f Ghost_clone/3_service.yaml
-service/blogclone created
-
-# kubectl get all -n ghost -l scenario=clone
-NAME                TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-service/blogclone   NodePort   10.105.214.201   <none>        80:30081/TCP   12s
-
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blogclone   1/1     1            1           2m19s
+cluster1::> export-policy rule show -vserver svm1 -policyname trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+                             1       nfs      10.44.0.0,172.17.0.1, any
+                                              192.168.0.62
+svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+                             2       nfs      10.36.0.0,172.17.0.1, any
+                                              192.168.0.61
+svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+                             3       nfs      10.32.0.1,172.17.0.1, any
+                                              192.168.0.63
+3 entries were displayed.
 ```
-Let's check the result:  
-=> http://192.168.0.63:30081
+Notice the difference?  
+Before creating the rules, Trident looked at all the unicast IP addresses on each node & used them on the storage backend.  
 
-You can probably notice some differences between both pages...  
-
-Using this type of mechanism in a CI/CD pipeline can definitely save time (that's for Devs) & storage (that's for Ops)!
-
-
-## E. Cleanup
-
+Also, as stated in the documentation, you must ensure that the root junction in your SVM has a pre-created export policy with an export rule that permits the node CIDR block (such as the *default* export policy). All volumes created by Trident are mounted under the root junction.  
+Let's look at what we have in the LabOnDemand
 ```
-# kubectl delete ns ghost
-namespace "ghost" deleted
+cluster1::> export-policy rule show -vserver svm1 -policyname default
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+svm1         default         1       nfs      0.0.0.0/0             any
+```
+There you go, now, all applications created with these backends are going to have access to storage, while adding an extra level of security.
+
+
+## C. More fun to prove my point
+
+Let's see what happens if you add a new node to the cluster.
+Once you are done with the [Addenda01](../../Addendum/Addenda01), you should have:
+```
+# kubectl get nodes --watch
+NAME    STATUS   ROLES    AGE    VERSION
+rhel1   Ready    <none>   240d   v1.15.3
+rhel2   Ready    <none>   240d   v1.15.3
+rhel3   Ready    master   240d   v1.15.3
+rhel4   Ready    <none>   72s    v1.15.3
+
+# kubectl get nodes -o=custom-columns=NODE:.metadata.name,IP:.status.addresses[0].address
+NODE    IP
+rhel1   192.168.0.61
+rhel2   192.168.0.62
+rhel3   192.168.0.63
+rhel4   192.168.0.64
+```
+By definition, Trident should have dynamically added a new entry in the export-policy:
+```
+cluster1::> export-policy rule show -vserver svm1 -policyname trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             1       nfs      192.168.0.62          any
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             2       nfs      192.168.0.61          any
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             3       nfs      192.168.0.63          any
+svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+                             4       nfs      192.168.0.64          any
+4 entries were displayed.
+```
+Tadaaaa !
+
+## D. Finally some optional cleanup.
+```
+# tridentctl -n trident delete backend Export_with_CIDR
+# tridentctl -n trident delete backend Export_without_CIDR
 ```
