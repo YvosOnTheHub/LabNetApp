@@ -18,7 +18,7 @@ The following links were used :
 Before upgrade to a specific version of Kubernetes, make sure you have upgraded Trident beforehand [(Scenario 1)](../../Scenarios/Scenario01)  
 
 
-## A. Upgrade from 1.15.3 to 1.16.9
+## A. Upgrade from 1.15.3 to 1.16.10
 
 Let's look at the environment  
 ```
@@ -40,7 +40,7 @@ kubeadm version: &version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.3", GitC
 ```
 Let's start with the master node (*rhel3*)
 ```
-# yum install -y kubeadm-1.16.9-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.16.10-0 --disableexcludes=kubernetes
 
 # kubeadm version
 kubeadm version: &version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:42:30Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
@@ -71,35 +71,35 @@ We can now proceed with the upgrade
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.15.3   v1.16.9
+Kubelet     3 x v1.15.3   v1.16.10
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT   AVAILABLE
-API Server           v1.15.3   v1.16.9
-Controller Manager   v1.15.3   v1.16.9
-Scheduler            v1.15.3   v1.16.9
-Kube Proxy           v1.15.3   v1.16.9
+API Server           v1.15.3   v1.16.10
+Controller Manager   v1.15.3   v1.16.10
+Scheduler            v1.15.3   v1.16.10
+Kube Proxy           v1.15.3   v1.16.01
 CoreDNS              1.3.1     1.6.2
 Etcd                 3.3.10    3.3.15-0
 
 You can now apply the upgrade by executing the following command:
 
-        kubeadm upgrade apply v1.16.9
+        kubeadm upgrade apply v1.16.10
 _____________________________________________________________________
 
-# kubeadm upgrade apply v1.16.9
+# kubeadm upgrade apply v1.16.10
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.16.9"
+[upgrade/version] You have chosen to change the cluster version to "v1.16.10"
 [upgrade/versions] Cluster version: v1.15.3
-[upgrade/versions] kubeadm version: v1.16.9
+[upgrade/versions] kubeadm version: v1.16.10
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.9". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.10". Enjoy!
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
 We can now enable _scheduling_ again on the master.
@@ -109,13 +109,13 @@ node/rhel3 uncordoned
 ```
 Last, we can now upgrade _kubectl_ & _kubelet_:
 ```
-# yum install -y kubelet-1.16.9-0 kubectl-1.16.9-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.16.10-0 kubectl-1.16.10-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 
 # kubectl version
-Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:44:51Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.9", GitCommit:"a17149e1a189050796ced469dbd78d380f2ed5ef", GitTreeState:"clean", BuildDate:"2020-04-16T11:36:15Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.10", GitCommit:"f3add640dbcd4f3c33a7749f38baaac0b3fe810d", GitTreeState:"clean", BuildDate:"2020-05-20T14:00:52Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.10", GitCommit:"f3add640dbcd4f3c33a7749f38baaac0b3fe810d", GitTreeState:"clean", BuildDate:"2020-05-20T13:51:56Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
 ```
 And after a few seconds, you can see the version:
 ```
@@ -123,13 +123,13 @@ And after a few seconds, you can see the version:
 NAME    STATUS   ROLES    AGE    VERSION
 rhel1   Ready    <none>   214d   v1.15.3
 rhel2   Ready    <none>   214d   v1.15.3
-rhel3   Ready    master   214d   v1.16.9
+rhel3   Ready    master   214d   v1.16.10
 ```
 We can now process with the worker nodes, one by one.  
 I will first show the procedure for the first node _rhel1_, which is the node that does not host Trident's replicaSet.  
 First, install the new version of Kubeadm:
 ```
-# yum install -y kubeadm-1.16.9-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.16.10-0 --disableexcludes=kubernetes
 ```
 Then, from the *master* node, unschedule the creation of new PODs on the worker node
 ```
@@ -144,7 +144,7 @@ node/rhel1 evicted
 NAME    STATUS                     ROLES    AGE    VERSION
 rhel1   Ready,SchedulingDisabled   <none>   214d   v1.15.3
 rhel2   Ready                      <none>   214d   v1.15.3
-rhel3   Ready                      master   214d   v1.16.9
+rhel3   Ready                      master   214d   v1.16.10
 ```
 Time to upgrade the worker node
 ```
@@ -156,7 +156,7 @@ Time to upgrade the worker node
 [upgrade] The configuration for this node was successfully updated!
 [upgrade] Now you should go ahead and upgrade the kubelet package using your package manager.
 
-# yum install -y kubelet-1.16.9-0 kubectl-1.16.9-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.16.10-0 kubectl-1.16.10-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 ```
@@ -220,9 +220,9 @@ You will end up with the following:
 ```
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.16.9
-rhel2   Ready    <none>   214d   v1.16.9
-rhel3   Ready    master   214d   v1.16.9
+rhel1   Ready    <none>   214d   v1.16.10
+rhel2   Ready    <none>   214d   v1.16.10
+rhel3   Ready    master   214d   v1.16.10
 ```
 Tadaaa !  
 
@@ -249,14 +249,14 @@ trident-csi-zmfz4:     netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-re
 ```
 
 
-## B. Upgrade from 1.16.9 to 1.17.5
+## B. Upgrade from 1.16.10 to 1.17.6
 
-The procedure to go from 1.16.9 to 1.17.5 is pretty similar to the previous one.  
+The procedure to go from 1.16.10 to 1.17.6 is pretty similar to the previous one.  
 ```
-# yum install -y kubeadm-1.17.5-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.17.6-0 --disableexcludes=kubernetes
 
 # kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.5", GitCommit:"e0fccafd69541e3750d460ba0f9743b90336f24f", GitTreeState:"clean", BuildDate:"2020-04-16T11:41:38Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.6", GitCommit:"d32e40e20d167e103faf894261614c5b45c44198", GitTreeState:"clean", BuildDate:"2020-05-20T13:14:10Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
 
 # kubectl drain rhel3 --ignore-daemonsets
 node/rhel3 cordoned
@@ -268,47 +268,47 @@ node/rhel3 evicted
 # kubeadm upgrade plan
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
-COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.16.9   v1.17.5
+COMPONENT   CURRENT        AVAILABLE
+Kubelet     3 x v1.16.10   v1.17.6
 
 Upgrade to the latest stable version:
 
-COMPONENT            CURRENT   AVAILABLE
-API Server           v1.16.9   v1.17.5
-Controller Manager   v1.16.9   v1.17.5
-Scheduler            v1.16.9   v1.17.5
-Kube Proxy           v1.16.9   v1.17.5
-CoreDNS              1.6.2     1.6.5
-Etcd                 3.3.15    3.4.3-0
+COMPONENT            CURRENT    AVAILABLE
+API Server           v1.16.10   v1.17.6
+Controller Manager   v1.16.10   v1.17.6
+Scheduler            v1.16.10   v1.17.6
+Kube Proxy           v1.16.10   v1.17.6
+CoreDNS              1.6.2      1.6.5
+Etcd                 3.3.15     3.4.3-0
 
 You can now apply the upgrade by executing the following command:
-        kubeadm upgrade apply v1.17.5
+        kubeadm upgrade apply v1.17.6
 
-# kubeadm upgrade apply v1.17.5
+# kubeadm upgrade apply v1.17.6
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.17.5"
-[upgrade/versions] Cluster version: v1.16.9
-[upgrade/versions] kubeadm version: v1.17.5
+[upgrade/version] You have chosen to change the cluster version to "v1.17.6"
+[upgrade/versions] Cluster version: v1.16.10
+[upgrade/versions] kubeadm version: v1.17.6
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.5". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.6". Enjoy!
 
 # kubectl uncordon rhel3
 node/rhel3 uncordoned
 
-# yum install -y kubelet-1.17.5-0 kubectl-1.17.5-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.17.6-0 kubectl-1.17.6-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.16.9
-rhel2   Ready    <none>   214d   v1.16.9
-rhel3   Ready    master   214d   v1.17.5
+rhel1   Ready    <none>   214d   v1.16.10
+rhel2   Ready    <none>   214d   v1.16.10
+rhel3   Ready    master   214d   v1.17.6
 ```
 Let's process with the worker node _rhel1_. Again, you need to start by _draining_ it from the master.
 ```
@@ -329,11 +329,11 @@ trident-csi-zw5h7              2/2     Running   2          133m   192.168.0.61 
 If you remember, Trident's ReplicaSet is on this host. This upgrade procedure does not complain about its volume anymore.  
 Back to _rhel1_:
 ```
-# yum install -y kubeadm-1.17.5-0 --disableexcludes=kubernetes
+# yum install -y kubeadm-1.17.6-0 --disableexcludes=kubernetes
 
 # kubeadm upgrade node
 
-# yum install -y kubelet-1.17.5-0 kubectl-1.17.5-0 --disableexcludes=kubernetes
+# yum install -y kubelet-1.17.6-0 kubectl-1.17.6-0 --disableexcludes=kubernetes
 
 # systemctl restart kubelet
 ```
@@ -344,17 +344,17 @@ node/rhel1 uncordoned
 
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.17.5
-rhel2   Ready    <none>   214d   v1.16.9
-rhel3   Ready    master   214d   v1.17.5
+rhel1   Ready    <none>   214d   v1.17.6
+rhel2   Ready    <none>   214d   v1.16.10
+rhel3   Ready    master   214d   v1.17.6
 ```
 You now can repeat this procedure on the second worker node, until you get to:
 ```
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.17.5
-rhel2   Ready    <none>   214d   v1.17.5
-rhel3   Ready    master   214d   v1.17.5
+rhel1   Ready    <none>   214d   v1.17.6
+rhel2   Ready    <none>   214d   v1.17.6
+rhel3   Ready    master   214d   v1.17.6
 ```
 Tadaaa again !
 

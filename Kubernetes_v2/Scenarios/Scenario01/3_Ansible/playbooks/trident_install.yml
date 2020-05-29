@@ -1,0 +1,8 @@
+- name: "Deploy NetApp Trident"
+  hosts: kube-master
+  become: true
+  become_method: sudo
+  vars_files:
+    - trident_vars.yaml
+  roles:
+    - role: trident
