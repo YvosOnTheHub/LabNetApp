@@ -2,9 +2,9 @@
 # SCENARIO 12: StatefulSets & Storage consumption
 #########################################################################################
 
-GOAL:  
-StatefulSets work differently that Deployments or DaemonSets when it comes to storage.
-Deployments & DaemonSets use PVC defined outside of them, whereas StatefulSets include the storage in their definition (cf _volumeClaimTemplates_).
+**GOAL:**  
+StatefulSets work differently that Deployments or DaemonSets when it comes to storage.  
+Deployments & DaemonSets use PVC defined outside of them, whereas StatefulSets include the storage in their definition (cf _volumeClaimTemplates_).  
 Said differently, you can see a StatefulSet as a couple (POD + Storage). When it is scaled, both objects will be automatically created.  
 In this exercise, we will create a MySQL StatefulSet & Scale it.  
 

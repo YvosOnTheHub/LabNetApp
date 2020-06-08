@@ -2,10 +2,9 @@
 # SCENARIO 2: Install Prometheus & integrate Trident's metrics
 #########################################################################################
 
-GOAL:
-
-Trident 20.01.1 introduced metrics that can be integrated into Prometheus.
-Going through this scenario at this point will be interesting as you will actually see the metrics evolve with all the labs.
+**GOAL:**  
+Trident 20.01.1 introduced metrics that can be integrated into Prometheus.  
+Going through this scenario at this point will be interesting as you will actually see the metrics evolve with all the labs.  
 
 You can either follow this scenario or go through the following link:  
 https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/

@@ -2,7 +2,7 @@
 # SCENARIO 14: Test Kubernetes snapshots
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
 This is fully supported by Trident 20.01.1.  
 

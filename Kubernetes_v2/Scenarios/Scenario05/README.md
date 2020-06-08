@@ -2,8 +2,8 @@
 # SCENARIO 5: Create your first App
 #########################################################################################
 
-GOAL:  
-Now that the admin has configured Trident, and has created storage classes, the end-user can request PVC.
+**GOAL:**   
+Now that the admin has configured Trident, and has created storage classes, the end-user can request PVC.  
 
 Ghost is a light weight web portal. You will a few YAML files in the Ghost directory:
 - a PVC to manage the persistent storage of this app

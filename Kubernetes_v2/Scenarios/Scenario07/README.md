@@ -2,8 +2,8 @@
 # SCENARIO 7: Create your first App with Block storage
 #########################################################################################
 
-GOAL:  
-We will deploy the same App as in the scenario 5, but instead of using File Storage, we will use Block Storage
+**GOAL:**   
+We will deploy the same App as in the scenario 5, but instead of using File Storage, we will use Block Storage.
 
 ![Scenario7](Images/scenario7.jpg "Scenario7")
 

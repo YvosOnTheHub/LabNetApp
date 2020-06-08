@@ -2,7 +2,7 @@
 # SCENARIO 10: NFS Volume resizing
 #########################################################################################
 
-GOAL:  
+**GOAL:**   
 Trident supports the resizing of File (NFS) & Block (iSCSI) PVC, depending on the Kubernetes version.  
 NFS Resizing was introduced in K8S 1.11, while iSCSI resizing was introduced in K8S 1.16.  
 Here we will go through a NFS Resizing ...

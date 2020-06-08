@@ -2,7 +2,7 @@
 # SCENARIO 1: Trident install/upgrade
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 This scenario is intended to see how easy it is to install & upgrade Trident.  
   
 Starting with Trident 20.04, there are 2 ways to deploy Trident:  

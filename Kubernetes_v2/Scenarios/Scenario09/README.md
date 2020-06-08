@@ -2,16 +2,16 @@
 # SCENARIO 9: Consumption control
 #########################################################################################
 
-GOAL:  
+**GOAL:**   
 As Trident dynamically manages persitent volumes & bring lots of goodness to the app level.  
 The first benefit is that end-users do not need to rely on a storage admin to provision volumes on the fly.
 However, this freedom can lead to quickly feel up the storage backend, especially if the user does not tidy up his environment...  
-A good practice is to place some controls to make sure storage is well used.
+A good practice is to place some controls to make sure storage is well used.  
 We are going to review here different methods to control the storage consumption.
 
 ## A. Kubernetes Resource Quotas
 
-In order to restrict the tests to a small environment & not affect other projects, we will create a specific namespace called _quota_
+In order to restrict the tests to a small environment & not affect other projects, we will create a specific namespace called _quota_  
 We will then create two types of quotas:
 1. limit the number of PVC a user can create
 2. limit the total capacity a user can create  

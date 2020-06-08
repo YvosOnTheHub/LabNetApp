@@ -2,10 +2,10 @@
 # SCENARIO 6: Create your first SAN backends 
 #########################################################################################
 
-GOAL:  
-You understood how to create backends and what they are for.
-You probably also created a few ones with NFS drivers.
-It is now time to add more backends that can be used for block storage.
+**GOAL:**   
+You understood how to create backends and what they are for.  
+You probably also created a few ones with NFS drivers.  
+It is now time to add more backends that can be used for block storage.  
 
 :boom: **In order to go through this scenario, you first need to configure iSCSI on the ONTAP backend.** :boom:  
 If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).

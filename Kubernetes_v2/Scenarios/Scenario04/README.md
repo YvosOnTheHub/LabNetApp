@@ -2,10 +2,9 @@
 # SCENARIO 4: Create your first NFS backends for Trident & Storage Classes for Kubernetes
 #########################################################################################
 
-GOAL:
-
-Trident needs to know where to create volumes.
-This information sits in objects called backends. It basically contains:
+**GOAL:**  
+Trident needs to know where to create volumes.  
+This information sits in objects called backends. It basically contains:  
 - the driver type (there currently are 10 different drivers available)
 - how to connect to the driver (IP, login, password ...)
 - some default parameters
@@ -14,7 +13,7 @@ For additional information, please refer to:
 - https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/deploying.html#create-and-verify-your-first-backend 
 - https://netapp-trident.readthedocs.io/en/stable-v20.01/kubernetes/operations/tasks/backends/index.html 
 
-Once you have configured backend, the end user will create PVC against Storage Classes.
+Once you have configured backend, the end user will create PVC against Storage Classes.  
 A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
 
 For additional information, please refer to:
@@ -26,7 +25,7 @@ Also, installing & configuring Trident + creating Kubernetes Storage Classe is w
 
 ## A. Create your first NFS backends
 
-You will find in this directory a few backends files.
+You will find in this directory a few backends files.  
 You can decide to use all of them, only a subset of them or modify them as you wish
 
 Here are the 2 backends & their corresponding driver:

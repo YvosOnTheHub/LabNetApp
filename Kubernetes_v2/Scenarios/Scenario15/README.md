@@ -2,7 +2,7 @@
 # SCENARIO 15: Dynamic Export Policy Management
 #########################################################################################
 
-GOAL:  
+**GOAL:**   
 Trident 20.04 introduced the dynamic export policy feature for the 3 different ONTAP-NAS backends.  
 Letting Trident manage the export policies allows to reduce the amount of administrative tasks, especially when clusters scale up&down.
 

@@ -2,10 +2,9 @@
 # SCENARIO 3: Configure Grafana & make your first graph
 #########################################################################################
 
-GOAL:
-
-Prometheus does not allow you to create a graph with different metrics, you need to use Grafana for that.
-Installing Prometheus with Helm also comes with this tool.
+**GOAL:**  
+Prometheus does not allow you to create a graph with different metrics, you need to use Grafana for that.  
+Installing Prometheus with Helm also comes with this tool.  
 We will learn how to access Grafana, and configure a graph.
 
 

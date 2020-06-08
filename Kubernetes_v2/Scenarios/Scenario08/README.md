@@ -2,15 +2,15 @@
 # SCENARIO 8: Use the import feature of Trident
 #########################################################################################
 
-GOAL:  
-Trident allows you to import a volume sitting in a NetApp backend into Kubernetes.
-We will first copy the volume we used in the [Scenario05](../Scenario05), import it, and create a new Ghost instance
+**GOAL:**  
+Trident allows you to import a volume sitting in a NetApp backend into Kubernetes.  
+We will first copy the volume we used in the [Scenario05](../Scenario05), import it, and create a new Ghost instance  
 
 ![Scenario8](Images/scenario8.jpg "Scenario8")
 
 ## A. Identify & copy the volume on the NetApp backend.
 
-The full name of the volume is available in the PV metadata.
+The full name of the volume is available in the PV metadata.  
 You can retrieve it if with the 'kubectl describe' command, or use the following (note how to use the jsonpath feature!)
 
 ```
