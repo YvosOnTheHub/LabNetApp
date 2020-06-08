@@ -91,7 +91,7 @@ In substance, we will tell in this object to look at services that have the labe
 The Yaml file has been provided and is available in the Scenario2 sub-directory
 
 ```
-# kubectl create -f Kubernetes_v2/Scenarios/Scenario02/Trident_ServiceMonitor.yml
+# kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario02/Trident_ServiceMonitor.yml
 servicemonitor.monitoring.coreos.com/trident-sm created
 ```
 
