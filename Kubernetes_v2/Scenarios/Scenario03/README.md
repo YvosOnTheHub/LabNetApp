@@ -138,6 +138,11 @@ configmap/tridentdashboard labeled
 When Grafana starts, it will automatically load every configmap that has the label _grafana_dashboard_.  
 In the Grafana UI, you will find the dashboard in its own _Trident_ folder.  
 
+Now, where can you find this dashboard:  
+- Hover on the 'Dashboard' icon on the left side bar (it looks like 4 small squares)  
+- Click on the 'Manage' button  
+- You then access a list of dashboards. You can either research 'Trident' or find the link be at the bottom of the page  
+
 ![Trident Dashboard](Images/trident_dashboard.jpg "Trident Dashboard")
 
 
