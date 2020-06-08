@@ -1,0 +1,12 @@
+# PVC to import Templace
+nas-pvc-to-import:
+  - pvcToImport: nas-pvc-to-import
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: pvc_to_import
+      namespace: default
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: storage-class-nas

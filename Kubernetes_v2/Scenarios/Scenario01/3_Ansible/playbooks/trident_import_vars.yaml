@@ -1,0 +1,19 @@
+# List of volumes to import
+# { FlexVolName, TridentBackendName, Manage }
+Volumes:
+    - { FlexVolName: import1, TridentBackendName: NAS_Vol-default, Manage: yes }
+
+# YAML of the PVC to import
+# For more info on parameter values, refer to: https://netapp-trident.readthedocs.io/en/stable-v20.04/kubernetes/operations/tasks/volumes.html?highlight=volume%20import#importing-a-volume 
+#   If you wish to use other parameter values, you must create your PVC manually.
+pvc_to_import_yaml:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: pvc_to_import
+      namespace: default
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: storage-class-nas
+ # Add additional PVCs as needed

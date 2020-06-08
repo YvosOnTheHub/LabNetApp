@@ -3,6 +3,6 @@
   become: true
   become_method: sudo
   vars_files:
-    - trident_vars.yaml
+    - trident_vars.yml
   roles:
     - role: trident
