@@ -55,7 +55,7 @@ spec:
 You can now access the Grafana GUI from the browser using the port 30001 on RHEL3 address (http://192.168.0.63:30001)
 
 
-## B. Login de Grafana
+## B. Log in Grafana
 
 The first time to enter Grafana, you are requested to login with a username & a password ...
 But how to find out what they are ??
