@@ -26,7 +26,12 @@ First, let's remove all current Kubernetes storage classes & Tridents' backends 
 kubectl delete sc --all
 tridentctl -n trident delete backend --all
 ```
-Then, delete the CRD deployed & used by Trident
+Then, delete the CRD deployed & used by Trident.  
+
+:mag:
+*A* **resource** *is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.*  
+*A* **custom resource** *is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*  
+:mag_right:  
 ```
 # tridentctl -n trident obliviate crd --yesireallymeanit
 INFO Resources not present.                        CRD=tridentversions.trident.netapp.io
