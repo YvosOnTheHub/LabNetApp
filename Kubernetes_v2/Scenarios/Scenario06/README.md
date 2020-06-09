@@ -14,12 +14,14 @@ If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).
 
 ## A. Create your first SAN backends
 
-You will find in this directory a few backends files.
-You can decide to use all of them, only a subset of them or modify them as you wish
-
-Here are the 4 backends & their corresponding driver:
+You will find in this directory a few backends files:
 - backend-san-default.json        ONTAP-SAN
 - backend-san-eco-default.json    ONTAP-SAN-ECONOMY
+You can decide to use all of them, only a subset of them or modify them as you wish
+
+**Here is an important statement if you are planning on using these drivers in your environment.**  
+:boom: The default is to use all data LIF IPs from the SVM and to use **iSCSI multipath**. Specifying an IP address for the dataLIF for the ontap-san* drivers forces the driver to disable multipath and use only the specified address. :boom:
+If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```
 # tridentctl -n trident create backend -f backend-san-default.json
