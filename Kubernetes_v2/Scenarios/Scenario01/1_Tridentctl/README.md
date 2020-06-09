@@ -23,7 +23,7 @@ It is also recommended to install Trident in its own namespace (usually called *
 Trident 19.07 introduced the use of Kubernetes CRD in order to store its own metadata.
 That way, when you apply your own Kubernetes protection & backup policies, Trident's metadata are by design included.  
 
-:mag:
+:mag:  
 *A* **resource** *is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.*  
 *A* **custom resource** *is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*  
 :mag_right:  
