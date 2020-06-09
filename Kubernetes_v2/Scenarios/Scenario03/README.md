@@ -126,7 +126,11 @@ Copy & paste the content of the _Trident_Dashboard_Std.json_ file in this direct
 The _issue_ with this method is that if the Grafana POD restarts, the dashboard will be lost...  
 
 *Persistent Dashboard*  
-The idea here would be to create a ConfigMap pointing to the Trident dashboard json file:  
+The idea here would be to create a ConfigMap pointing to the Trident dashboard json file.
+
+:busstop:  
+A ConfigMap is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume. A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.  
+:busstop:  
 ```
 # kubectl create configmap -n monitoring tridentdashboard --from-file=Trident_Dashboard_Std.json
 configmap/tridentdashboard created

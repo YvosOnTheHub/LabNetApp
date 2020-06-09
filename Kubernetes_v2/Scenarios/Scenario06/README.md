@@ -8,7 +8,7 @@ You probably also created a few ones with NFS drivers.
 It is now time to add more backends that can be used for block storage.  
 
 :boom: **In order to go through this scenario, you first need to configure iSCSI on the ONTAP backend.** :boom:  
-If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).
+If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).  
 
 ![Scenario6](Images/scenario6.jpg "Scenario6")
 
