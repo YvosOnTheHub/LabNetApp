@@ -130,3 +130,12 @@ storageclass.storage.k8s.io "sc-vsp3" deleted
 
 # tridentctl -n trident delete backend NAS_VSP
 ```
+
+## D. What's next
+
+You can now move on to:    
+- [Scenario12](../Scenario12) StatefulSets & Storage consumption 
+- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
+- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15) Dynamic export policy management  
+or go back to the [FrontPage](../../)

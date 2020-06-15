@@ -2,7 +2,7 @@
 # ADDENDA 5: Prepare your ONTAP Backend for Block Storage
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 The ONTAP environment in the lab on demand is not setup for block storage just yet.
 You can choose to update the SVM you are already using, or create your own.
 
@@ -26,3 +26,7 @@ net interface create -vserver svm1 -lif svm1_iscsi -data-protocol iscsi -home-no
 vserver iscsi create -target-alias svm1 -vserver svm1
 ```
 
+
+## What's next
+
+Back to the [frontpage](../../)?

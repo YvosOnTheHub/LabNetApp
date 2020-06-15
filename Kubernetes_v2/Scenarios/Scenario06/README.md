@@ -20,7 +20,7 @@ You will find in this directory a few backends files:
 
 You can decide to use all of them, only a subset of them or modify them as you wish
 
-:boom:**Here is an important statement if you are planning on using these drivers in your environment.**:boom:  
+:boom: **Here is an important statement if you are planning on using these drivers in your environment.** :boom:  
 The **default** is to use **all data LIF** IPs from the SVM and to use **iSCSI multipath**.  
 Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces the driver to **disable** multipath and use only the specified address.  
 
@@ -61,3 +61,9 @@ storageclass.storage.k8s.io/storage-class-san created
 # kubectl create -f sc-csi-ontap-san-eco.yaml
 storageclass.storage.k8s.io/storage-class-san-economy created
 ```
+
+## C. What's next
+
+Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
+- [Scenario07](../Scenario07) Deploy your first app with Block storage  
+or go back to the [FrontPage](../../)

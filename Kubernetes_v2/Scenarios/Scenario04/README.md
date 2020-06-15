@@ -72,4 +72,11 @@ storage-class-nas           csi.trident.netapp.io   2d18h
 storage-class-nas-economy   csi.trident.netapp.io   2d18h
 ```
 
-At this point, end-users can now create PVC against one of theses storage classes.
+At this point, end-users can now create PVC against one of theses storage classes.  
+
+
+## C. What's next
+
+Now, you have some NAS Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
+- [Scenario05](../Scenario05) Deploy your first app with File storage  
+or go back to the [FrontPage](../../)

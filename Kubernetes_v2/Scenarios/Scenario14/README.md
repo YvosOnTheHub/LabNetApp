@@ -187,3 +187,9 @@ Using this type of mechanism in a CI/CD pipeline can definitely save time (that'
 # kubectl delete ns ghost
 namespace "ghost" deleted
 ```
+
+## F. What's next
+
+You can now move on to:    
+- [Scenario15](../Scenario15) Dynamic export policy management  
+or go back to the [FrontPage](../../)

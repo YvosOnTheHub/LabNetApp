@@ -2,7 +2,7 @@
 # ADDENDA 1: Add a node to the cluster
 #########################################################################################
 
-GOAL:  
+**GOAL:**   
 Some exercices may benefit from a bigger cluster size (ex: Scenario13: StatefulSets).  
 The LabOnDemand has 6 unix hosts, but only 3 are part of the Kubernetes cluster.  
 This addenda will provide you with all the commands to run to bring a new node into the Kubernetes cluster.
@@ -89,3 +89,8 @@ trident-csi-6p67v              2/2     Running   0          55s   192.168.0.64  
 trident-csi-khknt              2/2     Running   0          55s   192.168.0.61   rhel1   <none>           <none>
 trident-csi-wdmjq              2/2     Running   0          55s   192.168.0.63   rhel3   <none>           <none>
 ```
+
+
+## C. What's next
+
+Back to the [frontpage](../../)?

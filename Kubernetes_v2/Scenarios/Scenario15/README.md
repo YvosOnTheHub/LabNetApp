@@ -145,3 +145,8 @@ Tadaaaa !
 # tridentctl -n trident delete backend Export_with_CIDR
 # tridentctl -n trident delete backend Export_without_CIDR
 ```
+
+## E. What's next
+
+You may have gone through all scenarios.  
+Maybe you could learn something in the different [addenda](../../)?

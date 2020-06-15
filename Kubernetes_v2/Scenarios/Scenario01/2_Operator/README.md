@@ -2,7 +2,8 @@
 # SCENARIO 1: Trident installation with an Operator
 #########################################################################################
 
-GOAL:  Trident 20.04 introduced a new way to manage its lifecycle: Operators.  
+**GOAL:**  
+Trident 20.04 introduced a new way to manage its lifecycle: Operators.  
 For now, this method is only intended for green field environments. We will then first need to delete & clean up the current Trident objects
 
 
@@ -23,8 +24,8 @@ I will consider that there is no PVC configured with Trident.
 
 First, let's remove all current Kubernetes storage classes & Tridents' backends (this is optional)
 ```
-kubectl delete sc --all
-tridentctl -n trident delete backend --all
+# kubectl delete sc --all
+# tridentctl -n trident delete backend --all
 ```
 Then, delete the CRD deployed & used by Trident.  
 
@@ -71,10 +72,10 @@ namespace "trident" deleted
 
 Download the version you would like to install
 ```
-cd
-mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.04.0/trident-installer-20.04.0.tar.gz
-tar -xf trident-installer-20.04.0.tar.gz
+# cd
+# mv trident-installer/ trident-installer_19.07
+# wget https://github.com/NetApp/trident/releases/download/v20.04.0/trident-installer-20.04.0.tar.gz
+# tar -xf trident-installer-20.04.0.tar.gz
 ```
 Finally, remove the CRD related to the Snapshot alpha feature.
 ```
@@ -207,3 +208,12 @@ If you just want to display part of the description, you can use a filter such a
   Status:   Installed
   Version:  v20.04
 ```
+
+
+## G. What's next
+
+Now that Trident is installed, you can proceed with :  
+- [Scenario02](../../Scenario02)  Installing Prometheus & incorporate Trident's metrics  
+Or you can directly   
+- [Scenario04](../../Scenario04)  Configure your first NAS backends & storage classes  
+or go back to the [FrontPage](../../../)

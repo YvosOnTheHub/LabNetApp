@@ -4,19 +4,22 @@
 
 The section has been tested with the Lab-on-Demand Using "Trident with Kubernetes and ONTAP v3.1" which comes with Trident 19.07 already installed on Kubernetes 1.15.3.
 
-Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).
-I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.
+:boom:  
+Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
+I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.  
+Last, there are plenty of commands to write or copy/paste. Most of them start with a '#', usually followed by the result you would get.
+:boom:  
 
 Scenarios
 ---------
-[1.](Kubernetes_v2/Scenarios/Scenario01)  Install/Upgrade Trident  
-[2.](Kubernetes_v2/Scenarios/Scenario02)  Install Prometheus & incorporate Trident's metrics  
-[3.](Kubernetes_v2/Scenarios/Scenario03)  Configure Grafana & add your first graphs  
-[4.](Kubernetes_v2/Scenarios/Scenario04)  Configure your first NAS backends & storage classes  
-[5.](Kubernetes_v2/Scenarios/Scenario05)  Deploy your first app with File storage  
-[6.](Kubernetes_v2/Scenarios/Scenario06)  Configure your first iSCSI backends & storage classes  
-[7.](Kubernetes_v2/Scenarios/Scenario07)  Deploy your first app with Block storage  
-[8.](Kubernetes_v2/Scenarios/Scenario08)  Use the 'import' feature of Trident  
+[1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident  
+[2.](Kubernetes_v2/Scenarios/Scenario02) Install Prometheus & incorporate Trident's metrics  
+[3.](Kubernetes_v2/Scenarios/Scenario03) Configure Grafana & add your first graphs  
+[4.](Kubernetes_v2/Scenarios/Scenario04) Configure your first NAS backends & storage classes  
+[5.](Kubernetes_v2/Scenarios/Scenario05) Deploy your first app with File storage  
+[6.](Kubernetes_v2/Scenarios/Scenario06) Configure your first iSCSI backends & storage classes  
+[7.](Kubernetes_v2/Scenarios/Scenario07) Deploy your first app with Block storage  
+[8.](Kubernetes_v2/Scenarios/Scenario08) Use the 'import' feature of Trident  
 [9.](Kubernetes_v2/Scenarios/Scenario09) Consumption control  
 [10.](Kubernetes_v2/Scenarios/Scenario10) Resize a NFS CSI PVC  
 [11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  

@@ -2,7 +2,7 @@
 # ADDENDA 3: How to deploy User PODs on the master node
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 In most production environments, you will reserve nodes for _management_ workloads & others for _user_ workloads.  
 In this environment, we have a 3 nodes cluster made of 1 master node & 2 worker nodes. The master node probably has enough resources to add some extra workloads.  
 However, by default, a user POD cannot run on a _master_ node.  
@@ -46,3 +46,8 @@ node/rhel3 untainted
 Taints:             <none>
 ```
 & Done ! New PODs can be schedule on the master node !
+
+
+## C. What's next
+
+Back to the [frontpage](../../)?

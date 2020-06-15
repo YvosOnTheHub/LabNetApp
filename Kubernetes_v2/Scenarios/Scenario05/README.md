@@ -59,7 +59,8 @@ Give it a try !
 
 ## C. Explore the app container
 
-Let's see if the */var/lib/ghost/content* folder is indeed mounted to the NFS PVC that was created.
+Let's see if the */var/lib/ghost/content* folder is indeed mounted to the NFS PVC that was created.  
+**You need to customize the following commands with the POD name you have in your environment.**
 
 ```
 # kubectl exec -n ghost blog-57d7d4886-5bsml -- df /var/lib/ghost/content
@@ -78,13 +79,25 @@ settings
 themes
 ```
 
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
 
-## D. Cleanup
+## D. Cleanup (optional)
 
-The PVC will be reused in the scenario9 ('import a volume'). Only clean up if you dont plan to do the scenario9.
+:boom:  
+**The PVC will be reused in the [scenario8](../Scenario08) ('import a volume'). Only clean up if you dont plan to do the scenario8.**  
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
+:boom:  
 
 ```
 # kubectl delete ns ghost
 namespace "ghost" deleted
 ```
+
+## E. What's next
+
+I hope you are getting more familiar with Trident now. You can move on to:    
+- [Scenario06](../Scenario06) Configure your first iSCSI backends & storage classes 
+- [Scenario08](../Scenario08) Use the 'import' feature of Trident  
+- [Scenario09](../Scenario09) Consumption control  
+- [Scenario10](../Scenario10) Resize a NFS CSI PVC
+or go back to the [FrontPage](../../)

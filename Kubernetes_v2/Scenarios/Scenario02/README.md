@@ -104,3 +104,11 @@ You can check that the Trident endpoint is taken into account & in the right sta
 ## F. Play around
 
 Now that Trident is integrated into Prometheus, you can retrieve metrics or build graphs.
+
+
+## G. What's next
+
+Now that Trident is connected to Prometheus, you can proceed with :  
+- [Scenario03](../Scenario03)  Configure Grafana & add your first graphs  
+
+or go back to the [FrontPage](../../)

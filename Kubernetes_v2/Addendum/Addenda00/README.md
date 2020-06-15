@@ -88,4 +88,9 @@ trident-operator-78c5b7f97f-76ppr:      netapp/trident-operator:20.04.0,
 ```
 What is interesting to notice is that when upgrading Kubernetes, new sidecars are added to CSI Trident:
 - Kubernetes 1.16: Volume Expansion (CSI Resizer) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/volume-expansion.html)
-- Kubernetes 1.17: Snapshot & Restore (CSI Snapshotter) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/snapshot-restore-feature.html)
+- Kubernetes 1.17: Snapshot & Restore (CSI Snapshotter) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/snapshot-restore-feature.html)  
+
+
+## C. What's next
+
+Back to the [frontpage](../../)?

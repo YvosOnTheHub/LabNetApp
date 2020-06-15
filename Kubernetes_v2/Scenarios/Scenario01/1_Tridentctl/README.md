@@ -2,7 +2,7 @@
 # SCENARIO 1: Trident install/upgrade with tridenctl
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 This scenario is intended to see how easy it is to upgrade Trident with Tridentctl
 The examples below will guide you in performing an upgrade from 19.07.1 to 20.04
 
@@ -87,10 +87,10 @@ INFO Deleted installer service account.
 
 ## C. Download the version you would like to install
 ```
-cd
-mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.04.0/trident-installer-20.04.0.tar.gz
-tar -xf trident-installer-20.04.0.tar.gz
+# cd
+# mv trident-installer/ trident-installer_19.07
+# wget https://github.com/NetApp/trident/releases/download/v20.04.0/trident-installer-20.04.0.tar.gz
+# tar -xf trident-installer-20.04.0.tar.gz
 ```
 
 ## D. Install the new version
@@ -154,6 +154,14 @@ As you can see, the backends are still present, nothing has been deleted in term
 As this environment is already configured with different objects (backends, storage classes ...) and it order to get the best out of these learning scenarios, I would recommended to delete these objects
 
 ```
-kubectl delete sc --all
-tridentctl -n trident delete backend --all
+# kubectl delete sc --all
+# tridentctl -n trident delete backend --all
 ```
+
+## G. What's next
+
+Now that Trident is installed, you can proceed with :  
+- [Scenario02](../../Scenario02)  Installing Prometheus & incorporate Trident's metrics  
+Or you can directly go to  
+- [Scenario04](../../Scenario04)  Configure your first NAS backends & storage classes  
+or go back to the [FrontPage](../../../)

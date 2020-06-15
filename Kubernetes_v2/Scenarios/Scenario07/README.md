@@ -53,6 +53,7 @@ Give it a try !
 ## C. Explore the app container
 
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the SAN PVC that was created.
+**You need to customize the following commands with the POD name you have in your environment.**
 
 ```
 # kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- df /var/lib/ghost/content
@@ -69,6 +70,8 @@ settings
 themes
 ```
 
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
+
 
 ## D. Cleanup
 
@@ -78,3 +81,9 @@ Instead of deleting each object one by one, you can directly delete the namespac
 # kubectl delete ns ghostsan
 namespace "ghostsan" deleted
 ```
+
+## E. What's next
+
+Now that you have tried working with SAN backends, you can try to resize a PVC:
+- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
+or go back to the [FrontPage](../../)

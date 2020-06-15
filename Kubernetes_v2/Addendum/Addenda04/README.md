@@ -2,7 +2,7 @@
 # ADDENDA 4: How to upgrade the Kubernetes cluster
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 Some interesting features require a more recent version than the one you find in this LabOnDemand:
 - iSCSI PVC Resizing
 - "On-Demand Snapshots" & "PVC from Snapshot"
@@ -480,3 +480,9 @@ rhel3   Ready    master   214d   v1.18.2
 ```
 Tadaaa again !
 ```
+
+
+
+## D. What's next
+
+Back to the [frontpage](../../)?

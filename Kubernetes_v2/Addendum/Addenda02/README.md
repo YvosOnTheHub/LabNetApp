@@ -2,7 +2,7 @@
 # ADDENDA 2: Specify a default storage class
 #########################################################################################
 
-GOAL:  
+**GOAL:**  
 Most of the volume requests in this lab refer to a specific storage class.  
 Setting a _default_ storage class can be useful, especially when this one is used most times.
 This also allows you not to set the storage class parameter in the Volume Claim anymore.
@@ -44,3 +44,8 @@ If you take a closer look at the _get pv_ result, you will see that it shows the
 # kubectl delete pvc pvc-without-sc
 persistentvolumeclaim "pvc-without-sc" deleted
 ```
+
+
+## C. What's next
+
+Back to the [frontpage](../../)?

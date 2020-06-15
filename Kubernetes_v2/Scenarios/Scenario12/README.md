@@ -24,6 +24,10 @@ This application is based on 3 elements:
 - 2 services
 - the StatefulSet (3 replicas of the application)
 
+:mag:  
+*A* **ConfigMap** *is an API object used to store non-confidential data in key-value pairs. Pods can consume ConfigMaps as environment variables, command-line arguments, or as configuration files in a volume. A ConfigMap allows you to decouple environment-specific configuration from your container images, so that your applications are easily portable.*  
+:mag_right:  
+
 ```
 # kubectl create namespace mysql
 namespace/mysql created
@@ -175,3 +179,11 @@ Also, if the second window is still open, you should start seeing new _id_ ('103
 # kubectl delete namespace mysql
 namespace "mysql" deleted
 ```
+
+## F. What's next
+
+You can now move on to:    
+- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
+- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15) Dynamic export policy management  
+or go back to the [FrontPage](../../)

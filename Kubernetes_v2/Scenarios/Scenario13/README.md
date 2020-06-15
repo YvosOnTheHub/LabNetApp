@@ -116,5 +116,11 @@ namespace "resize" deleted
 
 # kubectl delete sc sc-san-resize
 storageclass.storage.k8s.io "sc-san-resize" deleted
-
 ```
+
+## D. What's next
+
+You can now move on to:    
+- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15) Dynamic export policy management  
+or go back to the [FrontPage](../../)
