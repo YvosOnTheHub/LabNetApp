@@ -50,4 +50,4 @@ Taints:             <none>
 
 ## C. What's next
 
-Back to the [frontpage](../../)?
+Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?

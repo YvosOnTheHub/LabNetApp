@@ -29,4 +29,4 @@ vserver iscsi create -target-alias svm1 -vserver svm1
 
 ## What's next
 
-Back to the [frontpage](../../)?
+Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?

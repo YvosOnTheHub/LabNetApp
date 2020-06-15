@@ -67,4 +67,4 @@ Example with https://github.com/NVIDIA/deepops/tree/master/roles/netapp-trident
 
 ## C. What's next
 
-Back to the [frontpage](../../)?
+Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?

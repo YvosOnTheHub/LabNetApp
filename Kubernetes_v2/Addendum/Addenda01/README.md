@@ -42,13 +42,13 @@ EOF
 ```
 Depending on the current version of the Kubernetes cluster, you may choose one command or the other.  
 - v1.15.3 is the version that is installed by default in the lab
-- v1.17.4 is the target version if you chose to upgrade the cluster [cf Addenda04](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04)
+- v1.17.6 is the target version if you chose to upgrade the cluster [cf Addenda04](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04)
 ```
 # yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
 ```
 OR
 ```
-# yum install -y kubelet-1.17.4 kubeadm-1.17.4 kubectl-1.17.4 --nogpgcheck
+# yum install -y kubelet-1.17.6 kubeadm-1.17.6 kubectl-1.17.6 --nogpgcheck
 ```
 Before joining this host, you just need to enable *Kubelet*, which is the local Kubernetes agent
 ```
@@ -93,4 +93,4 @@ trident-csi-wdmjq              2/2     Running   0          55s   192.168.0.63  
 
 ## C. What's next
 
-Back to the [frontpage](../../)?
+Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
