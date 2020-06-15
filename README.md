@@ -38,7 +38,7 @@ Addendum
 [3.](Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
 [4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage  
-[6.](Kubernetes_v2/Addendum/Addenda05) Install Ansible on RHEL3 (Kubernetes Master)  
+[6.](Kubernetes_v2/Addendum/Addenda06) Install Ansible on RHEL3 (Kubernetes Master)  
 
 ## B. Kubernetes v1 (pre-CSI)
 
