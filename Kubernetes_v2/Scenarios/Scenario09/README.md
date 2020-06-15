@@ -197,7 +197,7 @@ If the storage platform is also used by other workloads (Databases, Files Servic
 This can be achieved by setting a parameter on this SVM.  
 https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
 
-![Scenario09_4](Images/scenario09_4.JPG "Scenario09_4")
+![Scenario09_4](Images/scenario09_4_2.JPG "Scenario09_4")
 
 Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
 You can either login to System Manager & count, or run the following (password Netapp1!)
