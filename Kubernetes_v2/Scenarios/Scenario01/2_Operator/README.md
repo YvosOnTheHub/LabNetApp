@@ -217,4 +217,4 @@ Now that Trident is installed, you can proceed with :
 Or you can directly   
 - [Scenario04](../../Scenario04):  Configure your first NAS backends & storage classes  
 
-Or go back to the [FrontPage](../../../../)
+Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

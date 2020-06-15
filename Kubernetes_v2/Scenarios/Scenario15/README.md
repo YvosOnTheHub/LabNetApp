@@ -149,4 +149,4 @@ Tadaaaa !
 ## E. What's next
 
 You may have gone through all scenarios.  
-Maybe you could learn something in the different [addenda](../../../)?
+Maybe you could learn something in the different [addenda](https://github.com/YvosOnTheHub/LabNetApp)?

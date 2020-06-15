@@ -80,4 +80,4 @@ At this point, end-users can now create PVC against one of theses storage classe
 Now, you have some NAS Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 - [Scenario05](../Scenario05): Deploy your first app with File storage  
 
-Or go back to the [FrontPage](../../../)
+Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

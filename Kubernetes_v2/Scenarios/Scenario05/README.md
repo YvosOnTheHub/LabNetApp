@@ -101,4 +101,4 @@ I hope you are getting more familiar with Trident now. You can move on to:
 - [Scenario09](../Scenario09): Consumption control  
 - [Scenario10](../Scenario10): Resize a NFS CSI PVC  
 
-Or go back to the [FrontPage](../../../)
+Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
