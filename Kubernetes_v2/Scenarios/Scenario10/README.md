@@ -99,7 +99,8 @@ storageclass.storage.k8s.io "sc-nas-resize" deleted
 ## D. What's next
 
 You can now move on to:    
-- [Scenario11](../Scenario11) Using Virtual Storage Pools 
-- [Scenario12](../Scenario12) StatefulSets & Storage consumption 
-- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
-or go back to the [FrontPage](../../)
+- [Scenario11](../Scenario11): Using Virtual Storage Pools 
+- [Scenario12](../Scenario12): StatefulSets & Storage consumption 
+- [Scenario13](../Scenario13): Resize a iSCSI CSI PVC  
+
+Or go back to the [FrontPage](../../../)

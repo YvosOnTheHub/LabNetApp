@@ -11,9 +11,13 @@ Resizing a PVC is made available through the option *allowVolumeExpansion* set i
 
 ![Scenario13](Images/scenario13.jpg "Scenario13")
 
-As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version. This can be achieved by following the [Addenda4](../../Addendum/Addenda04).  
+:boom:  
+As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version.  
+This can be achieved by following the [Addenda4](../../Addendum/Addenda04).  
 
-Also, you will also need to configure your environment for iSCSI if not done yet. That part is described in the [Addenda5](../../Addendum/Addenda05).  
+Also, you will also need to configure your environment for iSCSI if not done yet.  
+That part is described in the [Addenda5](../../Addendum/Addenda05).  
+:boom:  
 
 ## A. Create a new storage class with the option allowVolumeExpansion.
 
@@ -121,6 +125,7 @@ storageclass.storage.k8s.io "sc-san-resize" deleted
 ## D. What's next
 
 You can now move on to:    
-- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
-- [Scenario15](../Scenario15) Dynamic export policy management  
-or go back to the [FrontPage](../../)
+- [Scenario14](../Scenario14): On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15): Dynamic export policy management  
+
+Or go back to the [FrontPage](../../../)

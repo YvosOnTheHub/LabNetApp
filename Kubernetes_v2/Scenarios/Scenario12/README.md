@@ -183,7 +183,8 @@ namespace "mysql" deleted
 ## F. What's next
 
 You can now move on to:    
-- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
-- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
-- [Scenario15](../Scenario15) Dynamic export policy management  
-or go back to the [FrontPage](../../)
+- [Scenario13](../Scenario13): Resize a iSCSI CSI PVC  
+- [Scenario14](../Scenario14): On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15): Dynamic export policy management  
+
+Or go back to the [FrontPage](../../../)

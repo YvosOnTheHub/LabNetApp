@@ -104,8 +104,9 @@ namespace "ghostnas" deleted
 ## F. What's next
 
 You can now move on to:    
-- [Scenario09](../Scenario09) Consumption control  
-- [Scenario10](../Scenario10) Resize a NFS CSI PVC
-- [Scenario11](../Scenario11) Using Virtual Storage Pools 
-- [Scenario12](../Scenario12) StatefulSets & Storage consumption  
-or go back to the [FrontPage](../../)
+- [Scenario09](../Scenario09): Consumption control  
+- [Scenario10](../Scenario10): Resize a NFS CSI PVC
+- [Scenario11](../Scenario11): Using Virtual Storage Pools 
+- [Scenario12](../Scenario12): StatefulSets & Storage consumption  
+
+Or go back to the [FrontPage](../../../)

@@ -15,17 +15,17 @@ https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/
 
 Helm, as a packaging tool, will be used to install Prometheus.
 ```
-cd
-wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
-tar xzvf helm-v3.0.3-linux-amd64.tar.gz
-cp linux-amd64/helm /usr/bin/
+# cd
+# wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
+# tar xzvf helm-v3.0.3-linux-amd64.tar.gz
+# cp linux-amd64/helm /usr/bin/
 ```
 
 ## B. Install Prometheus in its own namespace
 ```
-kubectl create namespace monitoring
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm install prom-operator stable/prometheus-operator  --namespace monitoring
+# kubectl create namespace monitoring
+# helm repo add stable https://kubernetes-charts.storage.googleapis.com
+# helm install prom-operator stable/prometheus-operator  --namespace monitoring
 ```
 You can check the installation with the following command:
 ```
@@ -109,6 +109,6 @@ Now that Trident is integrated into Prometheus, you can retrieve metrics or buil
 ## G. What's next
 
 Now that Trident is connected to Prometheus, you can proceed with :  
-- [Scenario03](../Scenario03)  Configure Grafana & add your first graphs  
+- [Scenario03](../Scenario03):  Configure Grafana & add your first graphs  
 
-or go back to the [FrontPage](../../)
+or go back to the [FrontPage](../../../)

@@ -11,7 +11,7 @@ Starting with Trident 20.04, there are 2 ways to deploy Trident:
 
 :boom:  
 Please note that Operator architecture is only for Green Field environments. You cannot upgrade from one method to the next.  
-Also, if it your first time playing with Trident, I would recommend going the Operator way directly.
+Also, if it your first time playing with Trident, I would recommend going the Operator way directly.  
 :boom:  
 
 Also, whatever way you choose to install Trident, the remaining scenarios wont be impacted. They work the same way in both architectures.

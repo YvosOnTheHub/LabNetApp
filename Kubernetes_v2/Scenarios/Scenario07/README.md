@@ -85,5 +85,6 @@ namespace "ghostsan" deleted
 ## E. What's next
 
 Now that you have tried working with SAN backends, you can try to resize a PVC:
-- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
-or go back to the [FrontPage](../../)
+- [Scenario13](../Scenario13): Resize a iSCSI CSI PVC  
+
+Or go back to the [FrontPage](../../../)

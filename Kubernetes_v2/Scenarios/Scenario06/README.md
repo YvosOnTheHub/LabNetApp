@@ -65,5 +65,6 @@ storageclass.storage.k8s.io/storage-class-san-economy created
 ## C. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
-- [Scenario07](../Scenario07) Deploy your first app with Block storage  
-or go back to the [FrontPage](../../)
+- [Scenario07](../Scenario07): Deploy your first app with Block storage  
+
+Or go back to the [FrontPage](../../../)

@@ -78,5 +78,6 @@ At this point, end-users can now create PVC against one of theses storage classe
 ## C. What's next
 
 Now, you have some NAS Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
-- [Scenario05](../Scenario05) Deploy your first app with File storage  
-or go back to the [FrontPage](../../)
+- [Scenario05](../Scenario05): Deploy your first app with File storage  
+
+Or go back to the [FrontPage](../../../)

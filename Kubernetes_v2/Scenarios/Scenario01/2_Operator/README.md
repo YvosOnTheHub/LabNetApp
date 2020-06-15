@@ -213,7 +213,8 @@ If you just want to display part of the description, you can use a filter such a
 ## G. What's next
 
 Now that Trident is installed, you can proceed with :  
-- [Scenario02](../../Scenario02)  Installing Prometheus & incorporate Trident's metrics  
+- [Scenario02](../../Scenario02):  Installing Prometheus & incorporate Trident's metrics  
 Or you can directly   
-- [Scenario04](../../Scenario04)  Configure your first NAS backends & storage classes  
-or go back to the [FrontPage](../../../)
+- [Scenario04](../../Scenario04):  Configure your first NAS backends & storage classes  
+
+Or go back to the [FrontPage](../../../../)

@@ -95,9 +95,9 @@ drwxrwxrwx 2 root root 4.0K Apr  3 16:34 pvc2
 drwxr-xr-x 2 root root 4.0K Apr  3 16:34 pvc3
 ```
 As planned, you can see here the correct permissions:
-- PVC1: 744 (parameter for the VSP _myapp1_)
-- PVC2: 777 (parameter for the VSP _myapp2_)
-- PVC3: 755 (default parameter for the backend)  
+- PVC1: **744** (parameter for the VSP _myapp1_)
+- PVC2: **777** (parameter for the VSP _myapp2_)
+- PVC3: **755** (default parameter for the backend)  
 
 Also, some PVC have the snapshot directory visible, some don't.
 ```
@@ -113,7 +113,7 @@ drwxr-xr-x 2 root root 4.0K Apr  3 16:34 .
 drwxr-xr-x 5 root root   42 Apr  5 14:45 ..
 ```
 
-Conclusion:  
+**Conclusion:**  
 This could have all be done through 3 different backend files, which is also perfectly fine.
 However, the more backends you manage, the more complexity you add. Introducing Virtual Storage Polls allows you to simplify this management.
 
@@ -134,8 +134,9 @@ storageclass.storage.k8s.io "sc-vsp3" deleted
 ## D. What's next
 
 You can now move on to:    
-- [Scenario12](../Scenario12) StatefulSets & Storage consumption 
-- [Scenario13](../Scenario13) Resize a iSCSI CSI PVC  
-- [Scenario14](../Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
-- [Scenario15](../Scenario15) Dynamic export policy management  
-or go back to the [FrontPage](../../)
+- [Scenario12](../Scenario12): StatefulSets & Storage consumption 
+- [Scenario13](../Scenario13): Resize a iSCSI CSI PVC  
+- [Scenario14](../Scenario14): On-Demand Snapshots & Create PVC from Snapshot  
+- [Scenario15](../Scenario15): Dynamic export policy management  
+
+Or go back to the [FrontPage](../../../)

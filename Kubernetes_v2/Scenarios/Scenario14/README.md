@@ -191,5 +191,6 @@ namespace "ghost" deleted
 ## F. What's next
 
 You can now move on to:    
-- [Scenario15](../Scenario15) Dynamic export policy management  
-or go back to the [FrontPage](../../)
+- [Scenario15](../Scenario15): Dynamic export policy management  
+
+Or go back to the [FrontPage](../../../)
