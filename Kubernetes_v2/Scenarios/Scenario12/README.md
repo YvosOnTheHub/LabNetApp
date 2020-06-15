@@ -172,6 +172,7 @@ Also, if the second window is still open, you should start seeing new _id_ ('103
 |         101 | 2020-04-07 10:25:54 |
 +-------------+---------------------+
 ```
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
 
 ## E. Clean up
 

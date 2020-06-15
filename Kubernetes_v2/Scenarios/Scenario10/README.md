@@ -80,6 +80,7 @@ Filesystem                                                    Size  Used Avail U
 192.168.0.135:/nas1_pvc_7eeea3f7_1bea_458b_9824_1dd442222d55   15G  256K   15G   1% /data
 ```
 As you can see, the resizing was done totally dynamically without any interruption.  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
 
 This could also have been achieved by using the _kubectl patch_ command. Try the following one:
 ```

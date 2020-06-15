@@ -62,6 +62,8 @@ storageclass.storage.k8s.io/storage-class-san created
 storageclass.storage.k8s.io/storage-class-san-economy created
 ```
 
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).
+
 ## C. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  

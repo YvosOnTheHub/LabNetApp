@@ -88,9 +88,10 @@ replicaset.apps/blogimport-66945d9   1         1         1       24m
 ## D. Access the app
 
 The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30082.
-Give it a try !
-=> http://192.168.0.63:30082
+Give it a try !  
+=> http://192.168.0.63:30082  
 
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
 
 ## E. Cleanup
 
