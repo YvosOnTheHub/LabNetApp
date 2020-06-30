@@ -27,7 +27,7 @@ Scenarios
 [11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  
 [12.](Kubernetes_v2/Scenarios/Scenario12) StatefulSets & Storage consumption  
 [13.](Kubernetes_v2/Scenarios/Scenario13) Resize a iSCSI CSI PVC  
-[14.](Kubernetes_v2/Scenarios/Scenario14) On-Demand Snapshots & Create PVC from Snapshot  
+[14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflow  
 [15.](Kubernetes_v2/Scenarios/Scenario15) Dynamic export policy management  
 
 Addendum

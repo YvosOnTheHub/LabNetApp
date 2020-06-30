@@ -100,9 +100,9 @@ OK, now let's first check the version of Kubernetes you are using:
 ```
 # kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   214d   v1.15.3
-rhel2   Ready    <none>   214d   v1.15.3
-rhel3   Ready    master   214d   v1.15.3
+rhel1   Ready    <none>   294d   v1.15.3
+rhel2   Ready    <none>   294d   v1.15.3
+rhel3   Ready    master   294d   v1.15.3
 ```
 The CRD object was promoted to GA with Kubernetes 1.16.  
 Depending on the current version of Kubernetes you are running, you will need to use one of the 2 following commands in order to install the Trident Provsioner CRD.

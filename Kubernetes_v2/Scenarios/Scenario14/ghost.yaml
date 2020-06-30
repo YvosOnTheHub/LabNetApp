@@ -2,9 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: blog-content
-  labels:
-    scenario: snap
+  name: mydata
 spec:
   accessModes:
   - ReadWriteMany
@@ -40,12 +38,12 @@ spec:
         - name: url
           value: http://my-blog.com
         volumeMounts:
-        - mountPath: /var/lib/ghost/content
+        - mountPath: /data
           name: content
       volumes:
       - name: content
         persistentVolumeClaim:
-          claimName: blog-content
+          claimName: mydata
 
 ---
 apiVersion: v1

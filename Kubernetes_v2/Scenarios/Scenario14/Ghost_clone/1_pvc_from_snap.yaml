@@ -1,9 +1,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-from-snap
-  labels:
-    scenario: clone
+  name: mydata-from-snap
 spec:
   accessModes:
     - ReadWriteMany
@@ -12,6 +10,6 @@ spec:
       storage: 5Gi
   storageClassName: storage-class-nas
   dataSource:
-    name: blog-snapshot
+    name: mydata-snapshot
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io

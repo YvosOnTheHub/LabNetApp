@@ -1,14 +1,22 @@
 #########################################################################################
-# SCENARIO 14: Test Kubernetes snapshots
+# SCENARIO 14: Kubernetes CSI Snapshots & PVC from Snapshot workflow
 #########################################################################################
 
 **GOAL:**  
 Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
 This is fully supported by Trident 20.01.1.  
 
-![Scenario14](Images/scenario14.jpg "Scenario14")
+While snapshots can be used for many use cases, we will see here 2 different ones, which share the same beginning:
+- Restore the snapshot in the current application
+- Create a new POD which uses a PVC created from the snapshot   
+There is also a chapter that will show you the impact of deletion between PVC, Snapshots & Clones (spoiler alert: no impact).  
 
 ## A. Prepare the environment
+
+:boom:  
+If you have not upgraded your Kubernetes cluster. It is a good idea to start now.  
+You can follow the addenda4(../../Addendum/Addenda04) for a step by step guide.  
+:boom:  
 
 We will create an app in its own namespace (also very useful to clean up everything).  
 We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario04](../Scenario04)).  
@@ -19,29 +27,29 @@ If you compare the Ghost app definition to the [Scenario05](../Scenario05), you 
 namespace/ghost created
 
 # kubectl create -n ghost -f ghost.yaml
-persistentvolumeclaim/blog-content created
+persistentvolumeclaim/mydata created
 deployment.apps/blog created
 service/blog created
 
 # kubectl get all -n ghost
-NAME                       READY   STATUS              RESTARTS   AGE
-pod/blog-57d7d4886-5bsml   1/1     Running             0          50s
+NAME                        READY   STATUS    RESTARTS   AGE
+pod/blog-5c9c4cdfbf-q986f   1/1     Running   0          42s
 
-NAME           TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/blog   NodePort   10.97.56.215   <none>        80:30080/TCP   50s
+NAME           TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/blog   NodePort   10.109.43.212   <none>        80:30080/TCP   42s
 
 NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blog   1/1     1            1           50s
+deployment.apps/blog   1/1     1            1           42s
 
-NAME                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/blog-57d7d4886   1         1         1       50s
+NAME                              DESIRED   CURRENT   READY   AGE
+replicaset.apps/blog-5c9c4cdfbf   1         1         1       42s
 
 # kubectl get pvc,pv -n ghost
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/blog-content   Bound    pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            storage-class-nas   4m3s
+NAME                           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+persistentvolumeclaim/mydata   Bound    pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX            storage-class-nas   76s
 
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS        REASON   AGE
-persistentvolume/pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            Delete           Bound    ghost/blog-content          storage-class-nas            4m2s
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM          STORAGECLASS        REASON   AGE
+persistentvolume/pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX            Delete           Bound    ghost/mydata   storage-class-nas            73s
 ```
 Because moving on, let's check we can access the app:  
 => http://192.168.0.63:30080
@@ -81,26 +89,35 @@ The _volume snapshot_ feature is now ready to be tested.
 
 ## C. Create a snapshot
 
+Before doing so, let's create a file in our PVC, that will be deleted once the snapshot is created.  
+That way, there is a difference between the current filesystem & the snapshot content.  
+(obviously, you need to replace the POD name with the one from your environment)  
+```
+# kubectl exec -n ghost blog-5c9c4cdfbf-q986f -- touch /data/test.txt
+# kubectl exec -n ghost blog-5c9c4cdfbf-q986f -- ls -l /data/test.txt
+-rw-r--r--    1 root     root             0 Jun 30 11:34 /data/test.txt
+```
+Now, we can proceed with the snapshot creation
 ```
 # kubectl create -n ghost -f pvc-snapshot.yaml
-volumesnapshot.snapshot.storage.k8s.io/blog-snapshot created
+volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot created
 
 # kubectl get volumesnapshot -n ghost
-NAME            READYTOUSE   SOURCEPVC      SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-blog-snapshot   true         blog-content                           5Gi           csi-snap-class   snapcontent-21331427-59a4-4b4a-a71f-91ffe2fb39bc   12m            12m
+NAME              READYTOUSE   SOURCEPVC      SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
+mydata-snapshot   true         mydata                                 5Gi           csi-snap-class   snapcontent-e4ab0f8c-5cd0-4797-a087-0770bd6f1498   25s            54s
 
 # tridentctl -n trident get volume
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-| pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d | 5.0 GiB | storage-class-nas | file     | bdc8ce93-2268-4820-9fc5-45a8d9dead2a | online | true    |
+| pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | online | true    |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 
 # tridentctl -n trident get snapshot
 +-----------------------------------------------+------------------------------------------+
 |                     NAME                      |                  VOLUME                  |
 +-----------------------------------------------+------------------------------------------+
-| snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc | pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d |
+| snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498 | pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 |
 +-----------------------------------------------+------------------------------------------+
 ```
 Your snapshot has been created !  
@@ -108,13 +125,17 @@ But what does it translate to at the storage level?
 With ONTAP, you will end up with a *ONTAP Snapshot*, a _ReadOnly_ object, which is instantaneous & space efficient!  
 You can see it by browsing through System Manager or connecting with Putty to the _cluster1_ profile (admin/Netapp1!)
 ```
-cluster1::> vol snaps show -vserver svm1 -volume nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
+cluster1::> vol snaps show -vserver svm1 -volume nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
                                                                  ---Blocks---
 Vserver  Volume   Snapshot                                  Size Total% Used%
 -------- -------- ------------------------------------- -------- ------ -----
-svm1     nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
-                  snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc
-                                                           180KB     0%   18%
+svm1     nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
+                  snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498
+                                                           156KB     0%   36%
+```
+Finally, let's delete the file we created earlier.
+```
+# kubectl exec -n ghost blog-5c9c4cdfbf-q986f -- rm -f /data/test.txt
 ```
 
 ## D. Create a clone (ie a _PVC from Snapshot_)
@@ -123,23 +144,23 @@ Having a snapshot can be useful to create a new PVC.
 If you take a look a the PVC file in the _Ghost/_clone_ directory, you can notice the reference to the snapshot:
 ```
   dataSource:
-    name: blog-snapshot
+    name: mydata-snapshot
     kind: VolumeSnapshot
     apiGroup: snapshot.storage.k8s.io
 ```
 Let's see how that turns out:
 ```
 # kubectl create -n ghost -f Ghost_clone/1_pvc_from_snap.yaml
-persistentvolumeclaim/pvc-from-snap created
+persistentvolumeclaim/mydata-from-snap created
 
 # kubectl get pvc,pv -n ghost
-NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-blog-content    Bound    pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d   5Gi        RWX            storage-class-nas   20h
-pvc-from-snap   Bound    pvc-4d6e8738-a419-405e-96fc-9cf3a0840b56   5Gi        RWX            storage-class-nas   6s
+NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+persistentvolumeclaim/mydata             Bound    pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX            storage-class-nas   13m
+persistentvolumeclaim/mydata-from-snap   Bound    pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            storage-class-nas   8s
 
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                 STORAGECLASS        REASON   AGE
-pvc-4d6e8738-a419-405e-96fc-9cf3a0840b56   5Gi        RWX            Delete           Bound    ghost/pvc-from-snap   storage-class-nas            19s
-pvc-b2113a4f-7359-4ab2-b771-a86272e3d11d   5Gi        RWX            Delete           Bound    ghost/blog-content    storage-class-nas            20h
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS        REASON   AGE
+persistentvolume/pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            Delete           Bound    ghost/mydata-from-snap   storage-class-nas            7s
+persistentvolume/pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX            Delete           Bound    ghost/mydata             storage-class-nas            13m
 ```
 Your clone has been created, but what does it translate to at the storage level?  
 With ONTAP, you will end up with a *FlexClone*, which is instantaneous & space efficient!  
@@ -150,47 +171,13 @@ cluster1::> vol clone show
                       Parent  Parent        Parent
 Vserver FlexClone     Vserver Volume        Snapshot             State     Type
 ------- ------------- ------- ------------- -------------------- --------- ----
-svm1    nas1_pvc_4d6e8738_a419_405e_96fc_9cf3a0840b56
-                      svm1    nas1_pvc_b2113a4f_7359_4ab2_b771_a86272e3d11d
-                                            snapshot-21331427-59a4-4b4a-a71f-91ffe2fb39bc
+svm1    nas1_pvc_525c8fff_f48b_4f7a_b5c3_8aa6230ff72f
+                      svm1    nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
+                                            snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498
                                                                  online    RW
 ```
-Now that we have a clone, what can we do with?  
-Well, we could maybe fire up a new Ghost environment with a new version while keeping the same content? This would a good way to test a new release, while not copying all the data for this specific environment. In other words, you would save time by doing so.  
 
-The first deployment uses Ghost v2.6. Let's try with Ghost 3.13 ...
-```
-# kubectl create -n ghost -f Ghost_clone/2_deploy.yaml
-deployment.apps/blogclone created
-
-# kubectl create -n ghost -f Ghost_clone/3_service.yaml
-service/blogclone created
-
-# kubectl get all -n ghost -l scenario=clone
-NAME                TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-service/blogclone   NodePort   10.105.214.201   <none>        80:30081/TCP   12s
-
-NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blogclone   1/1     1            1           2m19s
-```
-Let's check the result:  
-=> http://192.168.0.63:30081
-
-You can probably notice some differences between both pages...  
-
-Using this type of mechanism in a CI/CD pipeline can definitely save time (that's for Devs) & storage (that's for Ops)!
-
-
-## E. Cleanup
-
-```
-# kubectl delete ns ghost
-namespace "ghost" deleted
-```
-
-## F. What's next
-
-You can now move on to:    
-- [Scenario15](../Scenario15): Dynamic export policy management  
-
-Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
+This is were you can explore different ways to work with snapshots & clones:
+[1.](1_In_Place_Restore) Using the _legacy_ way, via _tridentctl_  
+[2.](2_Clone_for_new_app) Using Trident's Operator, introduced in 20.04  
+[3.](3_what_happens_when) Don't be afraid!  
