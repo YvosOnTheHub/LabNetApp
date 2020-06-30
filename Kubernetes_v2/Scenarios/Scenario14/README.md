@@ -9,6 +9,7 @@ This is fully supported by Trident 20.01.1.
 While snapshots can be used for many use cases, we will see here 2 different ones, which share the same beginning:
 - Restore the snapshot in the current application
 - Create a new POD which uses a PVC created from the snapshot   
+
 There is also a chapter that will show you the impact of deletion between PVC, Snapshots & Clones (spoiler alert: no impact).  
 
 ## A. Prepare the environment
