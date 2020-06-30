@@ -37,7 +37,10 @@ namespace "ghost" deleted
 ## What's next
 
 You can now move on to:    
-- [Scenario14_2](../2_Clone_for_new_app): Use snapshots for in place restore
+- [Scenario14_2](../2_Clone_for_new_app): Use snapshots for in place restore  
+- [Scenario14_3](../3_what_happens_when): Don't be afraid  
 - [Scenario15](../../Scenario15): Dynamic export policy management  
 
-Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
+Or go back to:
+- the [Scenario14 FrontPage](../..)
+- the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

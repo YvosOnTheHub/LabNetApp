@@ -15,7 +15,7 @@ There is also a chapter that will show you the impact of deletion between PVC, S
 
 :boom:  
 If you have not upgraded your Kubernetes cluster. It is a good idea to start now.  
-You can follow the addenda4(../../Addendum/Addenda04) for a step by step guide.  
+You can follow the [Addenda04](../../Addendum/Addenda04) for a step by step guide.  
 :boom:  
 
 We will create an app in its own namespace (also very useful to clean up everything).  
@@ -177,7 +177,7 @@ svm1    nas1_pvc_525c8fff_f48b_4f7a_b5c3_8aa6230ff72f
                                                                  online    RW
 ```
 
-This is were you can explore different ways to work with snapshots & clones:
-[1.](1_In_Place_Restore) Using the _legacy_ way, via _tridentctl_  
-[2.](2_Clone_for_new_app) Using Trident's Operator, introduced in 20.04  
-[3.](3_what_happens_when) Don't be afraid!  
+This is were you can explore different ways to work with snapshots & clones:  
+[1.](1_In_Place_Restore) Restore a snapshot in the first app  
+[2.](2_Clone_for_new_app) Launch a new app from the clone    
+[3.](3_what_happens_when) Finally, you can see the impacts of deleting some of these objects     
