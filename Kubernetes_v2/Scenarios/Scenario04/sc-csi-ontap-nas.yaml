@@ -5,3 +5,4 @@ metadata:
 provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas"
+  storagePools: "NAS_Vol-default:aggr1"
