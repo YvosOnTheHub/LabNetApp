@@ -2,7 +2,7 @@
 # ADDENDA 1: Add a node to the cluster
 #########################################################################################
 
-**GOAL:**   
+**GOAL:**  
 Some exercices may benefit from a bigger cluster size (ex: Scenario13: StatefulSets).  
 The LabOnDemand has 6 unix hosts, but only 3 are part of the Kubernetes cluster.  
 This addenda will provide you with all the commands to run to bring a new node into the Kubernetes cluster.
@@ -12,7 +12,7 @@ First, connect to this host with Putty...
 
 ## A. Prepare the host (firewall, security)
 
-```
+```bash
 # cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -20,8 +20,10 @@ EOF
 
 # reboot
 ```
+
 Once this host is back online, continue with:
-```
+
+```bash
 # setenforce 0
 # swapoff -a
 ```
@@ -65,8 +67,10 @@ This node has joined the cluster:
 
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 ```
+
 Now, you can go back to the master (ie _rhel3_), and wait for the new node to be totally available
-```
+
+```bash
 # kubectl get nodes --watch
 NAME    STATUS     ROLES    AGE    VERSION
 rhel1   Ready      <none>   206d   v1.15.3

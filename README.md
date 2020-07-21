@@ -32,7 +32,7 @@ Scenarios
 
 Addendum
 --------
-[0.](Kubernetes_v2/Addendum/Addenda00) Useful commands    
+[0.](Kubernetes_v2/Addendum/Addenda00) Useful commands  
 [1.](Kubernetes_v2/Addendum/Addenda01) Add a node to the cluster  
 [2.](Kubernetes_v2/Addendum/Addenda02) Specify a default storage class  
 [3.](Kubernetes_v2/Addendum/Addenda03) Allow user PODs on the master node  
