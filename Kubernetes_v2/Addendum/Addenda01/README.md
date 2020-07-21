@@ -12,27 +12,28 @@ First, connect to this host with Putty...
 
 ## A. Prepare the host (firewall, security)
 
-```
-# cat <<EOF >  /etc/sysctl.d/k8s.conf
+```bash
+$ cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 
-# reboot
+$ reboot
 ```
 
 Once this host is back online, continue with:
 
+```bash
+$ setenforce 0
+$ swapoff -a
 ```
-# setenforce 0
-# swapoff -a
-```
+
 Last, edit /etc/fstab & comment (\#) the swap line
 
 ## B. Install the kubernetes packages & join the cluster
 
-```
-# cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+```bash
+$ cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -48,27 +49,27 @@ Depending on the current version of the Kubernetes cluster, you may choose one c
 - v1.15.3 is the version that is installed by default in the lab
 - v1.18.5 is the target version if you chose to upgrade the cluster [cf Addenda04](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04)
 
-```
-# yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
+```bash
+$ yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
 ```
 
 OR
 
-```
-# yum install -y kubelet-1.18.5 kubeadm-1.18.5 kubectl-1.18.5 --nogpgcheck
+```bash
+$ yum install -y kubelet-1.18.5 kubeadm-1.18.5 kubectl-1.18.5 --nogpgcheck
 ```
 
 Before joining this host, you just need to enable *Kubelet*, which is the local Kubernetes agent
 
-```
-# systemctl enable kubelet && systemctl start kubelet
+```bash
+$ systemctl enable kubelet && systemctl start kubelet
 ```
 
 Time to join the cluster!
 
-```
-# kubeadm reset
-# kubeadm join 192.168.0.63:6443 --token 1fpzhb.diqla6g7x83b4iah --discovery-token-ca-cert-hash sha256:8469a0fe236e02b5c4834196a3d85ce1b5352598a824010dced8cb5e0f43f4c5
+```bash
+$ kubeadm reset
+$ kubeadm join 192.168.0.63:6443 --token 1fpzhb.diqla6g7x83b4iah --discovery-token-ca-cert-hash sha256:8469a0fe236e02b5c4834196a3d85ce1b5352598a824010dced8cb5e0f43f4c5
 ...
 This node has joined the cluster:
 * Certificate signing request was sent to apiserver and a response was received.
@@ -79,8 +80,8 @@ Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 
 Now, you can go back to the master (ie _rhel3_), and wait for the new node to be totally available
 
-```
-# kubectl get nodes --watch
+```bash
+$ kubectl get nodes --watch
 NAME    STATUS     ROLES    AGE    VERSION
 rhel1   Ready      <none>   206d   v1.15.3
 rhel2   Ready      <none>   206d   v1.15.3
@@ -94,8 +95,8 @@ Tadaaaa!!
 If Trident is already installed, you will see that a new POD will start on this new host.  
 This is totally expected as CSI Trident is partially composed of DaemonSets, which by definition run on every nodes.
 
-```
-# kubectl get pods -n trident -o wide
+```bash
+$ kubectl get pods -n trident -o wide
 NAME                           READY   STATUS    RESTARTS   AGE   IP             NODE    NOMINATED NODE   READINESS GATES
 trident-csi-5fztb              2/2     Running   0          55s   192.168.0.62   rhel2   <none>           <none>
 trident-csi-6b778f79bb-7n4x2   3/3     Running   0          55s   10.39.0.1      rhel4   <none>           <none>

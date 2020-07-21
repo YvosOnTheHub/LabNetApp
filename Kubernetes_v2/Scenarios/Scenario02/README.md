@@ -10,10 +10,10 @@ You can either follow this scenario or go through the following link:
 https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/
 
 
-
 ## A. Install Helm
 
 Helm, as a packaging tool, will be used to install Prometheus.
+
 ```
 # cd
 # wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
@@ -22,12 +22,15 @@ Helm, as a packaging tool, will be used to install Prometheus.
 ```
 
 ## B. Install Prometheus in its own namespace
+
 ```
 # kubectl create namespace monitoring
 # helm repo add stable https://kubernetes-charts.storage.googleapis.com
 # helm install prom-operator stable/prometheus-operator  --namespace monitoring
 ```
+
 You can check the installation with the following command:
+
 ```
 # helm list -n monitoring
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
@@ -41,11 +44,13 @@ But how can you access from your browser?
 
 The way Prometheus is installed required it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
 We will modify the Prometheus service in order to access it from anywhere in the lab, with why not a *NodePort* configuration
+
 ```
 # kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
 ```
 
 ### BEFORE:
+
 ```
 spec:
   clusterIP: 10.96.69.69
@@ -62,6 +67,7 @@ spec:
 ```
 
 ### AFTER: (look at the ***nodePort*** & ***type*** lines)
+
 ```
 spec:
   clusterIP: 10.96.69.69
@@ -104,7 +110,6 @@ You can check that the Trident endpoint is taken into account & in the right sta
 ## F. Play around
 
 Now that Trident is integrated into Prometheus, you can retrieve metrics or build graphs.
-
 
 ## G. What's next
 
