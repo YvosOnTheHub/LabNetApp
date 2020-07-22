@@ -9,30 +9,29 @@ Going through this scenario at this point will be interesting as you will actual
 You can either follow this scenario or go through the following link:  
 https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/
 
-
 ## A. Install Helm
 
 Helm, as a packaging tool, will be used to install Prometheus.
 
-```
-# cd
-# wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
-# tar xzvf helm-v3.0.3-linux-amd64.tar.gz
-# cp linux-amd64/helm /usr/bin/
+```bash
+cd
+wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
+tar xzvf helm-v3.0.3-linux-amd64.tar.gz
+cp linux-amd64/helm /usr/bin/
 ```
 
 ## B. Install Prometheus in its own namespace
 
-```
-# kubectl create namespace monitoring
-# helm repo add stable https://kubernetes-charts.storage.googleapis.com
-# helm install prom-operator stable/prometheus-operator  --namespace monitoring
+```bash
+kubectl create namespace monitoring
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm install prom-operator stable/prometheus-operator  --namespace monitoring
 ```
 
 You can check the installation with the following command:
 
-```
-# helm list -n monitoring
+```bash
+$ helm list -n monitoring
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
 prom-operator   monitoring      1               2020-04-30 12:43:12.515947662 +0000 UTC deployed        prometheus-operator-8.13.4      0.38.1
 ```
@@ -45,13 +44,13 @@ But how can you access from your browser?
 The way Prometheus is installed required it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
 We will modify the Prometheus service in order to access it from anywhere in the lab, with why not a *NodePort* configuration
 
-```
-# kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
+```bash
+kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
 ```
 
 ### BEFORE:
 
-```
+```bash
 spec:
   clusterIP: 10.96.69.69
   ports:
@@ -68,7 +67,7 @@ spec:
 
 ### AFTER: (look at the ***nodePort*** & ***type*** lines)
 
-```
+```bash
 spec:
   clusterIP: 10.96.69.69
   ports:
@@ -95,8 +94,8 @@ https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-gui
 In substance, we will tell in this object to look at services that have the label *trident* & retrieve metrics from its endpoint.
 The Yaml file has been provided and is available in the Scenario2 sub-directory
 
-```
-# kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario02/Trident_ServiceMonitor.yml
+```bash
+$ kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario02/Trident_ServiceMonitor.yml
 servicemonitor.monitoring.coreos.com/trident-sm created
 ```
 
@@ -113,7 +112,8 @@ Now that Trident is integrated into Prometheus, you can retrieve metrics or buil
 
 ## G. What's next
 
-Now that Trident is connected to Prometheus, you can proceed with :  
+Now that Trident is connected to Prometheus, you can proceed with :
+
 - [Scenario03](../Scenario03):  Configure Grafana & add your first graphs  
 
 or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

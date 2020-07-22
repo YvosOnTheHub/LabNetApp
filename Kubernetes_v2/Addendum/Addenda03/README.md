@@ -10,14 +10,15 @@ This seggregation is done through the mechanisms of *Taints* & *Tolerations*:
 https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 
 ## A. Let's look at the environment
-```
-# kubectl get nodes
+
+```bash
+$ kubectl get nodes
 NAME    STATUS   ROLES    AGE     VERSION
 rhel1   Ready    <none>   210d    v1.15.3
 rhel2   Ready    <none>   210d    v1.15.3
 rhel3   Ready    master   210d    v1.15.3
 
-# kubectl describe node rhel3
+$ kubectl describe node rhel3
 Name:               rhel3
 Roles:              master
 Labels:             beta.kubernetes.io/arch=amd64
@@ -34,19 +35,21 @@ CreationTimestamp:  Mon, 09 Sep 2019 04:04:29 +0000
 Taints:             node-role.kubernetes.io/master:NoSchedule
 Unschedulable:      false
 ```
+
 Notice, the _taint_ set to _NoSchedule_, which means that no pod will be able to be schedule on the master.  
 To modify this behavior, you need to _untaint_ the node.  
 
 ## B. Modify the master to accept PODs.
-```
-# kubectl taint nodes rhel3 node-role.kubernetes.io/master-
+
+```bash
+$ kubectl taint nodes rhel3 node-role.kubernetes.io/master-
 node/rhel3 untainted
 
-# kubectl describe node rhel3 | grep Taint
+$ kubectl describe node rhel3 | grep Taint
 Taints:             <none>
 ```
-& Done ! New PODs can be schedule on the master node !
 
+& Done ! New PODs can be schedule on the master node !
 
 ## C. What's next
 

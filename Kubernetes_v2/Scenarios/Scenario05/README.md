@@ -2,10 +2,11 @@
 # SCENARIO 5: Create your first App
 #########################################################################################
 
-**GOAL:**   
+**GOAL:**  
 Now that the admin has configured Trident, and has created storage classes, the end-user can request PVC.  
 
 Ghost is a light weight web portal. You will a few YAML files in the Ghost directory:
+
 - a PVC to manage the persistent storage of this app
 - a DEPLOYMENT that will define how to manage the app
 - a SERVICE to expose the app
@@ -17,16 +18,16 @@ Ghost is a light weight web portal. You will a few YAML files in the Ghost direc
 We will create this app in its own namespace (also very useful to clean up everything).  
 We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04))
 
-```
-# kubectl create namespace ghost
+```bash
+$ kubectl create namespace ghost
 namespace/ghost created
 
-# kubectl create -n ghost -f Ghost/
+$ kubectl create -n ghost -f Ghost/
 persistentvolumeclaim/blog-content created
 deployment.apps/blog created
 service/blog created
 
-# kubectl get all -n ghost
+$ kubectl get all -n ghost
 NAME                       READY   STATUS              RESTARTS   AGE
 pod/blog-57d7d4886-5bsml   1/1     Running             0          50s
 
@@ -39,7 +40,7 @@ deployment.apps/blog   1/1     1            1           50s
 NAME                             DESIRED   CURRENT   READY   AGE
 replicaset.apps/blog-57d7d4886   1         1         1       50s
 
-# kubectl get pvc,pv -n ghost
+$ kubectl get pvc,pv -n ghost
 NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 persistentvolumeclaim/blog-content   Bound    pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            storage-class-nas   4m3s
 
@@ -48,7 +49,6 @@ persistentvolume/pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX      
 ...
 ```
 
-
 ## B. Access the app
 
 It takes about 40 seconds for the POD to be in a *running* state
@@ -56,20 +56,19 @@ The Ghost service is configured with a NodePort type, which means you can access
 Give it a try !
 => http://192.168.0.63:30080
 
-
 ## C. Explore the app container
 
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the NFS PVC that was created.  
 **You need to customize the following commands with the POD name you have in your environment.**
 
-```
-# kubectl exec -n ghost blog-57d7d4886-5bsml -- df /var/lib/ghost/content
+```bash
+$ kubectl exec -n ghost blog-57d7d4886-5bsml -- df /var/lib/ghost/content
 Filesystem           1K-blocks      Used Available Use% Mounted on
 192.168.0.135:/ansible_pvc_ce8d812b_d976_43f9_8320_48a49792c972
                        5242880       704   5242176   0% /var/lib/ghost/content
 
 
-# kubectl exec -n ghost blog-57d7d4886-5bsml -- ls /var/lib/ghost/content
+$ kubectl exec -n ghost blog-57d7d4886-5bsml -- ls /var/lib/ghost/content
 apps
 data
 images
@@ -88,14 +87,15 @@ If you have configured Grafana, you can go back to your dashboard, to check what
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.  
 :boom:  
 
-```
-# kubectl delete ns ghost
+```bash
+$ kubectl delete ns ghost
 namespace "ghost" deleted
 ```
 
 ## E. What's next
 
-I hope you are getting more familiar with Trident now. You can move on to:    
+I hope you are getting more familiar with Trident now. You can move on to:
+
 - [Scenario06](../Scenario06): Configure your first iSCSI backends & storage classes 
 - [Scenario08](../Scenario08): Use the 'import' feature of Trident  
 - [Scenario09](../Scenario09): Consumption control  

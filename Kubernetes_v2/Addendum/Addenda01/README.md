@@ -24,8 +24,8 @@ $ reboot
 Once this host is back online, continue with:
 
 ```bash
-$ setenforce 0
-$ swapoff -a
+setenforce 0
+swapoff -a
 ```
 
 Last, edit /etc/fstab & comment (\#) the swap line
@@ -50,19 +50,19 @@ Depending on the current version of the Kubernetes cluster, you may choose one c
 - v1.18.5 is the target version if you chose to upgrade the cluster [cf Addenda04](https://github.com/YvosOnTheHub/LabNetApp/tree/master/Kubernetes_v2/Addendum/Addenda04)
 
 ```bash
-$ yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
+yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 --nogpgcheck
 ```
 
 OR
 
 ```bash
-$ yum install -y kubelet-1.18.5 kubeadm-1.18.5 kubectl-1.18.5 --nogpgcheck
+yum install -y kubelet-1.18.5 kubeadm-1.18.5 kubectl-1.18.5 --nogpgcheck
 ```
 
 Before joining this host, you just need to enable *Kubelet*, which is the local Kubernetes agent
 
 ```bash
-$ systemctl enable kubelet && systemctl start kubelet
+systemctl enable kubelet && systemctl start kubelet
 ```
 
 Time to join the cluster!
