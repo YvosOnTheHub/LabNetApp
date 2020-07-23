@@ -24,7 +24,7 @@ $ tridentctl -n trident create backend -f backend-with-CIDR.json
 | Export_with_CIDR | ontap-nas      | ebf1efb0-e8c6-457e-8e1a-827b1725ed9e | online |       0 |
 +------------------+----------------+--------------------------------------+--------+---------+
 
-# tridentctl -n trident create backend -f backend-without-CIDR.json
+$ tridentctl -n trident create backend -f backend-without-CIDR.json
 +---------------------+----------------+--------------------------------------+--------+---------+
 |        NAME         | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +---------------------+----------------+--------------------------------------+--------+---------+

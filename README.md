@@ -9,7 +9,8 @@ Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.  
 
 Last, there are plenty of commands to write or copy/paste.  
-Most of them start with a '#', usually followed by the result you would get.  
+Try using some of the shortcuts you will find in the the Addenda0!
+
 :boom:  
 
 Scenarios
