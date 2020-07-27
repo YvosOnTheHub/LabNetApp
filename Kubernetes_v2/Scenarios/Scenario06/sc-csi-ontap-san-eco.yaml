@@ -5,3 +5,4 @@ metadata:
 provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-san-economy"
+  storagePools: "SAN_ECO-default:aggr1"
