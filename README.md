@@ -2,26 +2,26 @@
 
 ## A. Kubernetes v2 (with CSI)
 
-The section has been tested with the Lab-on-Demand Using "Trident with Kubernetes and ONTAP v3.1" which comes with Trident 19.07 already installed on Kubernetes 1.15.3.
+The section has been tested with the Lab-on-Demand Using "Trident with Kubernetes and ONTAP v3.1" which comes with Trident :trident: 19.07 already installed on Kubernetes 1.15.3.
 
 :boom:  
 Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.  
 
 Last, there are plenty of commands to write or copy/paste.  
-Try using some of the shortcuts you will find in the the Addenda0!
+Try using some of the shortcuts you will find in the the Addenda0!  
 :boom:  
 
 Scenarios (updated for Trident 20.07)
 ---------
-[1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident  
-[2.](Kubernetes_v2/Scenarios/Scenario02) Install Prometheus & incorporate Trident's metrics  
-[3.](Kubernetes_v2/Scenarios/Scenario03) Configure Grafana & add your first graphs  
+[1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident :arrows_counterclockwise:  
+[2.](Kubernetes_v2/Scenarios/Scenario02) Install Prometheus & incorporate Trident's metrics :arrows_counterclockwise:  
+[3.](Kubernetes_v2/Scenarios/Scenario03) Configure Grafana & add your first graphs :arrows_counterclockwise:  
 [4.](Kubernetes_v2/Scenarios/Scenario04) Configure your first NAS backends & storage classes  
 [5.](Kubernetes_v2/Scenarios/Scenario05) Deploy your first app with File storage  
 [6.](Kubernetes_v2/Scenarios/Scenario06) Configure your first iSCSI backends & storage classes  
 [7.](Kubernetes_v2/Scenarios/Scenario07) Deploy your first app with Block storage  
-[8.](Kubernetes_v2/Scenarios/Scenario08) Use the 'import' feature of Trident  
+[8.](Kubernetes_v2/Scenarios/Scenario08) Use the 'import' feature of Trident :arrows_counterclockwise:  
 [9.](Kubernetes_v2/Scenarios/Scenario09) Consumption control  
 [10.](Kubernetes_v2/Scenarios/Scenario10) Resize a NFS CSI PVC  
 [11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  
@@ -39,7 +39,7 @@ Addendum
 [4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage  
 [6.](Kubernetes_v2/Addendum/Addenda06) Install Ansible on RHEL3 (Kubernetes Master)  
-[7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB)  
+[7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB) :new:  
 
 ## B. Kubernetes v1 (pre-CSI)
 
