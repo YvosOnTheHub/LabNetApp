@@ -28,7 +28,19 @@ EOT
 
 Don't forget to type in _bash_ in order to take the modifications into account
 
-## B. How can I easily list all the containers in a POD
+## B. How can I easily list all the PVC of an application
+
+If you are dealing with applications with lots of PODs & volumes, you may want to get a matrix which shows all the PVC per POD:
+The following example was used in the Scenario12, which presents StatefulSets.
+
+```bash
+$ kubectl get pods -n mysql -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.volumes[*].persistentVolumeClaim}{.claimName}{" "}{end}{end}{"\n"}'
+mysql-0:        data-mysql-0
+mysql-1:        data-mysql-1
+mysql-2:        data-mysql-2
+```
+
+## C. How can I easily list all the containers in a POD
 
 As there is no option to do so, you need to _extract_ this information from the POD definition.
 Here are some examples with Trident 20.01.1, in several Kubernetes versions

@@ -71,7 +71,7 @@ mysql-2   2/2     Running   1          24h   10.39.0.2   rhel4   <none>         
 Now, check the storage. You can see that 3 PVC were created, one per POD.
 
 ```bash
-$ kubectl get -n mysql pvc,pv 
+$ kubectl get -n mysql pvc,pv
 NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
 persistentvolumeclaim/data-mysql-0   Bound    pvc-f348ec0a-f304-49d8-bbaf-5a85685a6194   10Gi       RWO            storage-class-nas   5m
 persistentvolumeclaim/data-mysql-1   Bound    pvc-ce114401-5789-454a-ba1c-eb5453fbe026   10Gi       RWO            storage-class-nas   5m
@@ -89,8 +89,7 @@ To connect to MySQL, we will use another POD which will connect to the master DB
 Copy & paste the whole block at once:
 
 ```bash
-$ kubectl run mysql-client -n mysql --image=mysql:5.7 -i --rm --restart=Never --\
- mysql -h mysql-0.mysql <<EOF
+$ kubectl run mysql-client -n mysql --image=mysql:5.7 -i --rm --restart=Never -- mysql -h mysql-0.mysql <<EOF
 CREATE DATABASE test;
 CREATE TABLE test.messages (message VARCHAR(250));
 INSERT INTO test.messages VALUES ('hello');
@@ -192,7 +191,7 @@ Also, if the second window is still open, you should start seeing new _id_ ('103
 +-------------+---------------------+
 ```
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).  
 
 ## E. Clean up
 

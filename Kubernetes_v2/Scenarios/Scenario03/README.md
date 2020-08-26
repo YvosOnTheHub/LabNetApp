@@ -10,48 +10,26 @@ We will learn how to access Grafana, and configure a graph.
 ## A. Expose Grafana
 
 With Grafana, we are facing the same issue than with Prometheus with regards to accessing it.
-We will then modify its service in order to access it from anywhere in the lab, with a *NodePort* configuration
 
 ```bash
-kubectl edit -n monitoring svc prom-operator-grafana
+$ kubectl get -n monitoring svc -l app.kubernetes.io/name=grafana
+NAME                    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+prom-operator-grafana   ClusterIP   10.103.48.66   <none>        80/TCP    30m
 ```
 
-### BEFORE:
+We will then modify its service in order to access it from anywhere in the lab, with a *LoadBalancer* configuration.  
+As Grafana's port is already 80, we only need to update the type of this service.  
 
 ```bash
-spec:
-  clusterIP: 10.97.208.231
-  ports:
-  - name: service
-    port: 80
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app.kubernetes.io/instance: prom-operator
-    app.kubernetes.io/name: grafana
-  sessionAffinity: None
-  type: ClusterIP
+$ kubectl patch -n monitoring svc prom-operator-grafana  -p '{"spec":{"type":"LoadBalancer"}}'
+service/prom-operator-grafana patched
+
+$ kubectl get -n monitoring svc -l app.kubernetes.io/name=grafana
+NAME                    TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+prom-operator-grafana   LoadBalancer   10.103.48.66   192.168.0.141   80:30291/TCP   37m
 ```
 
-### AFTER: (look at the ***nodePort*** & ***type*** lines)
-
-```bash
-spec:
-  clusterIP: 10.97.208.231
-  ports:
-  - name: service
-    nodePort: 30001
-    port: 80
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    app.kubernetes.io/instance: prom-operator
-    app.kubernetes.io/name: grafana
-  sessionAffinity: None
-  type: NodePort
-```
-
-You can now access the Grafana GUI from the browser using the port 30001 on RHEL3 address (http://192.168.0.63:30001)
+You can now access the Grafana GUI from the browser using the IP address 192.168.0.141.
 
 ## B. Log in Grafana
 
@@ -105,12 +83,15 @@ You can now properly login to Grafana.
 
 ## E. Configure Grafana
 
-The first step is to tell Grafana where to get data (ie Data Sources).
-In our case, the data source is Prometheus. In its configuration, you then need to put Prometheus's URL (http://192.168.0.63:30000)
-You can also specify in this lab that Prometheus will be the default source.
+The first step is to tell Grafana where to get data (ie Data Sources).  
+You can see that Grafana is trying fetch data from a Prometheus FQDN, however this is not configured.  
+In our case, we need to create a new Prometheus Data Source . In its configuration, you then need to put Prometheus's URL (http://192.168.0.140)
+You can also specify in this lab that this is the default source.
 Click on 'Save & Test'.
 
 ## F. Create your own graph
+
+By default, Grafana uses Prometheus as a _Data Source_.  
 
 Hover on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
 You can here configure a new graph by adding metrics. By typing 'trident' in the 'Metrics' box, you will see all metrics available.

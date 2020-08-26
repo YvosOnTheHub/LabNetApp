@@ -20,7 +20,8 @@
   "panels": [
     {
       "columns": [],
-      "datasource": "Prometheus",
+      "datasource": "default",
+      "datasource": "default",
       "fontSize": "100%",
       "gridPos": {
         "h": 6,
@@ -96,7 +97,7 @@
     },
     {
       "columns": [],
-      "datasource": "Prometheus",
+      "datasource": "default",
       "description": "This counter includes failed backends",
       "fontSize": "100%",
       "gridPos": {
@@ -300,7 +301,7 @@
       "type": "table"
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "default",
       "gridPos": {
         "h": 6,
         "w": 5,
@@ -355,7 +356,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -462,7 +463,7 @@
       }
     },
     {
-      "datasource": "Prometheus",
+      "datasource": "default",
       "gridPos": {
         "h": 8,
         "w": 5,
@@ -514,7 +515,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -605,7 +606,7 @@
       "bars": true,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "default",
       "fill": 1,
       "fillGradient": 1,
       "gridPos": {

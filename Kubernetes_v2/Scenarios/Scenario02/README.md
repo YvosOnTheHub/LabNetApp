@@ -41,49 +41,33 @@ prom-operator   monitoring      1               2020-04-30 12:43:12.515947662 +0
 Prometheus got installed pretty easily.
 But how can you access from your browser?
 
-The way Prometheus is installed required it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
-We will modify the Prometheus service in order to access it from anywhere in the lab, with why not a *NodePort* configuration
+The way Prometheus is installed (service of _ClusterIP_ type) requires it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
 
 ```bash
-kubectl edit -n monitoring svc prom-operator-prometheus-o-prometheus
+$ kubectl get -n monitoring svc -l app=prometheus-operator-prometheus
+NAME                                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+prom-operator-prometheus-o-prometheus   ClusterIP   10.110.162.207   <none>        9090/TCP   3m15s
 ```
 
-### BEFORE:
+We will modify the Prometheus service in order to access it from anywhere in the lab.  
+You could choose the *NodePort* method or the *LoadBalancer* one as you prefer.  
+To keep it simple, I will use the *LoadBalancer* method. Please refer to the [Addenda07](../../Addendum/Addenda07) which explains how to install & configure MetalLB.  
+
+2 parameters of the Prometheus service need to be modified. You can either edit it or patch it, solution I chose here:
 
 ```bash
-spec:
-  clusterIP: 10.96.69.69
-  ports:
-  - name: web
-    port: 9090
-    protocol: TCP
-    targetPort: 9090
-  selector:
-    app: prometheus
-    prometheus: prom-operator-prometheus-o-prometheus
-  sessionAffinity: None
-  type: ClusterIP
+$ kubectl patch -n monitoring svc prom-operator-prometheus-o-prometheus -p '{"spec":{"type":"LoadBalancer"}}'
+service/prom-operator-prometheus-o-prometheus patched
+
+$ kubectl patch -n monitoring svc prom-operator-prometheus-o-prometheus --type='json' -p='[{"op": "replace", "path": "/spec/ports/0/port", "value":80}]'
+service/prom-operator-prometheus-o-prometheus patched
+
+$ kubectl get -n monitoring svc -l app=prometheus-operator-prometheus
+NAME                                    TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
+prom-operator-prometheus-o-prometheus   LoadBalancer   10.110.162.207   192.168.0.140   80:30446/TCP   30m
 ```
 
-### AFTER: (look at the ***nodePort*** & ***type*** lines)
-
-```bash
-spec:
-  clusterIP: 10.96.69.69
-  ports:
-  - name: web
-    port: 9090
-    nodePort: 30000
-    protocol: TCP
-    targetPort: 9090
-  selector:
-    app: prometheus
-    prometheus: prom-operator-prometheus-o-prometheus
-  sessionAffinity: None
-  type: NodePort
-```
-
-You can now access the Prometheus GUI from the browser using the port 30000 on RHEL3 address (http://192.168.0.63:30000)
+You can now access the Prometheus GUI from the browser using the IP address 192.168.0.140.  
 
 ## D. Add Trident to Prometheus
 
@@ -101,7 +85,7 @@ servicemonitor.monitoring.coreos.com/trident-sm created
 
 ## E. Check the configuration
 
-On the browser in the LoD, you can now connect to the address http://192.168.0.63:30000 in order to access Prometheus
+On the browser in the LoD, you can now connect to the address http://192.168.0.140 in order to access Prometheus
 You can check that the Trident endpoint is taken into account & in the right state by going to the menu STATUS => TARGETS
 
 ![Trident Status in Prometheus](Images/Trident_status_in_prometheus.jpg "Trident Status in Prometheus")

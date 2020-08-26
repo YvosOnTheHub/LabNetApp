@@ -23,7 +23,7 @@ Open Putty, connect to "cluster1" and finally enter all the following:
 ```bash
 vserver modify -vserver svm1 -allowed-protocols nfs,iscsi
 lun igroup create -igroup trident -protocol iscsi -ostype linux -vserver svm1
-net interface create -vserver svm1 -lif svm1_iscsi -data-protocol iscsi -home-node cluster1-01 -home-port e0d -address 192.168.0.140 -netmask 255.255.255.0 -firewall-policy data
+net interface create -vserver svm1 -lif svm1_iscsi -data-protocol iscsi -home-node cluster1-01 -home-port e0d -address 192.168.0.133 -netmask 255.255.255.0 -firewall-policy data -force-subnet-association true
 vserver iscsi create -target-alias svm1 -vserver svm1
 ```
 

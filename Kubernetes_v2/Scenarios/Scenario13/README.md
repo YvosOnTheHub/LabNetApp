@@ -115,7 +115,7 @@ Filesystem      Size  Used Avail Use% Mounted on
 As you can see, the resizing was done totally dynamically without any interruption.  
 The POD rescanned its devices to discover the new size of the volume.  
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).  
 
 This could also have been achieved by using the _kubectl patch_ command. Try the following one:
 

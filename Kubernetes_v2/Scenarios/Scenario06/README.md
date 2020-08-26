@@ -32,7 +32,7 @@ $ tridentctl -n trident create backend -f backend-san-default.json
 +-------------+----------------+--------------------------------------+--------+---------+
 |    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +-------------+----------------+--------------------------------------+--------+---------+
-| SAN-default | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
+| SAN-secured | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
 +-------------+----------------+--------------------------------------+--------+---------+
 
 $ tridentctl -n trident create backend -f backend-san-eco-default.json
@@ -46,7 +46,7 @@ $ kubectl get -n trident tridentbackends
 NAME        BACKEND               BACKEND UUID
 ...
 tbe-7nl8v   SAN_ECO-default       530f18b1-680b-420f-ad6b-94c96fea84b9
-tbe-wgs99   SAN-default           ad04f63c-592d-49ae-bfde-21a11db06976
+tbe-wgs99   SAN-secured           ad04f63c-592d-49ae-bfde-21a11db06976
 ...
 ```
 
@@ -63,9 +63,29 @@ $ kubectl create -f sc-csi-ontap-san-eco.yaml
 storageclass.storage.k8s.io/storage-class-san-economy created
 ```
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).
 
-## C. What's next
+## C. Validate the CHAP configuration on the storage backend
+
+If you take a closer look at the SAN-secured definition file, you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
+You can learn more about it on the following link:  
+https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/ontap/ontap-san/bidir-ontap-chap.html?highlight=chap#using-chap-with-ontap-san-drivers 
+
+You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)
+
+```bash
+# ssh -l admin 192.168.0.101 iscsi security show
+Password:
+                                  Auth   Auth CHAP Inbound CHAP  Outbound CHAP
+Vserver    Initiator Name         Type   Policy    User Name     User Name
+---------- ---------------------- ------ --------- ------------- -------------
+svm1       default                CHAP   local     tridentchap   tridenttarget
+```
+
+You find here both usernames set in the backend parameters.  
+Now, you can only see the CHAP configuraion on the host once a POD has mounted a PVC, which you will do in the Scenario07.
+
+## D. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 

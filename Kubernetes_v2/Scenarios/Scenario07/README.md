@@ -49,7 +49,6 @@ The Ghost service is configured with a NodePort type, which means you can access
 Give it a try !
 => http://192.168.0.63:30081
 
-
 ## C. Explore the app container
 
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the SAN PVC that was created.
@@ -70,9 +69,34 @@ settings
 themes
 ```
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).  
 
-## D. Cleanup
+## D. Validate the CHAP configuration on the host
+
+This application was deployed using secured authentication with the storage backend. We can now see the configuration on the host.  
+Let's first look at what server hosts the POD:
+
+```bash
+$ kubectl get -n ghostsan pod -o wide
+NAME                        READY   STATUS    RESTARTS   AGE   IP          NODE    NOMINATED NODE   READINESS GATES
+blog-san-58979448dd-6k9ds   1/1     Running   0          35m   10.44.0.1   rhel2   <none>           <none>
+```
+
+Now that host had been identified, let's take a look at CHAP (on _host2_ in this case)
+
+```bash
+iscsiadm -m session -P 3 | grep CHAP -A 5
+                CHAP:
+                *****
+                username: tridentchap
+                password: ********
+                username_in: tridenttarget
+                password_in: ********
+```
+
+There you go, you have just validated the CHAP configuration!
+
+## E. Cleanup
 
 Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 
@@ -81,7 +105,7 @@ $ kubectl delete ns ghostsan
 namespace "ghostsan" deleted
 ```
 
-## E. What's next
+## F. What's next
 
 Now that you have tried working with SAN backends, you can try to resize a PVC:
 

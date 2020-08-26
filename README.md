@@ -10,10 +10,9 @@ I assume each scenario will be run in its own directory. Also, you will find a R
 
 Last, there are plenty of commands to write or copy/paste.  
 Try using some of the shortcuts you will find in the the Addenda0!
-
 :boom:  
 
-Scenarios
+Scenarios (updated for Trident 20.07)
 ---------
 [1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident  
 [2.](Kubernetes_v2/Scenarios/Scenario02) Install Prometheus & incorporate Trident's metrics  
@@ -27,8 +26,8 @@ Scenarios
 [10.](Kubernetes_v2/Scenarios/Scenario10) Resize a NFS CSI PVC  
 [11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  
 [12.](Kubernetes_v2/Scenarios/Scenario12) StatefulSets & Storage consumption  
-[13.](Kubernetes_v2/Scenarios/Scenario13) Resize a iSCSI CSI PVC  
-[14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
+[13.](Kubernetes_v2/Scenarios/Scenario13) Resize a iSCSI CSI PVC (*requires Kubernetes 1.16 minimum*)  
+[14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows (*requires Kubernetes 1.17 minimum*)  
 [15.](Kubernetes_v2/Scenarios/Scenario15) Dynamic export policy management  
 
 Addendum
@@ -40,6 +39,7 @@ Addendum
 [4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage  
 [6.](Kubernetes_v2/Addendum/Addenda06) Install Ansible on RHEL3 (Kubernetes Master)  
+[7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB)  
 
 ## B. Kubernetes v1 (pre-CSI)
 

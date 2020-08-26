@@ -78,7 +78,7 @@ settings
 themes
 ```
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30001).  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).  
 
 ## D. Cleanup (optional)
 
