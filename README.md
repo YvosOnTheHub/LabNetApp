@@ -19,7 +19,7 @@ Scenarios (updated for Trident 20.07)
 [3.](Kubernetes_v2/Scenarios/Scenario03) Configure Grafana & add your first graphs :arrows_counterclockwise:  
 [4.](Kubernetes_v2/Scenarios/Scenario04) Configure your first NAS backends & storage classes  
 [5.](Kubernetes_v2/Scenarios/Scenario05) Deploy your first app with File storage  
-[6.](Kubernetes_v2/Scenarios/Scenario06) Configure your first iSCSI backends & storage classes  
+[6.](Kubernetes_v2/Scenarios/Scenario06) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
 [7.](Kubernetes_v2/Scenarios/Scenario07) Deploy your first app with Block storage  
 [8.](Kubernetes_v2/Scenarios/Scenario08) Use the 'import' feature of Trident :arrows_counterclockwise:  
 [9.](Kubernetes_v2/Scenarios/Scenario09) Consumption control  
