@@ -40,6 +40,7 @@ Addendum
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage  
 [6.](Kubernetes_v2/Addendum/Addenda06) Install Ansible on RHEL3 (Kubernetes Master)  
 [7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB) :new:  
+[8.](Kubernetes_v2/Addendum/Addenda08) Install the Kubernetes dashboard :new:  
 
 ## B. Kubernetes v1 (pre-CSI)
 
