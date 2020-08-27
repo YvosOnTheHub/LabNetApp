@@ -57,7 +57,7 @@ persistentvolume/pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX      
 Because moving on, let's check we can access the app:  
 => http://192.168.0.63:30080
 
-## B. Configure the snapshot feature.
+## B. Configure the snapshot feature
 
 This [link](https://github.com/kubernetes-csi/external-snapshotter) is a good read if you want to know more details about installing the CSI Snapshotter.  
 You first need to install 3 CRD which you can find in the Kubernetes/CRD directory or in the CSI Snapshotter github repository.

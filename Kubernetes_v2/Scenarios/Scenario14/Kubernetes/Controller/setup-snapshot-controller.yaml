@@ -1,10 +1,16 @@
 # This YAML file shows how to deploy the snapshot controller
 
+# The snapshot controller implements the control loop for CSI snapshot functionality.
+# It should be installed as part of the base Kubernetes distribution in an appropriate
+# namespace for components implementing base system functionality. For installing with
+# Vanilla Kubernetes, kube-system makes sense for the namespace.
+
 ---
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: snapshot-controller
+  namespace: kube-system
 spec:
   serviceName: "snapshot-controller"
   replicas: 1
@@ -19,7 +25,7 @@ spec:
       serviceAccount: snapshot-controller
       containers:
         - name: snapshot-controller
-          image: quay.io/k8scsi/snapshot-controller:v2.0.1
+          image: quay.io/k8scsi/snapshot-controller:canary
           args:
             - "--v=5"
             - "--leader-election=false"

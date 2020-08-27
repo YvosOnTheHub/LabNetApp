@@ -89,7 +89,7 @@ $ kubectl describe pvc lun-import | grep importOriginalName
 This volume is no longer required & can be deleted from the environment.
 
 ```bash
-$ kubetcl delete pvc lun-import
+$ kubectl delete pvc lun-import
 persistentvolumeclaim "lun-import" deleted
 ```
 
