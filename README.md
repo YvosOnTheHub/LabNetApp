@@ -42,7 +42,7 @@ Addendum
 [7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB) :new:  
 [8.](Kubernetes_v2/Addendum/Addenda08) Install the Kubernetes dashboard :new:  
 
-## B. Kubernetes v1 (pre-CSI)
+## B. Kubernetes v1 pre-CSI (**retired**, but can still be useful)
 
 These files are attended to be used with the NetApp LabOnDemand "Using NetApp with Docker and Kubernetes v2.0".
 The "Kubernetes_v1" directory contains lots of configuration files to create backends / storage classes / PVC / PODs
@@ -59,7 +59,7 @@ Scenarios
 8. Snapshots management with ONTAP-NAS & ONTAP-NAS-ECONOMY
 
 
-## C. Docker
+## C. Docker (**retired**, but can still be useful)
 
 the "Docker" directory contains several configuration files to create different plugins on the lab
 
