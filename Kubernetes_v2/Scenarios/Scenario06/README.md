@@ -28,7 +28,7 @@ Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces t
 If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```bash
-$ tridentctl -n trident create backend -f backend-san-default.json
+$ tridentctl -n trident create backend -f backend-san-secured.json
 +-------------+----------------+--------------------------------------+--------+---------+
 |    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
 +-------------+----------------+--------------------------------------+--------+---------+
