@@ -129,6 +129,13 @@ This needs to be done directly in the _grafana_ container.
 
 ```bash
 $ kubectl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
+installing grafana-piechart-panel @ 1.6.0
+from: https://grafana.com/api/plugins/grafana-piechart-panel/versions/1.6.0/download
+into: /var/lib/grafana/plugins
+
+✔ Installed grafana-piechart-panel successfully
+
+Restart grafana after installing plugins . <service grafana-server restart>
 ```
 
 As stated, you need to restart the grafana service in order to take into account the model.
@@ -145,8 +152,17 @@ deployment.extensions/prom-operator-grafana scaled
 Let's check if it has been well installed
 
 ```bash
-$ kubetl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins ls
+$ kubectl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins ls
+installed plugins:
+grafana-piechart-panel @ 1.6.0
+
+Restart grafana after installing plugins . <service grafana-server restart>
 ```
+
+When you create a new dashboard, you will now have access to a new format:
+![Pie Chart](../Images/pie_chart.jpg "Pie Chart")
+
+Your turn to have fun!
 
 ## I. What's next
 

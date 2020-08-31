@@ -44,13 +44,14 @@ The files defined in those objects are written to a folder and accessed by grafa
 The configmap must be created before helm install so that the datasources init container can list the configmap.
 
 ```bash
-$ kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario03/1_PreRequisites/cm-grafana_datasource.yaml
+$ kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario03/1_PreRequisites/cm-grafana-datasources.yaml
+configmap/cm-grafana-datasources created
 ```
 
 ## D. Network
 
 For this scenario, we are going to use a LoadBalancer to automatically assign IP addresses to both Prometheus & Grafana services.  
-Please refer to the [Addenda07](../../../Addendum/Addenda07) which explains how to install & configure MetalLB.
+Please refer to the [Addenda07](LabNetApp/Kubernetes_v2/Addendum/Addenda07) which explains how to install & configure MetalLB.
 
 ## E. Storage
 

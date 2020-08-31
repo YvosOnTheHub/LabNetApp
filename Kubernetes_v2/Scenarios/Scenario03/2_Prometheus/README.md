@@ -11,15 +11,7 @@ Due to a bug in Helm, you first need to manually create some CRD.
 For more information about this, take a look at https://github.com/helm/charts/tree/master/stable/prometheus-operator#helm-fails-to-create-crds.  
 
 ```bash
-# WITH KUBERNETES < v1.16
-kubectl create -f CRD/monitoring.coreos.com_alertmanagers.yaml
-kubectl create -f CRD/monitoring.coreos.com_podmonitors.yaml
-kubectl create -f CRD/monitoring.coreos.com_prometheuses.yaml
-kubectl create -f CRD/monitoring.coreos.com_prometheusrules.yaml
-kubectl create -f CRD/monitoring.coreos.com_servicemonitors.yaml
-kubectl create -f CRD/monitoring.coreos.com_thanosrulers.yaml
-
-# WITH KUBERNETES >= v1.16
+# ONLY WITH KUBERNETES >= v1.16
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
@@ -28,8 +20,14 @@ kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheu
 kubectl apply -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
 ```
 
+Once the CRD installed, you can proceed with the Prometheus Operator:
+
 ```bash
-$ helm install prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true,grafana.sidecar.datasources.defaultDatasourceEnabled=false
+# ONLY WITH KUBERNETES < v1.16
+helm install prom-operator stable/prometheus-operator --namespace monitoring --set grafana.persistence.enabled=true,grafana.sidecar.datasources.defaultDatasourceEnabled=false
+
+# ONLY WITH KUBERNETES >= v1.16
+helm install prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true,grafana.sidecar.datasources.defaultDatasourceEnabled=false
 ```
 
 You can check the installation with the following command:
@@ -37,7 +35,7 @@ You can check the installation with the following command:
 ```bash
 $ helm list -n monitoring
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-prom-operator   monitoring      1               2020-04-30 12:43:12.515947662 +0000 UTC deployed        prometheus-operator-8.13.4      0.38.1
+prom-operator   monitoring      1               2020-08-31 15:18:20.350957085 +0000 UTC deployed        prometheus-operator-9.3.1       0.38.1
 ```
 
 ## B. Expose Prometheus
@@ -121,6 +119,6 @@ kubectl delete namespace monitoring
 
 ## G. What's next
 
-Now that Trident is connected to Prometheus, you can proceed with [Grafana](../3_Grafana):  Configure Grafana & add your first graphs  
+Now that Trident is connected to Prometheus, you can proceed with [Grafana](../3_Grafana) & add your first graphs  
 
 or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
