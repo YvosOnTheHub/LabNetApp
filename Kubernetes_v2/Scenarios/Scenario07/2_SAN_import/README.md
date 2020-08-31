@@ -1,12 +1,12 @@
 #########################################################################################
-# SCENARIO 8#2: Import a Block volume
+# SCENARIO 7#2: Import a Block volume
 #########################################################################################
 
 **GOAL:**  
 Trident 20.07 introduced the possibility to import into Kubernetes a iSCSI LUN that exists in an ONTAP platform.  
-A SAN Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario6](../../Scenario06)
+A SAN Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario5](../../Scenario05)
 
-![Scenario8#2](../Images/scenario8_2.jpg "Scenario8#2")
+![Scenario7#2](../Images/scenario7_2.jpg "Scenario7#2")
 
 ## A. Create a volume & a LUN on the storage backend
 
@@ -97,9 +97,9 @@ persistentvolumeclaim "lun-import" deleted
 
 You can now move on to:
 
-- [Scenario09](../../Scenario09): Consumption control  
-- [Scenario10](../../Scenario10): Resize a NFS CSI PVC
-- [Scenario11](../../Scenario11): Using Virtual Storage Pools 
-- [Scenario12](../../Scenario12): StatefulSets & Storage consumption  
+- [Scenario08](../../Scenario08): Consumption control  
+- [Scenario09](../../Scenario09): Resize a NFS CSI PVC
+- [Scenario10](../../Scenario10): Using Virtual Storage Pools 
+- [Scenario11](../../Scenario11): StatefulSets & Storage consumption  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

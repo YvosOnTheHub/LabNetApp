@@ -1,103 +1,89 @@
 #########################################################################################
-# SCENARIO 2: Install Prometheus & integrate Trident's metrics
+# SCENARIO 2: Create your first NFS backends for Trident & Storage Classes for Kubernetes
 #########################################################################################
 
 **GOAL:**  
-Trident 20.01.1 introduced metrics that can be integrated into Prometheus.  
-Going through this scenario at this point will be interesting as you will actually see the metrics evolve with all the labs.  
+Trident needs to know where to create volumes.  
+This information sits in objects called backends. It basically contains:
 
-You can either follow this scenario or go through the following link:  
-https://netapp.io/2020/02/20/a-primer-on-prometheus-trident/
+- the driver type (there currently are 10 different drivers available)
+- how to connect to the driver (IP, login, password ...)
+- some default parameters
 
-## A. Install Helm
+For additional information, please refer to:
 
-Helm, as a packaging tool, will be used to install Prometheus.
+- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/deploying/operator-deploy.html#creating-a-trident-backend
+- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/index.html 
 
-```bash
-cd
-wget https://get.helm.sh/helm-v3.0.3-linux-amd64.tar.gz
-tar xzvf helm-v3.0.3-linux-amd64.tar.gz
-cp linux-amd64/helm /usr/bin/
-```
+Once you have configured backend, the end user will create PVC against Storage Classes.  
+A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
 
-## B. Install Prometheus in its own namespace
+For additional information, please refer to:
 
-```bash
-kubectl create namespace monitoring
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm install prom-operator stable/prometheus-operator  --namespace monitoring
-```
+- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
 
-You can check the installation with the following command:
+Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
 
-```bash
-$ helm list -n monitoring
-NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-prom-operator   monitoring      1               2020-04-30 12:43:12.515947662 +0000 UTC deployed        prometheus-operator-8.13.4      0.38.1
-```
+![Scenario2](Images/scenario2.jpg "Scenario2")
 
-## C. Expose Prometheus
+## A. Create your first NFS backends
 
-Prometheus got installed pretty easily.
-But how can you access from your browser?
+You will find in this directory a few backends files.  
+You can decide to use all of them, only a subset of them or modify them as you wish
 
-The way Prometheus is installed (service of _ClusterIP_ type) requires it to be access from the host where it is installed (with a *port-forwarding* mechanism for instance).
+Here are the 2 backends & their corresponding driver:
+
+- backend-nas-default.json        ONTAP-NAS
+- backend-nas-eco-default.json    ONTAP-NAS-ECONOMY
 
 ```bash
-$ kubectl get -n monitoring svc -l app=prometheus-operator-prometheus
-NAME                                    TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-prom-operator-prometheus-o-prometheus   ClusterIP   10.110.162.207   <none>        9090/TCP   3m15s
+$ tridentctl -n trident create backend -f backend-nas-default.json
++-----------------+----------------+--------------------------------------+--------+---------+
+|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++-----------------+----------------+--------------------------------------+--------+---------+
+| NAS_Vol-default | ontap-nas      | 282b09e5-0ff2-4471-97c8-9fd5224945a1 | online |       0 |
++-----------------+----------------+--------------------------------------+--------+---------+
+
+$ tridentctl -n trident create backend -f backend-nas-eco-default.json
++-----------------+-------------------+--------------------------------------+--------+---------+
+|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
++-----------------+-------------------+--------------------------------------+--------+---------+
+| NAS_ECO-default | ontap-nas-economy | b21fb2a7-975a-4050-a187-bb4f883d0e97 | online |       0 |
++-----------------+-------------------+--------------------------------------+--------+---------+
+
+$ kubectl get -n trident tridentbackends
+NAME        BACKEND           BACKEND UUID
+tbe-c874k   NAS_Vol-default   282b09e5-0ff2-4471-97c8-9fd5224945a1
+tbe-d6szt   NAS_ECO-default   b21fb2a7-975a-4050-a187-bb4f883d0e97
 ```
 
-We will modify the Prometheus service in order to access it from anywhere in the lab.  
-You could choose the *NodePort* method or the *LoadBalancer* one as you prefer.  
-To keep it simple, I will use the *LoadBalancer* method. Please refer to the [Addenda07](../../Addendum/Addenda07) which explains how to install & configure MetalLB.  
+## B. Create storage classes pointing to each backend
 
-2 parameters of the Prometheus service need to be modified. You can either edit it or patch it, solution I chose here:
+You will also find in this directory a few storage class files.
+You can decide to use all of them, only a subset of them or modify them as you wish.
+
+Note that the storage class **storage-class-nas** is set to be the **default** one.
 
 ```bash
-$ kubectl patch -n monitoring svc prom-operator-prometheus-o-prometheus -p '{"spec":{"type":"LoadBalancer"}}'
-service/prom-operator-prometheus-o-prometheus patched
+$ kubectl create -f sc-csi-ontap-nas.yaml
+storageclass.storage.k8s.io/storage-class-nas created
 
-$ kubectl patch -n monitoring svc prom-operator-prometheus-o-prometheus --type='json' -p='[{"op": "replace", "path": "/spec/ports/0/port", "value":80}]'
-service/prom-operator-prometheus-o-prometheus patched
+$ kubectl create -f sc-csi-ontap-nas-eco.yaml
+storageclass.storage.k8s.io/storage-class-nas-economy created
 
-$ kubectl get -n monitoring svc -l app=prometheus-operator-prometheus
-NAME                                    TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
-prom-operator-prometheus-o-prometheus   LoadBalancer   10.110.162.207   192.168.0.140   80:30446/TCP   30m
+$ kubectl get sc
+NAME                          PROVISIONER             AGE
+storage-class-nas (default)   csi.trident.netapp.io   2d18h
+storage-class-nas-economy     csi.trident.netapp.io   2d18h
 ```
 
-You can now access the Prometheus GUI from the browser using the IP address 192.168.0.140.  
+At this point, end-users can now create PVC against one of theses storage classes.  
 
-## D. Add Trident to Prometheus
+## C. What's next
 
-Refer to the blog aforementioned to get the details about how this Service Monitor works.
-The following link is also a good place to find information:
-https://github.com/coreos/prometheus-operator/blob/master/Documentation/user-guides/getting-started.md
+Now, you have some NAS Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 
-In substance, we will tell in this object to look at services that have the label *trident* & retrieve metrics from its endpoint.
-The Yaml file has been provided and is available in the Scenario2 sub-directory
+- [Scenario03](../Scenario03): Install Prometheus & Grafana  
+- [Scenario04](../Scenario04): Deploy your first app with File storage  
 
-```bash
-$ kubectl create -f LabNetApp/Kubernetes_v2/Scenarios/Scenario02/Trident_ServiceMonitor.yml
-servicemonitor.monitoring.coreos.com/trident-sm created
-```
-
-## E. Check the configuration
-
-On the browser in the LoD, you can now connect to the address http://192.168.0.140 in order to access Prometheus
-You can check that the Trident endpoint is taken into account & in the right state by going to the menu STATUS => TARGETS
-
-![Trident Status in Prometheus](Images/Trident_status_in_prometheus.jpg "Trident Status in Prometheus")
-
-## F. Play around
-
-Now that Trident is integrated into Prometheus, you can retrieve metrics or build graphs.
-
-## G. What's next
-
-Now that Trident is connected to Prometheus, you can proceed with :
-
-- [Scenario03](../Scenario03):  Configure Grafana & add your first graphs  
-
-or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
+Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

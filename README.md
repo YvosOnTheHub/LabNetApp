@@ -15,20 +15,19 @@ Try using some of the shortcuts you will find in the the Addenda0!
 Scenarios (updated for Trident 20.07)
 ---------
 [1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident :arrows_counterclockwise:  
-[2.](Kubernetes_v2/Scenarios/Scenario02) Install Prometheus & incorporate Trident's metrics :arrows_counterclockwise:  
-[3.](Kubernetes_v2/Scenarios/Scenario03) Configure Grafana & add your first graphs :arrows_counterclockwise:  
-[4.](Kubernetes_v2/Scenarios/Scenario04) Configure your first NAS backends & storage classes  
-[5.](Kubernetes_v2/Scenarios/Scenario05) Deploy your first app with File storage  
-[6.](Kubernetes_v2/Scenarios/Scenario06) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
-[7.](Kubernetes_v2/Scenarios/Scenario07) Deploy your first app with Block storage  
-[8.](Kubernetes_v2/Scenarios/Scenario08) Use the 'import' feature of Trident :arrows_counterclockwise:  
-[9.](Kubernetes_v2/Scenarios/Scenario09) Consumption control  
-[10.](Kubernetes_v2/Scenarios/Scenario10) Resize a NFS CSI PVC  
-[11.](Kubernetes_v2/Scenarios/Scenario11) Using Virtual Storage Pools  
-[12.](Kubernetes_v2/Scenarios/Scenario12) StatefulSets & Storage consumption  
-[13.](Kubernetes_v2/Scenarios/Scenario13) Resize a iSCSI CSI PVC (*requires Kubernetes 1.16 minimum*)  
+[2.](Kubernetes_v2/Scenarios/Scenario02) Configure your first NAS backends & storage classes :arrows_counterclockwise:  
+[3.](Kubernetes_v2/Scenarios/Scenario02) Install and use Prometheus & Grafana :arrows_counterclockwise:  
+[4.](Kubernetes_v2/Scenarios/Scenario04) Deploy your first app with File storage  
+[5.](Kubernetes_v2/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
+[6.](Kubernetes_v2/Scenarios/Scenario06) Deploy your first app with Block storage  
+[7.](Kubernetes_v2/Scenarios/Scenario07) Use the 'import' feature of Trident :arrows_counterclockwise:  
+[8.](Kubernetes_v2/Scenarios/Scenario08) Consumption control  
+[9.](Kubernetes_v2/Scenarios/Scenario09) Resize a NFS CSI PVC  
+[10.](Kubernetes_v2/Scenarios/Scenario10) Using Virtual Storage Pools  
+[11.](Kubernetes_v2/Scenarios/Scenario11) StatefulSets & Storage consumption  
+[12.](Kubernetes_v2/Scenarios/Scenario12) Resize a iSCSI CSI PVC (*requires Kubernetes 1.16 minimum*)  
+[13.](Kubernetes_v2/Scenarios/Scenario13) Dynamic export policy management  
 [14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows (*requires Kubernetes 1.17 minimum*)  
-[15.](Kubernetes_v2/Scenarios/Scenario15) Dynamic export policy management  
 
 Addendum
 --------

@@ -21,8 +21,8 @@ You can follow the [Addenda04](../../Addendum/Addenda04) for a step by step guid
 :boom:  
 
 We will create an app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario04](../Scenario04)).  
-If you compare the Ghost app definition to the [Scenario05](../Scenario05), you may notice that the _deployment_ has evolved from _v1beta1_ to _v1_ status with Kubernetes 1.17.  
+We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario02](../Scenario02)).  
+If you compare the Ghost app definition to the [Scenario04](../Scenario04), you may notice that the _deployment_ has evolved from _v1beta1_ to _v1_ status with Kubernetes 1.17.  
 
 ```bash
 $ kubectl create namespace ghost

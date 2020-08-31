@@ -5,7 +5,7 @@
 **GOAL:**  
 You are currently running Kubernetes 1.16 & would like to upgrade to 1.17.  
 
-The procedure to go from 1.16.12 to 1.17.8 is pretty similar to the one used previously.  
+The procedure to go from 1.16.14 to 1.17.8 is pretty similar to the one used previously.  
 
 ```bash
 $ yum install -y kubeadm-1.17.8-0 --disableexcludes=kubernetes
@@ -24,15 +24,15 @@ $ kubeadm upgrade plan
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT        AVAILABLE
-Kubelet     3 x v1.16.12   v1.17.8
+Kubelet     3 x v1.16.14   v1.17.8
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT    AVAILABLE
-API Server           v1.16.12   v1.17.8
-Controller Manager   v1.16.12   v1.17.8
-Scheduler            v1.16.12   v1.17.8
-Kube Proxy           v1.16.12   v1.17.8
+API Server           v1.16.14   v1.17.8
+Controller Manager   v1.16.14   v1.17.8
+Scheduler            v1.16.14   v1.17.8
+Kube Proxy           v1.16.14   v1.17.8
 CoreDNS              1.6.2      1.6.5
 Etcd                 3.3.15     3.4.3-0
 
@@ -46,7 +46,7 @@ $ kubeadm upgrade apply v1.17.8
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
 [upgrade/version] You have chosen to change the cluster version to "v1.17.8"
-[upgrade/versions] Cluster version: v1.16.12
+[upgrade/versions] Cluster version: v1.16.14
 [upgrade/versions] kubeadm version: v1.17.8
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
@@ -61,8 +61,8 @@ $ systemctl restart kubelet
 
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.16.12
-rhel2   Ready    <none>   294d   v1.16.12
+rhel1   Ready    <none>   294d   v1.16.14
+rhel2   Ready    <none>   294d   v1.16.14
 rhel3   Ready    master   294d   v1.17.8
 ```
 
@@ -105,7 +105,7 @@ node/rhel1 uncordoned
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
 rhel1   Ready    <none>   294d   v1.17.8
-rhel2   Ready    <none>   294d   v1.16.12
+rhel2   Ready    <none>   294d   v1.16.14
 rhel3   Ready    master   294d   v1.17.8
 ```
 

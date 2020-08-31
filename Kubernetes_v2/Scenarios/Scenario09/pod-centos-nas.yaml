@@ -1,0 +1,19 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: centos
+spec:
+  volumes:
+    - name: nfsstorage
+      persistentVolumeClaim:
+       claimName: pvc-to-resize
+  containers:
+    - name: centos
+      image: centos
+      command:
+        - /bin/sh
+        - "-c"
+        - "sleep 60m"
+      volumeMounts:
+        - mountPath: "/data"
+          name: nfsstorage

@@ -242,8 +242,7 @@ $ kubectl describe tprov trident -n trident | grep Message: -A 3
 
 Now that Trident is installed, you can proceed with :  
 
-- [Scenario02](../../Scenario02):  Installing Prometheus & incorporate Trident's metrics  
-Or you can directly  
-- [Scenario04](../../Scenario04):  Configure your first NAS backends & storage classes  
+- [Scenario02](../../Scenario02):  Configure your first NAS backends & storage classes  
+- [Scenario03](../../Scenario03):  Installing Prometheus & incorporate Trident's metrics  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

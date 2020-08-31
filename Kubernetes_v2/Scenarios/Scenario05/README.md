@@ -1,104 +1,94 @@
 #########################################################################################
-# SCENARIO 5: Create your first App
+# SCENARIO 5: Create your first SAN backends 
 #########################################################################################
 
 **GOAL:**  
-Now that the admin has configured Trident, and has created storage classes, the end-user can request PVC.  
+You understood how to create backends and what they are for.  
+You probably also created a few ones with NFS drivers.  
+It is now time to add more backends that can be used for block storage.  
 
-Ghost is a light weight web portal. You will a few YAML files in the Ghost directory:
+:boom: **In order to go through this scenario, you first need to configure iSCSI on the ONTAP backend.** :boom:  
+If not done so, please refer to the [Addenda5](../../Addendum/Addenda05).  
 
-- a PVC to manage the persistent storage of this app
-- a DEPLOYMENT that will define how to manage the app
-- a SERVICE to expose the app
+![Scenario6](Images/scenario5.jpg "Scenario6")
 
-![Scenario5](Images/scenario5.jpg "Scenario5")
+## A. Create your first SAN backends
 
-## A. Create the app
+You will find in this directory a few backends files:
 
-We will create this app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04))
+- backend-san-default.json        ONTAP-SAN
+- backend-san-eco-default.json    ONTAP-SAN-ECONOMY  
+
+You can decide to use all of them, only a subset of them or modify them as you wish
+
+:boom: **Here is an important statement if you are planning on using these drivers in your environment.** :boom:  
+The **default** is to use **all data LIF** IPs from the SVM and to use **iSCSI multipath**.  
+Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces the driver to **disable** multipath and use only the specified address.  
+
+If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```bash
-$ kubectl create namespace ghost
-namespace/ghost created
+$ tridentctl -n trident create backend -f backend-san-secured.json
++-------------+----------------+--------------------------------------+--------+---------+
+|    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
++-------------+----------------+--------------------------------------+--------+---------+
+| SAN-secured | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
++-------------+----------------+--------------------------------------+--------+---------+
 
-$ kubectl create -n ghost -f Ghost/
-persistentvolumeclaim/blog-content created
-deployment.apps/blog created
-service/blog created
+$ tridentctl -n trident create backend -f backend-san-eco-default.json
++-----------------+-------------------+--------------------------------------+--------+---------+
+|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
++-----------------+-------------------+--------------------------------------+--------+---------+
+| SAN_ECO-default | ontap-san-economy | 530f18b1-680b-420f-ad6b-94c96fea84b9 | online |       0 |
++-----------------+-------------------+--------------------------------------+--------+---------+
 
-$ kubectl get all -n ghost
-NAME                       READY   STATUS              RESTARTS   AGE
-pod/blog-57d7d4886-5bsml   1/1     Running             0          50s
-
-NAME           TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-service/blog   NodePort   10.97.56.215   <none>        80:30080/TCP   50s
-
-NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blog   1/1     1            1           50s
-
-NAME                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/blog-57d7d4886   1         1         1       50s
-
-$ kubectl get pvc,pv -n ghost
-NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/blog-content   Bound    pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            storage-class-nas   4m3s
-
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                       STORAGECLASS        REASON   AGE
-persistentvolume/pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX            Delete           Bound    ghost/blog-content          storage-class-nas            4m2s
+$ kubectl get -n trident tridentbackends
+NAME        BACKEND               BACKEND UUID
+...
+tbe-7nl8v   SAN_ECO-default       530f18b1-680b-420f-ad6b-94c96fea84b9
+tbe-wgs99   SAN-secured           ad04f63c-592d-49ae-bfde-21a11db06976
 ...
 ```
 
-## B. Access the app
+## B. Create storage classes pointing to each new backend
 
-It takes about 40 seconds for the POD to be in a *running* state
-The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30080.
-Give it a try !
-=> http://192.168.0.63:30080
-
-## C. Explore the app container
-
-Let's see if the */var/lib/ghost/content* folder is indeed mounted to the NFS PVC that was created.  
-**You need to customize the following commands with the POD name you have in your environment.**
+You will also find in this directory a few storage class files.
+You can decide to use all of them, only a subset of them or modify them as you wish
 
 ```bash
-$ kubectl exec -n ghost blog-57d7d4886-5bsml -- df /var/lib/ghost/content
-Filesystem           1K-blocks      Used Available Use% Mounted on
-192.168.0.135:/ansible_pvc_ce8d812b_d976_43f9_8320_48a49792c972
-                       5242880       704   5242176   0% /var/lib/ghost/content
+$ kubectl create -f sc-csi-ontap-san.yaml
+storageclass.storage.k8s.io/storage-class-san created
 
-
-$ kubectl exec -n ghost blog-57d7d4886-5bsml -- ls /var/lib/ghost/content
-apps
-data
-images
-logs
-lost+found
-settings
-themes
+$ kubectl create -f sc-csi-ontap-san-eco.yaml
+storageclass.storage.k8s.io/storage-class-san-economy created
 ```
 
-If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).  
+If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.141).
 
-## D. Cleanup (optional)
+## C. Validate the CHAP configuration on the storage backend
 
-:boom:  
-**The PVC will be reused in the [scenario8](../Scenario08) ('import a volume'). Only clean up if you dont plan to do the scenario8.**  
-Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.  
-:boom:  
+If you take a closer look at the SAN-secured definition file, you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
+You can learn more about it on the following link:  
+https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/ontap/ontap-san/bidir-ontap-chap.html?highlight=chap#using-chap-with-ontap-san-drivers 
+
+You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)
 
 ```bash
-$ kubectl delete ns ghost
-namespace "ghost" deleted
+# ssh -l admin 192.168.0.101 iscsi security show
+Password:
+                                  Auth   Auth CHAP Inbound CHAP  Outbound CHAP
+Vserver    Initiator Name         Type   Policy    User Name     User Name
+---------- ---------------------- ------ --------- ------------- -------------
+svm1       default                CHAP   local     tridentchap   tridenttarget
 ```
 
-## E. What's next
+You find here both usernames set in the backend parameters.  
+Now, you can only see the CHAP configuraion on the host once a POD has mounted a PVC, which you will do in the Scenario07.
 
-I hope you are getting more familiar with Trident now. You can move on to:
+## D. What's next
 
-- [Scenario06](../Scenario06): Configure your first iSCSI backends & storage classes 
-- [Scenario08](../Scenario08): Use the 'import' feature of Trident  
-- [Scenario09](../Scenario09): Consumption control  
-- [Scenario10](../Scenario10): Resize a NFS CSI PVC  
+Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
+
+- [Scenario06](../Scenario06): Deploy your first app with Block storage  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

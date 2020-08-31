@@ -167,9 +167,8 @@ tridentctl -n trident delete backend --all
 ## G. What's next
 
 Now that Trident is installed, you can proceed with :
-  
-- [Scenario02](../../Scenario02):  Installing Prometheus & incorporate Trident's metrics  
-Or you can directly go to  
-- [Scenario04](../../Scenario04):  Configure your first NAS backends & storage classes  
+
+- [Scenario02](../../Scenario02):  Configure your first NAS backends & storage classes  
+- [Scenario03](../../Scenario03):  Installing Prometheus & incorporate Trident's metrics  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

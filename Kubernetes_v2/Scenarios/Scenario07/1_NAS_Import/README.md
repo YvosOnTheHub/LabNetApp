@@ -1,11 +1,11 @@
 #########################################################################################
-# SCENARIO 8#1: Import a NFS volume
+# SCENARIO 7#1: Import a NFS volume
 #########################################################################################
 
 **GOAL:**  
-Let's first copy the volume we used in the [Scenario05](../../Scenario05), which will then be imported, and used to create a new Ghost instance  
+Let's first copy the volume we used in the [Scenario04](../../Scenario04), which will then be imported, and used to create a new Ghost instance  
 
-![Scenario8#1](../Images/scenario8_1.jpg "Scenario8#1")
+![Scenario7#1](../Images/scenario7_1.jpg "Scenario7#1")
 
 ## A. Identify & copy the volume on the NetApp backend.
 
@@ -109,9 +109,9 @@ namespace "ghostnas" deleted
 
 You can now move on to:
 
-- [Scenario09](../../Scenario09): Consumption control  
-- [Scenario10](../../Scenario10): Resize a NFS CSI PVC
-- [Scenario11](../../Scenario11): Using Virtual Storage Pools 
-- [Scenario12](../../Scenario12): StatefulSets & Storage consumption  
+- [Scenario08](../../Scenario08): Consumption control  
+- [Scenario09](../../Scenario09): Resize a NFS CSI PVC
+- [Scenario10](../../Scenario10): Using Virtual Storage Pools 
+- [Scenario11](../../Scenario11): StatefulSets & Storage consumption  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

@@ -28,10 +28,10 @@ kubeadm version: &version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.3", GitC
 Let's start with the master node (*rhel3*)
 
 ```bash
-$ yum install -y kubeadm-1.16.12-0 --disableexcludes=kubernetes
+$ yum install -y kubeadm-1.16.14-0 --disableexcludes=kubernetes
 
 $ kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.12", GitCommit:"17c50ce2d686f4346924935063e3a431360e0db7", GitTreeState:"clean", BuildDate:"2020-06-26T03:39:17Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.14", GitCommit:"d2a081c8e14e21e28fe5bdfa38a817ef9c0bb8e3", GitTreeState:"clean", BuildDate:"2020-08-13T12:31:14Z", GoVersion:"go1.13.15", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 Next, we need to isolate this node, or avoid any new scheduling on the master node.  
@@ -64,35 +64,35 @@ $ kubeadm upgrade plan
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.15.3   v1.16.12
+Kubelet     3 x v1.15.3   v1.16.14
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT   AVAILABLE
-API Server           v1.15.3   v1.16.12
-Controller Manager   v1.15.3   v1.16.12
-Scheduler            v1.15.3   v1.16.12
-Kube Proxy           v1.15.3   v1.16.12
+API Server           v1.15.3   v1.16.14
+Controller Manager   v1.15.3   v1.16.14
+Scheduler            v1.15.3   v1.16.14
+Kube Proxy           v1.15.3   v1.16.14
 CoreDNS              1.3.1     1.6.2
 Etcd                 3.3.10    3.3.15-0
 
 You can now apply the upgrade by executing the following command:
 
-        kubeadm upgrade apply v1.16.12
+        kubeadm upgrade apply v1.16.14
 _____________________________________________________________________
 
-$ kubeadm upgrade apply v1.16.12
+$ kubeadm upgrade apply v1.16.14
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.16.12"
+[upgrade/version] You have chosen to change the cluster version to "v1.16.14"
 [upgrade/versions] Cluster version: v1.15.3
-[upgrade/versions] kubeadm version: v1.16.12
+[upgrade/versions] kubeadm version: v1.16.14
 [upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.12". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.16.14". Enjoy!
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
 
@@ -106,13 +106,13 @@ node/rhel3 uncordoned
 Last, we can now upgrade _kubectl_ & _kubelet_:
 
 ```bash
-$ yum install -y kubelet-1.16.12-0 kubectl-1.16.12-0 --disableexcludes=kubernetes
+$ yum install -y kubelet-1.16.14-0 kubectl-1.16.14-0 --disableexcludes=kubernetes
 
 $ systemctl restart kubelet
 
 $ kubectl version
-Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.12", GitCommit:"17c50ce2d686f4346924935063e3a431360e0db7", GitTreeState:"clean", BuildDate:"2020-06-26T03:41:29Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.12", GitCommit:"17c50ce2d686f4346924935063e3a431360e0db7", GitTreeState:"clean", BuildDate:"2020-06-26T03:33:27Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.14", GitCommit:"d2a081c8e14e21e28fe5bdfa38a817ef9c0bb8e3", GitTreeState:"clean", BuildDate:"2020-08-13T12:33:34Z", GoVersion:"go1.13.15", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"16", GitVersion:"v1.16.14", GitCommit:"d2a081c8e14e21e28fe5bdfa38a817ef9c0bb8e3", GitTreeState:"clean", BuildDate:"2020-08-13T12:24:51Z", GoVersion:"go1.13.15", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
 And after a few seconds, you can see the version:
@@ -122,7 +122,7 @@ $ kubectl get node
 NAME    STATUS   ROLES    AGE    VERSION
 rhel1   Ready    <none>   214d   v1.15.3
 rhel2   Ready    <none>   214d   v1.15.3
-rhel3   Ready    master   214d   v1.16.12
+rhel3   Ready    master   214d   v1.16.14
 ```
 
 We can now process with the worker nodes, one by one.  
@@ -130,7 +130,7 @@ I will first show the procedure for the first node _rhel1_, which is the node th
 First, install the new version of Kubeadm:
 
 ```bash
-yum install -y kubeadm-1.16.12-0 --disableexcludes=kubernetes
+yum install -y kubeadm-1.16.14-0 --disableexcludes=kubernetes
 ```
 
 Then, from the *master* node, unschedule the creation of new PODs on the worker node
@@ -147,7 +147,7 @@ $ kubectl get node
 NAME    STATUS                     ROLES    AGE    VERSION
 rhel1   Ready,SchedulingDisabled   <none>   214d   v1.15.3
 rhel2   Ready                      <none>   214d   v1.15.3
-rhel3   Ready                      master   214d   v1.16.12
+rhel3   Ready                      master   214d   v1.16.14
 ```
 
 Time to upgrade the worker node
@@ -161,7 +161,7 @@ $ kubeadm upgrade node
 [upgrade] The configuration for this node was successfully updated!
 [upgrade] Now you should go ahead and upgrade the kubelet package using your package manager.
 
-$ yum install -y kubelet-1.16.12-0 kubectl-1.16.12-0 --disableexcludes=kubernetes
+$ yum install -y kubelet-1.16.14-0 kubectl-1.16.14-0 --disableexcludes=kubernetes
 
 $ systemctl restart kubelet
 ```
@@ -235,9 +235,9 @@ You will end up with the following:
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.16.12
-rhel2   Ready    <none>   294d   v1.16.12
-rhel3   Ready    master   294d   v1.16.12
+rhel1   Ready    <none>   294d   v1.16.14
+rhel2   Ready    <none>   294d   v1.16.14
+rhel3   Ready    master   294d   v1.16.14
 ```
 
 Tadaaa !  

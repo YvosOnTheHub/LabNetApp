@@ -160,11 +160,5 @@ namespace "ghost" deleted
 
 ## What's next
 
-You can now move on to:
-
-- [Scenario15](../../Scenario15): Dynamic export policy management  
-
-Or go back to:
-
-- the [Scenario14 FrontPage](../)
-- the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
+You have reached the end of the lab !
+You can fo back to the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
