@@ -16,7 +16,7 @@ Scenarios (updated for Trident 20.07)
 ---------
 [1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident :arrows_counterclockwise:  
 [2.](Kubernetes_v2/Scenarios/Scenario02) Configure your first NAS backends & storage classes :arrows_counterclockwise:  
-[3.](Kubernetes_v2/Scenarios/Scenario02) Install and use Prometheus & Grafana :arrows_counterclockwise:  
+[3.](Kubernetes_v2/Scenarios/Scenario03) Install and use Prometheus & Grafana :arrows_counterclockwise:  
 [4.](Kubernetes_v2/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v2/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
 [6.](Kubernetes_v2/Scenarios/Scenario06) Deploy your first app with Block storage  
