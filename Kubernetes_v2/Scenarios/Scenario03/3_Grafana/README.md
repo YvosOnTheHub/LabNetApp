@@ -159,7 +159,7 @@ grafana-piechart-panel @ 1.6.0
 Restart grafana after installing plugins . <service grafana-server restart>
 ```
 
-When you create a new dashboard, you will now have access to a new format:
+When you create a new dashboard, you will now have access to a new format:  
 ![Pie Chart](../Images/pie_chart.jpg "Pie Chart")
 
 Your turn to have fun!
