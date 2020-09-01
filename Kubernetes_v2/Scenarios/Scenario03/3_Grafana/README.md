@@ -168,9 +168,8 @@ Your turn to have fun!
 
 OK, you have everything to monitor Trident, let's continue with the creation of some backends :
 
-- [Scenario04](../../Scenario04): Configure your first NAS backends & storage classes  
-- [Scenario06](../../Scenario06): Configure your first iSCSI backends & storage classes  
-- [Scenario11](../../Scenario11): Using Virtual Storage Pools  
-- [Scenario15](../../Scenario15): Dynamic export policy management  
+- [Scenario05](../../Scenario05): Configure your first iSCSI backends & storage classes  
+- [Scenario10](../../Scenario10): Using Virtual Storage Pools  
+- [Scenario13](../../Scenario13): Dynamic export policy management  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
