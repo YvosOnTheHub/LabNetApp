@@ -29,6 +29,7 @@ We will install Prometheus & Grafana in one namespace called _monitoring_.
 
 ```bash
 $ kubectl create namespace monitoring
+namespace/monitoring created
 ```
 
 ## C. Create a configmap for the datasource
@@ -51,7 +52,7 @@ configmap/cm-grafana-datasources created
 ## D. Network
 
 For this scenario, we are going to use a LoadBalancer to automatically assign IP addresses to both Prometheus & Grafana services.  
-Please refer to the [Addenda07](LabNetApp/Kubernetes_v2/Addendum/Addenda07) which explains how to install & configure MetalLB.
+Please refer to the [Addenda07](../../../Addendum/Addenda07) which explains how to install & configure MetalLB.
 
 ## E. Storage
 

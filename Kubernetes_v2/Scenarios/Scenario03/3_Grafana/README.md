@@ -152,7 +152,7 @@ deployment.extensions/prom-operator-grafana scaled
 Let's check if it has been well installed
 
 ```bash
-$ kubectl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins ls
+$ kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins ls
 installed plugins:
 grafana-piechart-panel @ 1.6.0
 

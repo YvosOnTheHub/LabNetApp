@@ -28,7 +28,12 @@ setenforce 0
 swapoff -a
 ```
 
-Last, edit /etc/fstab & comment (\#) the swap line
+Last, comment the line for the swap in the  /etc/fstab file
+
+```bash
+cp /etc/fstab /etc/fstab.bak
+sed -e '/swap/ s/^#*/#/g' -i /etc/fstab
+```
 
 ## B. Install the kubernetes packages & join the cluster
 

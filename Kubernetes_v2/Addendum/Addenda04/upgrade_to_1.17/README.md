@@ -5,13 +5,13 @@
 **GOAL:**  
 You are currently running Kubernetes 1.16 & would like to upgrade to 1.17.  
 
-The procedure to go from 1.16.14 to 1.17.8 is pretty similar to the one used previously.  
+The procedure to go from 1.16.15 to 1.17.8 is pretty similar to the one used previously.  
 
 ```bash
-$ yum install -y kubeadm-1.17.8-0 --disableexcludes=kubernetes
+$ yum install -y kubeadm-1.17.11-0 --disableexcludes=kubernetes
 
 $ kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.8", GitCommit:"35dc4cdc26cfcb6614059c4c6e836e5f0dc61dee", GitTreeState:"clean", BuildDate:"2020-06-26T03:41:15Z", GoVersion:"go1.13.9", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"17", GitVersion:"v1.17.11", GitCommit:"ea5f00d93211b7c80247bf607cfa422ad6fb5347", GitTreeState:"clean", BuildDate:"2020-08-13T15:17:52Z", GoVersion:"go1.13.15", Compiler:"gc", Platform:"linux/amd64"}
 
 $ kubectl drain rhel3 --ignore-daemonsets
 node/rhel3 cordoned
@@ -24,46 +24,46 @@ $ kubeadm upgrade plan
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT        AVAILABLE
-Kubelet     3 x v1.16.14   v1.17.8
+Kubelet     3 x v1.16.15   v1.17.11
 
 Upgrade to the latest stable version:
 
 COMPONENT            CURRENT    AVAILABLE
-API Server           v1.16.14   v1.17.8
-Controller Manager   v1.16.14   v1.17.8
-Scheduler            v1.16.14   v1.17.8
-Kube Proxy           v1.16.14   v1.17.8
+API Server           v1.16.15   v1.17.11
+Controller Manager   v1.16.15   v1.17.11
+Scheduler            v1.16.15   v1.17.11
+Kube Proxy           v1.16.15   v1.17.11
 CoreDNS              1.6.2      1.6.5
 Etcd                 3.3.15     3.4.3-0
 
 You can now apply the upgrade by executing the following command:
-        kubeadm upgrade apply v1.17.8
+        kubeadm upgrade apply v1.17.11
 
-$ kubeadm upgrade apply v1.17.8
+$ kubeadm upgrade apply v1.17.11 -y
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Making sure the cluster is healthy:
-[upgrade/version] You have chosen to change the cluster version to "v1.17.8"
-[upgrade/versions] Cluster version: v1.16.14
-[upgrade/versions] kubeadm version: v1.17.8
-[upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
+[upgrade/version] You have chosen to change the cluster version to "v1.17.11"
+[upgrade/versions] Cluster version: v1.16.15
+[upgrade/versions] kubeadm version: v1.17.11
 ...
-[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.8". Enjoy!
+[upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.17.11". Enjoy!
 
 $ kubectl uncordon rhel3
 node/rhel3 uncordoned
 
-$ yum install -y kubelet-1.17.8-0 kubectl-1.17.8-0 --disableexcludes=kubernetes
+$ yum install -y kubelet-1.17.11-0 kubectl-1.17.11-0 --disableexcludes=kubernetes
 
 $ systemctl restart kubelet
+$ systemctl daemon-reload
 
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.16.14
-rhel2   Ready    <none>   294d   v1.16.14
-rhel3   Ready    master   294d   v1.17.8
+rhel1   Ready    <none>   294d   v1.16.15
+rhel2   Ready    <none>   294d   v1.16.15
+rhel3   Ready    master   294d   v1.17.11
 ```
 
 Let's process with the worker node _rhel1_. Again, you need to start by _draining_ it from the master.
@@ -87,13 +87,14 @@ If you remember, Trident's ReplicaSet is on this host. This upgrade procedure do
 Back to _rhel1_:
 
 ```bash
-yum install -y kubeadm-1.17.8-0 --disableexcludes=kubernetes
+yum install -y kubeadm-1.17.11-0 --disableexcludes=kubernetes
 
 kubeadm upgrade node
 
-yum install -y kubelet-1.17.8-0 kubectl-1.17.8-0 --disableexcludes=kubernetes
+yum install -y kubelet-1.17.11-0 kubectl-1.17.11-0 --disableexcludes=kubernetes
 
 systemctl restart kubelet
+systemctl daemon-reload
 ```
 
 Back to the master:  
@@ -104,9 +105,9 @@ node/rhel1 uncordoned
 
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.17.8
-rhel2   Ready    <none>   294d   v1.16.14
-rhel3   Ready    master   294d   v1.17.8
+rhel1   Ready    <none>   294d   v1.17.11
+rhel2   Ready    <none>   294d   v1.16.15
+rhel3   Ready    master   294d   v1.17.11
 ```
 
 You now can repeat this procedure on the second worker node, until you get to:
@@ -114,9 +115,9 @@ You now can repeat this procedure on the second worker node, until you get to:
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.17.8
-rhel2   Ready    <none>   294d   v1.17.8
-rhel3   Ready    master   294d   v1.17.8
+rhel1   Ready    <none>   294d   v1.17.11
+rhel2   Ready    <none>   294d   v1.17.11
+rhel3   Ready    master   294d   v1.17.11
 ```
 
 Tadaaa again !

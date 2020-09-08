@@ -5,7 +5,7 @@
 **GOAL:**  
 You are currently running Kubernetes 1.17 & would like to upgrade to 1.18.  
 
-The procedure to go from 1.17.8 to 1.18.5 is pretty similar to the previous one.  
+The procedure to go from 1.17.11 to 1.18.5 is pretty similar to the previous one.  
 
 ```bash
 $ yum install -y kubeadm-1.18.5-0 --disableexcludes=kubernetes
@@ -21,31 +21,30 @@ $ kubeadm upgrade plan
 ...
 Components that must be upgraded manually after you have upgraded the control plane with 'kubeadm upgrade apply':
 COMPONENT   CURRENT       AVAILABLE
-Kubelet     3 x v1.17.8   v1.18.5
+Kubelet     3 x v1.17.11   v1.18.5
 
 Upgrade to the latest stable version:
-COMPONENT            CURRENT   AVAILABLE
-API Server           v1.17.8   v1.18.5
-Controller Manager   v1.17.8   v1.18.5
-Scheduler            v1.17.8   v1.18.5
-Kube Proxy           v1.17.8   v1.18.5
-CoreDNS              1.6.5     1.6.7
-Etcd                 3.4.3     3.4.3-0
+COMPONENT            CURRENT    AVAILABLE
+API Server           v1.17.11   v1.18.5
+Controller Manager   v1.17.11   v1.18.5
+Scheduler            v1.17.11   v1.18.5
+Kube Proxy           v1.17.11   v1.18.5
+CoreDNS              1.6.5      1.6.7
+Etcd                 3.4.3      3.4.3-0
 
 You can now apply the upgrade by executing the following command:
         kubeadm upgrade apply v1.18.5
 
 
-$ kubeadm upgrade apply v1.18.5
+$ kubeadm upgrade apply v1.18.5 -y
 [upgrade/config] Making sure the configuration is correct:
 [upgrade/config] Reading configuration from the cluster...
 [upgrade/config] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
 [preflight] Running pre-flight checks.
 [upgrade] Running cluster health checks
 [upgrade/version] You have chosen to change the cluster version to "v1.18.5"
-[upgrade/versions] Cluster version: v1.17.8
+[upgrade/versions] Cluster version: v1.17.11
 [upgrade/versions] kubeadm version: v1.18.5
-[upgrade/confirm] Are you sure you want to proceed with the upgrade? [y/N]: y
 ...
 [upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.18.5". Enjoy!
 
@@ -55,11 +54,12 @@ node/rhel3 uncordoned
 $ yum install -y kubelet-1.18.5-0 kubectl-1.18.5-0 --disableexcludes=kubernetes
 
 $ systemctl restart kubelet
+$ systemctl daemon-reload
 
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
-rhel1   Ready    <none>   294d   v1.17.8
-rhel2   Ready    <none>   294d   v1.17.8
+rhel1   Ready    <none>   294d   v1.17.11
+rhel2   Ready    <none>   294d   v1.17.11
 rhel3   Ready    master   294d   v1.18.5
 ```
 
@@ -85,6 +85,7 @@ kubeadm upgrade node
 yum install -y kubelet-1.18.5-0 kubectl-1.18.5-0 --disableexcludes=kubernetes
 
 systemctl restart kubelet
+systemctl daemon-reload
 ```
 
 Back to the master:  
@@ -96,7 +97,7 @@ node/rhel1 uncordoned
 $ kubectl get nodes
 NAME    STATUS   ROLES    AGE    VERSION
 rhel1   Ready    <none>   294d   v1.18.5
-rhel2   Ready    <none>   294d   v1.17.8
+rhel2   Ready    <none>   294d   v1.17.11
 rhel3   Ready    master   294d   v1.18.5
 ```
 
