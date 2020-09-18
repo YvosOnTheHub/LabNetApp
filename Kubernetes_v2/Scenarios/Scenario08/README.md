@@ -10,7 +10,7 @@ However, this freedom can lead to quickly feel up the storage backend, especiall
 A good practice is to place some controls to make sure storage is well used.  
 We are going to review here different methods to control the storage consumption.
 
-This scenario will guide you through different ways to add control to your environment
+This scenario will guide you through different ways to add control to your environment  
 [1.](1_Kubernetes_Resource_Quotas) Kubernetes Resource Quotas  
 [2.](2_Trident_parameters) Trident parameters  
 [3.](3_ONTAP_parameters) ONTAP parameters  
