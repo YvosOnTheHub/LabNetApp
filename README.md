@@ -21,7 +21,7 @@ Scenarios (updated for Trident 20.07)
 [5.](Kubernetes_v2/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
 [6.](Kubernetes_v2/Scenarios/Scenario06) Deploy your first app with Block storage  
 [7.](Kubernetes_v2/Scenarios/Scenario07) Use the 'import' feature of Trident :arrows_counterclockwise:  
-[8.](Kubernetes_v2/Scenarios/Scenario08) Consumption control  
+[8.](Kubernetes_v2/Scenarios/Scenario08) Consumption control :arrows_counterclockwise:  
 [9.](Kubernetes_v2/Scenarios/Scenario09) Resize a NFS CSI PVC  
 [10.](Kubernetes_v2/Scenarios/Scenario10) Using Virtual Storage Pools  
 [11.](Kubernetes_v2/Scenarios/Scenario11) StatefulSets & Storage consumption  
