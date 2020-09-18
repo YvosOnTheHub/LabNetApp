@@ -1,0 +1,59 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 4gb-1
+  labels:
+      scenario: sc8_4
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: sc-eco-limit
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 4gb-2
+  labels:
+      scenario: sc8_4
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: sc-eco-limit
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 4gb-3
+  labels:
+      scenario: sc8_4
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: sc-eco-limit
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: 4gb-4
+  labels:
+      scenario: sc8_4
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 4Gi
+  storageClassName: sc-eco-limit
