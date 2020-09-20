@@ -16,7 +16,7 @@ Depending on the driver, this parameter will
 1. control the PVC Size (ex: driver ONTAP-NAS)
 2. control the size of the ONTAP volume hosting PVC (ex: drivers ONTAP-NAS-ECONOMY or ONTAP-SAN-ECONOMY)
 
-![Scenario08_3](../Images/scenario08_3.JPG "Scenario08_3")
+<p align="center"><img src="../Images/scenario08_3.JPG"></p>
 
 Let's create a backend with this parameter setup (limitVolumeSize = 5g), followed by the storage class that points to it, using the storagePools parameter:
 

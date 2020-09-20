@@ -5,7 +5,7 @@
 **GOAL:**  
 We will deploy the same App as in the scenario 4, but instead of using File Storage, we will use Block Storage.
 
-![Scenario6](Images/scenario6.jpg "Scenario6")
+<p align="center"><img src="Images/scenario6.jpg"></p>
 
 ## A. Create the app
 

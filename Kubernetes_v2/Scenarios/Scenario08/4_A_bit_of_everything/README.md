@@ -148,11 +148,11 @@ Using this method allows you to manage capacity with Building Blocks.
 You could decide to allocate one or several _FlexVol_ per tenant, & grow the limit when requested, while limiting the size of each PVC.
 
 :mag:  
-Keep in mind that each Storage Tenant (SVM) always has a root volume.  
-The smallest number you can set for the maximum number of volumes is then 2.  
+**Keep in mind that each Storage Tenant (SVM) always has a root volume.  
+The smallest number you can set for the maximum number of volumes is then 2.**  
 :mag:  
 
-Some examples:
+**Some examples:**
 
 1. ONTAP-NAS-ECONOMY & LimitVolumeSize = 1TB & Max Number of Volumes = 2  
 You can create as many PVC as you want until you reach 1TB of capacity.  

@@ -10,7 +10,7 @@ In this exercise, we will create a MySQL StatefulSet & Scale it.
 
 We consider that a backend & a storage class have already been created. ([ex: Scenario02](../Scenario02)).  
 
-![Scenario11](Images/scenario11.jpg "Scenario11")
+<p align="center"><img src="Images/scenario11.JPG"></p>
 
 To best benefit from the scenario, you would first need to go through the following Addendum:  
 [1.](../../Addendum/Addenda01) Add a node to the cluster  

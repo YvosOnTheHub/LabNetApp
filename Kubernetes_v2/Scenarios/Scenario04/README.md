@@ -11,7 +11,7 @@ Ghost is a light weight web portal. You will a few YAML files in the Ghost direc
 - a DEPLOYMENT that will define how to manage the app
 - a SERVICE to expose the app
 
-![Scenario4](Images/scenario4.jpg "Scenario4")
+<p align="center"><img src="Images/scenario4.jpg"></p>
 
 ## A. Create the app
 

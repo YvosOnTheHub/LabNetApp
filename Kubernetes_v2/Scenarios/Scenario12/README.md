@@ -9,7 +9,7 @@ Here we will go through a iSCSI PVC Expansion ...
 
 Resizing a PVC is made available through the option *allowVolumeExpansion* set in the StorageClass.
 
-![Scenario12](Images/scenario12.jpg "Scenario12")
+<p align="center"><img src="Images/scenario12.JPG"></p>
 
 :boom:  
 As the LabOnDemand runs Kubernetes 1.15, you first need to upgrade its version.  

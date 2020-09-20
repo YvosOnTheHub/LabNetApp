@@ -33,7 +33,7 @@ storage-class-nas.storageclass.storage.k8s.io/persistentvolumeclaims  0     3
 ```
 
 Now let's start creating some PVC against the storage class _quota_ & check the resource quota usage
-![Scenario08_1](../Images/scenario08_1.JPG "Scenario08_1")
+<p align="center"><img src="../Images/scenario08_1.JPG"></p>
 
 ```bash
 $ kubectl create -n quota -f pvc-quotasc-1.yaml
@@ -79,7 +79,7 @@ persistentvolumeclaim "quotasc-3" deleted
 ```
 
 Time to look at the capacity quotas  
-![Scenario08_2](../Images/scenario08_2.JPG "Scenario08_2")
+<p align="center"><img src="../Images/scenario08_2.JPG"></p>
 
 ```bash
 $ kubectl describe quota sc-resource-limit -n quota

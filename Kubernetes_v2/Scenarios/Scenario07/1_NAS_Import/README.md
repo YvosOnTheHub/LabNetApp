@@ -5,7 +5,7 @@
 **GOAL:**  
 Let's first copy the volume we used in the [Scenario04](../../Scenario04), which will then be imported, and used to create a new Ghost instance  
 
-![Scenario7#1](../Images/scenario7_1.jpg "Scenario7#1")
+<p align="center"><img src="../Images/scenario7_1.jpg"></p>
 
 ## A. Identify & copy the volume on the NetApp backend.
 

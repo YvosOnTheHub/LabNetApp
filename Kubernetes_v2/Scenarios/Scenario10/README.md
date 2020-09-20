@@ -20,7 +20,7 @@ The following parameters can be used in the Virtual Pools:
 
 In this lab, instead of creating a few backends pointing to the same SVM, we are going to use Virtual Storage Pools
 
-![Scenario10](Images/scenario10.jpg "Scenario10")
+<p align="center"><img src="Images/scenario10.JPG"></p>
 
 ## A. Create the new backend
 

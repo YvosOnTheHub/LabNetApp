@@ -6,7 +6,7 @@
 Trident 20.07 introduced the possibility to import into Kubernetes a iSCSI LUN that exists in an ONTAP platform.  
 A SAN Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario5](../../Scenario05)
 
-![Scenario7#2](../Images/scenario7_2.jpg "Scenario7#2")
+<p align="center"><img src="../Images/scenario7_2.jpg"></p>
 
 ## A. Create a volume & a LUN on the storage backend
 

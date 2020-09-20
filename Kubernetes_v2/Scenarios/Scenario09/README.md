@@ -11,7 +11,7 @@ Resizing a PVC is made available through the option *allowVolumeExpansion* set i
 
 We consider that the ONTAP-NAS backend has already been created. ([cf Scenario04](../Scenario02))
 
-![Scenario9](Images/scenario9.jpg "Scenario9")
+<p align="center"><img src="Images/scenario09.JPG"></p>
 
 ## A. Create a new storage class with the option allowVolumeExpansion.
 
