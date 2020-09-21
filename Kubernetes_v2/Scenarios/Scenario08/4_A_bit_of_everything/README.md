@@ -11,6 +11,11 @@ In the following example, we will use:
 - Trident backend parameter: limitVolumeSize (10GB)
 - ONTAP parameter: max number of volumes per SVM
 
+:boom:  
+Keep in mind that with Trident 20.07 you can only have up to 200 Qtrees (PVC) per volume.  
+For more information, see <https://netapp-trident.readthedocs.io/en/stable-v20.07/frequently_asked_questions.html#how-does-trident-deploy-qtrees-on-an-ontap-volume-how-many-qtrees-can-be-deployed-on-a-single-volume-through-trident>  
+:boom:  
+
 ## A. Trident Configuration
 
 We are going to create a specific Trident backend & a specific storage class for this scenario.  
