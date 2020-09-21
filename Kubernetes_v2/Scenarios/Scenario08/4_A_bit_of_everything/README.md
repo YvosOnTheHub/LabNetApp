@@ -52,7 +52,7 @@ If you would like to check if the command has well been taken into account, you 
 $ ssh -l admin 192.168.0.101 vserver show -vserver svm1 -fields max-volumes
 vserver max-volumes
 ------- -----------
-svm1    11
+svm1    7
 ```
 
 ## C. Let's try this!
