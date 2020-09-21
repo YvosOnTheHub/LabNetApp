@@ -160,11 +160,11 @@ The smallest number you can set for the maximum number of volumes is then 2.**
 **Some examples:**
 
 1. ONTAP-NAS-ECONOMY & LimitVolumeSize = 1TB & Max Number of Volumes = 2  
-You can create as many PVC as you want until you reach 1TB of capacity.  
+You can create up to 200 PVC until you reach 1TB of capacity.  
 The Kubernetes admin could update the Trident backend to grow the limit from 1TB to 2TB.
 
 2. ONTAP-NAS-ECONOMY & LimitVolumeSize = 1TB & Max Number of Volumes = 5  
-You can create as many PVC as you want until you reach 4TB of capacity, divided in 4 ONTAP volumes.  
+You can create up to 800 PVC (4x200) until you reach 4TB of capacity, divided in 4 ONTAP volumes.  
 The storage admin could update the ONTAP parameter to create a new 1TB ONTAP volume.  
 
 ## E. What's next
