@@ -4,7 +4,7 @@
 
 We will here fire up a new Ghost environment with a new version while keeping the same content. This would a good way to test a new release, while not copying all the data for this specific environment. In other words, you would save time by doing so.  
 
-![Scenario14_2](Images/scenario14_2.jpg "Scenario14_2")
+<p align="center"><img src="Images/scenario14_2.jpg"></p>
 
 The first deployment uses Ghost v2.6. Let's try with Ghost 3.13 ...
 

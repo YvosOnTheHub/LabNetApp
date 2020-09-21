@@ -150,7 +150,7 @@ You could decide to allocate one or several _FlexVol_ per tenant, & grow the lim
 :mag:  
 **Keep in mind that each Storage Tenant (SVM) always has a root volume.  
 The smallest number you can set for the maximum number of volumes is then 2.**  
-:mag:  
+:mag_right:  
 
 **Some examples:**
 

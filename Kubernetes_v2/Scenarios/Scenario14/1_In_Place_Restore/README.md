@@ -5,7 +5,7 @@
 "Oh zut! I deleted some very important data from my PVC!!!"  
 "No worries, you can reuse the CSI Snapshot you created earlier without contacting the Infra teams"
 
-![Scenario14_1](Images/scenario14_1.jpg "Scenario14_1")
+<p align="center"><img src="Images/scenario14_1.jpg"></p>
 
 To *restore* data, you can edit the object that defines that Application (in our case, a *deployment*) or patch it:
 
