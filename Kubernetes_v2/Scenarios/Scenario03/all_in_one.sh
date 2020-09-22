@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $(kubectl get ns | grep metallb-system | wc -l) = 1 ]]
+if [[ $(kubectl get ns | grep metallb-system | wc -l) = 0 ]]
 then
    echo "#######################################################################################################"
    echo "Install MetalLB"
