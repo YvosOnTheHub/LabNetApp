@@ -85,47 +85,11 @@ You can now properly login to Grafana.
 
 If the prerequisites were correctly performed, you should see in the Data Sources section an object called **prometheus** that points to its URL (http://192.168.0.140)
 
-## F. Create your own graph
-
-Hover on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
-You can here configure a new graph by adding metrics. By typing 'trident' in the 'Metrics' box, you will see all metrics available.
-
-## G. Import a graph
-
-There are several ways to bring dashboards into Grafana.  
-
-*Manual Import*  
-Hover on the '+' on left side of the screen, then 'New Dashboard' & 'Import'.
-Copy & paste the content of the _Trident_Dashboard_Std.json_ file in this directory.  
-The _issue_ with this method is that if the Grafana POD restarts, the dashboard will be lost...  
-
-*Persistent Dashboard*  
-The idea here would be to create a ConfigMap pointing to the Trident dashboard json file.
-
-```bash
-$ kubectl create configmap -n monitoring cm-trident-dashboard --from-file=Dashboards/Trident_Dashboard_Std.json
-configmap/tridentdashboard created
-
-$ kubectl label configmap -n monitoring cm-trident-dashboard grafana_dashboard=1
-configmap/tridentdashboard labeled
-```
-
-When Grafana starts, it will automatically load every configmap that has the label _grafana_dashboard_.  
-In the Grafana UI, you will find the dashboard in its own_Trident_ folder.  
-
-Now, where can you find this dashboard:
-
-- Hover on the 'Dashboard' icon on the left side bar (it looks like 4 small squares)  
-- Click on the 'Manage' button  
-- You then access a list of dashboards. You can either research 'Trident' or find the link be at the bottom of the page  
-
-<p align="center"><img src="../Images/trident_dashboard.jpg"></p>
-
-## H. Grafana plug-ins
+## F. Grafana plug-ins
 
 Grafana is a very powertul tool. You can install plenty of different plugins to create new neat dashboards.  
-Let's see an example. I would like to install the **pie chart** model.  
-This needs to be done directly in the _grafana_ container.
+Let's see an example. I would like to install the **pie chart** model.This needs to be done directly in the _grafana_ container.  
+This plugin is mandatory for the _debug dashboards_ that you will use in a few minutes.  
 
 ```bash
 $ kubectl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
@@ -161,6 +125,42 @@ Restart grafana after installing plugins . <service grafana-server restart>
 
 When you create a new dashboard, you will now have access to a new format:  
 <p align="center"><img src="../Images/pie_chart.jpg"></p>
+
+## G. Create your own graph
+
+Hover on the '+' on left side of the screen, then 'New Dashboard', 'New Panel' & 'Add Query'.
+You can here configure a new graph by adding metrics. By typing 'trident' in the 'Metrics' box, you will see all metrics available.
+
+## H. Import a graph
+
+There are several ways to bring dashboards into Grafana.  
+
+*Manual Import*  
+Hover on the '+' on left side of the screen, then 'New Dashboard' & 'Import'.
+Copy & paste the content of the _Trident_Dashboard_Std.json_ file in this directory.  
+The _issue_ with this method is that if the Grafana POD restarts, the dashboard will be lost...  
+
+*Persistent Dashboard*  
+The idea here would be to create a ConfigMap pointing to the Trident dashboard json file.
+
+```bash
+$ kubectl create configmap -n monitoring cm-trident-dashboard-dir --from-file=Dashboards/
+configmap/tridentdashboard created
+
+$ kubectl label configmap -n monitoring cm-trident-dashboard-dir grafana_dashboard=1
+configmap/tridentdashboard labeled
+```
+
+When Grafana starts, it will automatically load every configmap that has the label _grafana_dashboard_.  
+In the Grafana UI, you will find the dashboard in its own_Trident_ folder.  
+
+Now, where can you find this dashboard:
+
+- Hover on the 'Dashboard' icon on the left side bar (it looks like 4 small squares)  
+- Click on the 'Manage' button  
+- You then access a list of dashboards. You can either research 'Trident' or find the link be at the bottom of the page  
+
+<p align="center"><img src="../Images/trident_dashboard.jpg"></p>
 
 Your turn to have fun!
 

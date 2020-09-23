@@ -93,5 +93,5 @@ echo "##########################################################################
 echo "Create ConfigMap for Dashboards"
 echo "#######################################################################################################"
 
-kubectl create configmap -n monitoring cm-trident-dashboard --from-file=3_Grafana/Dashboards/Trident_Dashboard_Std.json
+kubectl create configmap -n monitoring cm-trident-dashboard --from-file=3_Grafana/Dashboards/
 kubectl label configmap -n monitoring cm-trident-dashboard grafana_dashboard=1
