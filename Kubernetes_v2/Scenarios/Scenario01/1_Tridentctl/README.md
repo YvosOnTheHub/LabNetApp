@@ -4,7 +4,7 @@
 
 **GOAL:**  
 This scenario is intended to see how easy it is to upgrade Trident with Tridentctl
-The examples below will guide you in performing an upgrade from 19.07.1 to 20.07
+The examples below will guide you in performing an upgrade from 19.07.1 to 20.07.1
 
 ## A. Check the current version
 
@@ -90,8 +90,8 @@ INFO Deleted installer service account.
 ```bash
 cd
 mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.07.0/trident-installer-20.07.0.tar.gz
-tar -xf trident-installer-20.07.0.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.07.1/trident-installer-20.07.1.tar.gz
+tar -xf trident-installer-20.07.1.tar.gz
 ```
 
 ## D. Install the new version
@@ -129,7 +129,7 @@ INFO Created Trident daemonset.
 INFO Waiting for Trident pod to start.
 INFO Trident pod started.                          namespace=trident pod=trident-csi-6b778f79bb-xnjws
 INFO Waiting for Trident REST interface.
-INFO Trident REST interface is up.                 version=20.07.0
+INFO Trident REST interface is up.                 version=20.07.1
 INFO Trident installation succeeded.
 ```
 
@@ -140,12 +140,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 20.07.0        | 20.07.0        |
+| 20.07.1        | 20.07.1        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   20.07.0
+trident   20.07.1
 
 $ kubectl -n trident get tridentbackends
 NAME        BACKEND               BACKEND UUID
