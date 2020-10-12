@@ -12,5 +12,5 @@ echo "##########################################################################
 echo "Configure MetalLB"
 echo "#######################################################################################################"
 
-cd /root/LabNetApp/Kubernetes_v2/Addendum/Addenda07
+cd ~/LabNetApp/Kubernetes_v2/Addendum/Addenda07
 kubectl apply -f metallb-configmap.yml
