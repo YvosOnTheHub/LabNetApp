@@ -92,7 +92,7 @@ Let's see an example. I would like to install the **pie chart** model.This needs
 This plugin is mandatory for the _debug dashboards_ that you will use in a few minutes.  
 
 ```bash
-$ kubectl exec -n monitoring -it $(kg -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
+$ kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
 installing grafana-piechart-panel @ 1.6.0
 from: https://grafana.com/api/plugins/grafana-piechart-panel/versions/1.6.0/download
 into: /var/lib/grafana/plugins

@@ -3,7 +3,23 @@
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Install Trident Operator 20.07.1"
+echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
+echo "#"
+echo "# 1. INSTALL TRIDENT OPERATOR 20.07.1"
+echo "# 2. UPGRADE KUBERNETES FROM 1.15 TO 1.16"
+echo "# 3. UPGRADE KUBERNETES FROM 1.16 TO 1.17"
+echo "# 4. INSTALL METALLB"
+echo "# 5. INSTALL NAS BACKENDS FOR TRIDENT"
+echo "# 6. INSTALL & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 7. UPDATE BASHRC"
+echo "#"
+echo "#######################################################################################################"
+exho
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 1. INSTALL TRIDENT OPERATOR 20.07.1"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -12,7 +28,7 @@ sh Scenarios/Scenario01/2_Operator/all_in_one.sh
 
 echo "#######################################################################################################"
 echo "#"
-echo "# Upgrade Kubernetes from 1.15 to 1.16"
+echo "# 2. UPGRADE KUBERNETES FROM 1.15 TO 1.16"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -22,7 +38,7 @@ sh Addendum/Addenda04/upgrade_to_1.16/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Upgrade Kubernetes from 1.16 to 1.17"
+echo "# 3. UPGRADE KUBERNETES FROM 1.16 TO 1.17"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -32,7 +48,7 @@ sh Addendum/Addenda04/upgrade_to_1.17/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Install MetalLB"
+echo "# 4. INSTALL METALLB"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -42,7 +58,7 @@ sh Addendum/Addenda07/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Install NAS Backends for Trident"
+echo "# 5. INSTALL NAS BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -52,7 +68,7 @@ sh Scenarios/Scenario02/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Install & Configure Prometheus & Grafana"
+echo "# 6. INSTALL & CONFIGURE PROMETHEUS & GRAFANA"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -62,7 +78,7 @@ sh Scenarios/Scenario03/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# Update Bash"
+echo "# 7. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo

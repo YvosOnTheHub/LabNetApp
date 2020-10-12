@@ -85,6 +85,7 @@ echo "##########################################################################
 echo "Install Pie Chart Plugin in Grafana"
 echo "#######################################################################################################"
 
+sleep 15s
 kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=1
