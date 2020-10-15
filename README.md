@@ -1,5 +1,8 @@
 # LabNetApp
 
+This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams.  
+You will find several exercises, described in a step-by-step fashion, that you can use on the NetApp Lab-on-Demand  or on your own environment.  
+
 ## A. Kubernetes v2 (with CSI)
 
 The section has been tested with the Lab-on-Demand Using "Trident with Kubernetes and ONTAP v3.1" which comes with Trident :trident: 19.07 already installed on Kubernetes 1.15.3.
@@ -14,20 +17,22 @@ Try using some of the shortcuts you will find in the the Addenda0!
 
 Scenarios (updated for Trident 20.07)
 ---------
-[1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident :arrows_counterclockwise:  
-[2.](Kubernetes_v2/Scenarios/Scenario02) Configure your first NAS backends & storage classes :arrows_counterclockwise:  
+[1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident  
+[2.](Kubernetes_v2/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v2/Scenarios/Scenario03) Install and use Prometheus & Grafana :arrows_counterclockwise:  
 [4.](Kubernetes_v2/Scenarios/Scenario04) Deploy your first app with File storage  
-[5.](Kubernetes_v2/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes :arrows_counterclockwise:  
+[5.](Kubernetes_v2/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
 [6.](Kubernetes_v2/Scenarios/Scenario06) Deploy your first app with Block storage  
-[7.](Kubernetes_v2/Scenarios/Scenario07) Use the 'import' feature of Trident :arrows_counterclockwise:  
-[8.](Kubernetes_v2/Scenarios/Scenario08) Consumption control :arrows_counterclockwise:  
+[7.](Kubernetes_v2/Scenarios/Scenario07) Use the 'import' feature of Trident  
+[8.](Kubernetes_v2/Scenarios/Scenario08) Consumption control  
 [9.](Kubernetes_v2/Scenarios/Scenario09) Resize a NFS CSI PVC  
 [10.](Kubernetes_v2/Scenarios/Scenario10) Using Virtual Storage Pools  
 [11.](Kubernetes_v2/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v2/Scenarios/Scenario12) Resize a iSCSI CSI PVC (*requires Kubernetes 1.16 minimum*)  
 [13.](Kubernetes_v2/Scenarios/Scenario13) Dynamic export policy management  
 [14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows (*requires Kubernetes 1.17 minimum*)  
+#[15.](Kubernetes_v2/Scenarios/Scenario15) _About security_ :arrows_counterclockwise:  
+15. _About security (soon)_  
 
 Addendum
 --------

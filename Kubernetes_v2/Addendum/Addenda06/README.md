@@ -10,7 +10,23 @@ Ansible can be useful in some cases. Let's see how to install it on the master n
 Super easy ...
 
 ```bash
-yum install -y ansible-2.9.9
+yum install -y ansible-2.9.13
+```
+
+I order to use NetApp modules, we need to install the NetApp python library
+
+```bash
+yum install python-pip
+pip install netapp-lib
+```
+
+Last, we will install the NetApp ONTAP Collection from the Ansible Galaxy
+
+```bash
+$ ansible-galaxy collection install netapp.ontap
+Process install dependency map
+Starting collection install process
+Installing 'netapp.ontap:20.10.0' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
 ```
 
 Now that Ansible is installed, let's configure the host file
@@ -52,7 +68,7 @@ rhel3 | SUCCESS => {
 }
 ```
 
-## B. Install SVN
+## B. Install SVN (optional)
 
 Sometimes, you dont want to copy a full GitHub repository, but only a subset of it...  
 However the 'git' command line does not offer this possibility. The 'svn' command line can help you here.
