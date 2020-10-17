@@ -28,7 +28,7 @@
     netapp.ontap.na_ontap_user:
      state: present
      name: trident
-     applications: http
+     applications: ontapi,http
      authentication_method: password
      set_password: Netapp1!
      lock_user: False

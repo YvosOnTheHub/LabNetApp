@@ -9,6 +9,10 @@ This scenario is more aimed for storage admins, so that they can configure secur
 
 [Scenario05](../Scenario05) (iSCSI Bidirectional CHAP) & [Scenario13](../Scenario13) (Dynamic Export Policy Management) already presented some security features you could configure directly in Trident. We will now see some tips related to ONTAP.  
 
+We will see here other mechanism to harden the security on the storage backend.  
+
+<p align="center"><img src="Images/scenario15.jpg"></p>
+
 This lab will use some ansible playbooks. Make sure you have installed Ansible & the ONTAP Collection beforehand (cf [Addenda06](../../Addendum/Addenda06)).  
 
 We will also use a dedicated SVM called svm_secured.  
