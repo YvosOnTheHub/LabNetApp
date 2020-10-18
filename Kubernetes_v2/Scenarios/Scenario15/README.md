@@ -34,3 +34,4 @@ localhost                  : ok=6    changed=0    unreachable=0    failed=0    s
 Two items will be covered in this chapter:  
 [1.](1_Network_Management) How do I restrict network accesses to specific hosts & needs?  
 [2.](2_NFS_Showmount) How do you avoid a malicious listing of available NFS exports  
+[3.](3_Trident_Configuration) Let's see the end result

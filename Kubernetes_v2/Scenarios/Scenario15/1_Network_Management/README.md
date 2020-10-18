@@ -34,13 +34,11 @@ Let's configure our new SVM to restrict:
 - Management tasks to HTTP only & to Kubernetes hosts only
 - Data paths to Kubernetes hosts only
 
-############### IMAGE
-
 We will use another ansible playbook to create these new network objects:
 
 ```bash
 $ ansible-playbook svm_secured_network.yaml
-PLAY [Secured SVM User Management]
+PLAY [Secured SVM Network Management]
 TASK [Gathering Facts]
 TASK [Create Specific User]
 TASK [Create Service Policy for Management]
@@ -52,3 +50,9 @@ TASK [Create iSCSI Interface]
 PLAY RECAP
 localhost                  : ok=7    changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
+
+With this configuration:
+
+- NFS mounts can only be done through one LIF & only on the Kubernetes nodes
+- iSCSI LUNs can only be done via the iSCSI LIF & only on the Kubernetes nodes
+- SVM Management is restricted to API & only on the Kubernetes nodes
