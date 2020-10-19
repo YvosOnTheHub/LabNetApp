@@ -8,7 +8,7 @@ Depending on who has access to these hosts, this can be seen as a security hole.
 
 This feature is enabled on the SVM called _SVM1_. Let's see what we get:
 
-```bash 
+```bash
 $ showmount -e 192.168.0.135
 Export list for 192.168.0.135:
 /nas1_pvc_04a9ce10_a7e8_4747_8673_fa5a2f762a1d    (everyone)
@@ -22,13 +22,21 @@ Export list for 192.168.0.135:
 /www                                              (everyone)
 ```
 
+The new SVM we just created does not have any volume, aside from the root one. Here is what you could get with the showmount command:
+
+```bash
+$ showmount -e 192.168.0.211
+Export list for 192.168.0.211:
+/ (everyone)
+```
+
 Now that we know what resources are available, one could very well mount one of these volumes, granted the export policy allow them to do so.  
 
 The storage admin can disable this feature on the backend, in order to avoid getting such list.  
 We will again use an ansible script to do so, on the SVM we created for this exercise:
 
 ```bash
-$ ansible-playbook svm_secured_showmount.yaml
+$ ansible-playbook svm_secured_showmount.yml
 PLAY [localhost]
 TASK [Gathering Facts]
 TASK [Disable Showmount]

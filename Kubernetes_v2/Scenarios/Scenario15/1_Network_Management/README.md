@@ -2,7 +2,7 @@
 # SCENARIO 15.1: ONTAP Network Management
 #########################################################################################  
 
-The configuration for the pre-existing SVM is fully open. You can mount resources from anywhere in the lab & also connect with SSH from anywhere.  
+The configuration for the pre-existing SVM (_svm1_) is fully open. You can mount resources from anywhere in the lab & also connect with SSH from anywhere.  
 
 Examples ran from the host RHEL6, which is outside of the Kubernetes cluster.  
 You can perfectly well connect through SSH:
@@ -37,7 +37,7 @@ Let's configure our new SVM to restrict:
 We will use another ansible playbook to create these new network objects:
 
 ```bash
-$ ansible-playbook svm_secured_network.yaml
+$ ansible-playbook svm_secured_network.yml
 PLAY [Secured SVM Network Management]
 TASK [Gathering Facts]
 TASK [Create Specific User]

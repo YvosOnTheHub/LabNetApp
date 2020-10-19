@@ -16,7 +16,7 @@ yum install -y ansible-2.9.13
 I order to use NetApp modules, we need to install the NetApp python library
 
 ```bash
-yum install python-pip
+yum install -y python-pip
 pip install netapp-lib
 ```
 

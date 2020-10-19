@@ -46,6 +46,19 @@
      nfsv41: disabled
      <<: *recurrent_parameters
 
+  - name: Create ExportPolicyRule
+    netapp.ontap.na_ontap_export_policy_rule:
+     state: present
+     policy_name: default
+     vserver: svm_secured 
+     client_match: 192.168.0.0/24
+     ro_rule: any
+     rw_rule: any
+     protocol: any
+     super_user_security: any
+     allow_suid: true
+     <<: *recurrent_parameters
+
   - name: Create iSCSI Igroup for Trident
     na_ontap_igroup:
      state: present

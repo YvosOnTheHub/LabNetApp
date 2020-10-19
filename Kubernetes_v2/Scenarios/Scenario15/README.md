@@ -15,8 +15,8 @@ We will see here other mechanism to harden the security on the storage backend.
 
 This lab will use some ansible playbooks. Make sure you have installed Ansible & the ONTAP Collection beforehand (cf [Addenda06](../../Addendum/Addenda06)).  
 
-We will also use a dedicated SVM called svm_secured.  
-Before moving to the different chapters, please the following command to create the SVM alongside different elements.
+We will also use a dedicated SVM called **svm_secured**.  
+Before moving to the different chapters, please run the following command to create the SVM alongside different basic elements (aside from networking).
 
 ```bash
 $ ansible-playbook svm_secured_create.yaml
@@ -31,7 +31,7 @@ PLAY RECAP
 localhost                  : ok=6    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
-Two items will be covered in this chapter:  
+You are now ready to move through the 3 different chapters:  
 [1.](1_Network_Management) How do I restrict network accesses to specific hosts & needs?  
 [2.](2_NFS_Showmount) How do you avoid a malicious listing of available NFS exports  
 [3.](3_Trident_Configuration) Let's see the end result

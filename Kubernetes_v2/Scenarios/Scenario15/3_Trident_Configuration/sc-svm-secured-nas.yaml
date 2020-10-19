@@ -5,5 +5,5 @@ metadata:
 provisioner: csi.trident.netapp.io
 allowVolumeExpansion: true
 parameters:
-  backendType: "ontap-san"
+  backendType: "ontap-nas"
   storagePools: "SVM_Secured_NFS:aggr1"
