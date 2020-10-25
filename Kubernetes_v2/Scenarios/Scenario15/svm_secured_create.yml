@@ -46,7 +46,7 @@
      nfsv41: disabled
      <<: *recurrent_parameters
 
-  - name: Create ExportPolicyRule
+  - name: Create ExportPolicyRule for the default policy
     netapp.ontap.na_ontap_export_policy_rule:
      state: present
      policy_name: default
