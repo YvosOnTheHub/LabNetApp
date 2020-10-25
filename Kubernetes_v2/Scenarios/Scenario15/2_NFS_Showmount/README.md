@@ -36,7 +36,7 @@ The storage admin can disable this feature on the backend, in order to avoid get
 We will again use an ansible script to do so, on the SVM we created for this exercise:
 
 ```bash
-$ ansible-playbook svm_secured_showmount.yml
+$ ansible-playbook svm_secured_showmount.yaml
 PLAY [localhost]
 TASK [Gathering Facts]
 TASK [Disable Showmount]
@@ -52,3 +52,15 @@ Export list for 192.168.0.211:
 ```
 
 Notice I used the NFS LIF (IP 211), as the Management LIF (IP 210) does not have NFS capability on this SVM.
+
+
+## What's next
+
+You shoud continue with:
+
+- [Trident Configuration](../3_Trident_Configuration): Let's use Trident on the secured storage tenant  
+
+Or go back to:
+
+- the [Scenario15 FrontPage](../)
+- the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

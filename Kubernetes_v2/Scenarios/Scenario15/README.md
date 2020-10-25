@@ -24,11 +24,12 @@ $ ansible-playbook svm_secured_create.yaml
 TASK [Create SVM]
 TASK [Create Specific User]
 TASK [Enable NFS]
+TASK [Create ExportPolicyRule for the default policy]
 TASK [Create iSCSI Igroup for Trident]
 TASK [Enable iSCSI]
 
 PLAY RECAP
-localhost                  : ok=6    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+localhost                  : ok=7    changed=6    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
 You are now ready to move through the 3 different chapters:  

@@ -37,7 +37,7 @@ Let's configure our new SVM to restrict:
 We will use another ansible playbook to create these new network objects:
 
 ```bash
-$ ansible-playbook svm_secured_network.yml
+$ ansible-playbook svm_secured_network.yaml
 PLAY [Secured SVM Network Management]
 TASK [Gathering Facts]
 TASK [Create Specific User]
@@ -48,11 +48,30 @@ TASK [Create Mgmt Interface]
 TASK [Create NFS Interface]
 TASK [Create iSCSI Interface]
 PLAY RECAP
-localhost                  : ok=7    changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+localhost                  : ok=10    changed=9    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
 With this configuration:
 
 - NFS mounts can only be done through one LIF & only on the Kubernetes nodes
 - iSCSI LUNs can only be done via the iSCSI LIF & only on the Kubernetes nodes
-- SVM Management is restricted to API & only on the Kubernetes nodes
+- SVM Management is restricted to API & only on the Kubernetes nodes  
+
+**One important thing to notice:**  
+One rule (192.168.0.0/24) has been created for the _default_ export policy.  
+That means that you can mount '/' on a host outside of the Kubernetes cluster.  
+You are not going to be able to access these volumes with the configuration we are putting in place. However, you can still see their names!  
+Once the NAS backend is created (with Dynamic Export Policy), I would **strongly** recommend to modify the export policy assigned to the tenant root volume, with the one dynamically managed by Trident.  
+That way, you add an extra layer of security.  
+
+
+## What's next
+
+You shoud continue with:
+
+- [NFS Showmount](../2_NFS_showmount): Disable the _Showmount_ capability on the storage tenant
+
+Or go back to:
+
+- the [Scenario15 FrontPage](../)
+- the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
