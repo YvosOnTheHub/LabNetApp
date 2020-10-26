@@ -31,7 +31,7 @@ Scenarios (updated for Trident 20.07)
 [12.](Kubernetes_v2/Scenarios/Scenario12) Resize a iSCSI CSI PVC (*requires Kubernetes 1.16 minimum*)  
 [13.](Kubernetes_v2/Scenarios/Scenario13) Dynamic export policy management  
 [14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows (*requires Kubernetes 1.17 minimum*)  
-15. _About security (soon)_  
+[15.](Kubernetes_v2/Scenarios/Scenario15) About security :new:
 
 Addendum
 --------

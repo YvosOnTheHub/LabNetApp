@@ -37,6 +37,9 @@ sc-svm-secured-san            csi.trident.netapp.io   Delete          Immediate 
 
 If you want a quick way to try out both new backends, you can use the following Ghost configurations:
 
+- _RWX File_ Ghost exposed on port 30980
+- _RWO Block_ Ghost exposed on port 30981
+
 ```bash
 $ kubectl create namespace ghost_nas_secured
 namespace/ghost_nas_secured created
@@ -55,7 +58,8 @@ deployment.apps/blog created
 service/blog created
 ```
 
-However, let's look at what we can mount on a host (_rhel5_) outside of the cluster:  
+Great, our secured environment is working!  
+However, let's look at what we can mount on a host (_rhel5_), ie outside of the Kubernetes cluster:  
 
 ```bash
 $ mkdir /mnt/test
@@ -73,11 +77,13 @@ $ umount /mnt/test
 We can still see the name of the NAS PVC ! (the SAN volume is not connected to any export policy)...  
 
 As said in the first part of this scenario, the root volume is exported with a policy that is too open (192.168.0.0/24 in this case).  
-We should definitely assign it the policy created by Trident, which is dynamic & will grow accordingly.  
+That is simply because at the time of the storage tenant creation, Trident had not yet been configured.  
+We should definitely assign it the policy created by Trident, which is dynamic & will evolve alongside the Kubernetes cluster.  
+
 Another Ansible playbook will be used to perform this task (assuming the SVM only has one export policy dynamically managed by Trident).  
 
 ```bash
-$ ansible-playbook test.yaml
+$ ansible-playbook svm_secured_export_policy.yaml
 PLAY [Set Export Policy on Tenant Root]
 TASK [Gathering Facts]
 TASK [Gather Tenant Export Policy information]
@@ -93,3 +99,10 @@ Let's try again to mount the storage tenant root volume on _rhel5_:
 $ mount -t nfs 192.168.0.211:/ test/
 mount.nfs: access denied by server while mounting 192.168.0.211:/
 ```
+
+DONE !
+
+## What's next
+
+You have reached the end of the lab !
+You can fo back to the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

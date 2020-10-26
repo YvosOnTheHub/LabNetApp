@@ -160,7 +160,7 @@ Now, where can you find this dashboard:
 - Click on the 'Manage' button  
 - You then access a list of dashboards. You can either research 'Trident' or find the link be at the bottom of the page  
 
-<p align="center"><img src="../Images/trident_dashboard.jpg"></p>
+<p align="center"><img src="../Images/trident_dashboard_20_07.jpg"></p>
 
 Your turn to have fun!
 
