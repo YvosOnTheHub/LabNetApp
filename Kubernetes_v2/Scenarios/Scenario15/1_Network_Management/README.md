@@ -69,7 +69,7 @@ That way, you add an extra layer of security.
 
 You shoud continue with:
 
-- [NFS Showmount](../2_NFS_showmount): Disable the _Showmount_ capability on the storage tenant
+- [NFS Showmount](../2_NFS_Showmount): Disable the _Showmount_ capability on the storage tenant
 
 Or go back to:
 
