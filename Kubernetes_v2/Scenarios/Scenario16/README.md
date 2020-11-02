@@ -127,6 +127,8 @@ centos-east      1/1     Running   0          97s     10.44.0.8   rhel2   <none>
 centos-west      1/1     Running   0          92s     10.36.0.5   rhel1   <none>           <none>
 ```
 
+=> Tadaaaa!
+
 ## Cleanup the environment
 
 ```bash
