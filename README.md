@@ -43,8 +43,8 @@ Addendum
 [4.](Kubernetes_v2/Addendum/Addenda04) Upgrade your Kubernetes cluster (1.15 => 1.16 => 1.17 => 1.18)  
 [5.](Kubernetes_v2/Addendum/Addenda05) Prepare ONTAP for block storage  
 [6.](Kubernetes_v2/Addendum/Addenda06) Install Ansible on RHEL3 (Kubernetes Master)  
-[7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB) :new:  
-[8.](Kubernetes_v2/Addendum/Addenda08) Install the Kubernetes dashboard :new:  
+[7.](Kubernetes_v2/Addendum/Addenda07) Install a Load Balancer (MetalLB)  
+[8.](Kubernetes_v2/Addendum/Addenda08) Install the Kubernetes dashboard  
 
 ## B. Kubernetes v1 pre-CSI (**retired**, but can still be useful)
 
@@ -61,7 +61,6 @@ Scenarios
 6. Test new features released in Trident 19.04 (volume import)
 7. Migrating an app from a legacy Docker environment to a new Kubernetes cluster
 8. Snapshots management with ONTAP-NAS & ONTAP-NAS-ECONOMY
-
 
 ## C. Docker (**retired**, but can still be useful)
 
