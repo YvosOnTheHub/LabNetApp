@@ -15,7 +15,7 @@ Last, there are plenty of commands to write or copy/paste.
 Try using some of the shortcuts you will find in the the Addenda0!  
 :boom:  
 
-Scenarios (updated for Trident 20.07)
+Scenarios (updated for Trident 20.10)
 ---------
 [1.](Kubernetes_v2/Scenarios/Scenario01) Install/Upgrade Trident  
 [2.](Kubernetes_v2/Scenarios/Scenario02) Configure your first NAS backends & storage classes  

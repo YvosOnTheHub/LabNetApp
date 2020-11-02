@@ -25,19 +25,19 @@ if [ $(kubectl version -o=json | jq -r ".clientVersion.minor") >= "17" ]
 fi
 
 echo "#######################################################################################################"
-echo "Uninstall Trident 19.07.1"
-echo "#######################################################################################################"
-
-tridentctl -n trident uninstall
-
-echo "#######################################################################################################"
-echo "Download Trident 20.07.1"
+echo "Download Trident 20.10.0"
 echo "#######################################################################################################"
 
 cd
 mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.07.1/trident-installer-20.07.1.tar.gz
-tar -xf trident-installer-20.07.1.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.10.0/trident-installer-20.10.0.tar.gz
+tar -xf trident-installer-20.10.0.tar.gz
+
+echo "#######################################################################################################"
+echo "Uninstall Trident 19.07.1"
+echo "#######################################################################################################"
+
+tridentctl -n trident uninstall
 
 echo "#######################################################################################################"
 echo "Remove CSI Snapshots Alpha CRD"
@@ -46,7 +46,7 @@ echo "##########################################################################
 tridentctl -n trident obliviate alpha-snapshot-crd
 
 echo "#######################################################################################################"
-echo "Install Trident 20.07.1"
+echo "Install Trident 20.10.0"
 echo "#######################################################################################################"
 
 tridentctl -n trident install

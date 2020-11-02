@@ -76,7 +76,7 @@ trident-csi-n7n2d:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-reg
 trident-csi-p9dtf:      netapp/trident:20.04, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
 trident-operator-564d7d66f-f9dh2:       netapp/trident-operator:20.04.0,
 
-#1.17 with Trident Operator
+#1.17 without Trident Operator
 $ kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-5cd46cff6-b5rtr:    netapp/trident:20.01.1, quay.io/k8scsi/csi-provisioner:v1.5.0, quay.io/k8scsi/csi-attacher:v2.1.0, quay.io/k8scsi/csi-resizer:v0.4.0, quay.io/k8scsi/csi-snapshotter:v2.0.1,
 trident-csi-5fc5f:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,

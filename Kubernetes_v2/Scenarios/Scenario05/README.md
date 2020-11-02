@@ -69,7 +69,7 @@ If you have configured Grafana, you can go back to your dashboard, to check what
 
 If you take a closer look at the SAN-secured definition file, you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
 You can learn more about it on the following link:  
-https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/ontap/ontap-san/bidir-ontap-chap.html?highlight=chap#using-chap-with-ontap-san-drivers 
+https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/ontap/ontap-san/bidir-ontap-chap.html
 
 You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)
 

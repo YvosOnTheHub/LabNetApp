@@ -4,7 +4,7 @@
 
 **GOAL:**  
 This scenario is intended to see how easy it is to upgrade Trident with Tridentctl
-The examples below will guide you in performing an upgrade from 19.07.1 to 20.07.1
+The examples below will guide you in performing an upgrade from 19.07.1 to 20.10.0
 
 ## A. Check the current version & do some preparation work
 

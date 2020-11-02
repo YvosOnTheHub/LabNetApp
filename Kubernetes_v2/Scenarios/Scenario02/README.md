@@ -12,15 +12,15 @@ This information sits in objects called backends. It basically contains:
 
 For additional information, please refer to:
 
-- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/deploying/operator-deploy.html#creating-a-trident-backend
-- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/index.html 
+- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/deploying/operator-deploy.html#creating-a-trident-backend
+- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/index.html 
 
 Once you have configured backend, the end user will create PVC against Storage Classes.  
 A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
 
 For additional information, please refer to:
 
-- https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
+- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
 
 Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
 

@@ -10,7 +10,7 @@ You have two options to control space within Trident:
 ## A. Limiting the size of the volumes on a SVM
 
 One parameter stands out in the Trident configuration when it comes to control sizes: _limitVolumeSize_  
-https://netapp-trident.readthedocs.io/en/stable-v20.07/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident  
+https://netapp-trident.readthedocs.io/en/stable-v20.10/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident
 Depending on the driver, this parameter will
 
 1. control the PVC Size (ex: driver ONTAP-NAS)
@@ -84,7 +84,7 @@ $ tridentctl -n trident delete backend NAS_LimitVolSize
 ## B. Limiting the usage of an aggregate
 
 The second parameter you can set in a Trident backend allows the admin to limit the used space of an aggregate.  
-More details on this link: https://netapp-trident.readthedocs.io/en/stable-v20.07/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=limitAggregateUsage#backend-configuration
+More details on this link: https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=limitAggregateUsage#backend-configuration
 
 Please note that:
 

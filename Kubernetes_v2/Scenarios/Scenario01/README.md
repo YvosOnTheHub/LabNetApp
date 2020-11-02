@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 20.07
+# SCENARIO 1: Trident upgrade to 20.10
 #########################################################################################
 
 **GOAL:**  
@@ -10,7 +10,7 @@ Starting with Trident 20.04, there are 2 ways to deploy Trident:
 [2.](2_Operator) Using Trident's Operator, introduced in 20.04  
 
 :boom:  
-While the Operator was for Green Field environments only with Trident 20.04, it is now also possible to upgrade a non-Operator based CSI Trident with the version 20.07.  
+While the Operator was for Green Field environments only with Trident 20.04, it is now also possible to upgrade a non-Operator based CSI Trident starting with the version 20.07.  
 Also, if it your first time playing with Trident, I would recommend going the Operator way directly.  
 :boom:  
 

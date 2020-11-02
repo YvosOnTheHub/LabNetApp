@@ -153,7 +153,6 @@ deployment.apps/trident-operator   1/1     1            1           20s
 NAME                                         DESIRED   CURRENT   READY   AGE
 replicaset.apps/trident-csi-7ff4457f7d       1         1         1       334d
 replicaset.apps/trident-operator-599794f56   1         1         1       20s
-
 ```
 
 OK, the operator is installed, as well as the provisioner CRD. Time to finally install the Trident provisioner:
@@ -220,19 +219,22 @@ Spec:
 Status:
   Current Installation Params:
     IPv6:               false
-    Autosupport Image:  netapp/trident-autosupport:20.07.0
+    Autosupport Hostname:
+    Autosupport Image:  netapp/trident-autosupport:20.10.0
     Autosupport Proxy:
+    Autosupport Serial Number:
     Debug:              true
+    Enable Node Prep:   false
     Image Pull Secrets:
     Image Registry:       quay.io
     k8sTimeout:           30
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
     Silence Autosupport:  false
-    Trident Image:        netapp/trident:20.07.1
+    Trident Image:        netapp/trident:20.10.0
   Message:                Trident installed
   Status:                 Installed
-  Version:                v20.07.1
+  Version:                v20.10.0
 Events:
   Type    Reason      Age   From                        Message
   ----    ------      ----  ----                        -------
