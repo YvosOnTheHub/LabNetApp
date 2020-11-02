@@ -8,7 +8,7 @@ if [ $(yum info jq | grep Repo | awk '{ print $3 }') != "installed" ]
     yum install -y jq
 fi
 
-if [ $(kubectl version -o=json | jq -r ".clientVersion.minor") >= "17" ] 
+if [ $(kubectl version -o=json | jq -r ".clientVersion.minor") -gt 16 ] 
   then 
     if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io" | wc -l) = 0 ]
       then
