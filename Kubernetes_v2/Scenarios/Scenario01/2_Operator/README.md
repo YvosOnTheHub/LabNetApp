@@ -3,10 +3,10 @@
 #########################################################################################
 
 **GOAL:**  
-With Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
-Before moving to the upgrade, we will first need to delete & clean up the current deployment.  
+Starting with Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
+Before moving to the upgrade to Trident 20.10, we will first need to delete & clean up the current deployment.  
 
-## A. Cleanup up Trident & Download the new version
+## A. Cleanup up Trident, Download the new version & do some preparation work
 
 *tridenctlctl* is the tool shipped with Trident in order to interact with it.  
 It is also recommended to install Trident in its own namespace (usually called *trident*)
@@ -35,8 +35,8 @@ Download the version you would like to install
 ```bash
 cd
 mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.07.1/trident-installer-20.07.1.tar.gz
-tar -xf trident-installer-20.07.1.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.10.0/trident-installer-20.10.0.tar.gz
+tar -xf trident-installer-20.10.0.tar.gz
 ```
 
 Finally, remove the CRD related to the Snapshot alpha feature.
@@ -52,6 +52,36 @@ INFO CRD deleted.                                  CRD=volumesnapshots.snapshot.
 *A* **resource** *is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.*  
 *A* **custom resource** *is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*  
 :mag_right:  
+
+Trident 20.10 introduced the support of the **CSI Topology** feature which allows the administrator to manage a location aware infrastructure.  
+However, there are 2 requirements for this to work:
+
+- You need at least Kubernetes 1.17 (cf [Addenda04](../../Addendum/Addenda04))
+- Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
+
+If you are planning on testing this feature (cf [Scenario16](../../Scenario16)), make sure these labels are configured.  
+As a side note, the updgrade procedure of this lab includes creating these labels.
+
+```bash
+$ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"
+[rhel1, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel1 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:west]]
+[rhel2, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel2 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:east]]
+[rhel3, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel3 kubernetes.io/os:linux node-role.kubernetes.io/master: topology.kubernetes.io/region:trident topology.kubernetes.io/zone:admin]]
+```
+
+If they are not, you can create them with the following commands:
+
+```bash
+# LABEL "REGION"
+kubectl label node rhel1 "topology.kubernetes.io/region=trident"
+kubectl label node rhel2 "topology.kubernetes.io/region=trident"
+kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+
+# LABEL "ZONE"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west"
+kubectl label node rhel2 "topology.kubernetes.io/zone=east"
+kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+```
 
 You can now upgrade Trident :trident:  
 
@@ -216,12 +246,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 20.07.1        | 20.07.1        |
+| 20.10.0        | 20.10.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   20.07.1
+trident   20.10.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -235,7 +265,7 @@ If you just want to display part of the description, you can use a filter such a
 $ kubectl describe tprov trident -n trident | grep Message: -A 3
   Message:  Trident installed
   Status:   Installed
-  Version:  v20.07.1
+  Version:  v20.10.0
 ```
 
 ## G. What's next

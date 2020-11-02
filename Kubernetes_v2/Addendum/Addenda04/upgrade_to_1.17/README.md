@@ -145,6 +145,34 @@ trident-csi-5vhrv:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-r
 trident-csi-tttn4:      netapp/trident:20.01.1, quay.io/k8scsi/csi-node-driver-registrar:v1.2.0,
 ```
 
+## CSI Topology
+
+Trident 20.10 introduced the support of the **CSI Topology** feature (More details about this: https://kubernetes-csi.github.io/docs/topology.html).  
+This allows the admin to manage a location aware infrastructure. However, there are 2 requirements for this to work:
+
+- You need at least Kubernetes 1.17
+- Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
+
+If you are planning on testing this feature (cf [Scenario16](../../Scenarios/Scenario16)), you can create the following labels:
+
+```bash
+# LABEL "REGION"
+kubectl label node rhel1 "topology.kubernetes.io/region=trident"
+kubectl label node rhel2 "topology.kubernetes.io/region=trident"
+kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+
+# LABEL "ZONE"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west"
+kubectl label node rhel2 "topology.kubernetes.io/zone=east"
+kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+
+# CHECK
+$ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"
+[rhel1, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel1 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:west]]
+[rhel2, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel2 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:east]]
+[rhel3, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel3 kubernetes.io/os:linux node-role.kubernetes.io/master: topology.kubernetes.io/region:trident topology.kubernetes.io/zone:admin]]
+```
+
 ## What's next
 
 You can [upgrade to 1.18](../upgrade_to_1.18)  

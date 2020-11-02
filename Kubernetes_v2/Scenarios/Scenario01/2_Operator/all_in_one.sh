@@ -1,11 +1,35 @@
 #!/bin/bash
 
-echo "#######################################################################################################"
-echo "Check & Install JQ if necessary"
-echo "#######################################################################################################"
-
 if [ $(yum info jq | grep Repo | awk '{ print $3 }') != "installed" ]
-  then yum install -y jq
+  then 
+    echo "#######################################################################################################"
+    echo "Check & Install JQ if necessary"
+    echo "#######################################################################################################"
+    yum install -y jq
+fi
+
+if [ $(kubectl version -o=json | jq -r ".clientVersion.minor") >= "17" ] 
+  then 
+    if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io" | wc -l) = 0 ]
+      then
+        echo "#######################################################################################################"
+        echo "Add Region & Zone labels to Kubernetes nodes"
+        echo "#######################################################################################################"
+
+        kubectl label node rhel1 "topology.kubernetes.io/region=trident"
+        kubectl label node rhel2 "topology.kubernetes.io/region=trident"
+        kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+
+        kubectl label node rhel1 "topology.kubernetes.io/zone=west"
+        kubectl label node rhel2 "topology.kubernetes.io/zone=east"
+        kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+
+        if [ $(kubectl get nodes | wc -l) = 5 ]
+        then
+          kubectl label node rhel4 "topology.kubernetes.io/region=trident"
+          kubectl label node rhel4 "topology.kubernetes.io/zone=north"
+        fi      
+    fi
 fi
 
 echo "#######################################################################################################"

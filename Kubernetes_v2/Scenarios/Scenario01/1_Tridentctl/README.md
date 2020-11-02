@@ -6,7 +6,7 @@
 This scenario is intended to see how easy it is to upgrade Trident with Tridentctl
 The examples below will guide you in performing an upgrade from 19.07.1 to 20.07.1
 
-## A. Check the current version
+## A. Check the current version & do some preparation work
 
 *tridenctlctl* is the tool shipped with Trident in order to interact with it.
 It is also recommended to install Trident in its own namespace (usually called *trident*)
@@ -52,8 +52,38 @@ tbe-f26zw   BackendForSolidFire   d9d6bef6-eef9-4ff0-b5c8-c69d048b739e
 tbe-vs95d   BackendForNAS         e098abb8-8e16-4b4f-a4bc-a6c9557b39b1
 ```
 
-As you can see, some backends are alrady configured.
+As you can see, some backends are already configured.
 A backend is composed of a specific Trident driver & different parameters that will tell Tell where to connect & how.
+
+Trident 20.10 introduced the support of the **CSI Topology** feature which allows the administrator to manage a location aware infrastructure.  
+However, there are 2 requirements for this to work:
+
+- You need at least Kubernetes 1.17 (cf [Addenda04](../../Addendum/Addenda04))
+- Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
+
+If you are planning on testing this feature (cf [Scenario16](../../Scenario16)), make sure these labels are configured.  
+As a side note, the updgrade procedure of this lab includes creating these labels.
+
+```bash
+$ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"
+[rhel1, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel1 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:west]]
+[rhel2, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel2 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:east]]
+[rhel3, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel3 kubernetes.io/os:linux node-role.kubernetes.io/master: topology.kubernetes.io/region:trident topology.kubernetes.io/zone:admin]]
+```
+
+If they are not, you can create them with the following commands:
+
+```bash
+# LABEL "REGION"
+kubectl label node rhel1 "topology.kubernetes.io/region=trident"
+kubectl label node rhel2 "topology.kubernetes.io/region=trident"
+kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+
+# LABEL "ZONE"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west"
+kubectl label node rhel2 "topology.kubernetes.io/zone=east"
+kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+```
 
 ## B. Uninstall the current version
 
@@ -90,8 +120,8 @@ INFO Deleted installer service account.
 ```bash
 cd
 mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.07.1/trident-installer-20.07.1.tar.gz
-tar -xf trident-installer-20.07.1.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.10.0/trident-installer-20.10.0.tar.gz
+tar -xf trident-installer-20.10.0.tar.gz
 ```
 
 ## D. Install the new version
@@ -129,7 +159,7 @@ INFO Created Trident daemonset.
 INFO Waiting for Trident pod to start.
 INFO Trident pod started.                          namespace=trident pod=trident-csi-6b778f79bb-xnjws
 INFO Waiting for Trident REST interface.
-INFO Trident REST interface is up.                 version=20.07.1
+INFO Trident REST interface is up.                 version=20.10.0
 INFO Trident installation succeeded.
 ```
 
@@ -140,12 +170,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 20.07.1        | 20.07.1        |
+| 20.10.0        | 20.10.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   20.07.1
+trident   20.10.0
 
 $ kubectl -n trident get tridentbackends
 NAME        BACKEND               BACKEND UUID

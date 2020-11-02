@@ -12,8 +12,10 @@ In the following example, we will use:
 - ONTAP parameter: max number of volumes per SVM
 
 :boom:  
-Keep in mind that with Trident 20.07 you can only have up to 200 Qtrees (PVC) per volume.  
-For more information, see <https://netapp-trident.readthedocs.io/en/stable-v20.07/frequently_asked_questions.html#how-does-trident-deploy-qtrees-on-an-ontap-volume-how-many-qtrees-can-be-deployed-on-a-single-volume-through-trident>  
+With Trident 20.10, you can now specify how many Qtrees (PVC) you can have per ONTAP volume when using the ONTAP-NAS-ECONOMY driver.  
+Default value: 200.  
+Range: between 50 & 300.  
+For more information, see https://netapp-trident.readthedocs.io/en/stable-v20.10/docker/install/ndvp_ontap_config.html?highlight=qtreesPerFlexvol#configuration-file-options  
 :boom:  
 
 ## A. Trident Configuration
