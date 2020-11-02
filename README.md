@@ -32,7 +32,7 @@ Scenarios (updated for Trident 20.10)
 [13.](Kubernetes_v2/Scenarios/Scenario13) Dynamic export policy management  
 [14.](Kubernetes_v2/Scenarios/Scenario14) Kubernetes CSI Snapshots & PVC from Snapshot workflows (*requires Kubernetes 1.17 minimum*)  
 [15.](Kubernetes_v2/Scenarios/Scenario15) About security :new:  
-[16.](Kubernetes_v2/Scenarios/Scenario16) Caring about location or about CSI Topology :new:  
+[16.](Kubernetes_v2/Scenarios/Scenario16) Caring about location or about CSI Topology (*requires Kubernetes 1.17 minimum*) :new:  
 
 Addendum
 --------
