@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 13: Kubernetes CSI Snapshots & PVC from Snapshot workflow
+# SCENARIO 13: Kubernetes CSI Snapshots & PVC from Snapshot workflows
 #########################################################################################
 
 **GOAL:**  
@@ -54,7 +54,7 @@ Because moving on, let's check we can access the app:
 ## B. Check the snapshot feature
 
 This [link](https://github.com/kubernetes-csi/external-snapshotter) is a good read if you want to know more details about installing the CSI Snapshotter.  
-The CRD & Snapshot-Controller have already been installed in this cluster. Let's see what we find:
+The **CRD** & **Snapshot-Controller** to enable this feature have already been installed in this cluster. Let's see what we find:
 
 ```bash
 $ kubectl get crd | grep volumesnapshot

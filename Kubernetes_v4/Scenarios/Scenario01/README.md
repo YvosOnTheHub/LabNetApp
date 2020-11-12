@@ -17,5 +17,5 @@ Starting with Trident 20.04, there are 2 ways to deploy Trident:
 [1.](1_Operator) Using Trident's Operator, introduced in 20.04  
 2. Using the _legacy_ way, via _tridentctl_  
 
-This scenarion focuses on the Operator only.  
+This [scenario](1_Operator) focuses on the Operator only.  
 If one of you requires a traditional installation with _tridentctl_, please open an issue on github.

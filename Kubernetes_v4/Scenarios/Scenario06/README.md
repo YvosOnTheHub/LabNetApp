@@ -109,6 +109,6 @@ namespace "ghostsan" deleted
 
 Now that you have tried working with SAN backends, you can try to resize a PVC:
 
-- [Scenario12](../Scenario12): Resize a iSCSI CSI PVC  
+- [Scenario09](../Scenario09): Resize a iSCSI CSI PVC  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

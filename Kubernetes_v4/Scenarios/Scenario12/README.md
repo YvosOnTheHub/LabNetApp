@@ -165,6 +165,7 @@ tridentctl -n trident delete backend Export_without_CIDR
 
 You can now move on to:
 
-- [Scenario14](../../Scenario14): CSI Snapshots Management
+- [Scenario13](../../Scenario13): CSI Snapshots Management
 
 Maybe you could learn something in the different [addenda](https://github.com/YvosOnTheHub/LabNetApp)?
+Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

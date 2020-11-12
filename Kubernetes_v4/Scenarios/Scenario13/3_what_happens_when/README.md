@@ -160,5 +160,4 @@ namespace "ghost" deleted
 
 ## What's next
 
-You have reached the end of the lab !
 You can fo back to the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

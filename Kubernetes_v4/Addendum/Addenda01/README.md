@@ -95,11 +95,11 @@ Now, you can go back to the master (ie _rhel3_), and wait for the new node to be
 ```bash
 $ kubectl get nodes --watch
 NAME    STATUS     ROLES    AGE   VERSION
-rhel1   Ready      <none>   87d   v1.19.3
-rhel2   Ready      <none>   87d   v1.19.3
-rhel3   Ready      master   87d   v1.19.3
-rhel4   NotReady   <none>   40s   v1.19.3
-rhel4   Ready      <none>   41s   v1.19.3
+rhel1   Ready      <none>   87d   v1.18.6
+rhel2   Ready      <none>   87d   v1.18.6
+rhel3   Ready      master   87d   v1.18.6
+rhel4   NotReady   <none>   40s   v1.18.6
+rhel4   Ready      <none>   41s   v1.18.6
 ```
 
 Tadaaaa!!
