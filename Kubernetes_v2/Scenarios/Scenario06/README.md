@@ -10,7 +10,7 @@ We will deploy the same App as in the scenario 4, but instead of using File Stor
 ## A. Create the app
 
 We will create this app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-SAN backend & storage class have already been created. ([cf Scenario06](../Scenario05))
+We consider that the ONTAP-SAN backend & storage class have already been created. ([cf Scenario05](../Scenario05))
 
 ```bash
 $ kubectl create namespace ghostsan
@@ -26,7 +26,7 @@ NAME                            READY   STATUS    RESTARTS   AGE
 pod/blog-san-58979448dd-6k9ds   1/1     Running   0          21s
 
 NAME               TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-service/blog-san   NodePort   10.99.208.171   <none>        80:30081/TCP   17s
+service/blog-san   NodePort   10.99.208.171   <none>        80:30180/TCP   17s
 
 NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/blog-san   1/1     1            1           21s
@@ -45,9 +45,9 @@ persistentvolume/pvc-8ff8c1b3-48da-400e-893c-23bc9ec459ff   10Gi       RWO      
 ## B. Access the app
 
 It takes about 40 seconds for the POD to be in a *running* state
-The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30081.
+The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30180.
 Give it a try !
-=> http://192.168.0.63:30081
+=> http://192.168.0.63:30180
 
 ## C. Explore the app container
 
@@ -109,6 +109,6 @@ namespace "ghostsan" deleted
 
 Now that you have tried working with SAN backends, you can try to resize a PVC:
 
-- [Scenario12](../Scenario23): Resize a iSCSI CSI PVC  
+- [Scenario12](../Scenario12): Resize a iSCSI CSI PVC  
 
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

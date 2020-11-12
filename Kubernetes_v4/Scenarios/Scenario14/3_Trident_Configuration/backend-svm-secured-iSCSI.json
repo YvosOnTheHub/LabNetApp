@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-san",
+    "backendName": "SVM_Secured_iSCSI",
+    "managementLIF": "192.168.0.210",
+    "storagePrefix": "sec_",
+    "username": "trident",
+    "password": "Netapp1!",
+    "useCHAP": true,
+    "chapInitiatorSecret": "tridentinitsecret",
+    "chapTargetInitiatorSecret": "tridenttargetsecret",
+    "chapTargetUsername": "tridenttarget",
+    "chapUsername": "tridentchap"
+}

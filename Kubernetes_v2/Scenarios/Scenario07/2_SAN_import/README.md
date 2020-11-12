@@ -20,7 +20,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
       "uuid": "0dd40303-d469-4e83-86c6-2fca7838e067"
     }
   ],
-  "name": "scenario8_2",
+  "name": "scenario7_2",
   "size": "10g",
   "style": "flexvol",
   "svm": {
@@ -29,8 +29,8 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
   }
 }' "https://cluster1.demo.netapp.com/api/storage/volumes"
 
-$ curl -X POST -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/luns" -H "accept: application/json" -H "Content-Type: application/json" -d '{
-  "name": "/vol/scenario8_2/lun0",
+$ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
+  "name": "/vol/scenario7_2/lun0",
   "os_type": "linux",
   "space": {
     "size": 1073741824
@@ -42,7 +42,7 @@ $ curl -X POST -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/
 }' "https://cluster1.demo.netapp.com/api/storage/luns"
 ```
 
-A lun called **lun0** was created in the volume **scenario8_2**.  
+A lun called **lun0** was created in the volume **scenario7_2**.  
 We are now going to import this LUN into Kuberntes.
 
 To know more about ONTAP REST API, please take a look at the following link:
@@ -81,7 +81,7 @@ Even though the name of the original PV has changed, you can still see it if you
 
 ```bash
 $ kubectl describe pvc lun-import | grep importOriginalName
-               trident.netapp.io/importOriginalName: scenario8_2
+               trident.netapp.io/importOriginalName: scenario7_2
 ```
 
 ## C. Cleanup (optional)

@@ -6,3 +6,4 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-san"
   storagePools: "BackendForSAN_snap:aggr1,aggr2"
+  fsType: "ext4"

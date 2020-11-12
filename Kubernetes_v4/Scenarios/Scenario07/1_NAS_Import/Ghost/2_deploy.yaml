@@ -1,0 +1,32 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: blogimport
+  labels:
+    app: blogimport
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogimport
+  template:
+    metadata:
+      labels:
+        app: blogimport
+    spec:
+      containers:
+      - name: blog
+        image: ghost:2.6-alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          value: http://my-blog.com
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content
+          name: content
+      volumes:
+      - name: content
+        persistentVolumeClaim:
+          claimName: blog-content-import

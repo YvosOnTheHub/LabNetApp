@@ -106,6 +106,6 @@ What is interesting to notice is that when upgrading Kubernetes, new sidecars ar
 - Kubernetes 1.16: Volume Expansion (CSI Resizer) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/volume-expansion.html)
 - Kubernetes 1.17: Snapshot & Restore (CSI Snapshotter) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/snapshot-restore-feature.html)  
 
-## C. What's next
+## D. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?

@@ -23,8 +23,8 @@ You also can mount NFS resources:
 
 ```bash
 $ mkdir /mnt/non_secured
-$ mount -t nfs 192.168.0.135:/registry non_secured
-$ ls non_secured/
+$ mount -t nfs 192.168.0.135:/registry /mnt/non_secured
+$ ls /mnt/non_secured/
 docker
 $ umount /mnt/non_secured
 ```

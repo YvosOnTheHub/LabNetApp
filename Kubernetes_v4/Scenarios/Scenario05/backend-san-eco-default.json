@@ -1,0 +1,14 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-san-economy",
+    "backendName": "SAN_ECO-default",
+    "managementLIF": "192.168.0.136",
+    "storagePrefix": "san2_",
+    "username": "vsadmin",
+    "password": "Netapp1!",
+    "useCHAP": true,
+    "chapInitiatorSecret": "cl9qxWfnUFoinvk",
+    "chapTargetInitiatorSecret": "rwbwtuigONgbw",
+    "chapTargetUsername": "iJF4sgjrnwOwQ",
+    "chapUsername": "uh2a1io325bFFILn"
+}
