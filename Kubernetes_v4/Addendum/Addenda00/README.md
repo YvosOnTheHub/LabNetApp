@@ -59,6 +59,29 @@ What is interesting to notice is that when upgrading Kubernetes, new sidecars ar
 - Kubernetes 1.16: Volume Expansion (CSI Resizer) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/volume-expansion.html)
 - Kubernetes 1.17: Snapshot & Restore (CSI Snapshotter) was promoted to Beta status (cf https://kubernetes-csi.github.io/docs/snapshot-restore-feature.html)  
 
-## D. What's next
+## D. How can I easily delete all PVC based on a filter
+
+If you want to delete a large amount of PVC with one command, the easiest would be to put them all in one specific namespace.  
+Once you delete this namespace, all its PVC will also go away.  
+
+However, if you want to delete a few PVC based on a filter, you could use the following example, where I want to delete only the PVC containing the word _thick_:  
+
+```bash
+$ kubectl get pvc
+NAME          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+thick-5gb-1   Bound    pvc-58f21eea-a9a1-4007-ab95-411bcbc6755c   5Gi        RWX            sc-eco-thick   20s
+thick-5gb-2   Bound    pvc-9dbd3f76-7979-488f-bdf2-de587499974d   5Gi        RWX            sc-eco-thick   20s
+thick-5gb-3   Bound    pvc-f456b9b6-90b9-40bc-bd0e-2fed36d77056   5Gi        RWX            sc-eco-thick   20s
+thin-5gb-1    Bound    pvc-1d2fe395-4e50-4cc7-979c-597e5c608a21   5Gi        RWX            sc-eco-thin    2m31s
+thin-5gb-2    Bound    pvc-1b44405d-177f-4b12-8f7c-1816242f9a8e   5Gi        RWX            sc-eco-thin    2m31s
+thin-5gb-3    Bound    pvc-fda63953-ef16-45b4-986b-99544abbbd09   5Gi        RWX            sc-eco-thin    2m31s
+
+$ kubectl get pvc -o name | grep thick | xargs kubectl delete
+persistentvolumeclaim "thick-5gb-1" deleted
+persistentvolumeclaim "thick-5gb-2" deleted
+persistentvolumeclaim "thick-5gb-3" deleted
+```
+
+## E. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
