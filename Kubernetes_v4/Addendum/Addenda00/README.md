@@ -82,6 +82,20 @@ persistentvolumeclaim "thick-5gb-2" deleted
 persistentvolumeclaim "thick-5gb-3" deleted
 ```
 
-## E. What's next
+## E. How can you get the state of all containers of a POD in one command
+
+If for some reason you need to quickly access the state of each container of a POD (debug purpose), you could use the following command:
+
+```bash
+$ kubectl -n trident get pod trident-csi-676dd87bc6-69gc9 -o=jsonpath='{range .status.containerStatuses[*]}{"\n"}{.image}{":\tSTARTED "}{.started}{"\tSTATE:"}{.state}{end}{"\n"}'
+quay.io/k8scsi/csi-attacher:v3.0.1:     STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:51Z]]
+quay.io/k8scsi/csi-provisioner:v2.0.3:  STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:49Z]]
+quay.io/k8scsi/csi-resizer:v1.0.1:      STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:53Z]]
+quay.io/k8scsi/csi-snapshotter:v3.0.1:  STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:55Z]]
+netapp/trident-autosupport:20.10.0:     STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:47Z]]
+netapp/trident:20.10.0:                 STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:44Z]]
+```
+
+## F. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
