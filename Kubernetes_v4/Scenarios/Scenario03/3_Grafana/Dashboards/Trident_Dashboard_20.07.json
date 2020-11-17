@@ -16,7 +16,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 54,
   "links": [],
   "panels": [
     {
@@ -38,12 +37,6 @@
           }
         },
         "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 0
       },
       "id": 19,
       "options": {
@@ -103,7 +96,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 4,
+        "x": 6,
         "y": 0
       },
       "id": 22,
@@ -164,7 +157,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 6,
+        "x": 8,
         "y": 0
       },
       "id": 21,
@@ -225,7 +218,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 8,
+        "x": 10,
         "y": 0
       },
       "id": 20,
@@ -283,7 +276,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 10,
+        "x": 12,
         "y": 0
       },
       "id": 12,
@@ -343,7 +336,7 @@
       "gridPos": {
         "h": 3,
         "w": 2,
-        "x": 12,
+        "x": 14,
         "y": 0
       },
       "id": 23,
@@ -399,7 +392,7 @@
       "gridPos": {
         "h": 3,
         "w": 4,
-        "x": 14,
+        "x": 16,
         "y": 0
       },
       "id": 14,
@@ -452,7 +445,7 @@
       "gridPos": {
         "h": 3,
         "w": 4,
-        "x": 18,
+        "x": 20,
         "y": 0
       },
       "id": 24,
@@ -729,7 +722,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 16,
+        "w": 18,
         "x": 6,
         "y": 3
       },
@@ -944,7 +937,7 @@
       "fillGradient": 1,
       "gridPos": {
         "h": 7,
-        "w": 10,
+        "w": 12,
         "x": 12,
         "y": 9
       },
@@ -1023,6 +1016,203 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "Prometheus",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 16
+      },
+      "id": 26,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum (trident_volume_allocated_bytes / 1024 / 1024 / 1024) by (backend_type)",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{backend_type}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Trident Capacity per Backend Type (GB)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 6,
+        "y": 16
+      },
+      "id": 30,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "sum by (backend_type) (trident_volume_count)",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{backend_type}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Number of volumes per Backend Type",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 16
+      },
+      "id": 28,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "topk(10, trident_volume_allocated_bytes * on (backend_uuid) group_right trident_backend_info / 1024 / 1024 / 1024)",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{backend_name}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Top10 Backend per Capacity (GB)",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 16
+      },
+      "id": 32,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "topk(10, trident_volume_count * on (backend_uuid) group_right trident_backend_info)",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{backend_name}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Top10 Number of volumes per Backend",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
     }
   ],
   "refresh": "30s",
