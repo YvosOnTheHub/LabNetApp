@@ -18,7 +18,8 @@ In a real environment, you will probably use a different storage platform in eac
 
 <p align="center"><img src="Images/scenario15.jpg"></p>
 
-We are going to create two new backends, each one pointing to a different region.
+We are going to create two new backends, each one pointing to a different region.  
+You can see in the json files that I used a parameter called **supportedTopologies** to specify this.
 
 ```bash
 $ tridentctl -n trident create backend -f backend_west.json
@@ -36,7 +37,7 @@ $ tridentctl -n trident create backend -f backend_east.json
 +----------+----------------+--------------------------------------+--------+---------+
 ```
 
-We can now create a Kubernetes Storage Class that does not point to a particular Trident Backend.  
+We can now create a Kubernetes Storage Class that does not necessarily point to a particular Trident Backend.  
 One could decide to also implement topology at the Storage Class level (cf the _sc_east_ & _sc_west_ yaml files for examples.)
 
 ```bash
@@ -48,7 +49,7 @@ NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE  
 sc-topology          csi.trident.netapp.io   Delete          WaitForFirstConsumer   false                  6m39s
 ```
 
-You will also notice that these is a specific optional parameter in the WEST storage classes: **volumeBindingMode** set to _WaitForFirstConsumer_ (default value: _Immediate_).  This means that the PVC will not be created until referenced in a POD.  
+You will also notice that these is a specific optional parameter in this storage class: **volumeBindingMode** set to _WaitForFirstConsumer_ (default value: _Immediate_).  This means that the PVC will not be created until referenced in a POD.  
 
 Let's use a specific namespace for this scenario:  
 
