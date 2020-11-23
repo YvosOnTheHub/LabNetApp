@@ -36,23 +36,19 @@ $ tridentctl -n trident create backend -f backend_east.json
 +----------+----------------+--------------------------------------+--------+---------+
 ```
 
-We can now also create Kubernetes Storage Classes that will point to each Trident Backend
+We can now create a Kubernetes Storage Class that does not point to a particular Trident Backend.  
+One could decide to also implement topology at the Storage Class level (cf the _sc_east_ & _sc_west_ yaml files for examples.)
 
 ```bash
-$ kubectl create -f sc_west.yaml
-storageclass.storage.k8s.io/sc-topology-west created
-
-$ kubectl create -f sc_east.yaml
-storageclass.storage.k8s.io/sc-topology-east created
+$ kubectl create -f sc_topology.yaml
+storageclass.storage.k8s.io/sc-topology created
 
 $ kubectl get sc
-NAME                          PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-sc-topology-east              csi.trident.netapp.io   Delete          Immediate              false                  6s
-sc-topology-west              csi.trident.netapp.io   Delete          WaitForFirstConsumer   false                  6m39s
+NAME                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+sc-topology          csi.trident.netapp.io   Delete          WaitForFirstConsumer   false                  6m39s
 ```
 
-You will also notice that these is a specific optional parameter in the WEST storage classes: **volumeBindingMode** set to _WaitForFirstConsumer_ (default value: _Immediate_).  
-This means that the PVC will not be created until referenced in a POD.  
+You will also notice that these is a specific optional parameter in the WEST storage classes: **volumeBindingMode** set to _WaitForFirstConsumer_ (default value: _Immediate_).  This means that the PVC will not be created until referenced in a POD.  
 
 Let's use a specific namespace for this scenario:  
 
@@ -71,16 +67,16 @@ $ kubectl create -n topology -f pvc_west.yaml
 persistentvolumeclaim/pvc-west created
 
 $ kubectl get pvc -n topology
-NAME                               STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-pvc-east                           Bound     pvc-d0a8aa71-840b-4248-92d6-850b680988a3   5Gi        RWX            sc-topology-east    6s
-pvc-west                           Pending                                                                        sc-topology-west    2s
+NAME              STATUS    VOLUME             CAPACITY   ACCESS MODES   STORAGECLASS    AGE
+pvc-east          Pending                                                sc-topology     2s
+pvc-west          Pending                                                sc-topology     2s
 
 $ kubectl get pv
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                  STORAGECLASS        REASON   AGE
-pvc-d0a8aa71-840b-4248-92d6-850b680988a3   5Gi        RWX            Delete           Bound    topology/pvc-east      sc-topology-east             72s
 ```
 
-As you can see, the _west_ PVC has not yet been created, simply because of the _volumeBindingMode_ parameter set in the storage class.
+As you can see, both PVC have not yet been created, simply because of the _volumeBindingMode_ parameter set in the storage class.  
+If topology parameters were also definied in the storage classes, not sure the _volumeBindingMode_ would make sense, as you already know where it would be created.
 
 ```bash
 $ kubectl describe -n topology pvc pvc-west | grep -C 3 Events
@@ -93,7 +89,10 @@ Events:
   Normal  WaitForFirstConsumer  56s (x142 over 36m)  persistentvolume-controller  waiting for first consumer to be created before binding
 ```
 
-Let's create two applications. As expected:
+Let's create two applications.  
+If you take a look the POD yaml files, you will notice I have used the **nodeAffinity** parameters to also define where the POD would be created.
+
+As expected:
 
 - the **WEST** Pod should run on **Host1**
 - the **EAST** Pod should run on **Host2**

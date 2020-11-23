@@ -3,6 +3,15 @@ apiVersion: v1
 metadata:
   name: centos-west
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+             - west
   volumes:
     - name: nfsstorage
       persistentVolumeClaim:

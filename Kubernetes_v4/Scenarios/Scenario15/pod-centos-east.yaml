@@ -3,6 +3,15 @@ apiVersion: v1
 metadata:
   name: centos-east
 spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+             - east
   volumes:
     - name: nfsstorage
       persistentVolumeClaim:

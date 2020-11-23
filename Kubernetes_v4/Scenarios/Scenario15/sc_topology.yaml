@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-topology
+provisioner: csi.trident.netapp.io
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "nas-east:aggr1;nas-west:aggr1"
