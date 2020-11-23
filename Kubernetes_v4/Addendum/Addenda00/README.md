@@ -96,6 +96,39 @@ netapp/trident-autosupport:20.10.0:     STARTED true    STATE:map[running:map[st
 netapp/trident:20.10.0:                 STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:44Z]]
 ```
 
-## F. What's next
+## F. How to easily what backends can be used by a storage class
+
+I am using as an example a Storage Class called _sc-topology_, and would like to find with one single command what Trident Backends will be used.  
+This requires the unix command _jq_ to be installed which is a JSON parser. (command to install it: _yum install -y jq_).  
+
+```bash
+$ tridentctl -n trident get backend
++-----------------+-------------------+--------------------------------------+--------+---------+
+|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
++-----------------+-------------------+--------------------------------------+--------+---------+
+| nas-east        | ontap-nas         | 8f821381-cb00-4020-8b5e-64c3b3a0e5d7 | online |       0 |
+| nas-west        | ontap-nas         | 34fd0cf8-bcbb-4fad-af3c-579e25efe8c0 | online |       0 |
+| NAS_Vol-default | ontap-nas         | 8fab01ed-70b2-4e81-8e63-5ea05f5d312e | online |       1 |
+| NAS_ECO-default | ontap-nas-economy | 8d8b25fe-d2ab-4416-b8e3-3d4a304b0aae | online |       0 |
++-----------------+-------------------+--------------------------------------+--------+---------+
+
+$ trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
+[
+  {
+    "storageClass": "sc-topology",
+    "backends": [
+      {
+        "nas-east": [
+          "aggr1"
+        ],
+        "nas-west": [
+          "aggr1"
+        ]
+...
+```
+
+In this very case, when provisioning a volume against the _sc-topology_ storage class, Trident will choose between 2 different available backends.
+
+## G. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
