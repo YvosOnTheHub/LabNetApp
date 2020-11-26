@@ -42,6 +42,7 @@ Addendum
 [4.](Kubernetes_v4/Addendum/Addenda04) Install Ansible on RHEL3 (Kubernetes Master)  
 [5.](Kubernetes_v4/Addendum/Addenda05) Install a Load Balancer (MetalLB)  
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
+[7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 
 ## B. Kubernetes v2 (with CSI)
 

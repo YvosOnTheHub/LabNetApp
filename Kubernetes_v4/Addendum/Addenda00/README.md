@@ -12,6 +12,7 @@ The first step would to put a bunch of alias in the .bashrc file
 Some examples:
 
 ```bash
+$ cp ~/.bashrc ~/.bashrc.bak
 $ cat <<EOT >> ~/.bashrc
 source <(kubectl completion bash)
 complete -F __start_kubectl k

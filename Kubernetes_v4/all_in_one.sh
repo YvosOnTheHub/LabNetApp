@@ -62,6 +62,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+cp ~/.bashrc ~/.bashrc.bak
 cat <<EOT >> ~/.bashrc
 source <(kubectl completion bash)
 complete -F __start_kubectl k
