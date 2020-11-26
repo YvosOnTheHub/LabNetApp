@@ -22,3 +22,46 @@ sed -e '/  NAMESPACE_COLOR.*/ s/CYAN/BLUE/' -i /usr/bin/k8sh
 sed -e '/  PS_NAMESPACE_COLOR.*/ s/CYAN/BLUE/' -i /usr/bin/k8sh
 sed -e '/  PS_CONTEXT_COLOR.*/ s/LRED/RESTORE/' -i /usr/bin/k8sh
 ```
+
+Finally, to launch the program, you can simply type _k8sh_
+
+```bash
+$ k8sh
+Initializing...
+k8sh_init; exec </dev/tty
+
+Welcome to k8sh
+Sourcing in ~/.bash_profile...
+Gathering current kubectl state...
+Making aliases...
+For k completion please install bash-completion
+Sourcing in ~/.k8sh_extensions...
+
+Context: kubernetes-admin@kubernetes
+Namespace: default
+(kubernetes-admin@kubernetes/default) ~ $
+```
+
+There you go! A quick example now, let's change namespace & list the pods:
+
+```bash
+(kubernetes-admin@kubernetes/default) ~ $ ns
+default
+kube-node-lease
+kube-public
+kube-system
+monitoring
+snapshot-controller
+tigera-operator
+trident
+
+(kubernetes-admin@kubernetes/default) ~ $ ns trident
+
+(kubernetes-admin@kubernetes/trident) ~ $ pods
+NAME                                READY   STATUS    RESTARTS   AGE
+trident-csi-676dd87bc6-2825p        6/6     Running   0          3d9h
+trident-csi-j67xc                   2/2     Running   0          3d9h
+trident-csi-vdvqp                   2/2     Running   0          3d9h
+trident-csi-xhsfc                   2/2     Running   0          3d9h
+trident-operator-67448748f7-sbwvc   1/1     Running   0          3d9h
+```
