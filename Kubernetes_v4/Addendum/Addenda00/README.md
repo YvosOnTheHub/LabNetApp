@@ -20,6 +20,7 @@ complete -F __start_kubectl k
 alias kc='kubectl create'
 alias kg='kubectl get'
 alias kdel='kubectl delete'
+alias kx='kubectl exec -it'
 alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
 alias trident='tridentctl -n trident'
@@ -97,7 +98,7 @@ netapp/trident-autosupport:20.10.0:     STARTED true    STATE:map[running:map[st
 netapp/trident:20.10.0:                 STARTED true    STATE:map[running:map[startedAt:2020-11-12T12:46:44Z]]
 ```
 
-## F. How to easily what backends can be used by a storage class
+## F. How to easily see what backends can be used by a storage class
 
 I am using as an example a Storage Class called _sc-topology_, and would like to find with one single command what Trident Backends will be used.  
 This requires the unix command _jq_ to be installed which is a JSON parser. (command to install it: _yum install -y jq_).  

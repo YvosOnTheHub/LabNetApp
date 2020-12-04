@@ -16,7 +16,7 @@ echo "Upgrade Prometheus Operator with Helm"
 echo "#######################################################################################################"
 
 helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
-sleep 15s
+sleep 30s
 
 echo "#######################################################################################################"
 echo "Install Pie Chart Plugin in Grafana"
