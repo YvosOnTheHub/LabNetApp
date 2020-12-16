@@ -25,6 +25,7 @@ Once this host is back online, continue with:
 
 ```bash
 setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=Disabled/' /etc/selinux/config
 swapoff -a
 ```
 

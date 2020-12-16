@@ -43,6 +43,7 @@ Addendum
 [5.](Kubernetes_v4/Addendum/Addenda05) Install a Load Balancer (MetalLB)  
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
+[8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
 
 ## B. Kubernetes v2 (with CSI)
 
