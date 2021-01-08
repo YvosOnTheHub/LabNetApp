@@ -9,7 +9,8 @@ echo "# 1. UPGRADE TO TRIDENT OPERATOR 20.10.0"
 echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
-echo "# 5. UPDATE BASHRC"
+echo "# 5. ENABLE POD SCHEDULING ON THE MASTER NODE" 
+echo "# 6. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -57,7 +58,17 @@ sh Scenarios/Scenario03/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 5. UPDATE BASHRC"
+echo "# 5. ENABLE POD SCHEDULING ON THE MASTER NODE"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+kubectl taint nodes rhel3 node-role.kubernetes.io/master-
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 6. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo

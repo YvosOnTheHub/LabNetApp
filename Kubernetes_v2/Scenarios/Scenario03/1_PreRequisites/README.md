@@ -20,7 +20,7 @@ cd
 wget https://get.helm.sh/helm-v3.3.0-linux-amd64.tar.gz
 tar xzvf helm-v3.3.0-linux-amd64.tar.gz
 cp linux-amd64/helm /usr/bin/
-helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo add stable https://charts.helm.sh/stable
 ```
 
 ## B. Monitoring namespace

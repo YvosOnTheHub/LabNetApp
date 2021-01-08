@@ -14,6 +14,14 @@ NAME            NAMESPACE       REVISION        UPDATED                         
 prom-operator   monitoring      2               2020-11-09 12:36:19.238070417 +0000 UTC deployed        prometheus-operator-9.3.1       0.38.1
 ```
 
+In November 2020, the _stable_ Helm repository moved to a new URL: https://charts.helm.sh/stable.  
+In order to install or update a new Helm chart, you will need to update the repository, which still points to the old URL: https://kubernetes-charts.storage.googleapis.com.  
+
+```bash
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+```
+
 ## A. Modify the Prometheus configuration
 
 The PVC that will be created by Helm will use the _default_ storage class. Make sure you have one before moving on.  

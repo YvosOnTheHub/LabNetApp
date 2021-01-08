@@ -6,10 +6,10 @@ spec:
   volumes:
     - name: nfsstorage
       persistentVolumeClaim:
-       claimName: pvc-to-resize
+       claimName: pvc-to-resize-file
   containers:
     - name: centos
-      image: centos
+      image: centos:centos7
       command:
         - /bin/sh
         - "-c"

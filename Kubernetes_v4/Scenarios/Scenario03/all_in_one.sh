@@ -12,9 +12,16 @@ if [ $(kubectl get sc | grep "(default)" | wc -l) = 0 ]
 fi
 
 echo "#######################################################################################################"
+echo "Update Helm stable repo"
+echo "#######################################################################################################"
+helm repo add stable https://charts.helm.sh/stable
+helm repo update
+
+echo "#######################################################################################################"
 echo "Upgrade Prometheus Operator with Helm"
 echo "#######################################################################################################"
-
+echo "==POD:"
+kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
 helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
 
 echo "==POD:"

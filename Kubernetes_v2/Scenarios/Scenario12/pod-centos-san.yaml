@@ -9,7 +9,7 @@ spec:
        claimName: pvc-to-resize
   containers:
     - name: centos
-      image: centos
+      image: centos:centos7
       command:
         - /bin/sh
         - "-c"

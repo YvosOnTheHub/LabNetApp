@@ -18,7 +18,7 @@ spec:
        claimName: pvc-west
   containers:
     - name: centos
-      image: centos
+      image: centos:centos7
       command:
         - /bin/sh
         - "-c"

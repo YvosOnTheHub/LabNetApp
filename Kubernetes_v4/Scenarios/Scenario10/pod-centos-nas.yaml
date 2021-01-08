@@ -15,7 +15,7 @@ spec:
        claimName: pvc-vsp-3        
     containers:
     - name: centos
-      image: centos
+      image: centos:centos7
       command:
         - /bin/sh
         - "-c"

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-to-resize
+  name: pvc-to-resize-file
 spec:
   accessModes:
   - ReadWriteMany
