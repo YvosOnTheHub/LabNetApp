@@ -4,7 +4,7 @@
 
 **GOAL:**  
 Starting with Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
-Before moving to the upgrade to Trident 20.10, we will first need to delete & clean up the current deployment.  
+Before moving to the upgrade to Trident 20.10.1, we will first need to delete & clean up the current deployment.  
 
 ## A. Download the new version & do some preparation work
 
@@ -20,8 +20,8 @@ Download the version you would like to install
 ```bash
 cd
 mv trident-installer/ trident-installer_20.07
-wget https://github.com/NetApp/trident/releases/download/v20.10.0/trident-installer-20.10.0.tar.gz
-tar -xf trident-installer-20.10.0.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.10.1/trident-installer-20.10.1.tar.gz
+tar -xf trident-installer-20.10.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
@@ -102,7 +102,7 @@ Give it 30 seconds, & then let's see the final content of the Trident namespace
 ```bash
 $ kubectl get all -n trident
 NAME                                   READY   STATUS    RESTARTS   AGE
-pod/trident-csi-66d96cdcc4-5n5x9       4/4     Running   0          3m15s
+pod/trident-csi-66d96cdcc4-5n5x9       6/6     Running   0          3m15s
 pod/trident-csi-jwvfb                  2/2     Running   0          3m15s
 pod/trident-csi-p929b                  2/2     Running   0          3m15s
 pod/trident-csi-vs4nr                  2/2     Running   0          3m15s
@@ -149,7 +149,7 @@ Status:
   Current Installation Params:
     IPv6:               false
     Autosupport Hostname:
-    Autosupport Image:  netapp/trident-autosupport:20.10.0
+    Autosupport Image:  netapp/trident-autosupport:20.10
     Autosupport Proxy:
     Autosupport Serial Number:
     Debug:              false
@@ -160,10 +160,10 @@ Status:
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
     Silence Autosupport:  false
-    Trident Image:        netapp/trident:20.10.0
+    Trident Image:        netapp/trident:20.10.1
   Message:                Trident installed
   Status:                 Installed
-  Version:                v20.10.0
+  Version:                v20.10.1
 Events:
   Type    Reason      Age   From                        Message
   ----    ------      ----  ----                        -------
@@ -175,12 +175,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 20.10.0        | 20.10.0        |
+| 20.10.1        | 20.10.1        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   20.10.0
+trident   20.10.1
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -194,7 +194,7 @@ If you just want to display part of the description, you can use a filter such a
 $ kubectl describe tprov trident -n trident | grep Message: -A 3
   Message:  Trident installed
   Status:   Installed
-  Version:  v20.10.0
+  Version:  v20.10.1
 ```
 
 ## G. What's next

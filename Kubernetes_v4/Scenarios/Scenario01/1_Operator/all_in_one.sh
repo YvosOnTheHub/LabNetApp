@@ -31,13 +31,13 @@ if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.meta
 fi
 
 echo "#######################################################################################################"
-echo "Download Trident 20.10.0"
+echo "Download Trident 20.10.1"
 echo "#######################################################################################################"
 
 cd
 mv trident-installer/ trident-installer_19.07
-wget https://github.com/NetApp/trident/releases/download/v20.10.0/trident-installer-20.10.0.tar.gz
-tar -xf trident-installer-20.10.0.tar.gz
+wget https://github.com/NetApp/trident/releases/download/v20.10.1/trident-installer-20.10.1.tar.gz
+tar -xf trident-installer-20.10.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
