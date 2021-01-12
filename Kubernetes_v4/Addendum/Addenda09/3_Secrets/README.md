@@ -38,7 +38,7 @@ $ more /root/.docker/config.json
 }
 ```
 
-You can use base64 to decode this hash & retrieve your credentials:
+You can use the _base64_ binary to decode this hash & retrieve your credentials:
 
 ```bash
 $ echo "dHN1cGQw...........=" | base64 --decode
@@ -58,8 +58,8 @@ secret/dockerhubcredentials created
 ```
 
 :boom:  
-Be aware that secrets are namespaces bound, ie not cluster wide.  
-If you planning on using different namespaces, you will need to create this secret in every one of them.  
+**Be aware that secrets are namespaces bound, ie not cluster wide.  
+If you planning on using different namespaces, you will need to create this secret in every one of them.**  
 :boom:  
 
 ## C. Use this secret with your applications
@@ -94,4 +94,4 @@ spec:
     - name: dockerhubcredentials
 ```
 
-That way, the first time this application will be launched, Kuberntes will provide the right credentials to pull the container image.
+That way, the first time this application will be launched, Kubernetes will provide the right credentials to pull the container image.

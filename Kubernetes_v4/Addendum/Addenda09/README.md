@@ -29,7 +29,7 @@ In a nutshell, images will be downloaded:
 - if the image tag _latest_ is used
 
 Otherwise, if the image is already present, Kubernetes will directly use, which also saves a good precious couple of seconds. :laughing:  
-In this case, when looking at the logs of an applicaion, you will see the following:
+In this case, when looking at the logs of an application, you will see the following:
 
 ==== ADD EXAMPLE ===
 
@@ -40,6 +40,6 @@ Now, let's see how to use this new login:
 
 In order to simplify the use of this lab, I went for the lazy (easy) way for the following reasons:
 
-- You will not need to need to custom Trident to include the Docker secret if you plan on upgrading
+- You will not need to custom Trident to include the Docker secret if you plan on upgrading
 - If you scale out the cluster, the Docker images will already be present on the new node (otherwise, you may get problems with DaemonSets)
 - No need to create a secret in every single one of the namespaces you may use
