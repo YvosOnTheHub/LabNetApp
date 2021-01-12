@@ -62,7 +62,7 @@ Restart grafana after installing plugins . <service grafana-server restart>
 ```
 
 As stated, you need to restart the grafana service in order to take into account the model.
-There are many ways to restart a pod which is part of a deployment. One can decide to scale down the deployment to 0, & then scale up back to 1.
+There are many ways to restart a pod which is part of a deployment. One can decide to scale down the deployment to 0, wait a few seconds & then scale up back to 1.
 
 ```bash
 $ kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
