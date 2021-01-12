@@ -24,10 +24,7 @@ Here is list of Docker Hub images used in this lab:
 This is more a quick workaround rather than a method you would use in production.  
 Have a look at the [next chapter](../3_secrets) to understand how to work with _secrets_.
 
-You will find in this directory 2 scripts that you can call to download images:
-
-1. pull_all_images.sh
-
+You will find in this directory a script called pull_all_images that you can call to download images:
 This script will download the whole aforementioned list on a specific host, & uses 3 parameters:  
 
 - Hostname or host IP address
@@ -38,19 +35,4 @@ Example:
 
 ```bash
 sh pull_images.sh rhel4 my_login my_password
-```
-
-2. pull_one_image.sh
-
-This script will download one specific image, & uses 4 parameters:  
-
-- Hostname or host IP address
-- Docker hub login
-- Docker hub password
-- Image to pull
-
-Example:
-
-```bash
-sh pull_one_image.sh rhel4 my_login my_password netapp/trident:20.10.0
 ```

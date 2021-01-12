@@ -3,6 +3,12 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
+if [[  $(docker images | grep mysql | grep 5.7 | wc -l) -ne 0 ]]
+  then
+    echo "MYSQL image already present. Nothing to do"
+    exit 0
+fi
+
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"

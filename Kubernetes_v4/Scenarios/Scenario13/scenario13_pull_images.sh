@@ -3,6 +3,12 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
+if [[  $(docker images | grep ghost | grep 3.13-alpine | wc -l) -ne 0 ]]
+  then
+    echo "GHOST 3.13 image already present. Nothing to do"
+    exit 0
+fi
+
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"

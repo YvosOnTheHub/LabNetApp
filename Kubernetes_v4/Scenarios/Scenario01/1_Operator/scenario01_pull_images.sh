@@ -3,6 +3,12 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
+if [[  $(docker images | grep trident | grep 2.10.0 | wc -l) -ne 0 ]]
+  then
+    echo "TRIDENT 2.10.0 images already present. Nothing to do"
+    exit 0
+fi
+
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"
