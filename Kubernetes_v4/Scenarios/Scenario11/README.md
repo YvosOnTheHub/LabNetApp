@@ -18,7 +18,7 @@ To best benefit from the scenario, you would first need to go through the follow
 [3.](../../Addendum/Addenda03) Allow user PODs on the master node  
 
 If you have not yet read the [Addenda09](../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario11_pull_images.sh_ you can use in this context to pull images used in this scenario. It uses 2 parameters, your Docker Hub login & password:
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario11_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
 
 ```bash
 sh scenario11_pull_images.sh my_login my_password
