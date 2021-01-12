@@ -37,7 +37,7 @@ kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 0 ]
 do
   echo "sleep a bit ..."
-  sleep 10
+  sleep 5
 done
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=1
 
