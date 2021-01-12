@@ -22,7 +22,7 @@ echo "Upgrade Prometheus Operator with Helm"
 echo "#######################################################################################################"
 helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
 
-while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --field-selector=status.phase=Running --output=name | wc -l) -ne 1 ]
+while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 1 ]
 do
   echo "sleep a bit ..."
   sleep 5
@@ -37,10 +37,9 @@ kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 0 ]
 do
   echo "sleep a bit ..."
-  sleep 5
+  sleep 10
 done
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=1
-sleep 15s
 
 echo "#######################################################################################################"
 echo "Create ConfigMap for Dashboards"
