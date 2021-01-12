@@ -4,7 +4,7 @@ echo "##########################################################################
 echo "Install Kubernetes Dashboard"
 echo "#######################################################################################################"
 
-cd /root/LabNetApp/Kubernetes_v2/Addendum/Addenda08
+cd /root/LabNetApp/Kubernetes_v4/Addendum/Addenda08
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.3/aio/deploy/recommended.yaml
 kubectl create -f dashboard-service-account.yaml
 kubectl create -f dashboard-clusterrolebinding.yaml
