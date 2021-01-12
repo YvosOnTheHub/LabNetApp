@@ -24,11 +24,11 @@ Also, you need to understand what triggers an image to be pulled from a reposito
 
 In a nutshell, images will be downloaded:
 
-- If it has never been pulled from a repository
+- If it has never been pulled locally from a repository
 - If the _imagePullPolicy_ is set to _Always_ in the app definition
 - if the image tag _latest_ is used
 
-Otherwise, if the image is already present, Kubernetes will directly use, which also saves a good precious couple of seconds :-p.  
+Otherwise, if the image is already present, Kubernetes will directly use, which also saves a good precious couple of seconds. :laughing:  
 In this case, when looking at the logs of an applicaion, you will see the following:
 
 ==== ADD EXAMPLE ===
