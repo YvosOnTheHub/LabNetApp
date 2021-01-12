@@ -1,10 +1,23 @@
 #!/bin/bash
 
+# PARAMETER1: Docker hub login
+# PARAMETER2: Docker hub password
+
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    echo "Please add the following parameters to the shell script:"
+    echo " - Parameter1: Docker hub login"
+    echo " - Parameter2: Docker hub password"
+    exit 0
+fi
+
 echo
 echo "#######################################################################################################"
 echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
+echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES"
 echo "# 1. UPGRADE TO TRIDENT OPERATOR 20.10.0"
 echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
@@ -14,6 +27,18 @@ echo "# 6. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+sh Addendum/Addenda09/2_Lazy_Images.sh rhel1 $1 $2
+sh Addendum/Addenda09/2_Lazy_Images.sh rhel2 $1 $2
+sh Addendum/Addenda09/2_Lazy_Images.sh rhel3 $1 $2
 
 echo
 echo "#######################################################################################################"

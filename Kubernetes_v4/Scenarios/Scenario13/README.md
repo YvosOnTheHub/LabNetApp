@@ -13,6 +13,13 @@ While snapshots can be used for many use cases, we will see here 2 different one
 
 There is also a chapter that will show you the impact of deletion between PVC, Snapshots & Clones (spoiler alert: no impact).  
 
+If you have not yet read the [Addenda09](../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario13_pull_images.sh_ you can use in this context to pull images used in this scenario. It uses 2 parameters, your Docker Hub login & password:
+
+```bash
+sh scenario13_pull_images.sh my_login my_password
+```
+
 ## A. Prepare the environment
 
 We will create an app in its own namespace (also very useful to clean up everything).  

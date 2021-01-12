@@ -22,6 +22,13 @@ In this lab, instead of creating a few backends pointing to the same SVM, we are
 
 <p align="center"><img src="Images/scenario10.jpg"></p>
 
+If you have not yet read the [Addenda09](../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario10_pull_images.sh_ you can use in this context to pull images used in this scenario. It uses 2 parameters, your Docker Hub login & password:
+
+```bash
+sh scenario10_pull_images.sh my_login my_password
+```
+
 ## A. Create the new backend
 
 If you take a look at the backend definition, you will see that there are 3 Virtual Storage Pools.

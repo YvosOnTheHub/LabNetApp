@@ -1,7 +1,7 @@
 kind: Pod
 apiVersion: v1
 metadata:
-  name: centos
+  name: centosblock
 spec:
   volumes:
     - name: blockstorage

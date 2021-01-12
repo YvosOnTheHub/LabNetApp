@@ -7,6 +7,13 @@ Let's first copy the volume we used in the [Scenario04](../../Scenario04), which
 
 <p align="center"><img src="../Images/scenario7_1.jpg"></p>
 
+If you have not yet read the [Addenda09](../../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario07_pull_images.sh_ you can use in this context to pull images used in this scenario. It uses 2 parameters, your Docker Hub login & password:
+
+```bash
+sh ../scenario07_pull_images.sh my_login my_password
+```
+
 ## A. Identify & copy the volume on the NetApp backend.
 
 The full name of the volume is available in the PV metadata.  

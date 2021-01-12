@@ -10,10 +10,19 @@ The section has been tested with the Lab-on-Demand Using "**Trident with Kuberne
 :boom:  
 Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.  
+:boom:  
 
 Last, there are plenty of commands to write or copy/paste.  
-Try using some of the shortcuts you will find in the the Addenda0!  
-:boom:  
+Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v4/Addendum/Addenda00) !  
+
+:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:  
+
+```diff
+- You may have seen that starting in November 2020, there are now limits on how many pull requests can be done on the Docker Hub.  
+- As this lab was created with an _anonymous_ user, please read carefully the Addenda09 before starting this lab.
+```
+
+:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:  
 
 Scenarios  
 ---------  
@@ -44,6 +53,7 @@ Addendum
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
+[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
 
 ## B. Kubernetes v2 (with CSI)
 

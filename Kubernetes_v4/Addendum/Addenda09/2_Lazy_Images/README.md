@@ -1,0 +1,56 @@
+#########################################################################################
+# ADDENDA 9: Use a Docker login the lazy way !
+#########################################################################################
+
+You have seen when images are pulled from repository.  
+You then also understand that if an image is already present  Kubernetes is not going to try to retrieve it from a repository.  
+(unless _imagePullPolicy_ or _latest_ are used).
+
+The _lazy_ way consists into 2 steps **on each Kubernetes host**:
+
+- log into Docker with the command _docker login_
+- pull all the images you need for your demos or tests with the command _docker images pull_
+
+Here is list of Docker Hub images used in this lab:
+
+- netapp/trident:20.10.0
+- netapp/trident-operator:20.10.0
+- netapp/trident-autosupport:20.10.0
+- ghost:2.6-alpine
+- ghost:3.13-alpine
+- centos:centos7
+- mysql:5.7
+
+This is more a quick workaround rather than a method you would use in production.  
+Have a look at the [next chapter](../3_secrets) to understand how to work with _secrets_.
+
+You will find in this directory 2 scripts that you can call to download images:
+
+1. pull_all_images.sh
+
+This script will download the whole aforementioned list on a specific host, & uses 3 parameters:  
+
+- Hostname or host IP address
+- Docker hub login
+- Docker hub password
+
+Example:
+
+```bash
+sh pull_images.sh rhel4 my_login my_password
+```
+
+2. pull_one_image.sh
+
+This script will download one specific image, & uses 4 parameters:  
+
+- Hostname or host IP address
+- Docker hub login
+- Docker hub password
+- Image to pull
+
+Example:
+
+```bash
+sh pull_one_image.sh rhel4 my_login my_password netapp/trident:20.10.0
+```

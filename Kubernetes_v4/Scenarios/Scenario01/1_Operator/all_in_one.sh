@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# OPTIONAL PARAMETERS:
+# - PARAMETER1: Docker hub login
+# - PARAMETER2: Docker hub password
+
+if [ $# -eq 2 ]
+  then
+    scenario1_pull_images.sh $1 $2
+fi
+
 if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io" | wc -l) = 0 ]
   then
     echo "#######################################################################################################"

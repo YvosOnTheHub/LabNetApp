@@ -17,6 +17,13 @@ To best benefit from the scenario, you would first need to go through the follow
 [2.](../../Addendum/Addenda02) Specify a default storage class if different from the existing one  
 [3.](../../Addendum/Addenda03) Allow user PODs on the master node  
 
+If you have not yet read the [Addenda09](../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario11_pull_images.sh_ you can use in this context to pull images used in this scenario. It uses 2 parameters, your Docker Hub login & password:
+
+```bash
+sh scenario11_pull_images.sh my_login my_password
+```
+
 ## A. Let's start by creating the application
 
 This application is based on 3 elements:
