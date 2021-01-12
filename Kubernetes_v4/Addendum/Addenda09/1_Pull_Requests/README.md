@@ -30,7 +30,8 @@ RateLimit-Limit: 100;w=21600
 RateLimit-Remaining: 0;w=21600
 ```
 
-You most probably will get the same result, ie no _pull request_ left...
+You most probably will get the same result, ie no _pull request_ left...  
+If however, you have a full quota left, you dont need to do anything specific.  
 
 Let's do the same, but this time with your own user. You just need to replace the two parameters _username_ & _password_ in the following
 

@@ -31,7 +31,15 @@ In a nutshell, images will be downloaded:
 Otherwise, if the image is already present, Kubernetes will directly use, which also saves a good precious couple of seconds. :laughing:  
 In this case, when looking at the logs of an application, you will see the following:
 
-==== ADD EXAMPLE ===
+```bash
+Events:
+  Type     Reason                  Age                From                     Message
+  ----     ------                  ----               ----                     -------
+...
+  Normal   Pulled                  41s                kubelet, rhel2           Container image "ghost:2.6-alpine" already present on machine
+  Normal   Created                 41s                kubelet, rhel2           Created container blog
+  Normal   Started                 41s                kubelet, rhel2           Started container blog
+```
 
 Now, let's see how to use this new login:
 
