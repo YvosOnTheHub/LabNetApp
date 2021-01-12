@@ -14,3 +14,8 @@ echo "Patch Dashboard Service"
 echo "#######################################################################################################"
 
 kubectl -n kubernetes-dashboard patch service/kubernetes-dashboard -p '{"spec":{"type":"LoadBalancer"}}'
+
+echo "#######################################################################################################"
+echo "Dashboard IP address"
+echo "#######################################################################################################"
+kubectl get svc -n kubernetes-dashboard kubernetes-dashboard
