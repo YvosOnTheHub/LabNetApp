@@ -20,37 +20,21 @@ helm repo update
 echo "#######################################################################################################"
 echo "Upgrade Prometheus Operator with Helm"
 echo "#######################################################################################################"
-echo "==POD:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
 helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
 
-echo "==POD:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
-echo "==NB:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --field-selector=status.phase=Running | wc -l
-echo "LOOP:"
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --field-selector=status.phase=Running | wc -l) -ne 2 ]
 do
   echo "sleep a bit ..."
   sleep 10
 done
-echo "END LOOP"
-echo "==POD:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
 
 echo "#######################################################################################################"
 echo "Install Pie Chart Plugin in Grafana"
 echo "#######################################################################################################"
 
 kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
-echo "==POD:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
-echo "==SCALE DOWN:"
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
 sleep 15s
-echo "==POD:"
-kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name
-echo "==SCALE UP:"
 kubectl scale -n monitoring deploy prom-operator-grafana --replicas=1
 sleep 15s
 

@@ -6,7 +6,7 @@
 
 if [ $# -eq 2 ]
   then
-    scenario1_pull_images.sh $1 $2
+    scenario01_pull_images.sh $1 $2
 fi
 
 if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io" | wc -l) = 0 ]

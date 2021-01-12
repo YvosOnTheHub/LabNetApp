@@ -36,9 +36,9 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-sh Addendum/Addenda09/2_Lazy_Images.sh rhel1 $1 $2
-sh Addendum/Addenda09/2_Lazy_Images.sh rhel2 $1 $2
-sh Addendum/Addenda09/2_Lazy_Images.sh rhel3 $1 $2
+sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel1 $1 $2
+sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel2 $1 $2
+sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel3 $1 $2
 
 echo
 echo "#######################################################################################################"
