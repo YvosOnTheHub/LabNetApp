@@ -21,7 +21,7 @@ spec:
         - containerPort: 2368
         env:
         - name: url
-          value: http://my-blog-clone.com
+          value: http://192.168.0.63:30081/
         volumeMounts:
         - mountPath: /data
           name: content
