@@ -90,8 +90,8 @@ If you have configured Grafana, you can go back to your dashboard, to check what
 ## D. Cleanup (optional)
 
 :boom:  
-**The PVC will be reused in the [scenario8](../Scenario08) ('import a volume'). Only clean up if you dont plan to do the scenario8.**  
-Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.  
+**The PVC will be reused in the [scenario7](../Scenario07) ('import a volume'). Only clean up if you dont plan to do the scenario7.**
+Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
 :boom:  
 
 ```bash
