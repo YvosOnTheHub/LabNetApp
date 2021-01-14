@@ -11,7 +11,7 @@ In a nutshell:
 - **free tier Docker users** are limited to 200 pull requests per 6 hours
 - a **paid subscription** will give you access to much more
 
-The impact for Lab on Demand users is that they are not going to be able to pull images, ie upgrade Trident or create an application.  
+The impact for Lab on Demand users is that they are potentially not going to be able to pull images, ie upgrade Trident or create an application.  
 This chapter will guide you through different steps to manage this situation...  
 
 First, you are going to create your own Docker Hub user directly on the following link [https://hub.docker.com/].  
@@ -41,10 +41,11 @@ Events:
   Normal   Started                 41s                kubelet, rhel2           Started container blog
 ```
 
-Now, let's see how to use this new login:
+Now, let's see what we can do to manage this situation:
 
-- [the lazy way](2_Lazy_Images)
-- [the production like way](3_Secrets)
+- [be lazy](2_Lazy_Images)
+- [use secrets](3_Secrets)
+- [use a private repository](4_Private_repo)
 
 In order to simplify the use of this lab, I went for the lazy (easy) way for the following reasons:
 
