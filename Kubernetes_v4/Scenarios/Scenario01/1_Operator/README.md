@@ -37,7 +37,7 @@ However, there are 2 requirements for this to work:
 - You need at least Kubernetes 1.17 (:heavy_check_mark:!)  
 - Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
 
-If you are planning on testing this feature (cf [Scenario16](../../Scenario16)), make sure these labels are configured before upgrading Trident.  
+If you are planning on testing this feature (cf [Scenario15](../../Scenario15)), make sure these labels are configured before upgrading Trident.  
 
 ```bash
 $ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"

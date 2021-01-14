@@ -4,7 +4,8 @@
 
 **GOAL:**  
 Trident 20.10 introduced the support of the CSI Topology feature. This scenario will guide you in the Trident configuration with regards to topology.  
-Some details about it:
+
+Some details about CSI Topology:
 
 - Kubernetes details: https://kubernetes-csi.github.io/docs/topology.html
 - Trident details: https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/volumes/topology.html
@@ -13,6 +14,8 @@ This feature allows you to segment nodes of a Kubernetes cluster into sub-groups
 - their location (Rack#1 vs Rack#2, Zone#1 vs Zone#2, DC#1 vs DC#2...)
 - their target use (Production vs Dev)
 - ...
+
+Also, since you need to upgrade Trident to 20.10 minimum, make sure to go through the [scenario1](../Scenario01) before trying out the Topology feature. It will also guide you in setting the required labels.  
 
 In a real environment, you will probably use a different storage platform in each zone. To simplify the configuration of this scenario, we will use the same storage backend to host volumes from both zones, while using different prefixes, in order to simulate having two different zones or datacenters.
 
