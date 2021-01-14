@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: blogimport
@@ -21,7 +21,7 @@ spec:
         - containerPort: 2368
         env:
         - name: url
-          value: http://my-blog.com
+          value: http://192.168.0.63:30082
         volumeMounts:
         - mountPath: /var/lib/ghost/content
           name: content
