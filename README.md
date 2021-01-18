@@ -1,11 +1,11 @@
 # LabNetApp
 
-This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams.  
+This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams. 
 You will find several exercises, described in a step-by-step fashion, that you can use on the NetApp Lab-on-Demand  or on your own environment.  
 
 <!-- ## A. Kubernetes v4 (with CSI) :new:  -->
 
-The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07 already installed on Kubernetes 1.18.6. The numbering has also being aligned with the LoD to make it easier to follow...  
+The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07 already installed on Kubernetes 1.18.6.  
 
 **Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.**  
