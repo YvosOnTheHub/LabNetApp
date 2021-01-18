@@ -3,7 +3,7 @@
 This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams.  
 You will find several exercises, described in a step-by-step fashion, that you can use on the NetApp Lab-on-Demand  or on your own environment.  
 
-## A. Kubernetes v4 (with CSI) :new:  
+<!-- ## A. Kubernetes v4 (with CSI) :new:  -->
 
 The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07 already installed on Kubernetes 1.18.6. The numbering has also being aligned with the LoD to make it easier to follow...  
 
@@ -52,6 +52,8 @@ Addendum
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
 [9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
+
+<!-- OLD CONTENT
 
 ## B. Kubernetes v2 (with CSI)
 
@@ -120,3 +122,4 @@ Scenarios
 ---------
 1. Create & Update Trident plugins
 2. Play around with clones & Apache
+-->
