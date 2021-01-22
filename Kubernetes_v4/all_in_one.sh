@@ -36,24 +36,26 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep  RateLimit-Remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
+if [ $# -ne 2 ];then
+  TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+  RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep  RateLimit-Remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
-if [ $RATEREMAINING -eq 0 ];then
-    echo "----------------------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub does not have any pull request left. Consider using your own credentials."
-    echo "----------------------------------------------------------------------------------------------------------"
-    PULL=1
-elif [ $RATEREMAINING -lt 20 ];then
-    echo "---------------------------------------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
-    echo "---------------------------------------------------------------------------------------------------------------------------"
-    PULL=1
-else
-    echo "--------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub seems to have plenty of pull requests left ($RATEREMAINING)."
-    echo "--------------------------------------------------------------------------------------------"
-    PULL=0
+  if [ $RATEREMAINING -eq 0 ];then
+      echo "----------------------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub does not have any pull request left. Consider using your own credentials."
+      echo "----------------------------------------------------------------------------------------------------------"
+      PULL=1
+  elif [ $RATEREMAINING -lt 20 ];then
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      PULL=1
+  else
+      echo "--------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub seems to have plenty of pull requests left ($RATEREMAINING)."
+      echo "--------------------------------------------------------------------------------------------"
+      PULL=0
+  fi
 fi
 
 sleep 2s
