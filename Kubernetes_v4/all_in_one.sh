@@ -41,21 +41,22 @@ RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1
 
 if [ $RATEREMAINING -eq 0 ];then
     echo "----------------------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub does not have any pull left. Consider using your own credentials."
+    echo "- Your anonymous login to the Docker Hub does not have any pull request left. Consider using your own credentials."
     echo "----------------------------------------------------------------------------------------------------------"
     PULL=1
 elif [ $RATEREMAINING -lt 20 ];then
     echo "---------------------------------------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub does not have many pull left ($RATEREMAINING). Consider using your own credentials"
+    echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
     echo "---------------------------------------------------------------------------------------------------------------------------"
     PULL=1
 else
     echo "--------------------------------------------------------------------------------------------"
-    echo "- Your anonymous login to the Docker Hub seems to have plenty of pull left ($RATEREMAINING)."
+    echo "- Your anonymous login to the Docker Hub seems to have plenty of pull requests left ($RATEREMAINING)."
     echo "--------------------------------------------------------------------------------------------"
     PULL=0
 fi
 
+sleep 2s
 if [ $PULL -eq 1 ];then
   if [ $# -eq 0 ];then
     echo "No arguments supplied"
@@ -86,6 +87,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+sleep 2s
 sh Scenarios/Scenario01/1_Operator/all_in_one.sh
 
 echo
@@ -96,6 +98,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+sleep 2s
 sh Scenarios/Scenario02/all_in_one.sh
 
 echo
@@ -106,6 +109,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+sleep 2s
 sh Scenarios/Scenario05/all_in_one.sh
 
 echo
@@ -116,6 +120,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+sleep 2s
 sh Scenarios/Scenario03/all_in_one.sh
 
 echo
