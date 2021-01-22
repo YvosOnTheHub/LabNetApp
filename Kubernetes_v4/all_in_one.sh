@@ -40,21 +40,19 @@ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repo
 RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep  RateLimit-Remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
 if [ $RATEREMAINING -eq 0 ];then
-    echo "#"
-    echo "Your anonymous login to the Docker Hub does not have any pull left."
-    echo "Consider using your own credentials"
-    echo "#"
+    echo "----------------------------------------------------------------------------------------------------------"
+    echo "- Your anonymous login to the Docker Hub does not have any pull left. Consider using your own credentials."
+    echo "----------------------------------------------------------------------------------------------------------"
     PULL=1
 elif [ $RATEREMAINING -lt 20 ];then
-    echo "#"
-    echo "Your anonymous login to the Docker Hub does not have many pull left ($RATEREMAINING)."
-    echo "Consider using your own credentials"
-    echo "#"
+    echo "---------------------------------------------------------------------------------------------------------------------------"
+    echo "- Your anonymous login to the Docker Hub does not have many pull left ($RATEREMAINING). Consider using your own credentials"
+    echo "---------------------------------------------------------------------------------------------------------------------------"
     PULL=1
 else
-    echo "#"
-    echo "Your anonymous login to the Docker Hub seems to have plenty of pull left ($RATEREMAINING)."
-    echo "#"
+    echo "--------------------------------------------------------------------------------------------"
+    echo "- Your anonymous login to the Docker Hub seems to have plenty of pull left ($RATEREMAINING)."
+    echo "--------------------------------------------------------------------------------------------"
     PULL=0
 fi
 
@@ -77,6 +75,7 @@ if [ $PULL -eq 1 ];then
     sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel1 $1 $2
     sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel2 $1 $2
     sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel3 $1 $2
+  fi
 fi
 
 echo
