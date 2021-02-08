@@ -4,78 +4,30 @@
 
 **GOAL:**  
 Starting with Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
-Before moving to the upgrade to Trident 20.10.1, we will first need to delete & clean up the current deployment.  
+Before moving to the upgrade to Trident 21.01.0, we will first need to delete & clean up the current deployment.  
 
-## A. Download the new version & do some preparation work
+## A. Do some optional preparation work
 
-First, let's remove all current Kubernetes storage classes & Tridents' backends (this is optional)
+Let's remove all current Kubernetes storage classes & Tridents' backends.
 
 ```bash
 kubectl delete sc --all
 tridentctl -n trident delete backend --all
 ```
 
-Download the version you would like to install
+## B. Upgrade Trident
+
+Upgrading Trident first starts with creating a new CRD for the operator:
 
 ```bash
-cd
-mv trident-installer/ trident-installer_20.07
-wget https://github.com/NetApp/trident/releases/download/v20.10.1/trident-installer-20.10.1.tar.gz
-tar -xf trident-installer-20.10.1.tar.gz
-rm -f /usr/bin/tridentctl
-cp trident-installer/tridentctl /usr/bin/
+$ kubectl create -f trident-installer/deploy/crds/trident.netapp.io_tridentorchestrators_crd_post1.16.yaml
+customresourcedefinition.apiextensions.k8s.io/tridentorchestrators.trident.netapp.io created
 ```
 
-:mag:  
-*A* **resource** *is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.*  
-*A* **custom resource** *is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*  
-:mag_right:  
-
-Trident 20.10 introduced the support of the **CSI Topology** feature which allows the administrator to manage a location aware infrastructure.  
-However, there are 2 requirements for this to work:
-
-- You need at least Kubernetes 1.17 (:heavy_check_mark:!)  
-- Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
-
-If you are planning on testing this feature (cf [Scenario15](../../Scenario15)), make sure these labels are configured before upgrading Trident.  
+You can now delete a few objects related to the current version:
 
 ```bash
-$ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"
-[rhel1, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel1 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:west]]
-[rhel2, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel2 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:east]]
-[rhel3, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel3 kubernetes.io/os:linux node-role.kubernetes.io/master: topology.kubernetes.io/region:trident topology.kubernetes.io/zone:admin]]
-```
-
-If they are not, you can create them with the following commands:
-
-```bash
-# LABEL "REGION"
-kubectl label node rhel1 "topology.kubernetes.io/region=trident"
-kubectl label node rhel2 "topology.kubernetes.io/region=trident"
-kubectl label node rhel3 "topology.kubernetes.io/region=trident"
-
-# LABEL "ZONE"
-kubectl label node rhel1 "topology.kubernetes.io/zone=west"
-kubectl label node rhel2 "topology.kubernetes.io/zone=east"
-kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
-```
-
-Last, if you have not yet read the [Addenda09](../../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario01_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
-
-```bash
-sh scenario01_pull_images.sh my_login my_password
-```
-
-
-You can now upgrade Trident :trident:  
-
-## C. Upgrade Trident
-
-Upgrading Trident first starts with deleting a few objects:
-
-```bash
-$ kubectl delete -f trident-installer/deploy/bundle.yaml
+$ kubectl delete -f ~/20.07.1/trident-installer/deploy/bundle.yaml
 serviceaccount "trident-operator" deleted
 clusterrole.rbac.authorization.k8s.io "trident-operator" deleted
 clusterrolebinding.rbac.authorization.k8s.io "trident-operator" deleted
@@ -83,7 +35,7 @@ deployment.apps "trident-operator" deleted
 podsecuritypolicy.policy "tridentoperatorpods" deleted
 ```
 
-We can now deploy the Operator, as well as all the necessary resources that go along with it:
+We can finally deploy the Operator, as well as all the necessary resources that go along with it:
 
 ```bash
 $ kubectl create -f trident-installer/deploy/bundle.yaml
@@ -123,81 +75,88 @@ replicaset.apps/trident-csi-66d96cdcc4       1         1         1       3m15s
 replicaset.apps/trident-operator-599794f56   1         1         1       4m50s
 ```
 
-## D. Check the status
+## C. Check the status
 
 After a few seconds, you should the status _installed_ in the provisioner CRD.
 
 ```bash
-$ kubectl describe tprov trident -n trident
+$ kubectl describe torc -n trident
 Name:         trident
-Namespace:    trident
+Namespace:
 Labels:       <none>
 Annotations:  <none>
 API Version:  trident.netapp.io/v1
-Kind:         TridentProvisioner
+Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2020-08-26T14:53:43Z
+  Creation Timestamp:  2021-02-01T13:43:25Z
   Generation:          1
-  Resource Version:    587541
-  Self Link:           /apis/trident.netapp.io/v1/namespaces/trident/tridentprovisioners/trident
-  UID:                 5303a16d-db32-4d32-b759-99635649f3eb
-  ...
+  Managed Fields:
+    API Version:  trident.netapp.io/v1
+    Manager:         trident-operator
+    Operation:       Update
+    Time:            2021-02-01T13:43:50Z
+  Resource Version:  3483851
+  Self Link:         /apis/trident.netapp.io/v1/tridentorchestrators/trident
+  UID:               a77b5198-8b05-4246-97ee-e3d32429d55e
 Spec:
-  Debug:  false
-  Silence Autosupport:  false
+  Debug:      false
+  Namespace:  trident
 Status:
   Current Installation Params:
-    IPv6:               false
+    IPv6:                       false
     Autosupport Hostname:
-    Autosupport Image:  netapp/trident-autosupport:20.10
+    Autosupport Image:          netapp/trident-autosupport:21.01
     Autosupport Proxy:
     Autosupport Serial Number:
-    Debug:              false
-    Enable Node Prep:   false
+    Debug:                      false
+    Enable Node Prep:           false
     Image Pull Secrets:
-    Image Registry:       quay.io
+    Image Registry:
     k8sTimeout:           30
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
     Silence Autosupport:  false
-    Trident Image:        netapp/trident:20.10.1
+    Trident Image:        netapp/trident:21.01.0
   Message:                Trident installed
+  Namespace:              trident
   Status:                 Installed
-  Version:                v20.10.1
+  Version:                v21.01.0
 Events:
-  Type    Reason      Age   From                        Message
-  ----    ------      ----  ----                        -------
-  Normal  Installed  2m30s (x16 over 67m)  trident-operator.netapp.io  Trident installed
-  Normal  Installed  3s (x4 over 25s)      trident-operator.netapp.io  Trident installed
+  Type    Reason      Age    From                        Message
+  ----    ------      ----   ----                        -------
+  Normal  Installing  6m13s  trident-operator.netapp.io  Installing Trident
+  Normal  Installed   5m53s  trident-operator.netapp.io  Trident installed
+
 
 
 $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 20.10.1        | 20.10.1        |
+| 21.01.0        | 21.01.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   20.10.1
+trident   21.01.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
 This is also where you are going to interact with Trident's deployment.  
 If you want to know more about the different status, please have a look at the following link:  
-https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/deploying/operator-deploy.html#observing-the-status-of-the-operator  
+https://netapp-trident.readthedocs.io/en/stable-v21.01/kubernetes/deploying/operator-deploy.html#observing-the-status-of-the-operator
   
 If you just want to display part of the description, you can use a filter such as:
 
 ```bash
 $ kubectl describe tprov trident -n trident | grep Message: -A 3
-  Message:  Trident installed
-  Status:   Installed
-  Version:  v20.10.1
+  Message:    Trident installed
+  Namespace:  trident
+  Status:     Installed
+  Version:    v21.01.0
 ```
 
-## G. What's next
+## D. What's next
 
 Now that Trident is installed, you can proceed with :  
 

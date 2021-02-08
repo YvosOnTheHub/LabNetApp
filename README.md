@@ -5,7 +5,7 @@ You will find several exercises, described in a step-by-step fashion, that you c
 
 <!-- ## A. Kubernetes v4 (with CSI) :new:  -->
 
-The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07 already installed on Kubernetes 1.18.6.  
+The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07.1 already installed on Kubernetes 1.18.6.  
 
 **Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.**  
@@ -24,7 +24,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
-[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade Trident to 20.10.1  
+[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade Trident to 21.01.0  
 [2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus & Grafana  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
@@ -39,6 +39,7 @@ Scenarios
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v4/Scenarios/Scenario15) Caring about location or about CSI Topology  
+[16.](Kubernetes_v4/Scenarios/Scenario08) Performance control  
 
 Addendum
 --------
@@ -52,6 +53,7 @@ Addendum
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
 [9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
+[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP  
 
 <!-- OLD CONTENT
 

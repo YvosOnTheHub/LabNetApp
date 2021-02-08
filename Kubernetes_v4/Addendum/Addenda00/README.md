@@ -24,6 +24,7 @@ alias kx='kubectl exec -it'
 alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
 alias trident='tridentctl -n trident'
+alias xargs='xargs '
 EOT
 ```
 
@@ -47,13 +48,22 @@ As there is no option to do so, you need to _extract_ this information from the 
 Here are some examples, in several Kubernetes versions
 
 ```bash
-# 1.18 with Trident Operator (v20.07)
+# 1.18 with Trident Operator (v20.07.1)
 $ kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
 trident-csi-68d979fb85-dsrmn:   netapp/trident:20.07.1, netapp/trident-autosupport:20.07.0, quay.io/k8scsi/csi-provisioner:v2.0.1, quay.io/k8scsi/csi-attacher:v2.2.0, quay.io/k8scsi/csi-resizer:v0.5.0, quay.io/k8scsi/csi-snapshotter:v2.1.1,
 trident-csi-8jfhf:      netapp/trident:20.07.1, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
 trident-csi-jtnjz:      netapp/trident:20.07.1, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
 trident-csi-lcxvh:      netapp/trident:20.07.1, quay.io/k8scsi/csi-node-driver-registrar:v1.3.0,
 trident-operator-7569744d4f-hwgnr:      netapp/trident-operator:20.07.1,
+
+# 1.18 with Trident Operator (v21.01.0)
+$ kubectl get pods -n trident -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.containers[*]}{.image}{", "}{end}{end}' |sort
+trident-csi-58d557dcdf-zw699:   netapp/trident:21.01.0, netapp/trident-autosupport:21.01, k8s.gcr.io/sig-storage/csi-provisioner:v2.1.0, k8s.gcr.io/sig-storage/csi-attacher:v3.1.0, k8s.gcr.io/sig-storage/csi-resizer:v1.1.0, k8s.gcr.io/sig-storage/csi-snapshotter:v3.0.3,
+trident-csi-ps7dq:      netapp/trident:21.01.0, k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.1.0,
+trident-csi-t4kpn:      netapp/trident:21.01.0, k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.1.0,
+trident-csi-x4l55:      netapp/trident:21.01.0, k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.1.0,
+trident-operator-747c5ff65c-86x5s:      netapp/trident-operator:21.01.0,
+
 ```
 
 What is interesting to notice is that when upgrading Kubernetes, new sidecars are added to CSI Trident:

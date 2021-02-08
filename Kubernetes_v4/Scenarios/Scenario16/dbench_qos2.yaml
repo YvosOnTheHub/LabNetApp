@@ -1,9 +1,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: dbench-pv-claim
+  name: dbench-pvc-qos2
 spec:
-  storageClassName: storage-class-nas
+  storageClassName: sc-qos2
   accessModes:
     - ReadWriteMany
   resources:
@@ -13,12 +13,12 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: dbench
+  name: dbench-qos2
 spec:
   template:
     spec:
       containers:
-      - name: dbench
+      - name: dbench-qos2
         image: ndrpnt/dbench:1.0.0
         env:
           - name: DBENCH_MOUNTPOINT
@@ -38,5 +38,5 @@ spec:
       volumes:
       - name: dbench-pv
         persistentVolumeClaim:
-          claimName: dbench-pv-claim
+          claimName: dbench-pvc-qos2
   backoffLimit: 4

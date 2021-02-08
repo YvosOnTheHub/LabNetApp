@@ -11,11 +11,11 @@ The _lazy_ way consists into 2 steps **on each Kubernetes host**:
 - log into Docker with the command _docker login_
 - pull all the images you need for your demos or tests with the command _docker images pull_
 
-Here is list of Docker Hub images used in this lab:
+Here is list of Docker Hub images used in this lab with Trident 21.01.0:
 
-- netapp/trident:20.10.0
-- netapp/trident-operator:20.10.0
-- netapp/trident-autosupport:20.10.0
+- netapp/trident:21.01.0
+- netapp/trident-operator:21.01.0
+- netapp/trident-autosupport:21.01
 - ghost:2.6-alpine
 - ghost:3.13-alpine
 - centos:centos7

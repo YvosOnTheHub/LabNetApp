@@ -3,9 +3,9 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep trident | grep 20.10.0 | wc -l) -ne 0 ]]
+if [[  $(docker images | grep trident | grep 21.01.0 | wc -l) -ne 0 ]]
   then
-    echo "TRIDENT 20.10.0 images already present. Nothing to do"
+    echo "TRIDENT 21.01.0 images already present. Nothing to do"
     exit 0
 fi
 
@@ -33,30 +33,30 @@ fi
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL1"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-operator:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-autosupport:20.10.0
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-operator:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-autosupport:21.01
 
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL2"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-operator:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-autosupport:20.10.0
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-operator:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-autosupport:21.01
 
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL3"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-operator:20.10.0
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-autosupport:20.10.0
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-operator:21.01.0
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-autosupport:21.01
 
 if [ $(kubectl get nodes | wc -l) = 5 ]
 then
     echo "#################################################"
     echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL4"
     echo "#################################################"
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident:20.10.0
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-operator:20.10.0
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-autosupport:20.10.0
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident:21.01.0
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-operator:21.01.0
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-autosupport:21.01
 fi 

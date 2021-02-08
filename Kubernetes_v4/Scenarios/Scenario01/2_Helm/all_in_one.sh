@@ -46,7 +46,7 @@ echo "##########################################################################
 echo "Create the Trident orchestrator CRD"
 echo "#######################################################################################################"
 
-kubectl create -f trident-installer/deploy/crds/trident.netapp.io_tridentorchestrators_crd_post1.16.yaml
+kubectl create -f deploy/crds/trident.netapp.io_tridentorchestrators_crd_post1.16.yaml
 
 echo "#######################################################################################################"
 echo "Remove current Trident Operator (20.07.1)"
@@ -60,21 +60,10 @@ echo "##########################################################################
 
 kubectl create -f trident-installer/deploy/bundle.yaml
 
+sleep 30s
 echo "#######################################################################################################"
 echo "Check"
 echo "#######################################################################################################"
 
-while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
-do
-  echo "sleep a bit ..."
-  sleep 10
-done
-
 tridentctl -n trident version
 
-echo "#######################################################################################################"
-echo "Delete existing backends & storage classes"
-echo "#######################################################################################################"
-
-kubectl delete sc --all
-tridentctl -n trident delete backend --all

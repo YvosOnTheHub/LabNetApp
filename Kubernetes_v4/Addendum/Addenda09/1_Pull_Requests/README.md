@@ -44,3 +44,5 @@ RateLimit-Remaining: 197;w=21600
 
 This time, you will see that you have plenty of _pull requests_ left to use.  
 However, if you need more, you will either have to wait for 6 hours, or use a subscription plan.
+
+This directory contains a script _check_pull_rate.sh_ that you can use to check how many pull requests the anonymous user has left.

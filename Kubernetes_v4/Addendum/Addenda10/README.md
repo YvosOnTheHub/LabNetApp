@@ -1,44 +1,24 @@
 #########################################################################################
-# ADDENDA 10: Let's do some storage performance tests ! 
+# ADDENDA 10: How to upgrade ONTAP
 #########################################################################################
 
-This page takes its sources in https://github.com/leeliu/dbench, app created by the company called LogDNA.  
-However, the orginal image is not available on the Docker Hub. I have modified the definition to point to an alternative source.  
-If this image also went to disappear, you can find in the DBench repository a Dockerfile to create your own image.  
+You may need to upgrade ONTAP for specific tests on this Lab-on-Demand.  
+For instance, the [scenario16](../../Scenarios/Scenario16) which introduces the use of QoS requires ONTAP 9.8.  
 
-The dbench.yaml contains 2 objects:
+As prerequisites, you will need to:
 
-- a 100G PVC that uses the storage class _storage-class-nas_
-- a Job that will create a POD to run FIO with several IO profiles
+- download the ONTAP image with your account (image name: **98P1_q_image.tgz**)
+- download a HTTP server (example: **HFS**, found in https://www.rejetto.com/hfs/?f=dl )
+- disable the Windows Firewall (otherwise, ONTAP will not manage to connect to the HTTP server)
 
-Feel free to modify it to use a different storage class or a volume of different size
-
-```bash
-$ kubectl create -f dbench.yaml
-persistentvolumeclaim/dbench-pv-claim created
-job.batch/dbench created
-```
-
-In order to see the results, you can use the following command:
+Once the HTTP Server is running & the ONTAP image available, you can run the following steps in _cluster1_ Putty connection.
 
 ```bash
-$ kubectl logs -f jobs/dbench
-#...
-# plenty of details
-#...
-==================
-= Dbench Summary =
-==================
-Random Read/Write IOPS: 15.2k/10.1k. BW: 195MiB/s / 134MiB/s
-Average Latency (usec) Read/Write: 749.46/728.47
-Sequential Read/Write: 296MiB/s / 138MiB/s
-Mixed Random Read/Write IOPS: 10.7k/3533
+set advanced -c off
+cluster image package delete 9.7P2
+vol snapshot delete -vserver cluster1-01 -volume vol0 -snapshot * -force
+system image update -node cluster1-01 -package  http://192.168.0.5/98P1_q_image.tgz -replace-package true -setdefault true
+reboot
 ```
 
-Finally, to clean up, you can simply do:
-
-```bash
-kubectl delete -f dbench.yaml
-persistentvolumeclaim "dbench-pv-claim" deleted
-job.batch "dbench" deleted
-```
+The second & third steps are here to create some same to host the 2GB file that represents the new ONTAP image.

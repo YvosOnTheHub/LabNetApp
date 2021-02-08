@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "NAS_QoS",
+    "managementLIF": "192.168.0.135",
+    "storagePrefix": "qos_",
+    "username": "vsadmin",
+    "password": "Netapp1!",
+    "storage": [
+    {
+        "labels":{"performance":"qos500iops"},
+        "defaults": {
+            "qosPolicy": "QoS_500iops"
+        }
+    },
+    {
+        "labels":{"performance":"qos100MBps"},
+        "defaults": {
+            "qosPolicy": "QoS_100MBps"
+        }
+    },
+    {
+        "labels":{"performance":"aQoS"},
+        "defaults": {
+            "adaptiveQosPolicy": "aQoS"
+        }
+    }
+    ]
+}
