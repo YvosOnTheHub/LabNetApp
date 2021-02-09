@@ -5,8 +5,8 @@
 The [Scenario08](../Scenario08) describes how to manage how storage is used, as in _capacity_.  
 Trident 21.01 introduced the support of QoS Policy Groups for ONTAP, under 2 forms:  
 
-- Policy Group: set a minimum &/or maximum throughput in IOPS or bandwidth (example: Minimum 100IOPS & Maximum 1000 IOPS per volume)
-- Adaptive Policy Group: same as above, however, the policy is defined per capacity (example: Minimum 100IOPS per volume per TB)
+- **Policy Group**: set a minimum &/or maximum throughput in IOPS or bandwidth (example: Minimum 100IOPS & Maximum 1000 IOPS per volume)
+- **Adaptive Policy Group**: same as above, however, the policy is defined per capacity (example: Minimum 100IOPS per volume per TB)
 
 :boom:  
 QoS is only supported with ONTAP 9.8.  

@@ -25,7 +25,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 Scenarios  
 ---------  
 [1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade Trident to 21.01.0  
-[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
+[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes :new:  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus & Grafana  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v4/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
@@ -39,7 +39,7 @@ Scenarios
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v4/Scenarios/Scenario15) Caring about location or about CSI Topology  
-[16.](Kubernetes_v4/Scenarios/Scenario16) Performance control  
+[16.](Kubernetes_v4/Scenarios/Scenario16) Performance control :new:  
 
 Addendum
 --------
@@ -52,8 +52,8 @@ Addendum
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
-[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
-[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP  
+[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting :new:  
+[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP :new:  
 
 <!-- OLD CONTENT
 
