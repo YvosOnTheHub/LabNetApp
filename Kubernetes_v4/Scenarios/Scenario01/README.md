@@ -70,5 +70,5 @@ Now, it's time to proceed with the installation of Trident :trident:!
 
 Currently with the version 21.01, there are 3 ways to install Trident:  
 [1.](1_Operator) Using Trident's Operator, introduced in 20.04  
-[2.](2_Helm) Using Helm to install Trident's operator, method introduced in 21.01
-3. Using the _legacy_ way, via _tridentctl_  (not details here)
+[2.](2_Helm) Using Helm to install Trident's operator, method introduced in 21.01  
+3. Using the _legacy_ way, via _tridentctl_  (not detailed here)
