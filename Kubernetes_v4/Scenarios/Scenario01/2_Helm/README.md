@@ -3,16 +3,15 @@
 #########################################################################################
 
 Helm is a package manager that is very popular when it comes to Kubernetes. You can easily deploy your application & all its objects with just one command.  
-
-In order to install Trident with Helm, we first need to clean up the environment, ie remove Trident & all related objects.  
-To do so, you can simply you the script _trident_uninstall.sh_ that will do the job for you.
-
 This tool is already present in the LabOnDemand:
 
 ```bash
 $ helm version
 version.BuildInfo{Version:"v3.0.3", GitCommit:"ac925eb7279f4a6955df663a0128044a8a6b7593", GitTreeState:"clean", GoVersion:"go1.13.6"}
 ```
+
+In order to install Trident with Helm, we first need to clean up the environment, ie remove Trident & all related objects.  
+To do so, you can simply you the script _trident_uninstall.sh_ that will do the job for you.
 
 We also need to re-create the _trident_ namespace before the installation.  
 For information, Helm 3.2 introduced a new parameter called _--create-namespace_.  
