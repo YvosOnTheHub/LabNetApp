@@ -28,7 +28,13 @@ do
   sleep 10
 done
 
-kubectl delete crd tridentprovisioners.trident.netapp.io
+if [ $(kubectl get crd | grep tridentprov | wc -l) -eq 1 ]
+  then
+    kubectl delete crd tridentprovisioners.trident.netapp.io
+  else
+    kubectl delete crd tridentorchestrators.trident.netapp.io
+fi
+
 kubectl delete -n trident deploy trident-operator
 kubectl delete PodSecurityPolicy tridentoperatorpods
 kubectl delete ClusterRole trident-operator
