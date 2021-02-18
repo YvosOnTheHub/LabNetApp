@@ -134,7 +134,28 @@ drwxr-xr-x 5 root root   42 Apr  5 14:45 ..
 This could have all be done through 3 different backend files, which is also perfectly fine.
 However, the more backends you manage, the more complexity you add. Introducing Virtual Storage Polls allows you to simplify this management.
 
-## C. Cleanup the environment
+## C. Label Management
+
+Trident 21.01.1 introduced label management at the backend layer. If you configure labels in a Trident Backend, they will be added to the volume comments field.  
+Let's check how that translates with the first PVC we have created (Storage Pool with labels {"app":"myapp1", "cost":"100"}):  
+
+```bash
+$ VOLNAME=$(kubectl get pv $( kubectl get pvc pvc-vsp-1 -n vsp -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}') && curl -X GET -ku vsadmin:Netapp1!  "https://192.168.0.135/api/storage/volumes?name=$VOLNAME&fields=comment" -H "accept: application/json"
+{
+  "records": [
+    {
+      "uuid": "e353b98d-71ed-11eb-9619-0050569c2f0a",
+      "comment": "{\"provisioning\":{\"app\":\"myapp1\",\"cost\":\"100\"}}",
+      "name": "vsp_pvc_85fbfc56_2b91_41e0_8cd5_592cf6ce9c13"
+    }
+  ],
+  "num_records": 1
+}
+```
+
+There you go, the two labels can be seen in the comments field!
+
+## D. Cleanup the environment
 
 ```bash
 $ kubectl delete namespace vsp

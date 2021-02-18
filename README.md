@@ -24,8 +24,8 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
-[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident to 21.01.1 :new:  
-[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes :new:  
+[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident to 21.01.1 :arrows_counterclockwise:  
+[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes :arrows_counterclockwise:  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus & Grafana  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v4/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
@@ -33,7 +33,7 @@ Scenarios
 [7.](Kubernetes_v4/Scenarios/Scenario07) Use the 'import' feature of Trident  
 [8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control  
 [9.](Kubernetes_v4/Scenarios/Scenario09) Expanding Persistent Volumes  
-[10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools  
+[10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools :arrows_counterclockwise:  
 [11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v4/Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
