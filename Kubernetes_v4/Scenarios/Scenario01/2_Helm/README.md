@@ -20,7 +20,7 @@ For information, Helm 3.2 introduced a new parameter called _--create-namespace_
 $ kubectl create namespace trident
 namespace/trident created
 
-$ helm install trident trident-installer/helm/trident-operator-21.01.0.tgz -n trident
+$ helm install trident trident-installer/helm/trident-operator-21.01.1.tgz -n trident
 NAME: trident
 LAST DEPLOYED: Mon Feb  1 16:10:02 2021
 NAMESPACE: trident
@@ -45,7 +45,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2021-02-01 16:16:08.107874297 +0000 UTC deployed        trident-operator-21.01.0        21.01.0
+trident trident         1               2021-02-01 16:16:08.107874297 +0000 UTC deployed        trident-operator-21.01.1        21.01.1
 ```
 
 Also quite easy !  
@@ -56,14 +56,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 21.01.0        | 21.01.0        |
+| 21.01.1        | 21.01.1        |
 +----------------+----------------+
 
-$ kubectl describe tprov trident -n trident | grep Message: -A 3
+$ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v21.01.0
+  Version:    v21.01.1
 ```
 
 ## What's next

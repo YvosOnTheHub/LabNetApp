@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 20.10
+# SCENARIO 1: Trident upgrade to 21.01
 #########################################################################################
 
 **GOAL:**  
@@ -17,10 +17,10 @@ Let's first download the version you would like to install:
 
 ```bash
 cd
-mkdir 21.01.0
-cd 21.01.0
-wget https://github.com/NetApp/trident/releases/download/v21.01.0/trident-installer-21.01.0.tar.gz
-tar -xf trident-installer-21.01.0.tar.gz
+mkdir 21.01.1
+cd 21.01.1
+wget https://github.com/NetApp/trident/releases/download/v21.01.1/trident-installer-21.01.1.tar.gz
+tar -xf trident-installer-21.01.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
