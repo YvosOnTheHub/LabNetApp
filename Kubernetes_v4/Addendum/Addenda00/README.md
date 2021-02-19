@@ -141,6 +141,24 @@ $ trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass:
 
 In this very case, when provisioning a volume against the _sc-topology_ storage class, Trident will choose between 2 different available backends.
 
-## G. What's next
+## G. How can I enable debug mode with the Trident operator
+
+Starting with Trident 21.01, debug mode is disabled by default.  
+If you would like to enable it, you can simply patch the operator, step that will trigger restarting new pods.
+
+```bash
+$ kubectl describe torc | grep Spec: -A 1
+Spec:
+  Debug:      false
+
+$ kubectl patch torc trident -n trident --type=merge -p '{"spec":{"debug":true}}'
+tridentorchestrator.trident.netapp.io/trident patched
+
+$ kubectl describe torc | grep Spec: -A 1
+Spec:
+  Debug:      true
+```
+
+## H. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
