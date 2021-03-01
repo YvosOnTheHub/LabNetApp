@@ -21,7 +21,7 @@ spec:
         - containerPort: 2368
         env:
         - name: url
-          value: http:192.168.0.61:30180
+          value: http://192.168.0.61:30180
         volumeMounts:
         - mountPath: /var/lib/ghost/content
           name: content

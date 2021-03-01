@@ -143,11 +143,11 @@ With ONTAP, you will end up with a *ONTAP Snapshot*, a _ReadOnly_ object, which 
 You can see it by browsing through System Manager or connecting with Putty to the _cluster1_ profile (admin/Netapp1!)
 
 ```bash
-cluster1::> vol snaps show -vserver svm1 -volume nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
+cluster1::> vol snaps show -vserver nfs_svm -volume nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
                                                                  ---Blocks---
-Vserver  Volume   Snapshot                                  Size Total% Used%
--------- -------- ------------------------------------- -------- ------ -----
-svm1     nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
+Vserver     Volume   Snapshot                                  Size Total% Used%
+--------    -------- ------------------------------------- -------- ------ -----
+nfs_svm     nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
                   snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498
                                                            156KB     0%   36%
 ```
