@@ -40,6 +40,7 @@ Scenarios
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v4/Scenarios/Scenario15) Caring about location or about CSI Topology  
 [16.](Kubernetes_v4/Scenarios/Scenario16) Performance control :new:  
+[17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP :new:  
 
 Addendum
 --------
@@ -54,6 +55,7 @@ Addendum
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
 [9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting :new:  
 [10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP :new:  
+[11.](Kubernetes_v4/Addendum/Addenda11) How to install & prepare HAProxy :new:  
 
 <!-- OLD CONTENT
 
