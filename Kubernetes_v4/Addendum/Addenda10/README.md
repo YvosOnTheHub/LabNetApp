@@ -7,7 +7,7 @@ For instance, the [scenario16](../../Scenarios/Scenario16) which introduces the 
 
 As prerequisites, you will need to:
 
-- download the ONTAP image with your account (image name: **98P1_q_image.tgz**)
+- download the ONTAP image with your account (image name example: **98P2_q_image.tgz**)
 - download a HTTP server (example: **HFS**, found in https://www.rejetto.com/hfs/?f=dl )
 - disable the Windows Firewall (otherwise, ONTAP will not manage to connect to the HTTP server)
 
@@ -17,8 +17,8 @@ Once the HTTP Server is running & the ONTAP image available, you can run the fol
 set advanced -c off
 cluster image package delete 9.7P2
 vol snapshot delete -vserver cluster1-01 -volume vol0 -snapshot * -force
-system image update -node cluster1-01 -package  http://192.168.0.5/98P1_q_image.tgz -replace-package true -setdefault true
+system image update -node cluster1-01 -package  http://192.168.0.5/98P2_q_image.tgz -replace-package true -setdefault true
 reboot
 ```
 
-The second & third steps are here to create some same to host the 2GB file that represents the new ONTAP image.
+The second & third steps are here to create some space to host the 2GB file that represents the new ONTAP image.

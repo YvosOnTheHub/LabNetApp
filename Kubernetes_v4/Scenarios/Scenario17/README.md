@@ -5,7 +5,7 @@
 Some of you may not allow direct management access between Kubernetes & ONTAP. However, a proxy can be configured between both layers to redirect traffic.  
 The [Addenda11](../../Addendum/Addenda11) guides you through the installation of HAProxy. We will here see how to continue its configuration to accept Trident Management flows to access ONTAP.  
 
-As Trident communicates with ONTAP through HTTPS, we will first need to create a certificate (self-signed in this examples).  
+As Trident communicates with ONTAP through HTTPS, we will first need to create a certificate (self-signed in this example).  
 HAProxy requires both the key & the certificate to be concatenated into a single .pem file.  
 
 ```bash
@@ -16,7 +16,7 @@ openssl req -new -x509 -key privkey.pem -out selfcert.pem -days 366
 cat selfcert.pem privkey.pem > haproxy.pem
 ```
 
-HAProxy works with _frontends_ (entry point, ie Trident=>HAProxy) and _backends_ (exit point, ie HAPRoxy=>ONTAP).  
+HAProxy works with _frontends_ (entry point, ie Trident=>HAProxy) and _backends_ (exit point, ie HAProxy=>ONTAP).  
 All requests coming on port 8443 (in this example) will be forwarded to the SVM Management Interface.
 
 ```bash
@@ -92,7 +92,7 @@ $ tail -f /var/log/haproxy.log
 ... 192.168.0.61:33734 [11/Mar/2021:15:03:59.136] tridentnashttp~ ontapnashttp/ontapnashttp 2/0/1/53/57 200 9032 - - ---- 5/5/0/1/0 0/0 "POST /servlets/netapp.servlets.admin.XMLrequest_filer HTTP/1.1"
 ```
 
-Creating a volume led to 5 successive REST API calls of type POST, which were all successful (HTTP Code 200).  
+Creating a volume led to 5 successive Trident REST API calls of type POST, which were all successful (HTTP Code 200).  
 You can also notice that requests all came from the host 192.168.0.61 (rhel1) which is were the Trident Replicaset is running (trident-csi-d47f5f5c6-phg9r):  
 
 ```bash

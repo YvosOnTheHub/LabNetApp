@@ -67,4 +67,4 @@ $ more /var/log/haproxy.log | grep 503
 Mar  9 18:06:11 rhel6 haproxy[9113]: 127.0.0.1:49992 [09/Mar/2021:18:06:11.823] main app/<NOSRV> 0/-1/-1/-1/0 503 212 - - SC-- 0/0/0/0/0 0/0 "GET / HTTP/1.1"
 ```
 
-There you go. You can see the call that led to a 503 error.
+There you go. You can see the call that led to a HTTP 503 error.
