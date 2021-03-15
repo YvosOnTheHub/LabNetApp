@@ -108,7 +108,7 @@ trident-operator-5c8bbf6754-bn2c2   1/1     Running   0          3d1h   192.168.
 Time to clean up & move on !
 
 ```bash
-kubectl delete -f pod-with-pvc-proxy.yaml
+$ kubectl delete -f pod-with-pvc-proxy.yaml
 persistentvolumeclaim "pvc-proxy" deleted
 pod "centos-proxy" deleted
 ```
