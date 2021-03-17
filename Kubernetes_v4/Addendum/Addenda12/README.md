@@ -22,10 +22,14 @@ Please contact your account team or Technical Partner Manager in order to get an
 Once you have it, you can install it with the following:
 
 ```bash
-license add -license-code ABCDEFGHIJKLMNOP
+$ system license add -license-code ABCDEFGHIJKLMNOP
+License for package "S3" installed.
+(1 of 1 added successfully)
 ```
 
 ## B. Aggregate & SVM Creation
+
+The aggregate creations takes about a minute to complete.
 
 ```bash
 set adv -c off
@@ -41,7 +45,7 @@ This starts by the creation of a self-signed digital certificate, followed by th
 
 ```bash
 $ security certificate create -vserver svm_S3 -type root-ca -common-name svm_s3_ca
-The certificate s generated name for reference: svm_s3_ca_166CDACDAB286023_svm_s3_ca
+The certificate s generated name for reference: svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
 
 $ security certificate generate-csr -common-name LOD_S3
 
@@ -62,7 +66,7 @@ We now need to sign the CSR to generate the S3 Server's certificate.
 You will be requested to enter the Certificate created in the previous step.
 
 ```bash
-$ security certificate sign -vserver svm_S3 -ca svm_s3_ca -ca-serial 166CDACDAB286023 -expire-days 100
+$ security certificate sign -vserver svm_S3 -ca svm_s3_ca -ca-serial 166D1BCA584E5CD4 -expire-days 100
 
 Please enter Certificate Signing Request(CSR): Press <Enter> when done
 -----BEGIN CERTIFICATE REQUEST-----
@@ -88,28 +92,28 @@ You should keep a copy of the private key and the CA-signed digital certificate 
 
 The installed certificate's CA and serial number for reference:
 CA: svm_s3_ca
-serial: 166CDAE135B63231
+serial: 166D1BD8B1C09F66
 
-The certificate's generated name for reference: YVOS_S3
+The certificate's generated name for reference: LOD_S3
 ```
 
 Let's take a look at what we have got:
 
 ```bash
-$ security cert show -vserver svm_S3.demo.netapp.com -common-name svm_s3_ca -type root-ca -instance
+$ security cert show -vserver svm_S3 -common-name svm_s3_ca -type root-ca -instance
   (security certificate show)
-                             Vserver: svm_S3.demo.netapp.com
-                    Certificate Name: svm_s3_ca_166CDACDAB286023_svm_s3_ca
+                             Vserver: svm_S3
+                    Certificate Name: svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
           FQDN or Custom Common Name: svm_s3_ca
-        Serial Number of Certificate: 166CC9B99FE236FD
+        Serial Number of Certificate: 166D1BCA584E5CD4
                Certificate Authority: svm_s3_ca
                  Type of Certificate: root-ca
  Size of Requested Certificate(bits): 2048
-              Certificate Start Date: Tue Mar 16 09:49:25 2021
-         Certificate Expiration Date: Wed Mar 16 09:49:25 2022
+              Certificate Start Date: Wed Mar 17 10:53:17 2021
+         Certificate Expiration Date: Thu Mar 17 10:53:17 2022
               Public Key Certificate: -----BEGIN CERTIFICATE-----
-                                      MIIDWjCCAkKgAwIBAgIIFmzJuZ/iNv0wDQYJKoZIhvcNAQELBQAwITESMBAGA1UE
-                                      ...
+                                      MIIDWjCCAkKgAwIBAgIIFm0bylhOXNQwDQYJKoZIhvcNAQELBQAwITESMBAGA1UE
+                                        ...
                                       -----END CERTIFICATE-----
         Country Name (2 letter code): US
   State or Province Name (full name):
@@ -120,6 +124,7 @@ $ security cert show -vserver svm_S3.demo.netapp.com -common-name svm_s3_ca -typ
                             Protocol: SSL
                     Hashing Function: SHA256
                              Subtype: -
+
 ```
 
 ## D. Network management
@@ -136,11 +141,11 @@ net int create -vserver svm_S3 -lif endpoint_S3 -service-policy S3-data-policy -
 A SVM can host one or several bucket. For this exercise, we will only create one called _s3lod_, accessible by a new user called _S3user_.
 
 ```bash
-$ vserver object-store-server create -vserver svm_S3 -object-store-server ONTAP-S3.demo.netapp.com -certificate-name svm_s3_ca_166CDACDAB286023_svm_s3_ca
+$ vserver object-store-server create -vserver svm_S3 -object-store-server ONTAP-S3.demo.netapp.com -certificate-name svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
 $ vserver object-store-server bucket create -vserver svm_S3 -bucket s3lod -size 100GB
 $ vserver object-store-server user create -vserver svm_S3 -user S3user
 
-$ vserver object-store-server user show -vserver svm_S3.demo.netapp.com
+$ vserver object-store-server user show -vserver svm_S3
 Vserver     User            ID        Access Key          Secret Key
 ----------- --------------- --------- ------------------- -------------------
 svm_S3.demo.netapp.com
