@@ -56,6 +56,7 @@ Addendum
 [9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting :new:  
 [10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP :new:  
 [11.](Kubernetes_v4/Addendum/Addenda11) How to install & prepare HAProxy :new:  
+[12.](Kubernetes_v4/Addendum/Addenda12) How to create a S3 Bucket on ONTAP :new:  
 
 <!-- OLD CONTENT
 
