@@ -34,7 +34,7 @@ Scenarios
 [8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control  
 [9.](Kubernetes_v4/Scenarios/Scenario09) Expanding Persistent Volumes  
 [10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools :arrows_counterclockwise:  
-[11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption  
+[11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption :arrows_counterclockwise:  
 [12.](Kubernetes_v4/Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
