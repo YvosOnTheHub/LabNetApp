@@ -31,10 +31,10 @@ Scenarios
 [5.](Kubernetes_v4/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
 [6.](Kubernetes_v4/Scenarios/Scenario06) Deploy your first app with Block storage  
 [7.](Kubernetes_v4/Scenarios/Scenario07) Use the 'import' feature of Trident  
-[8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control  
+[8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control :arrows_counterclockwise:  
 [9.](Kubernetes_v4/Scenarios/Scenario09) Expanding Persistent Volumes  
 [10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools :arrows_counterclockwise:  
-[11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption :arrows_counterclockwise:  
+[11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v4/Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
