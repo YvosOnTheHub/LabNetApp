@@ -172,4 +172,4 @@ Here are the parameters to setup with S3 Browser when creating a new account:
 - Access Key ID & Secret Access Key: both keys gathered in the previous step
 - Advanced S3-compatible storage settings: _Signature Version_ = _Signature V4_
 
-There you go, if you configured evrything correctly, you can now access your new S3 Bucket.
+There you go, if you configured everything correctly, you can now access your new S3 Bucket.
