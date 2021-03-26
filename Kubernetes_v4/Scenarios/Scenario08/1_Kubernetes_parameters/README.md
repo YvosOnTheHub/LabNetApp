@@ -154,7 +154,10 @@ Error from server (Forbidden): error when creating "pvc-5Gi-1.yaml": persistentv
 ```
 
 Magical, right?  
-OK, time to clean up again
+Note that Trident also has a similar parameter called _limitVolumeSize_ that controls the maximum capacity of a PVC per Trident Backend.  
+This is going to be described in the next chapter.
+
+OK, time to clean up again!  
 
 ```bash
 $ kubectl delete -n control limitrange storagelimits
