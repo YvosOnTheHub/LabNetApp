@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $(yum info jq | grep Repo | awk '{ print $3 }') != "installed" ]
+if [ $(yum info jq -y | grep Repo | awk '{ print $3 }') != "installed" ]
   then 
     echo "#######################################################################################################"
     echo "Check & Install JQ if necessary"
