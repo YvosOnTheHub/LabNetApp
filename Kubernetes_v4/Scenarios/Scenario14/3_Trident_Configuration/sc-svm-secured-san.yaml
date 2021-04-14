@@ -7,3 +7,5 @@ allowVolumeExpansion: true
 parameters:
   backendType: "ontap-san"
   storagePools: "SVM_Secured_iSCSI:aggr1"
+mountOptions:
+   - discard

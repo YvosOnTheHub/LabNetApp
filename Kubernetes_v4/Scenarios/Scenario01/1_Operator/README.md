@@ -4,7 +4,7 @@
 
 **GOAL:**  
 Starting with Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
-Before moving to the upgrade to Trident 21.01.1, we will first need to delete & clean up the current deployment.  
+Before moving to the upgrade to Trident 21.01.2, we will first need to delete & clean up the current deployment.  
 
 ## A. Do some optional preparation work
 
@@ -116,11 +116,11 @@ Status:
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
     Silence Autosupport:  false
-    Trident Image:        netapp/trident:21.01.1
+    Trident Image:        netapp/trident:21.01.2
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v21.01.1
+  Version:                v21.01.2
 Events:
   Type    Reason      Age    From                        Message
   ----    ------      ----   ----                        -------
@@ -133,12 +133,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 21.01.0        | 21.01.0        |
+| 21.01.2        | 21.01.2        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   21.01.1
+trident   21.01.2
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -153,7 +153,7 @@ $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v21.01.1
+  Version:    v21.01.2
 ```
 
 ## D. What's next

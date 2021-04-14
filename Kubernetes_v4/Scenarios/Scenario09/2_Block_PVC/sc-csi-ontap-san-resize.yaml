@@ -7,3 +7,5 @@ parameters:
   backendType: "ontap-san"
   fsType: "ext4"
 allowVolumeExpansion: true
+mountOptions:
+   - discard

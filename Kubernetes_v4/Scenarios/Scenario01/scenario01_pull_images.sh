@@ -33,22 +33,22 @@ fi
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL1"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident:21.01.1
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-operator:21.01.1
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident:21.01.2
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-operator:21.01.2
 ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-autosupport:21.01
 
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL2"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident:21.01.1
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-operator:21.01.1
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident:21.01.2
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-operator:21.01.2
 ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-autosupport:21.01
 
 echo "#################################################"
 echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL3"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident:21.01.1
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-operator:21.01.1
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident:21.01.2
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-operator:21.01.2
 ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-autosupport:21.01
 
 if [ $(kubectl get nodes | wc -l) = 5 ]
@@ -56,7 +56,7 @@ then
     echo "#################################################"
     echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL4"
     echo "#################################################"
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident:21.01.1
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-operator:21.01.1
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident:21.01.2
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-operator:21.01.2
     ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-autosupport:21.01
 fi 

@@ -7,3 +7,5 @@ parameters:
   backendType: "ontap-san"
   storagePools: "SAN-secured:aggr1"
   fsType: "ext4"
+mountOptions:
+   - discard

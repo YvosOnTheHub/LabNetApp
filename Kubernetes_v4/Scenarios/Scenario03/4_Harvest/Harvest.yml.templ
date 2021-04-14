@@ -1,0 +1,25 @@
+Exporters:
+  Harvest:
+    exporter: prometheus
+    port: 31000
+    addr: 0.0.0.0
+    master: True
+Defaults:
+  collectors:
+    - Zapi
+    - ZapiPerf
+  exporters:
+    - Harvest
+Pollers:
+  unix:
+    datacenter: local
+    addr: localhost
+    collectors:
+      - Psutil
+    prometheus_port: 5201
+  cluster1:
+    datacenter: lod
+    addr: 192.168.0.101
+    auth_style: password
+    username: admin
+    password: Netapp1!

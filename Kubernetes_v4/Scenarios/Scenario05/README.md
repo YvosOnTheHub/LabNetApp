@@ -50,7 +50,9 @@ tbe-wgs99   SAN-secured           ad04f63c-592d-49ae-bfde-21a11db06976
 ## B. Create storage classes pointing to each new backend
 
 You will also find in this directory a few storage class files.
-You can decide to use all of them, only a subset of them or modify them as you wish
+You can decide to use all of them, only a subset of them or modify them as you wish.  
+
+You will notice an _mountOption_ called _discard_ in these storage classes. This is used to allow -Space Reclamation_ from the underlying OS.  
 
 ```bash
 $ kubectl create -f sc-csi-ontap-san.yaml

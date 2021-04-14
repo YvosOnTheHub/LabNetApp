@@ -17,10 +17,10 @@ Let's first download the version you would like to install:
 
 ```bash
 cd
-mkdir 21.01.1
-cd 21.01.1
-wget https://github.com/NetApp/trident/releases/download/v21.01.1/trident-installer-21.01.1.tar.gz
-tar -xf trident-installer-21.01.1.tar.gz
+mkdir 21.01.2
+cd 21.01.2
+wget https://github.com/NetApp/trident/releases/download/v21.01.2/trident-installer-21.01.2.tar.gz
+tar -xf trident-installer-21.01.2.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
