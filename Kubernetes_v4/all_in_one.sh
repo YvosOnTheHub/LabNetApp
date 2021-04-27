@@ -44,41 +44,40 @@ if [[ $# -ne 2 ]];then
       echo "----------------------------------------------------------------------------------------------------------"
       echo "- Your anonymous login to the Docker Hub does not have any pull request left. Consider using your own credentials."
       echo "----------------------------------------------------------------------------------------------------------"
-      PULL=1
+      echo
+      echo "Please restart the script with the following parameters:"
+      echo " - Parameter1: Docker hub login"
+      echo " - Parameter2: Docker hub password"
+      exit 0
+
   elif [[ $RATEREMAINING -lt 20 ]];then
       echo "---------------------------------------------------------------------------------------------------------------------------"
       echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
       echo "---------------------------------------------------------------------------------------------------------------------------"
-      PULL=1
+      echo
+      echo "Please restart the script with the following parameters:"
+      echo " - Parameter1: Docker hub login"
+      echo " - Parameter2: Docker hub password"
+      exit 0
   else
       echo "--------------------------------------------------------------------------------------------"
       echo "- Your anonymous login to the Docker Hub seems to have plenty of pull requests left ($RATEREMAINING)."
       echo "--------------------------------------------------------------------------------------------"
-      PULL=0
   fi
-fi
 
-sleep 2s
-if [[ $PULL -eq 1 ]];then
-  if [[ $# -eq 0 ]];then
-    echo "No arguments supplied"
-    echo "Please restart the script with the following parameters:"
-    echo " - Parameter1: Docker hub login"
-    echo " - Parameter2: Docker hub password"
-    exit 0
-  else
-    echo
-    echo "#######################################################################################################"
-    echo "#"
-    echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES"
-    echo "#"
-    echo "#######################################################################################################"
-    echo
+else
+  sleep 2s
+  echo
+  echo "#######################################################################################################"
+  echo "#"
+  echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES REQUIRED FOR THIS LAB"
+  echo "#"
+  echo "#######################################################################################################"
+  echo
 
-    sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel1 $1 $2
-    sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel2 $1 $2
-    sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel3 $1 $2
-  fi
+  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel1 $1 $2
+  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel2 $1 $2
+  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel3 $1 $2
 fi
 
 echo
