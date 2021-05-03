@@ -39,10 +39,11 @@ However, there are 2 requirements for this to work:
 If you are planning on testing this feature (cf [Scenario15](../Scenario15)), make sure these labels are configured before upgrading Trident.  
 
 ```bash
-$ kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.metadata.labels}]{"\n"}{end}' | grep "topology.kubernetes.io"
-[rhel1, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel1 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:west]]
-[rhel2, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel2 kubernetes.io/os:linux topology.kubernetes.io/region:trident topology.kubernetes.io/zone:east]]
-[rhel3, map[beta.kubernetes.io/arch:amd64 beta.kubernetes.io/os:linux kubernetes.io/arch:amd64 kubernetes.io/hostname:rhel3 kubernetes.io/os:linux node-role.kubernetes.io/master: topology.kubernetes.io/region:trident topology.kubernetes.io/zone:admin]]
+$ kubectl get nodes --label-columns topology.kubernetes.io/region,topology.kubernetes.io/zone
+NAME    STATUS   ROLES    AGE     VERSION   REGION    ZONE
+rhel1   Ready    <none>   263d    v1.18.6   trident   west
+rhel2   Ready    <none>   263d    v1.18.6   trident   east
+rhel3   Ready    master   263d    v1.18.6   trident   admin
 ```
 
 If they are not, you can create them with the following commands:

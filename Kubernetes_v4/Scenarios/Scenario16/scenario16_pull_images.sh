@@ -3,12 +3,6 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep mysql | grep 5.7 | wc -l) -ne 0 ]]
-  then
-    echo "MYSQL image already present. Nothing to do"
-    exit 0
-fi
-
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied"
@@ -27,8 +21,8 @@ fi
 for host in "${hosts[@]}"
 do
   echo "##############################################"
-  echo "# DOCKER LOGIN ON $host & PULLING MYSQL IMAGE"
+  echo "# DOCKER LOGIN ON $host & PULLING DBENCH IMAGE"
   echo "##############################################"
   ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull mysql:5.7
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull ndrpnt/dbench:1.0.0
 done
