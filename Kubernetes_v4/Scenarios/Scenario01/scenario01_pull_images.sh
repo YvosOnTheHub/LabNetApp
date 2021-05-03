@@ -3,11 +3,8 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep trident | grep 21.01.0 | wc -l) -ne 0 ]]
-  then
-    echo "TRIDENT 21.01.0 images already present. Nothing to do"
-    exit 0
-fi
+# When starting the Lab, the 3 main Prometheus/Grafana images coming from DockerHub are already present on RHEL1.
+# We will download them on the other hosts.
 
 if [ $# -eq 0 ]
   then
@@ -21,7 +18,6 @@ fi
 echo "#############################"
 echo "# DOCKER LOGIN ON EACH NODE"
 echo "#############################"
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker login -u $1 -p $2
 ssh -o "StrictHostKeyChecking no" root@rhel2 docker login -u $1 -p $2
 ssh -o "StrictHostKeyChecking no" root@rhel3 docker login -u $1 -p $2
 
@@ -31,32 +27,35 @@ then
 fi  
 
 echo "#################################################"
-echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL1"
+echo "# PULLING IMAGES FROM DOCKER HUB ON RHEL2"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-operator:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull netapp/trident-autosupport:21.01
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull grafana/grafana:7.0.3
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull kiwigrid/k8s-sidecar:0.1.151
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull busybox:1.31.1
+ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull squareup/ghostunnel:v1.5.2
 
 echo "#################################################"
-echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL2"
+echo "# PULLING IMAGES FROM DOCKER HUB ON RHEL3"
 echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-operator:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull netapp/trident-autosupport:21.01
-
-echo "#################################################"
-echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL3"
-echo "#################################################"
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-operator:21.01.2
-ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull netapp/trident-autosupport:21.01
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull grafana/grafana:7.0.3
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull kiwigrid/k8s-sidecar:0.1.151
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull busybox:1.31.1
+ssh -o "StrictHostKeyChecking no" root@rhel3 docker pull squareup/ghostunnel:v1.5.2
 
 if [ $(kubectl get nodes | wc -l) = 5 ]
 then
     echo "#################################################"
-    echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB ON RHEL4"
+    echo "# PULLING IMAGES FROM DOCKER HUB ON RHEL4"
     echo "#################################################"
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident:21.01.2
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-operator:21.01.2
-    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull netapp/trident-autosupport:21.01
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull grafana/grafana:7.0.3
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull kiwigrid/k8s-sidecar:0.1.151
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull busybox:1.31.1
+    ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull squareup/ghostunnel:v1.5.2
 fi 
+
+echo "#################################################"
+echo "# PULLING BUSYBOX FROM DOCKER HUB ON RHEL1"
+echo "#################################################"
+
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker login -u $1 -p $2
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull busybox:1.31.1
