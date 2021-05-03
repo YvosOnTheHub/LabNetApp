@@ -9,6 +9,18 @@ The scenario will not guide you in the installation of Harvest. However, we are 
 Let's assume you have installed Harvest 2.0 on the host _rhel6_, with a prometheus exported exposed on the port _31000_.  
 The file _Harvest.yml.templ_ can be used to configure Harvest to work on this lab.
 
+To make sure your Harvest installation works, you can run the following:
+
+```bash
+$ curl 192.168.0.69:31000/metrics | grep volume_size_total
+...
+volume_size_total{datacenter="lod",cluster="cluster1",volume="import_san_flexvol",node="cluster1-01",svm="iscsi_svm",aggr="aggr2",style="flexvol"} 2040111104
+volume_size_total{datacenter="lod",cluster="cluster1",volume="registry",node="cluster1-01",svm="nfs_svm",aggr="aggr1",style="flexvol"} 20401094656
+volume_size_total{datacenter="lod",cluster="cluster1",volume="vol_import_manage",node="cluster1-01",svm="nfs_svm",aggr="aggr1",style="flexvol"} 2040111104
+volume_size_total{datacenter="lod",cluster="cluster1",volume="vol_import_nomanage",node="cluster1-01",svm="nfs_svm",aggr="aggr1",style="flexvol"} 2040111104
+...
+```
+
 As Harvest does not work as a containerized application, we will create the following objects so that Prometheus can retrieve metrics from Harvest:
 
 - **NameSpace**: tenant that will host the EndPoint & Service
