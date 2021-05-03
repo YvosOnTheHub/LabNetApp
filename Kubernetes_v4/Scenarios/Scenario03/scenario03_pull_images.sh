@@ -3,11 +3,8 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep trident | grep 21.01.2 | wc -l) -ne 0 ]]
-  then
-    echo "TRIDENT 21.01.0 images already present. Nothing to do"
-    exit 0
-fi
+# When starting the Lab, the 3 main Prometheus/Grafana images coming from DockerHub are already present on RHEL1.
+# We will download them on the other hosts.
 
 if [ $# -eq 0 ]
   then
@@ -19,9 +16,9 @@ if [ $# -eq 0 ]
 fi
 
 if [ $(kubectl get nodes | wc -l) = 4 ];then
-  hosts=( "rhel1" "rhel2" "rhel3")
+  hosts=( "rhel2" "rhel3")
 else
-  hosts=( "rhel1" "rhel2" "rhel3" "rhel4")
+  hosts=( "rhel2" "rhel3" "rhel4")
 fi
 
 for host in "${hosts[@]}"
@@ -29,8 +26,15 @@ do
   echo "#########################################################"
   echo "# LOGIN on $host & PULLING TRIDENT IMAGES FROM DOCKER HUB"
   echo "#########################################################"
-  ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident:21.01.2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident-operator:21.01.2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident-autosupport:21.01
+  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull grafana/grafana:7.0.3
+  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull kiwigrid/k8s-sidecar:0.1.151
+  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull busybox:1.31.1
+  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull squareup/ghostunnel:v1.5.2
 done
+
+# Managing RHEL1 separatly as Prometheus is already installed there from the beginning
+echo "#################################################"
+echo "# PULLING BUSYBOX FROM DOCKER HUB ON RHEL1"
+echo "#################################################"
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker login -u $1 -p $2
+ssh -o "StrictHostKeyChecking no" root@rhel1 docker pull busybox:1.31.1
