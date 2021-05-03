@@ -51,12 +51,12 @@ ssh -o "StrictHostKeyChecking no" root@$1 docker pull mysql:5.7
 echo "#############################################"
 echo "# Dealing with the Prometheus operator images"
 echo "#############################################"
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull busybox:1.31.1
 
 GRAFANAHOST=$(kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana -o=jsonpath='{.items[0].spec.nodeName}')
 if [[ $1 != $GRAFANAHOST ]];then
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull grafana/grafana:7.0.3
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull kiwigrid/k8s-sidecar:0.1.151
-  ssh -o "StrictHostKeyChecking no" root@$1 docker pull busybox:1.31.1
 fi
 
 PROMETHEUSHOST=$(kubectl get -n monitoring pod -l app=prometheus-operator-operator -o=jsonpath='{.items[0].spec.nodeName}')
