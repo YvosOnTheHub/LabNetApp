@@ -17,7 +17,7 @@ Once the HTTP Server is running & the ONTAP image available, you can run the fol
 set advanced -c off
 cluster image package delete 9.7P2
 vol snapshot delete -vserver cluster1-01 -volume vol0 -snapshot * -force
-system image update -node cluster1-01 -package  http://192.168.0.5/98P2_q_image.tgz -replace-package true -setdefault true
+system image update -node cluster1-01 -package  http://192.168.0.5/98P3_q_image.tgz -replace-package true -setdefault true
 reboot
 ```
 
