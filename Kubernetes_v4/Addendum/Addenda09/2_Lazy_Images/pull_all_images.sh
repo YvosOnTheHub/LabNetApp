@@ -63,3 +63,13 @@ PROMETHEUSHOST=$(kubectl get -n monitoring pod -l app=prometheus-operator-operat
 if [[ $1 != $PROMETHEUSHOST ]];then
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull squareup/ghostunnel:v1.5.2
 fi
+
+echo "##########################################################"
+echo "# Dealing with the Calico images if using a larger cluster"
+echo "##########################################################"
+
+if [[ ! "$1" =~ ^(rhel1|rhel2|rhel3)$ ]];then
+  ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/cni:v3.15.1
+  ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/node:v3.15.1
+  ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/pod2daemon-flexvol:v3.15.1
+fi
