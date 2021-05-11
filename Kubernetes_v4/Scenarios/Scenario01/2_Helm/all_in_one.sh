@@ -31,34 +31,29 @@ if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.meta
 fi
 
 echo "#######################################################################################################"
-echo "Download Trident 21.01.2"
+echo "Uninstall the current Trident installation"
+echo "#######################################################################################################"
+
+sh trident_uninstall.sh
+
+echo "#######################################################################################################"
+echo "Download Trident 21.04.0"
 echo "#######################################################################################################"
 
 cd
-mkdir 21.01.2
-cd 21.01.2
-wget https://github.com/NetApp/trident/releases/download/v21.01.2/trident-installer-21.01.2.tar.gz
-tar -xf trident-installer-21.01.2.tar.gz
+mkdir 21.04.0
+cd 21.04.0
+wget https://github.com/NetApp/trident/releases/download/v21.04.0/trident-installer-21.04.0.tar.gz
+tar -xf trident-installer-21.04.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
 echo "#######################################################################################################"
-echo "Create the Trident orchestrator CRD"
+echo "Install new Trident Operator (21.04.0) with Helm"
 echo "#######################################################################################################"
 
-kubectl create -f deploy/crds/trident.netapp.io_tridentorchestrators_crd_post1.16.yaml
-
-echo "#######################################################################################################"
-echo "Remove current Trident Operator (20.07.1)"
-echo "#######################################################################################################"
-
-kubectl delete -f ~/20.07.1/trident-installer/deploy/bundle.yaml
-
-echo "#######################################################################################################"
-echo "Install new Trident Operator (21.01.2)"
-echo "#######################################################################################################"
-
-kubectl create -f trident-installer/deploy/bundle.yaml
+kubectl create namespace trident
+helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident
 
 sleep 30s
 echo "#######################################################################################################"

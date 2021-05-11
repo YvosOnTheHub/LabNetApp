@@ -12,50 +12,71 @@ This information sits in objects called backends. It basically contains:
 
 For additional information, please refer to:
 
-- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/deploying/operator-deploy.html#creating-a-trident-backend
-- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/index.html 
+- https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/deploying/operator-deploy.html#creating-a-trident-backend
+- https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/operations/tasks/backends/index.html 
 
 Once you have configured backend, the end user will create PVC against Storage Classes.  
 A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
 
 For additional information, please refer to:
 
-- https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
+- https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/concepts/objects.html#kubernetes-storageclass-objects
 
-Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.
+Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.  
+
+Trident 21.04 introduced the possibility to manage Trident backends directly with _kubectl_, whereas it was previously solely feasible with _tridentctl_.  
+Managing backends this way is done with 2 different objects:
+
+- **Secrets** which contain the credentials necessary to connect to the storage (login/pwd or certificate)
+- **TridentBackendConfig** which is a new CRD that contains all the parameters related to this backend.
+
+Note that _secrets_ can be used by multiple _TridentBackendConfigs_.
 
 <p align="center"><img src="Images/scenario2.jpg"></p>
 
 ## A. Create your first NFS backends
 
-You will find in this directory a few backends files.  
+You will find in this directory a few backends YAML files, as well as secrets.  
 You can decide to use all of them, only a subset of them or modify them as you wish
 
-Here are the 2 backends & their corresponding driver:
+Here are the 2 backends & their corresponding driver, both using the secret stored in the file _secret_ontap_nfs-svm.yaml_:
 
-- backend-nas-default.json        ONTAP-NAS
-- backend-nas-eco-default.json    ONTAP-NAS-ECONOMY
+- backend_nas-default.yaml        ONTAP-NAS
+- backend_nas-eco-default.yaml    ONTAP-NAS-ECONOMY
 
 ```bash
-$ tridentctl -n trident create backend -f backend-nas-default.json
-+-----------------+----------------+--------------------------------------+--------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+---------+
-| NAS_Vol-default | ontap-nas      | 282b09e5-0ff2-4471-97c8-9fd5224945a1 | online |       0 |
-+-----------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f secret_ontap_nfs-svm_username.yaml
+secret/ontap-nfs-svm-secret-username created
 
-$ tridentctl -n trident create backend -f backend-nas-eco-default.json
+$ kubectl create -n trident -f backend-nas-default.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-default created
+
+$ kubectl create -n trident -f backend-nas-eco-default.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-eco-default created
+
+$ kubectl get tbc -n trident
+NAME                                                                       BACKEND NAME      BACKEND UUID                           PHASE   STATUS
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-default       nas-default       1efa694f-039f-44ab-a62a-30d55c2384f5   Bound   Success
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-eco-default   nas-eco-default   ee9458a3-b91e-4bfb-bb3b-e92c6049b44a   Bound   Success
+
+$ kubectl get tbe -n trident
+NAME                                         BACKEND           BACKEND UUID
+tridentbackend.trident.netapp.io/tbe-cbppg   nas-default       1efa694f-039f-44ab-a62a-30d55c2384f5
+tridentbackend.trident.netapp.io/tbe-mmr2j   nas-eco-default   ee9458a3-b91e-4bfb-bb3b-e92c6049b44a
+
+$ tridentctl -n trident get backend
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
-| NAS_ECO-default | ontap-nas-economy | b21fb2a7-975a-4050-a187-bb4f883d0e97 | online |       0 |
+| nas-eco-default | ontap-nas-economy | ee9458a3-b91e-4bfb-bb3b-e92c6049b44a | online |       0 |
+| nas-default     | ontap-nas         | 1efa694f-039f-44ab-a62a-30d55c2384f5 | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
-
-$ kubectl get -n trident tridentbackends
-NAME        BACKEND           BACKEND UUID
-tbe-c874k   NAS_Vol-default   282b09e5-0ff2-4471-97c8-9fd5224945a1
-tbe-d6szt   NAS_ECO-default   b21fb2a7-975a-4050-a187-bb4f883d0e97
 ```
+
+A few things to notice:
+
+- even though the backends were created with _kubectl_, you can see them with _tridentctl_
+- all backend modifications must be applied to the _trident backend config_ objects, not the _trident backend_ ones.
 
 ## B. Create storage classes pointing to each backend
 
@@ -134,15 +155,25 @@ base64 -w 0 k8senv.key >> key_base64
 You now need to edit the _backend-nas-cert.json_ file & replace the 2 parameters: _clientCertificate_ & _clientPrivateKey_.  
 
 ```bash
+$ kubectl create -n trident -f secret_ontap_nfs-svm_cert.yaml
+secret/ontap-nfs-svm-secret created
+
+$ kubectl create -n trident -f backend-nas-cert.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-cert created
+
+$ kubectl get tbc -n trident backend-tbc-ontap-nas-cert
+NAME                                                                    BACKEND NAME      BACKEND UUID                           PHASE   STATUS
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-cert       nas-cert          9f6d53b4-7102-4f86-900d-5a76e3665903   Bound   Success
+
+$ trident get backend nas-cert
++-----------------+-------------------+--------------------------------------+--------+---------+
+|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
++-----------------+-------------------+--------------------------------------+--------+---------+
+| nas-cert        | ontap-nas         | 9f6d53b4-7102-4f86-900d-5a76e3665903 | online |       0 |
++-----------------+-------------------+--------------------------------------+--------+---------+
+
 $ kubectl create -f sc-csi-ontap-nas-cert.yaml
 storageclass.storage.k8s.io/storage-class-nas-cert created
-
-$ tridentctl -n trident create backend -f backend-nas-cert.json
-+-----------------+----------------+--------------------------------------+--------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+---------+
-| NAS_Cert        | ontap-nas      | 9f6d53b4-7102-4f86-900d-5a76e3665903 | online |       0 |
-+-----------------+----------------+--------------------------------------+--------+---------+
 ```
 
 There you go, you can now create volumes with this backend.

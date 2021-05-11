@@ -15,7 +15,7 @@ In the following example, we will use:
 With Trident 20.10, you can now specify how many Qtrees (PVC) you can have per ONTAP volume when using the ONTAP-NAS-ECONOMY driver.  
 Default value: 200.  
 Range: between 50 & 300.  
-For more information, see https://netapp-trident.readthedocs.io/en/stable-v20.10/docker/install/ndvp_ontap_config.html?highlight=qtreesPerFlexvol#configuration-file-options  
+For more information, see https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=qtreesPerFlexvol#ontap-nas-backend-configuration  
 :boom:  
 
 ## A. Trident Configuration
@@ -23,12 +23,8 @@ For more information, see https://netapp-trident.readthedocs.io/en/stable-v20.10
 We are going to create a specific Trident backend & a specific storage class for this scenario.  
 
 ```bash
-$ trident create backend -f backend-nas-eco-limit.json
-+---------------+-------------------+--------------------------------------+--------+---------+
-|     NAME      |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
-+---------------+-------------------+--------------------------------------+--------+---------+
-| NAS_ECO_Limit | ontap-nas-economy | 64b0f97f-a8e8-41fd-82eb-008a1a51ef0f | online |       0 |
-+---------------+-------------------+--------------------------------------+--------+---------+
+$ kubectl create  -n trident -f backend_nas-limitvolumesize.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-eco-limit-volsize created
 
 $ kubectl create -f sc-backend-limit.yaml
 storageclass.storage.k8s.io/sc-eco-limit created
@@ -123,8 +119,8 @@ Events:
   Type     Reason                Age                 From                                                                                     Message
   ----     ------                ----                ----                                                                                     -------
   Normal   Provisioning          53s (x7 over 116s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  External provisioner is provisioning volume for claim "default/4gb-5"
-  Normal   ProvisioningFailed    53s (x7 over 115s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-48c9eb18-c414-4af8-904c-1f00d343878e on storage pool aggr1 from backend NAS_ECO_Limit: backend cannot satisfy create request for volume sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: (ONTAP-NAS-QTREE pool aggr1/aggr1; Flexvol location/creation failed sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: error creating Flexvol for qtree: error creating Flexvol: API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 7. , Code: 13001)]
-  Warning  ProvisioningFailed    53s (x7 over 115s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  failed to provision volume with StorageClass "sc-eco-limit": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-48c9eb18-c414-4af8-904c-1f00d343878e on storage pool aggr1 from backend NAS_ECO_Limit: backend cannot satisfy create request for volume sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: (ONTAP-NAS-QTREE pool aggr1/aggr1; Flexvol location/creation failed sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: error creating Flexvol for qtree: error creating Flexvol: API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 7. , Code: 13001)]
+  Normal   ProvisioningFailed    53s (x7 over 115s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-48c9eb18-c414-4af8-904c-1f00d343878e on storage pool aggr1 from backend nas-eco-limit-volsize: backend cannot satisfy create request for volume sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: (ONTAP-NAS-QTREE pool aggr1/aggr1; Flexvol location/creation failed sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: error creating Flexvol for qtree: error creating Flexvol: API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 7. , Code: 13001)]
+  Warning  ProvisioningFailed    53s (x7 over 115s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  failed to provision volume with StorageClass "sc-eco-limit": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-48c9eb18-c414-4af8-904c-1f00d343878e on storage pool aggr1 from backend nas-eco-limit-volsize: backend cannot satisfy create request for volume sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: (ONTAP-NAS-QTREE pool aggr1/aggr1; Flexvol location/creation failed sc08_4_pvc_48c9eb18_c414_4af8_904c_1f00d343878e: error creating Flexvol for qtree: error creating Flexvol: API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 7. , Code: 13001)]
   Normal   ExternalProvisioning  12s (x8 over 116s)  persistentvolume-controller                                                              waiting for a volume to be created, either by external provisioner "csi.trident.netapp.io" or manually created by system administrator
 ```
 

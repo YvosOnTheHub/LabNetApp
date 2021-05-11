@@ -17,19 +17,10 @@ The configuration of this feature is done in the Trident Backend object. There 2
 The difference between both files lies in the *autoExportCIDRs* parameter, one has it while the other one does not.
 
 ```bash
-$ tridentctl -n trident create backend -f backend-with-CIDR.json
-+------------------+----------------+--------------------------------------+--------+---------+
-|       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+------------------+----------------+--------------------------------------+--------+---------+
-| Export_with_CIDR | ontap-nas      | ebf1efb0-e8c6-457e-8e1a-827b1725ed9e | online |       0 |
-+------------------+----------------+--------------------------------------+--------+---------+
-
-$ tridentctl -n trident create backend -f backend-without-CIDR.json
-+---------------------+----------------+--------------------------------------+--------+---------+
-|        NAME         | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+---------------------+----------------+--------------------------------------+--------+---------+
-| Export_without_CIDR | ontap-nas      | f9683c16-e35c-4fea-b185-2e0d7eea0eb3 | online |       0 |
-+---------------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_with_CIDR.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-export-with-cidr created
+$ kubectl create -n trident -f backend_without_CIDR.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-export-without-cidr created
 ```
 
 ## B. Check the export policies
@@ -48,12 +39,12 @@ Let's see how that translates in ONTAP. Open a new Putty session on 'cluster1', 
 What export policies do we see:
 
 ```bash
-cluster1::> export-policy show
+cluster1::> export-policy show -vserver nfs_svm
 Vserver          Policy Name
 ---------------  -------------------
-svm1             default
-svm1             trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
-svm1             trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+nfs_svm          default
+nfs_svm          trident-41774489-e1fe-42da-beae-5c0bd7f1ec36
+nfs_svm          trident-e592606a-bf7d-4196-9d48-a732108e3ef9
 3 entries were displayed.
 ```
 
@@ -63,15 +54,15 @@ Notice that the name of the policy contains the UUID of the Trident Backend.
 Now, let's look at the rule set by Trident for the backend _Export_with_CIDR_:  
 
 ```bash
-cluster1::> export-policy rule show -vserver svm1 -policyname trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+cluster1::> export-policy rule show -vserver nfs_svm -policyname trident-e592606a-bf7d-4196-9d48-a732108e3ef9
              Policy          Rule    Access   Client                RO
 Vserver      Name            Index   Protocol Match                 Rule
 ------------ --------------- ------  -------- --------------------- ---------
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
-                             1       nfs      192.168.0.62          any
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
-                             2       nfs      192.168.0.61          any
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
+                             1       nfs      192.168.0.61          any
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
+                             2       nfs      192.168.0.62          any
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
                              3       nfs      192.168.0.63          any
 3 entries were displayed.
 ```
@@ -81,19 +72,22 @@ You can see that there is a rule for every single node present in the cluster. N
 Then, let's look at the rule set by Trident for the backend _Export_without_CIDR_:
 
 ```bash
-cluster1::> export-policy rule show -vserver svm1 -policyname trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
+cluster1::> export-policy rule show -vserver nfs_svm -policyname trident-41774489-e1fe-42da-beae-5c0bd7f1ec36
              Policy          Rule    Access   Client                RO
 Vserver      Name            Index   Protocol Match                 Rule
 ------------ --------------- ------  -------- --------------------- ---------
-svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
-                             1       nfs      10.44.0.0,172.17.0.1, any
-                                              192.168.0.62
-svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
-                             2       nfs      10.36.0.0,172.17.0.1, any
-                                              192.168.0.61
-svm1         trident-f9683c16-e35c-4fea-b185-2e0d7eea0eb3
-                             3       nfs      10.32.0.1,172.17.0.1, any
-                                              192.168.0.63
+nfs_svm      trident-41774489-e1fe-42da-beae-5c0bd7f1ec36
+                             1       nfs      172.17.0.1,           any
+                                              192.168.0.61,
+                                              192.168.24.0
+nfs_svm      trident-41774489-e1fe-42da-beae-5c0bd7f1ec36
+                             2       nfs      172.17.0.1,           any
+                                              192.168.0.62,
+                                              192.168.24.192
+nfs_svm      trident-41774489-e1fe-42da-beae-5c0bd7f1ec36
+                             3       nfs      172.17.0.1,           any
+                                              192.168.0.63,
+                                              192.168.24.64
 3 entries were displayed.
 ```
 
@@ -104,11 +98,11 @@ Also, as stated in the documentation, you must ensure that the root junction in 
 Let's look at what we have in the LabOnDemand
 
 ```bash
-cluster1::> export-policy rule show -vserver svm1 -policyname default
+cluster1::> export-policy rule show -vserver nfs_svm -policyname default
              Policy          Rule    Access   Client                RO
 Vserver      Name            Index   Protocol Match                 Rule
 ------------ --------------- ------  -------- --------------------- ---------
-svm1         default         1       nfs      0.0.0.0/0             any
+nfs_svm      default         1       nfs      192.168.0.0/24        any
 ```
 
 There you go, now, all applications created with these backends are going to have access to storage, while adding an extra level of security.
@@ -137,17 +131,17 @@ rhel4   192.168.0.64
 By definition, Trident should have dynamically added a new entry in the export-policy:
 
 ```bash
-cluster1::> export-policy rule show -vserver svm1 -policyname trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+cluster1::> export-policy rule show -vserver nfs_svm -policyname trident-e592606a-bf7d-4196-9d48-a732108e3ef9
              Policy          Rule    Access   Client                RO
 Vserver      Name            Index   Protocol Match                 Rule
 ------------ --------------- ------  -------- --------------------- ---------
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
-                             1       nfs      192.168.0.62          any
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
-                             2       nfs      192.168.0.61          any
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
+                             1       nfs      192.168.0.61          any
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
+                             2       nfs      192.168.0.62          any
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
                              3       nfs      192.168.0.63          any
-svm1         trident-ebf1efb0-e8c6-457e-8e1a-827b1725ed9e
+nfs_svm      trident-e592606a-bf7d-4196-9d48-a732108e3ef9
                              4       nfs      192.168.0.64          any
 4 entries were displayed.
 ```
@@ -157,8 +151,10 @@ Tadaaaa !
 ## D. Finally some optional cleanup
 
 ```bash
-tridentctl -n trident delete backend Export_with_CIDR
-tridentctl -n trident delete backend Export_without_CIDR
+$ kubectl delete -n trident tbc backend-tbc-ontap-export-with-cidr
+tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-export-with-cidr" deleted
+$ kubectl delete -n trident tbc backend-tbc-ontap-export-without-cidr
+tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-export-without-cidr" deleted
 ```
 
 ## E. What's next

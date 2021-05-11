@@ -3,12 +3,12 @@
 cd ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario05
 
 echo "#######################################################################################################"
-echo "Creating SAN Backend"
+echo "Creating SAN Backends with kubectl"
 echo "#######################################################################################################"
 
-tridentctl -n trident create backend -f backend-san-secured.json
-tridentctl -n trident create backend -f backend-san-eco-default.json
-
+kubectl create -n trident -f secret_ontap_iscsi-svm_username.yaml
+kubectl create -n trident -f backend-san-secured.yaml
+kubectl create -n trident -f backend-san-eco.yaml
 
 echo "#######################################################################################################"
 echo "Creating SAN Storage Class"

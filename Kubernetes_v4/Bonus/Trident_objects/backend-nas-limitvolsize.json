@@ -3,7 +3,7 @@
     "storageDriverName": "ontap-nas",
     "backendName": "NAS_LimitVolSize",
     "managementLIF": "192.168.0.135",
-    "svm": "svm1",
+    "svm": "nfs_svm",
     "username": "vsadmin",
     "password": "Netapp1!",
     "limitVolumeSize": "5g"

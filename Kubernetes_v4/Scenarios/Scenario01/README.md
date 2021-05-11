@@ -17,10 +17,10 @@ Let's first download the version you would like to install:
 
 ```bash
 cd
-mkdir 21.01.2
-cd 21.01.2
-wget https://github.com/NetApp/trident/releases/download/v21.01.2/trident-installer-21.01.2.tar.gz
-tar -xf trident-installer-21.01.2.tar.gz
+mkdir 21.04.0
+cd 21.04.0
+wget https://github.com/NetApp/trident/releases/download/v21.04.0/trident-installer-21.04.0.tar.gz
+tar -xf trident-installer-21.04.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
@@ -69,7 +69,7 @@ sh scenario01_pull_images.sh my_login my_password
 
 Now, it's time to proceed with the installation of Trident :trident:!  
 
-Currently with the version 21.01, there are 3 ways to install Trident:  
+Currently with the version 21.04, there are 3 ways to install Trident:  
 [1.](1_Operator) Using Trident's Operator, introduced in 20.04  
 [2.](2_Helm) Using Helm to install Trident's operator, method introduced in 21.01  
 3. Using the _legacy_ way, via _tridentctl_  (not detailed here)

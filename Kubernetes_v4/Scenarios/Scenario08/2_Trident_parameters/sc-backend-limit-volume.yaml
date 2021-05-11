@@ -4,4 +4,4 @@ metadata:
   name: sclimitvolumesize
 provisioner: csi.trident.netapp.io
 parameters:
-   storagePools: "NAS_LimitVolSize:aggr1"
+   storagePools: "nas-lmit-volsize:aggr1"

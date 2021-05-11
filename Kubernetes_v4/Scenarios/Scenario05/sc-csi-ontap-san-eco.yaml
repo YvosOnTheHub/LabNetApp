@@ -5,7 +5,7 @@ metadata:
 provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-san-economy"
-  storagePools: "SAN_ECO-default:aggr1"
+  storagePools: "san-eco:aggr1"
   fsType: "ext4"
 mountOptions:
    - discard

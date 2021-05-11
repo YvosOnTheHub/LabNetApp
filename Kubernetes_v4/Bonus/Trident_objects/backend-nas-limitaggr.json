@@ -3,7 +3,7 @@
     "storageDriverName": "ontap-nas",
     "backendName": "NAS_LimitAggr",
     "managementLIF": "192.168.0.101",
-    "svm": "svm1",
+    "svm": "nfs_svm",
     "username": "admin",
     "password": "Netapp1!",
     "limitAggregateUsage": "40%",

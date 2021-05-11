@@ -32,19 +32,10 @@ We are going to create two new backends, each one pointing to a different region
 You can see in the json files that I used a parameter called **supportedTopologies** to specify this.
 
 ```bash
-$ tridentctl -n trident create backend -f backend_west.json
-+----------+----------------+--------------------------------------+--------+---------+
-|   NAME   | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+----------+----------------+--------------------------------------+--------+---------+
-| nas-west | ontap-nas      | b835bcff-d77b-4f55-855d-cc5930256ae4 | online |       0 |
-+----------+----------------+--------------------------------------+--------+---------+
-
-$ tridentctl -n trident create backend -f backend_east.json
-+----------+----------------+--------------------------------------+--------+---------+
-|   NAME   | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+----------+----------------+--------------------------------------+--------+---------+
-| nas-east | ontap-nas      | b7a3b13c-28af-42fc-a0fc-493143749814 | online |       0 |
-+----------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_west.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-west created
+$ kubectl create -n trident -f backend_east.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-east created
 ```
 
 We can now create a Kubernetes Storage Class that does not necessarily point to a particular Trident Backend.  

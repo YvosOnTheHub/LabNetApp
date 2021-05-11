@@ -4,4 +4,4 @@ metadata:
   name: sclimitaggr
 provisioner: csi.trident.netapp.io
 parameters:
-   storagePools: "NAS_LimitAggr:aggr1"
+   storagePools: "nas-limit-aggr:aggr1"

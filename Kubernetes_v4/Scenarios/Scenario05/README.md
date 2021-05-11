@@ -11,10 +11,18 @@ It is now time to add more backends that can be used for block storage.
 
 ## A. Create your first SAN backends
 
-You will find in this directory a few backends files:
+Trident 21.04 introduced the possibility to manage Trident backends directly with _kubectl_, whereas it was previously solely feasible with _tridentctl_.  
+Managing backends this way is done with 2 different objects:
 
-- backend-san-default.json        ONTAP-SAN
-- backend-san-eco-default.json    ONTAP-SAN-ECONOMY  
+- **Secrets** which contain the credentials necessary to connect to the storage (login/pwd or certificate)
+- **TridentBackendConfig** which is a new CRD that contains all the parameters related to this backend.
+
+Note that _secrets_ can be used by multiple _TridentBackendConfigs_.
+
+You will find in this directory a few backends files, both using the secret stored in the file _secret_ontap_iscsi-svm_username.yaml_:
+
+- backend-san-secured.yaml        ONTAP-SAN
+- backend-san-eco-default.yaml    ONTAP-SAN-ECONOMY  
 
 You can decide to use all of them, only a subset of them or modify them as you wish
 
@@ -25,27 +33,36 @@ Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces t
 If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```bash
-$ tridentctl -n trident create backend -f backend-san-secured.json
-+-------------+----------------+--------------------------------------+--------+---------+
-|    NAME     | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-------------+----------------+--------------------------------------+--------+---------+
-| SAN-secured | ontap-san      | ad04f63c-592d-49ae-bfde-21a11db06976 | online |       0 |
-+-------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f secret_ontap_iscsi-svm_username.yaml
+secret/ontap-iscsi-svm-secret-username created
+$ kubectl create -n trident -f backend_san-secured.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-san-secured created
+$ kubectl create -n trident -f backend_san-eco.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-san-eco created
 
-$ tridentctl -n trident create backend -f backend-san-eco-default.json
+$ kubectl get -n trident tbc
+NAME                                BACKEND NAME      BACKEND UUID                           PHASE   STATUS
+backend-tbc-ontap-san-eco           san-eco           bd08f241-5ffe-4a8c-96fa-3d1113d3ea5d   Bound   Success
+backend-tbc-ontap-san-secured       san-secured       6f6aa3da-0f00-4c6a-be93-8719beec4d2a   Bound   Success
+
+$ kubectl get -n trident tbe
+NAME        BACKEND           BACKEND UUID
+tbe-n6tfq   san-secured       6f6aa3da-0f00-4c6a-be93-8719beec4d2a
+tbe-xd75q   san-eco           bd08f241-5ffe-4a8c-96fa-3d1113d3ea5d
+
+$ tridentctl -n trident get backend
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
-| SAN_ECO-default | ontap-san-economy | 530f18b1-680b-420f-ad6b-94c96fea84b9 | online |       0 |
+| san-eco         | ontap-san-economy | bd08f241-5ffe-4a8c-96fa-3d1113d3ea5d | online |       0 |
+| san-secured     | ontap-san         | 6f6aa3da-0f00-4c6a-be93-8719beec4d2a | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
-
-$ kubectl get -n trident tridentbackends
-NAME        BACKEND               BACKEND UUID
-...
-tbe-7nl8v   SAN_ECO-default       530f18b1-680b-420f-ad6b-94c96fea84b9
-tbe-wgs99   SAN-secured           ad04f63c-592d-49ae-bfde-21a11db06976
-...
 ```
+
+A few things to notice:
+
+- even though the backends were created with _kubectl_, you can see them with _tridentctl_
+- all backend modifications must be applied to the _trident backend config_ objects, not the _trident backend_ ones.
 
 ## B. Create storage classes pointing to each new backend
 

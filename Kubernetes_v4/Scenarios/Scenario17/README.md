@@ -19,6 +19,8 @@ cat selfcert.pem privkey.pem > haproxy.pem
 HAProxy works with _frontends_ (entry point, ie Trident=>HAProxy) and _backends_ (exit point, ie HAProxy=>ONTAP).  
 All requests coming on port 8443 (in this example) will be forwarded to the SVM Management Interface.
 
+<p align="center"><img src="Images/scenario17.jpg"></p>
+
 ```bash
 $ cat <<EOT >> /etc/haproxy/haproxy.cfg
 
@@ -50,12 +52,8 @@ Let's configure a new Trident Backend & a new storage class, so that we can test
 If you take a look a the backend json file, you will notice that its management LIF parameter points to **192.168.0.63:8443**, which is the port that HAProxy listens onto, and not **192.168.0.135** which is the SVM IP address.  
 
 ```bash
-$ tridentctl -n trident create backend -f backend-nas-proxy.json
-+-----------+----------------+--------------------------------------+--------+---------+
-|   NAME    | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-----------+----------------+--------------------------------------+--------+---------+
-| NAS_Proxy | ontap-nas      | 32184025-2a78-4d26-a9ab-ae96486e3fc3 | online |       0 |
-+-----------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_proxy.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-proxy created
 
 $ kubectl create -f sc-proxy.yaml
 storageclass.storage.k8s.io/sc-proxy created

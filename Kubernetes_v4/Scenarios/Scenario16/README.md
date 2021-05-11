@@ -85,12 +85,8 @@ $ curl -X GET -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/q
 For the benchmark, I am going to use one Trident Backend (Virtual Storage Pool with 3 differents pools) & 3 different storage classes.
 
 ```bash
-$ trident create backend -f backend_vsp_qos.json
-+---------+----------------+--------------------------------------+--------+---------+
-|  NAME   | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+---------+----------------+--------------------------------------+--------+---------+
-| NAS_QoS | ontap-nas      | 2ce0aa2b-ad2f-4603-829f-b50b6bd16a34 | online |       0 |
-+---------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_vsp_qos.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-qos created
 
 $ kubectl create -f sc_qos1.yaml
 storageclass.storage.k8s.io/sc-qos1 created

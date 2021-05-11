@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-eco-default
+spec:
+  version: 1
+  backendName: nas-eco-default
+  storageDriverName: ontap-nas-economy
+  managementLIF: 192.168.0.135
+  storagePrefix: nas2_
+  defaults:
+    snapshotDir: true
+    snapshotPolicy: default
+  credentials:
+    name: ontap-nfs-svm-secret-username

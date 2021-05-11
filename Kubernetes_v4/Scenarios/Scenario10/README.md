@@ -35,12 +35,8 @@ If you take a look at the backend definition, you will see that there are 3 Virt
 Each one with a different set of parameters.
 
 ```bash
-$ tridentctl -n trident create backend -f backend_nas_vsp.json
-+---------+----------------+--------------------------------------+--------+---------+
-|  NAME   | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+---------+----------------+--------------------------------------+--------+---------+
-| NAS_VSP | ontap-nas      | 6cb114a6-1b48-45ee-9ea4-f4267e0e4498 | online |       0 |
-+---------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_nas-vsp.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-vsp created
 ```
 
 ## B. Create new storage classes.
@@ -166,7 +162,8 @@ storageclass.storage.k8s.io "sc-vsp1" deleted
 storageclass.storage.k8s.io "sc-vsp2" deleted
 storageclass.storage.k8s.io "sc-vsp3" deleted
 
-$ tridentctl -n trident delete backend NAS_VSP
+$ kubectl delete -n trident tbc backend-tbc-ontap-nas-vsp
+tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-nas-vsp" deleted
 ```
 
 ## F. What's next

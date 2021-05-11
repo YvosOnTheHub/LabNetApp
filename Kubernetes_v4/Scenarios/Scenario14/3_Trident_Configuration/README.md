@@ -5,19 +5,17 @@
 Now that the storage tenant is up & running, we can tell both Trident & Kubernetes to use it!  
 
 ```bash
-$ trident create backend -f backend-svm-secured-NFS.json
-+-----------------+----------------+--------------------------------------+--------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+---------+
-| SVM_Secured_NFS | ontap-nas      | ceccc4de-8837-441b-94d1-7a4b165b7984 | online |       0 |
-+-----------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f secret_ontap_nfs-secured.yaml
+secret/ontap-nfs-secured-secret created
 
-$ trident create backend -f backend-svm-secured-iSCSI.json
-+-------------------+----------------+--------------------------------------+--------+---------+
-|       NAME        | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+-------------------+----------------+--------------------------------------+--------+---------+
-| SVM_Secured_iSCSI | ontap-san      | 08346ec3-0c9b-4b74-a964-14fbb6aca65c | online |       0 |
-+-------------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend-svm-secured-NFS.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-secured created
+
+$ kubectl create -n trident -f secret_ontap_iscsi-secured.yaml
+secret/ontap-iscsi-secured-secret created
+
+$ kubectl create -n trident -f backend-svm-secured-iSCSI.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-san-secured created
 ```
 
 Trident now has 2 new secured backends! Let's create some storage classes in Kubernetes:

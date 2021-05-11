@@ -1,0 +1,13 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-proxy
+spec:
+  version: 1
+  backendName: nas-proxy
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.63:8443
+  dataLIF: 192.168.0.132
+  storagePrefix: proxy_
+  credentials:
+    name: ontap-nfs-svm-secret-username

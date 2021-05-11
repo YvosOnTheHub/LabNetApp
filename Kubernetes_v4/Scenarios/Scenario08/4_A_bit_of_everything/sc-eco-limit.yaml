@@ -5,4 +5,4 @@ metadata:
 provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas-economy"
-  storagePools: "NAS_ECO_Limit:aggr1"
+  storagePools: "nas-eco-limit-volsize:aggr1"

@@ -9,7 +9,7 @@ The amount of ONTAP volumes (Flexvols) you can have on a ONTAP cluster depends o
 
 If the storage platform is also used by other workloads (Databases, Files Services ...), you may want to limit the number of PVC you build in your storage Tenant (ie SVM)
 This can be achieved by setting a parameter on this SVM.  
-https://netapp-trident.readthedocs.io/en/stable-v20.01/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
+https://netapp-trident.readthedocs.io/en/stable-v21.04/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-volume-count
 
 <p align="center"><img src="../Images/scenario08_4.JPG"></p>
 

@@ -10,7 +10,7 @@ You have two options to control space within Trident:
 ## A. Limiting the size of the volumes on a SVM
 
 One parameter stands out in the Trident configuration when it comes to control sizes: _limitVolumeSize_  
-https://netapp-trident.readthedocs.io/en/stable-v20.10/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident
+https://netapp-trident.readthedocs.io/en/stable-v21.04/dag/kubernetes/storage_configuration_trident.html#limit-the-maximum-size-of-volumes-created-by-trident
 Depending on the driver, this parameter will
 
 1. control the PVC Size (ex: driver ONTAP-NAS)
@@ -21,12 +21,8 @@ Depending on the driver, this parameter will
 Let's create a backend with this parameter setup (limitVolumeSize = 5g), followed by the storage class that points to it, using the storagePools parameter:
 
 ```bash
-$ tridentctl -n trident create backend -f backend-nas-limitvolsize.json
-+------------------+----------------+--------------------------------------+--------+---------+
-|       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+------------------+----------------+--------------------------------------+--------+---------+
-| NAS_LimitVolSize | ontap-nas      | 8b94769a-a759-4840-b936-985a360f2d87 | online |       0 |
-+------------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f backend_nas-limitvolumesize.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-limit-volsize created
 
 $ kubectl create -f sc-backend-limit-volume.yaml
 storageclass.storage.k8s.io/sclimitvolumesize created
@@ -63,8 +59,8 @@ Events:
   Type     Reason                Age                    From                                                                                     Message
   ----     ------                ----                   ----                                                                                     -------
   Normal   Provisioning          2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  External provisioner is provisioning volume for claim "default/10gvol"
-  Normal   ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
-  Warning  ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  failed to provision volume with StorageClass "sclimitvolumesize": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend NAS_LimitVolSize: requested size: 10737418240 > the size limit: 5368709120]
+  Normal   ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend nas-limit-volsize: requested size: 10737418240 > the size limit: 5368709120]
+  Warning  ProvisioningFailed    2m32s (x9 over 6m47s)  csi.trident.netapp.io_trident-csi-6b778f79bb-scrzs_7d29b71e-2259-4287-9395-c0957eb6bd88  failed to provision volume with StorageClass "sclimitvolumesize": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-19b8363f-23d6-43d1-b66f-e4539c474063 on storage pool aggr1 from backend nas-limit-volsize: requested size: 10737418240 > the size limit: 5368709120]
   Normal   ExternalProvisioning  41s (x26 over 6m47s)   persistentvolume-controller                                                              waiting for a volume to be created, either by external provisioner "csi.trident.netapp.io" or manually created by system administrator
 ```
 
@@ -78,13 +74,14 @@ $ kubectl delete pvc 10gvol
 persistentvolumeclaim "10gvol" deleted
 $ kubectl delete sc sclimitvolumesize
 storageclass.storage.k8s.io "sclimitvolumesize" deleted
-$ tridentctl -n trident delete backend NAS_LimitVolSize
+$ kubectl delete -n trident tbc backend-tbc-ontap-nas-limit-volsize
+tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-nas-limit-volsize" deleted
 ```
 
 ## B. Limiting the usage of an aggregate
 
 The second parameter you can set in a Trident backend allows the admin to limit the used space of an aggregate.  
-More details on this link: https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=limitAggregateUsage#backend-configuration
+More details on this link: https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=limitAggregateUsage#backend-configuration
 
 Please note that:
 
@@ -105,12 +102,11 @@ As you can see, there are 38% of the 76GB currently used. Let's set the limit to
 If you need a higher limit, you can edit the backend-nas-limitaggr.json file.  
 
 ```bash
-$ tridentctl -n trident create backend -f backend-nas-limitaggr.json
-+------------------+----------------+--------------------------------------+--------+---------+
-|       NAME       | STORAGE DRIVER |                 UUID                 | STATE  | VOLUMES |
-+------------------+----------------+--------------------------------------+--------+---------+
-| NAS_LimitAggr    | ontap-nas      | bc5a6a76-1f17-44cc-a514-cd9dd083463b | online |       0 |
-+------------------+----------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f secret_ontap_cluster_username.yaml
+secret/ontap-cluster-secret-username created
+
+$ kubect create -n trident -f backend_nas-limitaggr.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-limit-aggr created
 
 $ kubectl create -f sc-backend-limit-aggr.yaml
 storageclass.storage.k8s.io/sclimitaggr created
@@ -148,8 +144,8 @@ Events:
   Type     Reason                Age                From                                                                                     Message
   ----     ------                ----               ----                                                                                     -------
   Normal   Provisioning          12s (x5 over 25s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  External provisioner is provisioning volume for claim "default/10gaggr"
-  Normal   ProvisioningFailed    11s (x5 over 25s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-771ff3fa-9809-4c06-a6ec-56381ddf065b on storage pool aggr1 from backend NAS_LimitAggr: backend cannot satisfy create request for volume trident_pvc_771ff3fa_9809_4c06_a6ec_56381ddf065b: (ONTAP-NAS pool aggr1/aggr1; error: aggregate usage of 51.24 %!w(MISSING)ould exceed the limit of 40.00 %!(NOVERB))]
-  Warning  ProvisioningFailed    11s (x5 over 25s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  failed to provision volume with StorageClass "sclimitaggr": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-771ff3fa-9809-4c06-a6ec-56381ddf065b on storage pool aggr1 from backend NAS_LimitAggr: backend cannot satisfy create request for volume trident_pvc_771ff3fa_9809_4c06_a6ec_56381ddf065b: (ONTAP-NAS pool aggr1/aggr1; error: aggregate usage of 51.24 %!w(MISSING)ould exceed the limit of 40.00 %!(NOVERB))]
+  Normal   ProvisioningFailed    11s (x5 over 25s)  csi.trident.netapp.io                                                                    encountered error(s) in creating the volume: [Failed to create volume pvc-771ff3fa-9809-4c06-a6ec-56381ddf065b on storage pool aggr1 from backend nas-limit-aggr: backend cannot satisfy create request for volume trident_pvc_771ff3fa_9809_4c06_a6ec_56381ddf065b: (ONTAP-NAS pool aggr1/aggr1; error: aggregate usage of 51.24 %!w(MISSING)ould exceed the limit of 40.00 %!(NOVERB))]
+  Warning  ProvisioningFailed    11s (x5 over 25s)  csi.trident.netapp.io_trident-csi-7f4f878c58-6whlb_3118ff8e-4be0-448d-8f20-2701166c6bc7  failed to provision volume with StorageClass "sclimitaggr": rpc error: code = Unknown desc = encountered error(s) in creating the volume: [Failed to create volume pvc-771ff3fa-9809-4c06-a6ec-56381ddf065b on storage pool aggr1 from backend nas-limit-aggr: backend cannot satisfy create request for volume trident_pvc_771ff3fa_9809_4c06_a6ec_56381ddf065b: (ONTAP-NAS pool aggr1/aggr1; error: aggregate usage of 51.24 %!w(MISSING)ould exceed the limit of 40.00 %!(NOVERB))]
   Normal   ExternalProvisioning  9s (x3 over 25s)   persistentvolume-controller                                                              waiting for a volume to be created, either by external provisioner "csi.trident.netapp.io" or manually created by system administrator
 
 ```
@@ -164,7 +160,8 @@ $ kubectl delete pvc 10gaggr
 persistentvolumeclaim "10gaggr" deleted
 $ kubectl delete sc sclimitaggr
 storageclass.storage.k8s.io "sclimitaggr" deleted
-$ tridentctl -n trident delete backend NAS_LimitAggr
+$ kubectl delete -n trident tbc backend-tbc-ontap-nas-limit-aggr
+tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-nas-limit-aggr" deleted
 ```
 
 ## C. What's next

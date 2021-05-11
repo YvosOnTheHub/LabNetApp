@@ -10,7 +10,7 @@ echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
 echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
-echo "# 1. UPGRADE TO TRIDENT OPERATOR 21.01.2"
+echo "# 1. UPGRADE TO TRIDENT OPERATOR 21.04.0"
 echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
@@ -83,7 +83,7 @@ fi
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 1. INSTALL TRIDENT OPERATOR 21.01.2"
+echo "# 1. INSTALL TRIDENT OPERATOR 21.04.0"
 echo "#"
 echo "#######################################################################################################"
 echo
