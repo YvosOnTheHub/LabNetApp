@@ -19,9 +19,9 @@ echo "####################################"
 ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.04.0
 
 echo "####################################"
-echo "# netapp/trident-operator:21.04"
+echo "# netapp/trident-operator:21.04.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.04
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.04.0
 
 echo "####################################"
 echo "# netapp/trident-autosupport:21.01"
