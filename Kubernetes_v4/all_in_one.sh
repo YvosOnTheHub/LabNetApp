@@ -10,12 +10,13 @@ echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
 echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
-echo "# 1. UPGRADE TO TRIDENT OPERATOR 21.04.0"
-echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
-echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
-echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
-echo "# 5. ENABLE POD SCHEDULING ON THE MASTER NODE" 
-echo "# 6. UPDATE BASHRC"
+echo "# 1. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
+echo "# 2. INSTALL TRIDENT OPERATOR 21.04.0 WITH HELM"
+echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
+echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE" 
+echo "# 7. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -83,18 +84,32 @@ fi
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 1. INSTALL TRIDENT OPERATOR 21.04.0"
+echo "# 1. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
 echo "#"
 echo "#######################################################################################################"
 echo
 
 sleep 2s
-sh Scenarios/Scenario01/1_Operator/all_in_one.sh
+sh Scenarios/Scenario01/1_Operator/trident_uninstall.sh
+sh Addendum/Addenda09/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
+echo "# 2. INSTALL TRIDENT OPERATOR 21.04.0 WITH HELM"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+sleep 2s
+cd ~/21.04.0
+kubectl create namespace trident
+helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -105,7 +120,7 @@ sh Scenarios/Scenario02/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -116,7 +131,7 @@ sh Scenarios/Scenario05/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -127,7 +142,7 @@ sh Scenarios/Scenario03/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 5. ENABLE POD SCHEDULING ON THE MASTER NODE"
+echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -137,7 +152,7 @@ kubectl taint nodes rhel3 node-role.kubernetes.io/master-
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 6. UPDATE BASHRC"
+echo "# 7. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
