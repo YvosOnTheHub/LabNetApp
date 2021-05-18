@@ -117,6 +117,8 @@ tar -xf trident-installer-21.04.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
+# Currently the imagePullPolicy for the autosupport image is set to "Always" which may cause issues when the pull quota is empty
+# That's why I use the tridentAutosupportImage in the helm chart which will get the image from the local repo
 kubectl create namespace trident
 helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
 
@@ -134,6 +136,7 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+cd ~/LabNetApp/Kubernetes_v4
 sh Scenarios/Scenario02/all_in_one.sh
 
 echo

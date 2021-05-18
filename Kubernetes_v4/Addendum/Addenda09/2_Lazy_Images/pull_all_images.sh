@@ -64,11 +64,10 @@ if [[ $1 != $PROMETHEUSHOST ]];then
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull squareup/ghostunnel:v1.5.2
 fi
 
-echo "############################################################"
-echo "# Dealing with the Calico images when using a larger cluster"
-echo "############################################################"
-
 if [[ ! "$1" =~ ^(rhel1|rhel2|rhel3)$ ]];then
+  echo "############################################################"
+  echo "# Dealing with the Calico images when using a larger cluster"
+  echo "############################################################"
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/cni:v3.15.1
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/node:v3.15.1
   ssh -o "StrictHostKeyChecking no" root@$1 docker pull calico/pod2daemon-flexvol:v3.15.1
