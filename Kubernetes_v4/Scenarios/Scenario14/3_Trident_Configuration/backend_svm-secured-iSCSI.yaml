@@ -8,6 +8,6 @@ spec:
   storageDriverName: ontap-san
   managementLIF: 192.168.0.210
   storagePrefix: sec_
-  useCHAP: true
+  useCHAP: 'true'
   credentials:
     name: ontap-iscsi-secured-secret

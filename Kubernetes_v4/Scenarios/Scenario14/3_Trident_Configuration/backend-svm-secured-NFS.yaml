@@ -10,6 +10,6 @@ spec:
   storagePrefix: sec_
   autoExportCIDRs:
   - 192.168.0.0/24
-  autoExportPolicy: true
+  autoExportPolicy: 'true'
   credentials:
     name: ontap-nfs-secured-secret

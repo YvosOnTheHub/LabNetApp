@@ -10,6 +10,6 @@ spec:
   storagePrefix: exp1_
   autoExportCIDRs:
   - 192.168.0.0/24
-  autoExportPolicy: true
+  autoExportPolicy: 'true'
   credentials:
     name: ontap-nfs-svm-secret-username

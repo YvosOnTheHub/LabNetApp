@@ -8,6 +8,6 @@ spec:
   storageDriverName: ontap-nas
   managementLIF: 192.168.0.135
   storagePrefix: exp2_
-  autoExportPolicy: true
+  autoExportPolicy: 'true'
   credentials:
     name: ontap-nfs-svm-secret-username

@@ -8,6 +8,6 @@ spec:
   storageDriverName: ontap-san-economy
   managementLIF: 192.168.0.136
   storagePrefix: san2_
-  useCHAP: true
+  useCHAP: 'true'
   credentials:
     name: ontap-iscsi-svm-secret-username

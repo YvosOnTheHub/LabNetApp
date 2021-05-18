@@ -9,7 +9,7 @@ spec:
   managementLIF: 192.168.0.135
   storagePrefix: nas1_
   defaults:
-    snapshotDir: true
+    snapshotDir: 'true'
     snapshotPolicy: default
   credentials:
     name: ontap-nfs-svm-secret-username
