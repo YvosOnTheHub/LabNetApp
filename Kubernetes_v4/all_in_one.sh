@@ -101,8 +101,22 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
+kubectl label node rhel1 "topology.kubernetes.io/region=trident"
+kubectl label node rhel2 "topology.kubernetes.io/region=trident"
+kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west"
+kubectl label node rhel2 "topology.kubernetes.io/zone=east"
+kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
 sleep 2s
-cd ~/21.04.0
+
+cd
+mkdir 21.04.0
+cd 21.04.0
+wget https://github.com/NetApp/trident/releases/download/v21.04.0/trident-installer-21.04.0.tar.gz
+tar -xf trident-installer-21.04.0.tar.gz
+rm -f /usr/bin/tridentctl
+cp trident-installer/tridentctl /usr/bin/
+
 kubectl create namespace trident
 helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
 
