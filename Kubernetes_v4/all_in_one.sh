@@ -90,7 +90,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh Scenarios/Scenario01/1_Operator/trident_uninstall.sh
+sh Scenarios/Scenario01/2_Helm/trident_uninstall.sh
 sh Addendum/Addenda09/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 
 echo
@@ -106,6 +106,12 @@ cd ~/21.04.0
 kubectl create namespace trident
 helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
 
+while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
+do
+  echo "sleep a bit ..."
+  sleep 10
+done
+
 echo
 echo "#######################################################################################################"
 echo "#"
@@ -114,7 +120,6 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-sleep 2s
 sh Scenarios/Scenario02/all_in_one.sh
 
 echo
