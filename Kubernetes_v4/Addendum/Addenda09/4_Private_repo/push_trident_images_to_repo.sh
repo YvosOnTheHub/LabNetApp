@@ -4,7 +4,7 @@
 # PARAMETER 2: Docker Hub Login
 # PARAMETER 3: Docker Hub Password
 
-if [[  $(docker images | grep 'netapp/trident ' | grep 21.04.0 | wc -l) -ne 2 ]]
+if [[  $(docker images | grep 'netapp/trident' | grep 21.04.0 | wc -l) -ne 2 ]]
   then
     echo "########################################"
     echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB"
