@@ -71,14 +71,14 @@ else
   echo
   echo "#######################################################################################################"
   echo "#"
-  echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES REQUIRED FOR THIS LAB"
+  echo "# 0. LOGIN TO DOCKER HUB & PULL IMAGES REQUIRED FOR THIS SETUP"
   echo "#"
   echo "#######################################################################################################"
   echo
 
-  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel1 $1 $2
-  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel2 $1 $2
-  sh Addendum/Addenda09/2_Lazy_Images/pull_all_images.sh rhel3 $1 $2
+  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel1 $1 $2
+  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel2 $1 $2
+  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel3 $1 $2
 fi
 
 echo
