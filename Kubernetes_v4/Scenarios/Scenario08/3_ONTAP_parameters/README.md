@@ -13,26 +13,26 @@ https://netapp-trident.readthedocs.io/en/stable-v21.04/dag/kubernetes/storage_co
 
 <p align="center"><img src="../Images/scenario08_4.JPG"></p>
 
-Before setting a limit in the SVM _svm1_, you first need to look for the current number of volumes you have.
+Before setting a limit in the SVM _nfs_svm_, you first need to look for the current number of volumes you have.
 You can either login to System Manager & count, or run the following (password Netapp1!)
 
 ```bash
-ssh -l admin 192.168.0.101 vol show -vserver svm1 | grep svm1 | wc -l
+ssh -l admin 192.168.0.101 vol show -vserver nfs_svm | grep nfs_svm | wc -l
 ```
 
 In my case, I have 10 volumes, I will then set the maximum to 12 for this exercise.
 
 ```bash
-ssh -l admin 192.168.0.101 vserver modify -vserver svm1 -max-volumes 12
+ssh -l admin 192.168.0.101 vserver modify -vserver nfs_svm -max-volumes 12
 ```
 
 If you would like to check if the command has well been taken into account, you can run the following command:
 
 ```bash
-$ ssh -l admin 192.168.0.101 vserver show -vserver svm1 -fields max-volumes
-vserver max-volumes
-------- -----------
-svm1    12
+$ ssh -l admin 192.168.0.101 vserver show -vserver nfs_svm -fields max-volumes
+vserver    max-volumes
+-------    -----------
+nfs_svm    12
 ```
 
 Let's try to create a few new PVC.
@@ -58,7 +58,7 @@ The PVC will remain in the _Pending_ state. You need to look either in the PVC l
 $ kubectl describe pvc ontaplimit-3
 ...
  Warning  ProvisioningFailed    15s  
- API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver svm1 reached.  Maximum volume count is 12. , Code: 13001
+ API status: failed, Reason: Cannot create volume. Reason: Maximum volume count for Vserver nfs_svm reached.  Maximum volume count is 12. , Code: 13001
 ...
 ```
 

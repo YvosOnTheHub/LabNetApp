@@ -2,7 +2,7 @@
 # SCENARIO 14.1: ONTAP Network Management
 #########################################################################################  
 
-The configuration for the pre-existing SVM (_nfs_svm1_) is fully open. You can mount resources from anywhere in the lab & also connect with SSH from anywhere.  
+The configuration for the pre-existing SVM (_nfs_svm_) is fully open. You can mount resources from anywhere in the lab & also connect with SSH from anywhere.  
 
 Examples ran from the host RHEL6, which is outside of the Kubernetes cluster.  
 You can perfectly well connect through SSH:

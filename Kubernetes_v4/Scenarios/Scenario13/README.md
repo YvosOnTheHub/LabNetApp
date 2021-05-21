@@ -193,13 +193,13 @@ You can see this object by browsing through System Manager or connecting with Pu
 
 ```bash
 cluster1::> vol clone show
-                      Parent  Parent        Parent
-Vserver FlexClone     Vserver Volume        Snapshot             State     Type
-------- ------------- ------- ------------- -------------------- --------- ----
-svm1    nas1_pvc_525c8fff_f48b_4f7a_b5c3_8aa6230ff72f
-                      svm1    nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
-                                            snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498
-                                                                 online    RW
+                         Parent     Parent     Parent
+Vserver    FlexClone     Vserver    Volume     Snapshot             State     Type
+-------    ------------- ------- ------------- -------------------- --------- ----
+nfs_svm    nas1_pvc_525c8fff_f48b_4f7a_b5c3_8aa6230ff72f
+                         nfs_svm    nas1_pvc_d5511709_a2f7_4d40_8f7d_bb3e0cd50316
+                                               snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498
+                                                                    online    RW
 ```
 
 This is were you can explore different ways to work with snapshots & clones:  

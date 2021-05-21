@@ -6,7 +6,7 @@ Unix hosts often have a very useful program called _showmount_.
 A person can just run this command against a NFS server to see what volumes are currently exported & available to be mounted.
 Depending on who has access to these hosts, this can be seen as a security hole.  
 
-This feature is enabled on the SVM called _SVM1_. Let's see what we get:
+This feature is enabled on the SVM called _nfs_svm_. Let's see what we get:
 
 ```bash
 $ showmount -e 192.168.0.135

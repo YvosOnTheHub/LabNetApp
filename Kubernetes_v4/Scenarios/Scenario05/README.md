@@ -92,10 +92,10 @@ You can check that the CHAP configuration has been set correctly with the follow
 ```bash
 # ssh -l admin 192.168.0.101 iscsi security show
 Password:
-                                  Auth   Auth CHAP Inbound CHAP  Outbound CHAP
-Vserver    Initiator Name         Type   Policy    User Name     User Name
----------- ---------------------- ------ --------- ------------- -------------
-svm1       default                CHAP   local     tridentchap   tridenttarget
+                                    Auth   Auth CHAP Inbound CHAP  Outbound CHAP
+Vserver      Initiator Name         Type   Policy    User Name     User Name
+----------   ---------------------- ------ --------- ------------- -------------
+iscsi_svm    default                CHAP   local     tridentchap   tridenttarget
 ```
 
 You find here both usernames set in the backend parameters.  

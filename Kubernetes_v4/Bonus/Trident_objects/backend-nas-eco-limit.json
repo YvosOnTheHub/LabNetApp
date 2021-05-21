@@ -4,7 +4,7 @@
     "backendName": "NAS_ECO_Limit",
     "managementLIF": "192.168.0.135",
     "storagePrefix": "sc08_4_",
-    "svm": "svm1",
+    "svm": "nfs_svm",
     "username": "vsadmin",
     "password": "Netapp1!",
     "limitVolumeSize": "10g"
