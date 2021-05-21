@@ -10,6 +10,7 @@ spec:
   containers:
     - name: debugger
       image: busybox
+      imagePullPolicy: IfNotPresent
       command: ['sleep', '3600']
       volumeMounts:
         - mountPath: "/data"

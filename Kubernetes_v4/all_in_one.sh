@@ -15,8 +15,9 @@ echo "# 2. INSTALL TRIDENT OPERATOR 21.04.0 WITH HELM"
 echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
-echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE" 
-echo "# 7. UPDATE BASHRC"
+echo "# 6. INSTALL & CONFIGURE HARVEST"
+echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE" 
+echo "# 8. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -164,7 +165,18 @@ sh Scenarios/Scenario03/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE"
+echo "# 6. INSTALL & CONFIGURE HARVEST"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+sleep 2s
+sh Scenarios/Scenario03/4_Harvest/scenario03_harvest_install.sh
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -174,7 +186,7 @@ kubectl taint nodes rhel3 node-role.kubernetes.io/master-
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 7. UPDATE BASHRC"
+echo "# 8. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo

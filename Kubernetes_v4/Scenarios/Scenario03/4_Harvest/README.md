@@ -5,9 +5,25 @@
 NetApp Harvest 2.0 is the swiss-army knife for monitoring datacenters. The default package collects performance,capacity and hardware metrics from ONTAP clusters. New metrics can be collected by editing theconfig files. Metrics can be delivered to multiple databases - Prometheus, InfluxDB and Graphite -and displayed in Grafana dashboards.
 In the context of Kubernetes, you could use performance metrics gathered by Harvest & create neat dashboards in Grafana with regards to Persistent Volumes.
 
-The scenario will not guide you in the installation of Harvest. However, we are going to see how to connect it to the Prometheur instance running in Kubernetes.  
-Let's assume you have installed Harvest 2.0 on the host _rhel6_, with a prometheus exported exposed on the port _31000_.  
-The file _Harvest.yml.templ_ can be used to configure Harvest to work on this lab.
+The scenario will guide you through the installation of Harvest on _rhel6_ (port _31000_)and how to connect it to the Prometheur instance running in Kubernetes.  
+The file _harvest.yml_ in this repo can be used to configure Harvest to work on this lab.
+
+Let's start by downloading Harvest & installing it (on _rhel6_):
+
+```bash
+$ cd
+$ wget https://github.com/NetApp/harvest/releases/download/v21.05.1/harvest-21.05.1-1.x86_64.rpm
+$ wget https://raw.githubusercontent.com/YvosOnTheHub/LabNetApp/master/Kubernetes_v4/Scenarios/Scenario03/4_Harvest/harvest.yml
+$ yum install harvest-21.05.1-1.x86_64.rpm
+$ rm -f /opt/harvest/harvest.yml
+$ mv harvest.yml /opt/harvest/
+$ cd /opt/harvest/
+$ bin/harvest start
+Datacenter            Poller                PID        PromPort        Status
++++++++++++++++++++++ +++++++++++++++++++++ ++++++++++ +++++++++++++++ ++++++++++++++++++++
+lod                   cluster1              9262       31000           running
++++++++++++++++++++++ +++++++++++++++++++++ ++++++++++ +++++++++++++++ ++++++++++++++++++++
+```
 
 To make sure your Harvest installation works, you can run the following:
 
