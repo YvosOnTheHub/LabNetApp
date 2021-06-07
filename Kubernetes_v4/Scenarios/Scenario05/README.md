@@ -33,8 +33,8 @@ Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces t
 If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```bash
-$ kubectl create -n trident -f secret_ontap_iscsi-svm_username.yaml
-secret/ontap-iscsi-svm-secret-username created
+$ kubectl create -n trident -f secret_ontap_iscsi-svm_chap.yaml
+secret/ontap-iscsi-svm-secret-chap created
 $ kubectl create -n trident -f backend_san-secured.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-san-secured created
 $ kubectl create -n trident -f backend_san-eco.yaml

@@ -6,7 +6,7 @@ echo "##########################################################################
 echo "Creating SAN Backends with kubectl"
 echo "#######################################################################################################"
 
-kubectl create -n trident -f secret_ontap_iscsi-svm_username.yaml
+kubectl create -n trident -f secret_ontap_iscsi-svm_chap.yaml
 kubectl create -n trident -f backend_san-secured.yaml
 kubectl create -n trident -f backend_san-eco.yaml
 
