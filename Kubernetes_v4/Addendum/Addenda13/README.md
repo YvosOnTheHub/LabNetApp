@@ -25,7 +25,7 @@ sh addenda13_pull_images.sh my_login my_password
 ```
 
 Docker compose will start 2 containers, one for the MySQL Database used by Gitea, one for the frontend.  
-To connect to Gitea, you will need to use the following address: http://gitea.demo.netapp.com:3000, after having updated the Domain (Alias: 192.168.0.64 = Gitea).  
+To connect to Gitea, you will need to use the following address: http://gitea.demo.netapp.com:3000, after having updated the Domain (Alias: 192.168.0.64 = 'gitea').  
 If you prefer to use the host IP address instead of the FQDN, remove the 3 _GITEA__server_ lines from the docker-compote.yml file & uncomment the ones related to the IP address. Note that this whole page is described to work with the FQDN.
 
 ```bash
