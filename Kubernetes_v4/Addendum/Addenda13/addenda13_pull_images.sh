@@ -15,7 +15,7 @@ fi
 echo "#########################################################"
 echo "# PULLING GITEA IMAGES FROM DOCKER HUB"
 echo "#########################################################"
-docker login -u $1 -p $2
-docker pull gitea/gitea:1.14.2
-docker pull mysql:8
+ssh -o "StrictHostKeyChecking no" root@rhel4 docker login -u $1 -p $2
+ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull gitea/gitea:1.14.2
+ssh -o "StrictHostKeyChecking no" root@rhel4 docker pull mysql:8
 
