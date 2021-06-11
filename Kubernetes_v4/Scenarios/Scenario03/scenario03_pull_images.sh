@@ -26,10 +26,11 @@ do
   echo "#########################################################"
   echo "# LOGIN on $host & PULLING TRIDENT IMAGES FROM DOCKER HUB"
   echo "#########################################################"
-  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull grafana/grafana:7.0.3
-  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull kiwigrid/k8s-sidecar:0.1.151
-  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull busybox:1.31.1
-  ssh -o "StrictHostKeyChecking no" root@rhel2 docker pull squareup/ghostunnel:v1.5.2
+  ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull grafana/grafana:7.0.3
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull kiwigrid/k8s-sidecar:0.1.151
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull busybox:1.31.1
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull squareup/ghostunnel:v1.5.2
 done
 
 # Managing RHEL1 separatly as Prometheus is already installed there from the beginning

@@ -124,7 +124,7 @@ $ tridentctl -n trident get backend
 | NAS_ECO-default | ontap-nas-economy | 8d8b25fe-d2ab-4416-b8e3-3d4a304b0aae | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 
-$ trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
+$ tridentctl -n trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
 [
   {
     "storageClass": "sc-topology",

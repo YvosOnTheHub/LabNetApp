@@ -24,23 +24,24 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
-[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident to 21.04.0 :arrows_counterclockwise:  
-[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes :arrows_counterclockwise:  
+[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident (v21.04.0) :arrows_counterclockwise:  
+[2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus & Grafana  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v4/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
 [6.](Kubernetes_v4/Scenarios/Scenario06) Deploy your first app with Block storage  
 [7.](Kubernetes_v4/Scenarios/Scenario07) Use the 'import' feature of Trident  
-[8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control :arrows_counterclockwise:  
+[8.](Kubernetes_v4/Scenarios/Scenario08) Consumption control  
 [9.](Kubernetes_v4/Scenarios/Scenario09) Expanding Persistent Volumes  
-[10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools :arrows_counterclockwise:  
+[10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools  
 [11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v4/Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v4/Scenarios/Scenario15) Caring about location or about CSI Topology  
-[16.](Kubernetes_v4/Scenarios/Scenario16) Performance control :new:  
-[17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP :new:  
+[16.](Kubernetes_v4/Scenarios/Scenario16) Performance control  
+[17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
+[18.](Kubernetes_v4/Scenarios/Scenario18) Kubernetes, Trident & GitOps :new:  
 
 Addendum
 --------
@@ -53,10 +54,17 @@ Addendum
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
 [7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
 [8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
-[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting :new:  
-[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP :new:  
-[11.](Kubernetes_v4/Addendum/Addenda11) How to install & prepare HAProxy :new:  
-[12.](Kubernetes_v4/Addendum/Addenda12) How to create a S3 Bucket on ONTAP :new:  
+[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
+[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP  
+[11.](Kubernetes_v4/Addendum/Addenda11) How to install & prepare HAProxy  
+[12.](Kubernetes_v4/Addendum/Addenda12) How to create a S3 Bucket on ONTAP  
+[13.](Kubernetes_v4/Addendum/Addenda13) Set up a simple Source Code Repository :new:  
+[14.](Kubernetes_v4/Addendum/Addenda14) Install ArgoCD in this lab :new:  
+
+<!-- ICONS
+:new:
+:arrows_counterclockwise:
+-->
 
 <!-- OLD CONTENT
 
