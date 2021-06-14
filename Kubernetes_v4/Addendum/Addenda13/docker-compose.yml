@@ -11,12 +11,12 @@ services:
     environment:
       - USER_UID=1000
       - USER_GID=1000
-      - GITEA__server__DOMAIN=demo.netapp.com
-      - GITEA__server__SSH_DOMAIN=demo.netapp.com
-      - GITEA__server__ROOT_URL=http://gitea.demo.netapp.com:3000
-      #- GITEA__server__DOMAIN=192.168.0.64
-      #- GITEA__server__SSH_DOMAIN=192.168.0.64
-      #- GITEA__server__ROOT_URL=http://192.168.0.64:3000
+      #- GITEA__server__DOMAIN=demo.netapp.com
+      #- GITEA__server__SSH_DOMAIN=demo.netapp.com
+      #- GITEA__server__ROOT_URL=http://gitea.demo.netapp.com:3000
+      - GITEA__server__DOMAIN=192.168.0.64
+      - GITEA__server__SSH_DOMAIN=192.168.0.64
+      - GITEA__server__ROOT_URL=http://192.168.0.64:3000
       - GITEA__database__DB_TYPE=mysql
       - GITEA__database__HOST=db:3306
       - GITEA__database__NAME=gitea

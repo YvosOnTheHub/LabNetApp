@@ -25,8 +25,8 @@ sh addenda13_pull_images.sh my_login my_password
 ```
 
 Docker compose will start 2 containers, one for the MySQL Database used by Gitea, one for the frontend.  
-To connect to Gitea, you will need to use the following address: http://gitea.demo.netapp.com:3000, after having updated the Domain (Alias: 192.168.0.64 = 'gitea').  
-If you prefer to use the host IP address instead of the FQDN, remove the 3 _GITEA__server_ lines from the docker-compote.yml file & uncomment the ones related to the IP address. Note that this whole page is described to work with the FQDN.
+To connect to Gitea, you will need to use the following address: http://192.168.0.64:3000.  
+If you prefer to use a FQDN (http://gitea.demo.netapp.com:3000) instead of the IP, remove the 3 _GITEA__server_ lines from the docker-compote.yml file & uncomment the ones related to the FQDN, after having updated the Domain (Alias: 192.168.0.64 = 'gitea'). Note that this whole page is described to work with the IP address.
 
 ```bash
 $ docker-compose up -d
@@ -49,7 +49,7 @@ For this demo, I would recommed creating an administrator account (demo/netapp12
 In order to store your code, you will need to create a new repository. This can be achieved through the UI, or simply by calling a REST API:  
 
 ```bash
-$ curl -X POST "http://gitea.demo.netapp.com:3000/api/v1/user/repos" -u demo:netapp123 -H "accept: application/json" -H "content-type: application/json" -d '{
+$ curl -X POST "http://192.168.0.64:3000/api/v1/user/repos" -u demo:netapp123 -H "accept: application/json" -H "content-type: application/json" -d '{
   "name":"test",
   "description": "my first repo"
 }'
@@ -91,7 +91,7 @@ $ git commit -m "initial commit"
 The next step consists in sending the data to the Gitea repo. As it is the first time you connect to Gitea with git, you will be asked to enter some credentials (demo/netapp.123). Those will be stored in the ~/.git-credentials file.
 
 ```bash
-git remote add origin http://gitea.demo.netapp.com:3000/demo/test.git
+git remote add origin http://192.168.0.64:3000/demo/test.git
 git push -u origin master
 ```
 
@@ -113,5 +113,5 @@ There you go, you are all set to use a Source Code Repository in the Lab on Dema
 
 <!-- GOOD TO HAVE
 Retrieve a token for a specific user
-curl -X POST -H "Content-Type: application/json"  -k -d '{"name":"token"}' -u demo:netapp123 http://gitea.demo.netapp.com:3000/api/v1/users/demo/tokens
+curl -X POST -H "Content-Type: application/json"  -k -d '{"name":"token"}' -u demo:netapp123 http://192.168.0.64:3000/api/v1/users/demo/tokens
 -->
