@@ -14,6 +14,8 @@ This scenario will guide you through the following:
 - Integration & Deployment of a small app with ArgoCD
 - Update of the app code, push in the repository & automated update on Kubernetes
 
+<p align="center"><img src="Images/scenario18_architecture.jpg"></p>
+
 The prerequisites of this lab are the following:
 
 - Completly uninstall Trident (there is a script called _trident_uninstall.sh_ in this folder that will do it for you)
