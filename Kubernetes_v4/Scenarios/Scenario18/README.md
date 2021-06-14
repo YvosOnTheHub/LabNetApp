@@ -85,7 +85,7 @@ Then fill up the form with the following parameters:
 - Project: _default_
 - Sync Policy: _Manual_
 - Sync Options: Check _auto-create namespace_
-- Repository URL: _http://gitea.demo.netapp.com:3000/demo/scenario18_
+- Repository URL: _http://192.168.0.64:3000/demo/scenario18_
 - Revision: _master_
 - Path: _Infrastructure/Trident-Installer_
 - Cluster URL: _https://kubernetes.default.svc_
@@ -114,11 +114,11 @@ trident-installation   Synced        Healthy
 
 ### 2. Trident Configuration with the command line
 
-We have seen how to create & syn an application in ArgoCD's UI.  
+We have seen how to create & sync an application in ArgoCD's UI.  
 Let's see how to create an app with the cli:
 
 ```bash
-$ kubectl create -n argocd -f ArgoCD/argocd_trident_config.yaml
+$ kubectl create -n argocd -f ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/ArgoCD/argocd_trident_config.yaml
 application.argoproj.io/trident-configuration created
 
 $ kubectl get app -n argocd trident-configuration
@@ -134,7 +134,7 @@ We can reuse the same steps to create an applciation to run Ghost.
 I will not choose to configure the auto-sync option, so that we can witness the behavior later on.
 
 ```bash
-$ kubectl create -n argocd -f ArgoCD/argocd_ghost.yaml
+$ kubectl create -n argocd -f ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/ArgoCD/argocd_ghost.yaml
 application.argoproj.io/ghost created
 
 $ kubectl get app -n argocd ghost
@@ -164,7 +164,7 @@ $ kubectl get sc
 NAME                                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
 argocd-storage-class-nas (default)   csi.trident.netapp.io   Delete          Immediate           false                  3h1m
 
-$ echo "allowVolumeExpansion: true" >> Repository/Infrastructure/Trident-configuration/sc-csi-ontap-nas.yaml
+$ echo "allowVolumeExpansion: true" >> ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Repository/Infrastructure/Trident-configuration/sc-csi-ontap-nas.yaml
 ```
 
 Now that the code is updated locally, you can perform the commit & push steps in order to bring the changes to your Gitea repository.  
@@ -184,11 +184,11 @@ argocd-storage-class-nas (default)   csi.trident.netapp.io   Delete          Imm
 ```
 
 Done! Your infrastructure is now up to date. Time to roll out some changes on your Ghost app!
-We will apply a version change of the image, as well increasing the PVC attached to the POD.
+We will apply a version change of the image, as well as increasing the PVC attached to the POD.
 
 ```bash
-sed -i 's/5/10/' Apps/Ghost/1_pvc.yaml
-sed -i 's/2\.6/3\.13/' Apps/Ghost/2_deploy.yaml
+sed -i 's/5/10/' ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Apps/Ghost/1_pvc.yaml
+sed -i 's/2\.6/3\.13/' ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Apps/Ghost/2_deploy.yaml
 git adcom "ghost update to 3.13 & bigger pvc"
 git push
 ```
