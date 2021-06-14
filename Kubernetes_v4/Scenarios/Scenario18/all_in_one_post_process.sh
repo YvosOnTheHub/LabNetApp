@@ -10,6 +10,9 @@ curl -X POST "http://192.168.0.64:3000/api/v1/user/repos" -u demo:netapp123 -H "
   "description": "argocd repo"
 }'
 
+echo "###### Push Data to the Repository"
+echo "# You are going to be asked to enter the Gitea login & pwd: demo/netapp123"
+echo "######"
 cp -R ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Repository ~/
 cd ~/Repository
 git init
@@ -19,5 +22,8 @@ git remote add origin http://192.168.0.64:3000/demo/scenario18.git
 git push -u origin master
 
 echo
+echo "#######################################################################################################"
+echo
 echo " HAVE FUN !!"
 echo
+echo "#######################################################################################################"

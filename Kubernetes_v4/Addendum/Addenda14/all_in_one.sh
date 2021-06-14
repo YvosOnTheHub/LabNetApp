@@ -17,7 +17,7 @@ ARGOCDIP=$(kubectl get svc -n argocd argocd-server --no-headers | awk '{ print $
 echo
 echo "TO CONNECT TO ArgoCD, USE THE FOLLOWING ADDRESS: $ARGOCDIP"
 echo
-sleep 10
+sleep 20
 ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
 echo
 echo "TO LOG INTO ArgoCD WITH 'admin', USE THE FOLLOWING PASSWORD: $ARGOCDPWD"

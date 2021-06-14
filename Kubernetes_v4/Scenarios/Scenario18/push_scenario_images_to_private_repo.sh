@@ -14,7 +14,7 @@ fi
 
 
 
-if [[  $(docker images | grep 'netapp/trident' | grep 21.04.0 | wc -l) -ne 2 ]]
+if [[  $(docker images | grep 'netapp/trident' | grep 21.04.0 | wc -l) -ne 2 ]];then
   if [[ $# -ne 2 ]];then
     TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
     RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep  RateLimit-Remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
