@@ -164,7 +164,7 @@ $ kubectl get sc
 NAME                                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
 argocd-storage-class-nas (default)   csi.trident.netapp.io   Delete          Immediate           false                  3h1m
 
-$ echo "allowVolumeExpansion: true" >> ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Repository/Infrastructure/Trident-configuration/sc-csi-ontap-nas.yaml
+$ echo "allowVolumeExpansion: true" >> ~/Repository/Infrastructure/Trident-Configuration/sc-csi-ontap-nas.yaml
 ```
 
 Now that the code is updated locally, you can perform the commit & push steps in order to bring the changes to your Gitea repository.  
