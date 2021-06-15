@@ -13,6 +13,7 @@ echo " 5. Uninstall Trident"
 echo " 6. Configuration local Git variables"
 echo " 7. Create a Git repository"
 echo " 8. Push data to the repository"
+echo " 9. Update .bashrc (if not already done)"
 echo "#######################################################################################################"
 
 sh ../../Addendum/Addenda05/all_in_one.sh
@@ -55,3 +56,28 @@ git add .
 git commit -m "initial commit"
 git remote add origin http://192.168.0.64:3000/demo/scenario18.git
 git push -u origin master
+
+
+if [[  $(more .bashrc | grep kedit | wc -l) -ne 0 ]];then
+  echo
+  echo "#######################################################################################################"
+  echo "#"
+  echo "# UPDATE BASHRC"
+  echo "#"
+  echo "#######################################################################################################"
+  echo
+
+  cp ~/.bashrc ~/.bashrc.bak
+  cat <<EOT >> ~/.bashrc
+  source <(kubectl completion bash)
+  complete -F __start_kubectl k
+
+  alias kc='kubectl create'
+  alias kg='kubectl get'
+  alias kdel='kubectl delete'
+  alias kdesc='kubectl describe'
+  alias kedit='kubectl edit'
+  alias trident='tridentctl -n trident'
+  EOT
+  bash
+fi
