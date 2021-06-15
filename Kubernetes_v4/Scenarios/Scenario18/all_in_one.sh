@@ -69,15 +69,16 @@ if [[  $(more .bashrc | grep kedit | wc -l) -ne 0 ]];then
 
   cp ~/.bashrc ~/.bashrc.bak
   cat <<EOT >> ~/.bashrc
-  source <(kubectl completion bash)
-  complete -F __start_kubectl k
+source <(kubectl completion bash)
+complete -F __start_kubectl k
 
-  alias kc='kubectl create'
-  alias kg='kubectl get'
-  alias kdel='kubectl delete'
-  alias kdesc='kubectl describe'
-  alias kedit='kubectl edit'
-  alias trident='tridentctl -n trident'
-  EOT
+alias kc='kubectl create'
+alias kg='kubectl get'
+alias kdel='kubectl delete'
+alias kdesc='kubectl describe'
+alias kedit='kubectl edit'
+alias trident='tridentctl -n trident'
+EOT
+
   bash
 fi
