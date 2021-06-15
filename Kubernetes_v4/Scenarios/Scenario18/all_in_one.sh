@@ -57,6 +57,14 @@ git commit -m "initial commit"
 git remote add origin http://192.168.0.64:3000/demo/scenario18.git
 git push -u origin master
 
+echo
+echo "#######################################################################################################"
+ARGOCDIP=$(kubectl get svc -n argocd argocd-server --no-headers | awk '{ print $4 }')
+ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+echo " TO CONNECT TO ArgoCD, USE THE FOLLOWING ADDRESS: $ARGOCDIP
+echo " TO LOG INTO ArgoCD WITH 'admin', USE THE FOLLOWING PASSWORD: $ARGOCDPWD"
+echo "#######################################################################################################"
+echo
 
 if [[  $(more ~/.bashrc | grep kedit | wc -l) -ne 0 ]];then
   echo
