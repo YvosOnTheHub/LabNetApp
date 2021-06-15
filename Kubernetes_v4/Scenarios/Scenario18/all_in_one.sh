@@ -58,7 +58,7 @@ git remote add origin http://192.168.0.64:3000/demo/scenario18.git
 git push -u origin master
 
 
-if [[  $(more .bashrc | grep kedit | wc -l) -ne 0 ]];then
+if [[  $(more ~/.bashrc | grep kedit | wc -l) -ne 0 ]];then
   echo
   echo "#######################################################################################################"
   echo "#"
