@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mydata-from-snap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nas
+  dataSource:
+    name: mydata-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io

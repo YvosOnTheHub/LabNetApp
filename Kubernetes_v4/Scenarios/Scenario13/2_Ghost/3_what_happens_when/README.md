@@ -35,25 +35,25 @@ Once the cleanup is done, you will only have the following left:
 ```bash
 $ kubectl get -n ghost pvc,volumesnapshot
 NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/mydata             Bound    pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316   5Gi        RWX            storage-class-nas   23m
-persistentvolumeclaim/mydata-from-snap   Bound    pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            storage-class-nas   10m
+persistentvolumeclaim/mydata             Bound    pvc-f2c671b5-26e3-4a6d-9344-4a2083a611a3   5Gi        RWX            storage-class-nas   104m
+persistentvolumeclaim/mydata-from-snap   Bound    pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc   5Gi        RWX            storage-class-nas   20m
 
 NAME                                                     READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-e4ab0f8c-5cd0-4797-a087-0770bd6f1498   16m            16m
+volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-3a286486-7a69-499d-b9d7-163e3f62892c   31m            31m
 
 $ tridentctl -n trident get volume
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-| pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | online | true    |
-| pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | online | true    |
+| pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc | 5.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | online | true    |
+| pvc-f2c671b5-26e3-4a6d-9344-4a2083a611a3 | 5.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | online | true    |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 
 $ tridentctl -n trident get snapshot
 +-----------------------------------------------+------------------------------------------+
 |                     NAME                      |                  VOLUME                  |
 +-----------------------------------------------+------------------------------------------+
-| snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498 | pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 |
+| snapshot-3a286486-7a69-499d-b9d7-163e3f62892c | pvc-f2c671b5-26e3-4a6d-9344-4a2083a611a3 |
 +-----------------------------------------------+------------------------------------------+
 ```
 
@@ -69,15 +69,15 @@ persistentvolumeclaim "mydata" deleted
 This operation took no time, & here is what we have left within our namespace in Kubernetes:
 
 ```bash
-$ kubetcl get -n ghost pvc,pv
-NAME               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-mydata-from-snap   Bound    pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            storage-class-nas   75m
-NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS        REASON   AGE
-pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            Delete           Bound    ghost/mydata-from-snap   storage-class-nas            75m
+$ kubectl get -n ghost pvc,pv
+NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+persistentvolumeclaim/mydata-from-snap   Bound    pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc   5Gi        RWX            storage-class-nas   21m
 
-$ kubetl get -n ghost volumesnapshot
-NAME              READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-e4ab0f8c-5cd0-4797-a087-0770bd6f1498   81m            82m
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS        REASON   AGE
+persistentvolume/pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc   5Gi        RWX            Delete           Bound    ghost/mydata-from-snap   storage-class-nas            21m
+
+$ kubectl get -n ghost volumesnapshot
+mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-3a286486-7a69-499d-b9d7-163e3f62892c   34m            34m
 ```
 
 As expected, the *mydata* PVC & its PV are gone from the configuration.  
@@ -88,15 +88,15 @@ $ tridentctl -n trident get volumes
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+----------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             |  STATE   | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+----------+---------+
-| pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | online   | true    |
-| pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | deleting | true    |
+| pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc | 5.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | online   | true    |
+| pvc-f2c671b5-26e3-4a6d-9344-4a2083a611a3 | 5.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | deleting | true    |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+----------+---------+
 
 $ tridentctl -n trident get snapshot
 +-----------------------------------------------+------------------------------------------+
 |                     NAME                      |                  VOLUME                  |
 +-----------------------------------------------+------------------------------------------+
-| snapshot-e4ab0f8c-5cd0-4797-a087-0770bd6f1498 | pvc-d5511709-a2f7-4d40-8f7d-bb3e0cd50316 |
+| snapshot-3a286486-7a69-499d-b9d7-163e3f62892c | pvc-f2c671b5-26e3-4a6d-9344-4a2083a611a3 |
 +-----------------------------------------------+------------------------------------------+
 ```
 
@@ -111,7 +111,7 @@ Let's delete the CSI Snapshot we created earlier.
 ```bash
 $ kubectl get -n ghost volumesnapshot
 NAME              READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-e4ab0f8c-5cd0-4797-a087-0770bd6f1498   126m           127m
+mydata-snapshot   true         mydata                              5Gi           csi-snap-class   snapcontent-3a286486-7a69-499d-b9d7-163e3f62892c   35m            35m
 
 $ kubectl delete -n ghost volumesnapshot mydata-snapshot
 volumesnapshot.snapshot.storage.k8s.io "mydata-snapshot" deleted
@@ -123,10 +123,10 @@ Let's look at what we have left:
 ```bash
 $ kubectl get -n ghost pvc,pv
 NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/mydata-from-snap   Bound    pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            storage-class-nas   121m
+persistentvolumeclaim/mydata-from-snap   Bound    pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc   5Gi        RWX            storage-class-nas   25m
 
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                    STORAGECLASS        REASON   AGE
-persistentvolume/pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f   5Gi        RWX            Delete           Bound    ghost/mydata-from-snap   storage-class-nas            121m
+persistentvolume/pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc   5Gi        RWX            Delete           Bound    ghost/mydata-from-snap   storage-class-nas            25m
 
 $ tridentctl -n trident get snapshot
 +------+--------+
@@ -137,7 +137,7 @@ $ tridentctl -n trident get volume
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-| pvc-525c8fff-f48b-4f7a-b5c3-8aa6230ff72f | 5.0 GiB | storage-class-nas | file     | b24a8ae8-a8af-478c-816a-33145116f798 | online | true    |
+| pvc-a7c8be57-73a3-43dc-b268-23e43c7a82fc | 5.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | online | true    |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 ```
 

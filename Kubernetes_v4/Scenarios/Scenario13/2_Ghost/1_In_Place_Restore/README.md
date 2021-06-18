@@ -2,7 +2,7 @@
 # SCENARIO 13.1: In-place PVC restore
 #########################################################################################
 
-"Oh zut! I deleted some very important data from my PVC!!!"  
+"Oh zut! I deleted some very ticket from my blog website !!!"  
 "No worries, you can reuse the CSI Snapshot you created earlier without contacting the Infra teams"
 
 <p align="center"><img src="Images/scenario13_1.jpg"></p>
@@ -19,18 +19,13 @@ That will trigger a new POD creation with the updated configuration:
 ```bash
 $ kubectl get -n ghost pod
 NAME                    READY   STATUS        RESTARTS   AGE
-blog-5c9c4cdfbf-q986f   1/1     Terminating   0          5m22s
+blog-6cbd945df-p8r8t    1/1     Terminating   0          5m22s
 blog-57cdf6865f-ww2db   1/1     Running       0          6s
 ```
 
-Now, if you look at the files this POD has access to (the PVC), you will see that the *lost data* (file: test.txt) is back!
-
-```bash
-$ kubectl exec -n ghost blog-57cdf6865f-ww2db -- ls /data/test.txt
--rw-r--r--    1 root     root             0 Jun 30 11:34 /data/test.txt
-```
-
+Time to refresh you blog website... Check this out, your latest ticket is back online !!  
 Tadaaa, you have restored your data!  
+
 Keep in mind that some applications may need some extra care once the data is restored (databases for instance).  
 
 ## Optional Cleanup (only to run if you are done with *snapshots* & *clones*)
@@ -49,5 +44,5 @@ You can now move on to:
 
 Or go back to:
 
-- the [Scenario13 FrontPage](../)
+- the [Scenario13 FrontPage](../../)
 - the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
