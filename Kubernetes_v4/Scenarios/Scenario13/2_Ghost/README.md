@@ -38,8 +38,8 @@ service/blog   NodePort   10.103.138.94   <none>        80:30080/TCP   21s
 
 Your app is now up & running, let's check we can access the app:  
 
-- http://192.168.0.63:30080 will display the blog homepage.
-- http://192.168.0.63:30080/ghost will take you to the admin page
+- `http://192.168.0.63:30080` will display the blog homepage.
+- `http://192.168.0.63:30080/ghost` will take you to the admin page
 
 Connect to the _admin_ page. The very first time, you need to create an account in this app.  
 The goal of this lab is not to teach how to configure Ghost, so we will just customize the minimum in order to see the benefits.  
@@ -49,7 +49,7 @@ I applied two modifications to this website:
 - Change the _name_ & _subtitle_ of the website. You can find these in the menu _General_ & then in _Title & description_ (don't forget to save your changes).
 - Create a _New Story_. Choose a funny title & some content, and do't forget to click on _Publish_ (top right).
 
-You can see the result by refreshing the blog homepage (http://192.168.0.63:30080).  
+You can see the result by refreshing the blog homepage (`http://192.168.0.63:30080`).  
 The content of the blog is written on the PVC.
 
 ```bash

@@ -24,7 +24,7 @@ deployment.apps/blogclone   1/1     1            1           28s
 ```
 
 Let's check the result:  
-=> http://192.168.0.63:30081
+=> `http://192.168.0.63:30081`
 
 You can probably notice some differences between both pages...  
 

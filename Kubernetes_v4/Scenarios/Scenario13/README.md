@@ -4,7 +4,8 @@
 
 **GOAL:**  
 Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
-This is fully supported starting with Trident 20.01.1.  
+This has been fully supported starting with Trident 20.01.1.  
+(by the way, CSI Snapshots have been promoted HA with Kubernetes 1.20)
 
 While snapshots can be used for many use cases, we will see here 2 different ones, which share the same beginning:
 
@@ -57,5 +58,5 @@ The _volume snapshot_ feature is now ready to be tested.
 
 You can move forward with one of the 2 following chapters:
 
-[1.](1_Busybox) Simple snapshot managment with Busybox (all CLI)
+[1.](1_Busybox) Simple snapshot managment with Busybox (all CLI)  
 [2.](2_Ghost) More advanced usage of snapshots with Ghost (some GUI involved)
