@@ -61,7 +61,7 @@ persistentvolume/pvc-ce8d812b-d976-43f9-8320-48a49792c972   5Gi        RWX      
 It takes about 40 seconds for the POD to be in a *running* state
 The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30080.
 Give it a try !
-=> http://192.168.0.63:30080
+=> `http://192.168.0.63:30080`
 
 ## C. Explore the app container
 
