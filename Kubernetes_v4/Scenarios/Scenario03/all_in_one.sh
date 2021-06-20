@@ -12,12 +12,6 @@ if [ $(kubectl get sc | grep "(default)" | wc -l) = 0 ]
 fi
 
 echo "#######################################################################################################"
-echo "Update Helm stable repo"
-echo "#######################################################################################################"
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-
-echo "#######################################################################################################"
 echo "Installing the Prometheus Operator with Helm"
 echo "#######################################################################################################"
 #
@@ -26,6 +20,8 @@ echo "##########################################################################
 PROM="DEPRECATED"
 
 if [[ $PROM == "DEPRECATED" ]];then
+  helm repo add stable https://charts.helm.sh/stable
+  helm repo update
   helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
 elif [[ $PROM == "UPDATE" ]];then
   helm uninstall -n monitoring prom-operator
