@@ -50,13 +50,13 @@ echo "Install Pie Chart Plugin in Grafana"
 echo "#######################################################################################################"
 
 kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
-kubectl scale -n monitoring deploy prom-operator-grafana --replicas=0
+kubectl scale -n monitoring deploy -l app.kubernetes.io/name=grafana --replicas=0
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 0 ]
 do
   echo "sleep a bit ..."
   sleep 5
 done
-kubectl scale -n monitoring deploy prom-operator-grafana --replicas=1
+kubectl scale -n monitoring deploy -l app.kubernetes.io/name=grafana --replicas=1
 
 echo "#######################################################################################################"
 echo "Create ConfigMap for Dashboards"
@@ -70,5 +70,6 @@ if [[ $PROMVERSION == "prometheus-operator" ]];then
   echo "#######################################################################################################"
   echo "Update Trident Service Monitor for Prometheus"
   echo "#######################################################################################################"
+  kubectl create -f 1_Upgrade/Trident_ServiceMonitor.yml
   kubectl label -n monitoring servicemonitor trident-sm release=prometheus-operator --overwrite
 fi
