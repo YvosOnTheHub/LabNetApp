@@ -18,6 +18,7 @@ echo "##########################################################################
 # Depending on your needs, you can continue with the operator from the "stable" chart, which is deprecated, or move to the newer model
 # => PROM = DEPRECATED (default) or UPDATE
 PROM="DEPRECATED"
+#PROM="UPDATE"
 
 if [[ $PROM == "DEPRECATED" ]];then
   # https://github.com/helm/charts/tree/master/stable/prometheus-operator
