@@ -31,10 +31,11 @@ elif [[ $PROM == "UPDATE" ]];then
   helm uninstall -n monitoring prom-operator
   kubectl delete ns monitoring
   kubectl get crd -o name | grep monitoring | xargs kubectl delete
-
+  
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
   helm repo update
 
+  kubectl create ns monitoring
   helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 --set grafana.persistence.enabled=true,grafana.service.type=NodePort,prometheus.service.type=NodePort
 fi
 
