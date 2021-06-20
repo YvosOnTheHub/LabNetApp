@@ -9,4 +9,10 @@ ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest sta
 
 echo "### Integrating Harvest with Kubernetes & Prometheus"
 cd ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario03/4_Harvest
+
+PROMVERSION=$(helm list -n monitoring | tail -1 | awk '{print $1}')
+if [[ $PROMVERSION == "prometheus-operator" ]];then
+  sed -i s'/prom-operator/prometheus-operator/' Harvest_in_Kubernetes.yaml
+fi
+
 kubectl create -f Harvest_in_Kubernetes.yaml
