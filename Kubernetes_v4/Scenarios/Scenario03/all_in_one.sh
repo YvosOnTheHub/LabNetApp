@@ -20,13 +20,16 @@ echo "##########################################################################
 PROM="DEPRECATED"
 
 if [[ $PROM == "DEPRECATED" ]];then
+  # https://github.com/helm/charts/tree/master/stable/prometheus-operator
   helm repo add stable https://charts.helm.sh/stable
   helm repo update
   helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
 elif [[ $PROM == "UPDATE" ]];then
+  # DOC: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
   helm uninstall -n monitoring prom-operator
   kubectl delete ns monitoring
   kubectl get crd -o name | grep monitoring | xargs kubectl delete
+  sleep 10
   
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
   helm repo update
