@@ -23,7 +23,7 @@ echo "##########################################################################
 #
 # Depending on your needs, you can continue with the operator from the "stable" chart, which is deprecated, or move to the newer model
 # => PROM = DEPRECATED (default) or UPDATE
-PROM = "DEPRECATED"
+PROM="DEPRECATED"
 
 if [[ $PROM == "DEPRECATED" ]];then
   helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
