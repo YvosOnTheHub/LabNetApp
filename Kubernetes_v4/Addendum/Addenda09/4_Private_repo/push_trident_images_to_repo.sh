@@ -10,7 +10,9 @@ if [[  $(docker images | grep 'netapp/trident' | grep 21.04.0 | wc -l) -ne 2 ]]
     echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB"
     echo "########################################"
 
-    ssh -o "StrictHostKeyChecking no" root@$1 docker login -u $2 -p $3
+    if [[ $# eq 3 ]];then
+       ssh -o "StrictHostKeyChecking no" root@$1 docker login -u $2 -p $3
+    fi
     ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.04.0
     ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.04.0
     ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-autosupport:21.01
