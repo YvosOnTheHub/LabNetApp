@@ -66,12 +66,11 @@ Give it a try !
 ## C. Explore the app container
 
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the NFS PVC that was created.  
-**You need to customize the following commands with the POD name you have in your environment.**
 
 ```bash
-$ kubectl exec -n ghost blog-57d7d4886-5bsml -- df /var/lib/ghost/content
+$ kubectl exec -n ghost $(kubectl -n ghost get pod -o name) -- df /var/lib/ghost/content
 Filesystem           1K-blocks      Used Available Use% Mounted on
-192.168.0.135:/ansible_pvc_ce8d812b_d976_43f9_8320_48a49792c972
+192.168.0.135:/nas1_pvc_ce8d812b_d976_43f9_8320_48a49792c972
                        5242880       704   5242176   0% /var/lib/ghost/content
 
 

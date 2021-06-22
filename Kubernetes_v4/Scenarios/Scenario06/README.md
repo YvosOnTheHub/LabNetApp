@@ -59,14 +59,13 @@ Give it a try !
 ## C. Explore the app container
 
 Let's see if the */var/lib/ghost/content* folder is indeed mounted to the SAN PVC that was created.
-**You need to customize the following commands with the POD name you have in your environment.**
 
 ```bash
-$ kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- df /var/lib/ghost/content
+$ kubectl exec -n ghostsan $(kubectl -n ghostsan get pod -o name) -- df /var/lib/ghost/content
 Filesystem           1K-blocks      Used Available Use% Mounted on
 /dev/sdc              10190100     37368   9612060   0% /var/lib/ghost/content
 
-$ kubectl exec -n ghostsan blog-san-58979448dd-6k9ds -- ls /var/lib/ghost/content
+$ kubectl exec -n ghostsan $(kubectl -n ghostsan get pod -o name) -- ls /var/lib/ghost/content
 apps
 data
 images

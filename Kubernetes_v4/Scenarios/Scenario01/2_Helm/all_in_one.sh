@@ -37,23 +37,23 @@ echo "##########################################################################
 sh trident_uninstall.sh
 
 echo "#######################################################################################################"
-echo "Download Trident 21.04.0"
+echo "Download Trident 21.04.1"
 echo "#######################################################################################################"
 
 cd
-mkdir 21.04.0
-cd 21.04.0
-wget https://github.com/NetApp/trident/releases/download/v21.04.0/trident-installer-21.04.0.tar.gz
-tar -xf trident-installer-21.04.0.tar.gz
+mkdir 21.04.1
+cd 21.04.1
+wget https://github.com/NetApp/trident/releases/download/v21.04.1/trident-installer-21.04.1.tar.gz
+tar -xf trident-installer-21.04.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
 echo "#######################################################################################################"
-echo "Install new Trident Operator (21.04.0) with Helm"
+echo "Install new Trident Operator (21.04.1) with Helm"
 echo "#######################################################################################################"
 
 kubectl create namespace trident
-helm install trident trident-installer/helm/trident-operator-21.04.0.tgz -n trident
+helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident
 
 sleep 30s
 echo "#######################################################################################################"

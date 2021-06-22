@@ -51,7 +51,9 @@ if [[  $(docker images | grep 'netapp/trident' | grep 21.04.0 | wc -l) -ne 2 ]];
 
   docker login -u $1 -p $2
   docker pull netapp/trident:21.04.0
+  docker pull netapp/trident:21.04.1
   docker pull netapp/trident-operator:21.04.0
+  docker pull netapp/trident-operator:21.04.1
   docker pull netapp/trident-autosupport:21.01
 fi
 
@@ -60,7 +62,9 @@ echo "# TAGGING TRIDENT IMAGES"
 echo "####################################"
 
 docker tag netapp/trident:21.04.0 registry.demo.netapp.com/trident:21.04.0
+docker tag netapp/trident:21.04.1 registry.demo.netapp.com/trident:21.04.1
 docker tag netapp/trident-operator:21.04.0 registry.demo.netapp.com/trident-operator:21.04.0
+docker tag netapp/trident-operator:21.04.1 registry.demo.netapp.com/trident-operator:21.04.1
 docker tag netapp/trident-autosupport:21.01 registry.demo.netapp.com/trident-autosupport:21.01
 
 echo "##########################################"
@@ -68,7 +72,9 @@ echo "# PUSHING TRIDENT IMAGES TO THE LOCAL REPO"
 echo "###########################################"
 
 docker push registry.demo.netapp.com/trident:21.04.0
+docker push registry.demo.netapp.com/trident:21.04.1
 docker push registry.demo.netapp.com/trident-operator:21.04.0
+docker push registry.demo.netapp.com/trident-operator:21.04.1
 docker push registry.demo.netapp.com/trident-autosupport:21.01
 
 if [[  $(docker images | grep 'ghost' | grep 2.6 | wc -l) -ne 1 ]]

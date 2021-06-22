@@ -35,10 +35,10 @@ echo "Download Trident 21.04"
 echo "#######################################################################################################"
 
 cd
-mkdir 21.04.0
-cd 21.04.0
-wget https://github.com/NetApp/trident/releases/download/v21.04.0/trident-installer-21.04.0.tar.gz
-tar -xf trident-installer-21.04.0.tar.gz
+mkdir 21.04.1
+cd 21.04.1
+wget https://github.com/NetApp/trident/releases/download/v21.04.1/trident-installer-21.04.1.tar.gz
+tar -xf trident-installer-21.04.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
