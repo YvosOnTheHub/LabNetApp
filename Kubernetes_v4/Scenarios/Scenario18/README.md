@@ -70,7 +70,7 @@ git push -u origin master
 
 & now the fun starts!
 
-## C. ArgoCD configuration
+## C. Environment configuration
 
 We are going to create 3 ArgoCD applications:
 
@@ -155,6 +155,8 @@ ghost   Synced        Healthy
 
 ## D. Code update
 
+### 1. Infrastructure update: Kubernetes storage class modification
+
 Let's introduce the possibility to expand PVC. For a very small environment, you could just update your storage class & you will be good to go.  
 However, for large customers with different environments, you would have to repeat the same task on each cluster...  
 With GitOps, you can simply update your code repository (& by code, one could understand golden configuration or template) & apply it on the whole infrastructure at once.
@@ -186,11 +188,14 @@ argocd-storage-class-nas (default)   csi.trident.netapp.io   Delete          Imm
 ```
 
 Done! Your infrastructure is now up to date. Time to roll out some changes on your Ghost app!
+
+### 2. Application update: bigger volumer & new image version
+
 We will apply a version change of the image, as well as increasing the PVC attached to the POD.
 
 ```bash
-sed -i 's/5/10/' ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Apps/Ghost/1_pvc.yaml
-sed -i 's/2\.6/3\.13/' ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18/Apps/Ghost/2_deploy.yaml
+sed -i 's/5/10/' ~/Repository/Apps/Ghost/1_pvc.yaml
+sed -i 's/2\.6/3\.13/' ~/Repository/Apps/Ghost/2_deploy.yaml
 git adcom "ghost update to 3.13 & bigger pvc"
 git push
 ```
@@ -210,3 +215,31 @@ Once the update is done, you will the following:
 <p align="center"><img src="Images/argocd_ghost_in_sync.jpg"></p>
 
 & voilà!
+
+### 3. Infrastructure update: new version of Trident
+
+This scenario was built around Trident 21.04.0. With the availability of Trident 21.04.1 we also test its upgrade mechanism.  
+The only differences between both version's manifests are located in the images to be used. Let's proceed with the changes.
+
+```bash
+sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
+sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
+git adcom "trident update to 21.04.1"
+git push
+```
+
+After a few seconds, ArgoCD will detect some differences & show the App as being out of sync.  
+Again, notice the objects where the differences have been spotted.  
+When you click on _Sync_, make sure you choose the following options: _Replace_ & _Apply out of Sync Only_
+
+<p align="center"><img src="Images/argocd_trident_out_of_sync.jpg"></p>
+
+After a few seconds (wait for the pods to restart), the App will be _Synced_ again.  
+
+```bash
+kubectl get tver -n trident
+NAME      VERSION
+trident   21.04.1
+```
+
+There you go, you just upgraded Trident.
