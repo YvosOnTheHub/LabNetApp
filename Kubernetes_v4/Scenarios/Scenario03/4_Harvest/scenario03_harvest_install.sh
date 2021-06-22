@@ -5,7 +5,7 @@ ssh -o "StrictHostKeyChecking no" root@rhel6 wget https://raw.githubusercontent.
 ssh -o "StrictHostKeyChecking no" root@rhel6 yum install -y harvest-21.05.2-1.x86_64.rpm
 ssh -o "StrictHostKeyChecking no" root@rhel6 rm -f /opt/harvest/harvest.yml
 ssh -o "StrictHostKeyChecking no" root@rhel6 mv harvest.yml /opt/harvest/
-sleep 5
+sleep 10
 ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
 
 echo "### Integrating Harvest with Kubernetes & Prometheus"
