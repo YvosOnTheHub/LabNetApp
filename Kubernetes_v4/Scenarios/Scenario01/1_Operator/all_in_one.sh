@@ -55,7 +55,7 @@ echo "##########################################################################
 kubectl delete -f ~/20.07.1/trident-installer/deploy/bundle.yaml
 
 echo "#######################################################################################################"
-echo "Install new Trident Operator (21.04.0)"
+echo "Install new Trident Operator (21.04.1)"
 echo "#######################################################################################################"
 
 kubectl create -f trident-installer/deploy/bundle.yaml
