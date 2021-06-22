@@ -130,6 +130,19 @@ trident-configuration   Synced        Healthy
 
 Since I explicitly mentioned in the yaml file that the app has to auto-synchronize, ArgoCD has already created all the objects.
 
+```bash
+$ kubectl get tbc,secret -n trident
+NAME                                                                BACKEND NAME   BACKEND UUID                           PHASE   STATUS
+tridentbackendconfig.trident.netapp.io/backend-tbc-argocd-default   argocd-nas     05574e61-25d6-463a-b299-be070ac93262   Bound   Success
+
+NAME                                   TYPE                                  DATA   AGE
+secret/ontap-nfs-svm-secret-username   Opaque                                2      6h9m
+
+$ kubectl get sc
+NAME                                 PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+argocd-storage-class-nas (default)   csi.trident.netapp.io   Delete          Immediate           false                  6h10m
+```
+
 ### 3. Ghost installation with the command line
 
 We can reuse the same steps to create an applciation to run Ghost.  
@@ -151,6 +164,16 @@ Leave all parameters as they appear, and click on _synchronize_.
 kubectl get app -n argocd ghost
 NAME    SYNC STATUS   HEALTH STATUS
 ghost   Synced        Healthy
+
+$ kubectl get -n ghost svc,pod,pvc
+NAME           TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+service/blog   NodePort   10.110.3.94   <none>        80:30080/TCP   6h10m
+
+NAME                      READY   STATUS    RESTARTS   AGE
+pod/blog-96868887-tlthj   1/1     Running   0          6h10m
+
+NAME                                 STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS               AGE
+persistentvolumeclaim/blog-content   Bound    pvc-1e319499-0021-41a5-ba85-a0b549310c13   10Gi       RWX            argocd-storage-class-nas   6h10m
 ```
 
 ## D. Code update
