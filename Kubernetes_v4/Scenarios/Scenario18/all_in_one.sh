@@ -16,6 +16,7 @@ echo " 8. Push data to the repository"
 echo " 9. Update .bashrc (if not already done)"
 echo "#######################################################################################################"
 
+# Install MetalLB, Gitea & ArgoCD
 sh ../../Addendum/Addenda05/all_in_one.sh
 sh ../../Addendum/Addenda13/all_in_one.sh $1 $2
 sh ../../Addendum/Addenda14/all_in_one.sh
@@ -61,7 +62,7 @@ echo
 echo "#######################################################################################################"
 ARGOCDIP=$(kubectl get svc -n argocd argocd-server --no-headers | awk '{ print $4 }')
 ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-echo " TO CONNECT TO ArgoCD, USE THE FOLLOWING ADDRESS: $ARGOCDIP
+echo " TO CONNECT TO ArgoCD, USE THE FOLLOWING ADDRESS: $ARGOCDIP"
 echo " TO LOG INTO ArgoCD WITH 'admin', USE THE FOLLOWING PASSWORD: $ARGOCDPWD"
 echo "#######################################################################################################"
 echo
