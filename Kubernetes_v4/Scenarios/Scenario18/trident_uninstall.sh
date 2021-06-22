@@ -5,7 +5,11 @@ echo "Delete existing backends & storage classes"
 echo "#######################################################################################################"
 
 kubectl delete sc --all
-tridentctl -n trident delete backend --all
+if [[ $(kubectl get crd | grep tridentbackendconfigs | wc -l) -eq 1 ]]; then
+   kubectl get -n trident tbc -o name | xargs kubectl delete -n trident
+else
+   tridentctl -n trident delete backend --all
+fi
 
 echo "#######################################################################################################"
 echo "Uninstall Trident & associated CRD"
