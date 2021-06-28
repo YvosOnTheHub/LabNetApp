@@ -38,7 +38,7 @@ sed -e '/swap/ s/^#*/#/g' -i /etc/fstab
 
 ## B. Docker Hub user management
 
-If you have not yet read the [Addenda09](../Addenda09) about the Docker Hub management, it would be a good time to do so.  
+If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
 It is important to preload images on this host, especially because this lab contains some DaemonSets.  
 By definition, a daemonset runs on every node of the Kubernetes cluster.
 Once the new node has joined the cluster & is ready to be used, new daemonsets will start, but will only succeed if the images are present or if Kubernetes knows what login to use...
@@ -47,7 +47,7 @@ In order to have everything ready, you can already pull all the images used in t
 This must be done from _rhel3_ where the script can be found.
 
 ```bash
-sh ../Addenda09/2_Lazy_Images/pull_all_images.sh rhel4 my_login my_password
+sh ../Addenda08/2_Lazy_Images/pull_all_images.sh rhel4 my_login my_password
 ```
 
 ## C. Install the kubernetes packages & join the cluster

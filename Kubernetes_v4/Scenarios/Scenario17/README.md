@@ -3,7 +3,7 @@
 #########################################################################################
 
 Some of you may not allow direct management access between Kubernetes & ONTAP. However, a proxy can be configured between both layers to redirect traffic.  
-The [Addenda11](../../Addendum/Addenda11) guides you through the installation of HAProxy. We will here see how to continue its configuration to accept Trident Management flows to access ONTAP.  
+The [Addenda10](../../Addendum/Addenda10) guides you through the installation of HAProxy. We will here see how to continue its configuration to accept Trident Management flows to access ONTAP.  
 
 As Trident communicates with ONTAP through HTTPS, we will first need to create a certificate (self-signed in this example).  
 HAProxy requires both the key & the certificate to be concatenated into a single .pem file.  

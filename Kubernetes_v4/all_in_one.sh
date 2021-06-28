@@ -77,9 +77,9 @@ else
   echo "#######################################################################################################"
   echo
 
-  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel1 $1 $2
-  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel2 $1 $2
-  sh Addendum/Addenda09/2_Lazy_Images/pull_setup_images.sh rhel3 $1 $2
+  sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel1 $1 $2
+  sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel2 $1 $2
+  sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel3 $1 $2
 fi
 
 echo
@@ -92,7 +92,7 @@ echo
 
 sleep 2s
 sh Scenarios/Scenario01/2_Helm/trident_uninstall.sh
-sh Addendum/Addenda09/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
+sh Addendum/Addenda08/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 
 echo
 echo "#######################################################################################################"

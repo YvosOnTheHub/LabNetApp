@@ -1,5 +1,5 @@
 #########################################################################################
-# ADDENDA 9: How many pull requests can I do ?
+# ADDENDA 8: How many pull requests can I do ?
 #########################################################################################
 
 This page follows the steps provided on https://docs.docker.com/docker-hub/download-rate-limit/.  

@@ -60,7 +60,7 @@ kubectl label node rhel2 "topology.kubernetes.io/zone=east"
 kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
 ```
 
-Last, if you have not yet read the [Addenda09](../../Addendum/Addenda09) about the Docker Hub management, it would be a good time to do so.  
+Last, if you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
 Also, if no action has been made with regards to the container images, you can find a shell script in the Scenario01 directory _scenario01_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
 
 ```bash

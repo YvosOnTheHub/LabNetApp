@@ -20,8 +20,8 @@ The prerequisites of this lab are the following:
 
 - Completly uninstall Trident (there is a script called _trident_uninstall.sh_ in this folder that will do it for you)
 - Install the Load Balancer [MetalLB](../../Addendum/Addenda05)
-- Install the lightweight Git repository [Gitea](../../Addendum/Addenda13) (only the paragraph #A) & create an admin user (demo/netapp123)
-- Install the continuous deployment tool [ArgoCD](../../Addendum/Addenda14)
+- Install the lightweight Git repository [Gitea](../../Addendum/Addenda12) (only the paragraph #A) & create an admin user (demo/netapp123)
+- Install the continuous deployment tool [ArgoCD](../../Addendum/Addenda13)
 
 ## A. Docker images
 
@@ -32,7 +32,7 @@ The first part of this scenario is about managing Trident images. This will be d
 - Push them to the local registry  
 
 You will find in this folder a script called _push_scenario_images_to_private_repo.sh_ that will do the job for you.  
-Refer to the chapter [Addenda09](../../Addendum/Addenda09) to learn more about Docker images management, as it may require you to use your own login.
+Refer to the chapter [Addenda08](../../Addendum/Addenda08) to learn more about Docker images management, as it may require you to use your own login.
 
 ## B. Gitea repository
 

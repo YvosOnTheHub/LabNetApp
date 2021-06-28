@@ -17,7 +17,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 ```diff
 - You may have seen that starting in November 2020, there are now limits on how many pull requests can be done on the Docker Hub.  
-- As this lab was created with an _anonymous_ user, please read carefully the Addenda09 before starting this lab.
+- As this lab was created with an _anonymous_ user, please read carefully the Addenda08 before starting this lab.
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
@@ -52,14 +52,13 @@ Addendum
 [4.](Kubernetes_v4/Addendum/Addenda04) Install Ansible on RHEL3 (Kubernetes Master)  
 [5.](Kubernetes_v4/Addendum/Addenda05) Install a Load Balancer (MetalLB)  
 [6.](Kubernetes_v4/Addendum/Addenda06) Install the Kubernetes dashboard  
-[7.](Kubernetes_v4/Addendum/Addenda07) Install K8SH (bash + kubectl)  
-[8.](Kubernetes_v4/Addendum/Addenda08) Install K1S (simple Kubernetes dashboard)  
-[9.](Kubernetes_v4/Addendum/Addenda09) How to run this lab with the Docker hub rate limiting  
-[10.](Kubernetes_v4/Addendum/Addenda10) How to upgrade ONTAP  
-[11.](Kubernetes_v4/Addendum/Addenda11) How to install & prepare HAProxy  
-[12.](Kubernetes_v4/Addendum/Addenda12) How to create a S3 Bucket on ONTAP  
-[13.](Kubernetes_v4/Addendum/Addenda13) Set up a simple Source Code Repository :new:  
-[14.](Kubernetes_v4/Addendum/Addenda14) Install ArgoCD in this lab :new:  
+[7.](Kubernetes_v4/Addendum/Addenda07) Install cool tools :arrows_counterclockwise:  
+[8.](Kubernetes_v4/Addendum/Addenda08) How to run this lab with the Docker hub rate limiting  
+[9.](Kubernetes_v4/Addendum/Addenda09) How to upgrade ONTAP  
+[10.](Kubernetes_v4/Addendum/Addenda10) How to install & prepare HAProxy  
+[11.](Kubernetes_v4/Addendum/Addenda11) How to create a S3 Bucket on ONTAP  
+[12.](Kubernetes_v4/Addendum/Addenda12) Set up a simple Source Code Repository :new:  
+[13.](Kubernetes_v4/Addendum/Addenda13) Install ArgoCD in this lab :new:  
 
 <!-- ICONS
 :new:

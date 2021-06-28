@@ -1,175 +1,117 @@
 #########################################################################################
-# ADDENDA 12: How to create a S3 Bucket on ONTAP
+# ADDENDA 12: Set up a simple Source Code Repository
 #########################################################################################
 
-You may need a storage object to test some new features or products.  
-This page will guide you on how to create a S3 Bucket on this Lab-on-Demand.  
+A source code management platform is a central piece for all developers & CI/CD environments.  
+For this lab, I chose Gitea (https://gitea.io/), a lightweight SCR tool that I will install on the host RHEL4.  
 
-As a prerequisite, you will need to update ONTAP to 9.8. The guide to do so can be found in the [addenda10](../Addenda10).
-Also, ONTAP S3 being a new feature made GA with 9.8, not all mechanisms are available through REST API. Some commands also require _advanced_ mode. 
-The following steps must be ran using CLI with Putty (session _cluster1_):
+## A. Gitea installation
 
-- Install the ONTAP S3 Licence to enable this feature
-- Create a new aggregate
-- Create a SVM to host the bucket
-- Create a certificate
-- Configure the SVM Network
-- Create a S3 Bucket & an user to access it
+We will install Gitea as a Docker service, with Docker Compose.  
 
-## A. Install the ONTAP S3 License
-
-Please contact your account team or Technical Partner Manager in order to get an ONTAP S3 evaluation license.  
-Once you have it, you can install it with the following:
+First, once you are connected to RHEL4, retrieve locally this chapter:
 
 ```bash
-$ system license add -license-code ABCDEFGHIJKLMNOP
-License for package "S3" installed.
-(1 of 1 added successfully)
+cd
+svn export https://github.com/YvosOnTheHub/LabNetApp.git/trunk/Kubernetes_v4/Addendum/Addenda12
+cd Addenda12
 ```
 
-## B. Aggregate & SVM Creation
-
-The aggregate creations takes about a minute to complete.
+If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _addenda12_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
 
 ```bash
-set adv -c off
-storage aggregate  create  -aggregate S3 -diskcount 8 -disktype VMDISK
-vserver create -vserver svm_S3 -rootvolume s3_name -aggregate S3 -rootvolume-security-style unix -language C.UTF-8 -data-services data-s3-server
+sh addenda12_pull_images.sh my_login my_password
 ```
 
-## C. Certificate management
-
-Make sure you keep all the information (certificates, keys & passwords) that the CLI returns.
-
-This starts by the creation of a self-signed digital certificate, followed by the generation of a certificate signing request.  
+Docker compose will start 2 containers, one for the MySQL Database used by Gitea, one for the frontend.  
+To connect to Gitea, you will need to use the following address: http://192.168.0.64:3000.  
+If you prefer to use a FQDN (http://gitea.demo.netapp.com:3000) instead of the IP, remove the 3 _GITEA__server_ lines from the docker-compote.yml file & uncomment the ones related to the FQDN, after having updated the Domain (Alias: 192.168.0.64 = 'gitea'). Note that this whole page is described to work with the IP address.
 
 ```bash
-$ security certificate create -vserver svm_S3 -type root-ca -common-name svm_s3_ca
-The certificate s generated name for reference: svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
-
-$ security certificate generate-csr -common-name LOD_S3
-
-Certificate Signing Request :
------BEGIN CERTIFICATE REQUEST-----
-MIICmDCCAYACAQAwEzERMA8GA1UEAxQIWVZPU19TMzIwggEiMA0GCSqGSIb3DQEB
-...
------END CERTIFICATE REQUEST-----
-
-Private Key :
------BEGIN PRIVATE KEY-----
-MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDeA/u/s4b0Tfk2
-...
------END PRIVATE KEY-----
+$ docker-compose up -d
+Creating network "gitea_gitea" with the default driver
+Creating gitea_db_1
+Creating gitea
 ```
 
-We now need to sign the CSR to generate the S3 Server's certificate.  
-You will be requested to enter the Certificate created in the previous step.
+This will also create a bunch of folders & files, including Gitea's own init file.  
+If you want to browse all the parameters, this file is located there: ~/gitea/gitea/gitea/conf/app.ini  
+
+The very first time you log into the Gitea UI, you will be asked to review the parameters.  
+For this demo, I would recommed creating an administrator account (demo/netapp123/demo@demo.netapp.com) which I will use for the rest of the lab.  
+<p align="center"><img src="Images/Gitea_install_user.jpg"></p>
+
+& voilà, your repository is ready to be used!
+
+## B. Create a repository & how to use git
+
+In order to store your code, you will need to create a new repository. This can be achieved through the UI, or simply by calling a REST API:  
 
 ```bash
-$ security certificate sign -vserver svm_S3 -ca svm_s3_ca -ca-serial 166D1BCA584E5CD4 -expire-days 100
-
-Please enter Certificate Signing Request(CSR): Press <Enter> when done
------BEGIN CERTIFICATE REQUEST-----
-MIICpzCCAY8CAQAwIjEgMB4GA1UEAxQXWVZPU19TMy5kZW1vLm5ldGFwcC5jb20w
-...
------END CERTIFICATE REQUEST-----
-
-Signed Certificate :
------BEGIN CERTIFICATE-----
-MIIDMjCCAhqgAwIBAgIIFmza4TW2MjEwDQYJKoZIhvcNAQELBQAwITESMBAGA1UE
-...
------END CERTIFICATE-----
+$ curl -X POST "http://192.168.0.64:3000/api/v1/user/repos" -u demo:netapp123 -H "accept: application/json" -H "content-type: application/json" -d '{
+  "name":"test",
+  "description": "my first repo"
+}'
 ```
 
-Last, we can now install the certificate in the S3-Enabled SVM.  
-You will be asked to enter the _certificate_ & _private key_ retrieved earlier. Also, when asked to enter intermediate certificates, answer _no_. 
+Since we are going to use the command _git_ to interact with this repository, let's configure it with the following parameters:
 
 ```bash
-$ security certificate install -type server -vserver svm_S3
-...
-
-You should keep a copy of the private key and the CA-signed digital certificate for future reference.
-
-The installed certificate's CA and serial number for reference:
-CA: svm_s3_ca
-serial: 166D1BD8B1C09F66
-
-The certificate's generated name for reference: LOD_S3
+git config --global user.email lod.demo.netapp.com
+git config --global user.name "lod"
+git config --global credential.helper store
+git config --global alias.adcom '!git add -A && git commit -m'
+git config --global push.default simple
 ```
 
-Let's take a look at what we have got:
+The _credential_ parameter will store locally the username & password, while the _alias_ parameter creates a command that takes into account new files & commits them locally. You then still need to _push_ them to the Gitea repository. All these parameters are available in the _~/.gitconfig_ file.
+
+Let's create a new folder with a small README file.
 
 ```bash
-$ security cert show -vserver svm_S3 -common-name svm_s3_ca -type root-ca -instance
-  (security certificate show)
-                             Vserver: svm_S3
-                    Certificate Name: svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
-          FQDN or Custom Common Name: svm_s3_ca
-        Serial Number of Certificate: 166D1BCA584E5CD4
-               Certificate Authority: svm_s3_ca
-                 Type of Certificate: root-ca
- Size of Requested Certificate(bits): 2048
-              Certificate Start Date: Wed Mar 17 10:53:17 2021
-         Certificate Expiration Date: Thu Mar 17 10:53:17 2022
-              Public Key Certificate: -----BEGIN CERTIFICATE-----
-                                      MIIDWjCCAkKgAwIBAgIIFm0bylhOXNQwDQYJKoZIhvcNAQELBQAwITESMBAGA1UE
-                                        ...
-                                      -----END CERTIFICATE-----
-        Country Name (2 letter code): US
-  State or Province Name (full name):
-           Locality Name (e.g. city):
-    Organization Name (e.g. company):
-    Organization Unit (e.g. section):
-        Email Address (Contact Name):
-                            Protocol: SSL
-                    Hashing Function: SHA256
-                             Subtype: -
-
+cd
+mkdir testrepo
+cd testrepo
+echo "Hello You  " >> README.md
 ```
 
-## D. Network management
-
-We are here going to create a new service-policy that supports S3 workloads, as well as a S3 Endpoint (ie a SVM LIF) used to access the bucket we will create further out.
+The initial workflow with GIT is done in 3 steps (in this lab): initialization, add files, commit them locally.
 
 ```bash
-net int service-policy create -vserver svm_S3 -policy S3-data-policy -services data-core,data-s3-server
-net int create -vserver svm_S3 -lif endpoint_S3 -service-policy S3-data-policy -address 192.168.0.230 -netmask 255.255.255.0 -home-node cluster1-01 -home-port e0e
+$ git init
+Initialized empty Git repository in /root/testrepo/.git/
+$ git add .
+$ git commit -m "initial commit"
+[master (root-commit) 06b36b8] initial commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 README.md
 ```
 
-## E. S3 Bucket Creation
-
-A SVM can host one or several bucket. For this exercise, we will only create one called _s3lod_, accessible by a new user called _S3user_.
+The next step consists in sending the data to the Gitea repo. As it is the first time you connect to Gitea with git, you will be asked to enter some credentials (demo/netapp.123). Those will be stored in the ~/.git-credentials file.
 
 ```bash
-$ vserver object-store-server create -vserver svm_S3 -object-store-server ONTAP-S3.demo.netapp.com -certificate-name svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
-$ vserver object-store-server bucket create -vserver svm_S3 -bucket s3lod -size 100GB
-$ vserver object-store-server user create -vserver svm_S3 -user S3user
-
-$ vserver object-store-server user show -vserver svm_S3
-Vserver     User            ID        Access Key          Secret Key
------------ --------------- --------- ------------------- -------------------
-svm_S3.demo.netapp.com
-            root            0         -                   -
-   Comment: Root User
-svm_S3.demo.netapp.com
-            S3user          1         zs968172_3VyrASSpz3_9_1gub_pNrZ8S4847TAtqPkgOq3pcQaAtvzjkZ2UQ4z1xIlhANKBmZfr048X4_ASZ73v7Hbz_J03wMdi2_15_dm94pyhYM__4kIQ_sYlSY6b
-                                                          5Bu42Te8vmrpU_338_5Y8scvH7DI7RU3OoDM8XJsXhW867uIlXNwZN8_NCdY3hS9k49Jc_BxX8G9l_r3cBZSQ7A2C863ryW_gsl2932k36tT_HqIBu3_9Fzcy8dVM1J_
-
-$ vserver object-store-server group create -vserver svm_S3 -name S3group -users S3user -policies FullAccess
-$ vserver object-store-server bucket policy statement create -vserver svm_S3 -bucket s3lod -effect allow -action * -principal - -resource s3lod,s3lod/* -sid "" -index 1
+git remote add origin http://192.168.0.64:3000/demo/test.git
+git push -u origin master
 ```
 
-The access & secret keys will be used to connect to this bucket. Keep them on the side.
+Connecting to Gitea's UI, you can see some content in your repository !  
+<p align="center"><img src="Images/Gitea_initial_commit.jpg"></p>
 
-## F. Testing this setup
+Let's modify the README file & go through the git process to update the repository (try out the git alias!).  
+You will notice that this time, the credentials were not requested.  
 
-I usually use **S3 Browser** to connect to a bucket (https://s3browser.com/).  
+```bash
+echo "How are you ?" >> README.md
+git adcom "first update of the README file"
+git push
+```
 
-Here are the parameters to setup with S3 Browser when creating a new account:
+<p align="center"><img src="Images/Gitea_second_commit.jpg"></p>
 
-- Account Type: _S3 Compatible Storage_
-- REST Endpoint: the LIF created created earlier (_192.168.0.230_)
-- Access Key ID & Secret Access Key: both keys gathered in the previous step
-- Advanced S3-compatible storage settings: _Signature Version_ = _Signature V4_
+There you go, you are all set to use a Source Code Repository in the Lab on Demand.
 
-There you go, if you configured everything correctly, you can now access your new S3 Bucket.
+<!-- GOOD TO HAVE
+Retrieve a token for a specific user
+curl -X POST -H "Content-Type: application/json"  -k -d '{"name":"token"}' -u demo:netapp123 http://192.168.0.64:3000/api/v1/users/demo/tokens
+-->

@@ -1,5 +1,5 @@
 #########################################################################################
-# ADDENDA 9: Use a Docker login the lazy way !
+# ADDENDA 8: Use a Docker login the lazy way !
 #########################################################################################
 
 You have seen when images are pulled from repository.  

@@ -11,7 +11,7 @@ Trident 21.01 introduced the support of QoS Policy Groups for ONTAP, under 2 for
 :boom:  
 QoS is only supported with ONTAP 9.8.  
 If you want to test this feature with the Lab on Demand, you first nee to upgrade ONTAP from 9.7 to 9.8.  
-This procedure is explained in this [Addenda10](../../Addendum/Addenda10).  
+This procedure is explained in this [Addenda09](../../Addendum/Addenda09).  
 :boom:  
 
 Setting this feature is not the exciting part of this scenario. You actually want to see it working!  

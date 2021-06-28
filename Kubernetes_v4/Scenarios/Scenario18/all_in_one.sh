@@ -18,8 +18,8 @@ echo "##########################################################################
 
 # Install MetalLB, Gitea & ArgoCD
 sh ../../Addendum/Addenda05/all_in_one.sh
-sh ../../Addendum/Addenda13/all_in_one.sh $1 $2
-sh ../../Addendum/Addenda14/all_in_one.sh
+sh ../../Addendum/Addenda12/all_in_one.sh $1 $2
+sh ../../Addendum/Addenda13/all_in_one.sh
 
 cd ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario18
 sh push_scenario_images_to_private_repo.sh $1 $2

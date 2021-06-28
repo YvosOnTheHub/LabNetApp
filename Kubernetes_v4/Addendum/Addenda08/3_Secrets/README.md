@@ -1,5 +1,5 @@
 #########################################################################################
-# ADDENDA 9: Use a Docker login with secrets !
+# ADDENDA 8: Use a Docker login with secrets !
 #########################################################################################
 
 The alternative to manually pull images on each node consists in managing the Docker credentials via Kubernetes secrets.

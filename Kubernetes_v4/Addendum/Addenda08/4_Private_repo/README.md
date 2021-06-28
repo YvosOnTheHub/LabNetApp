@@ -1,5 +1,5 @@
 #########################################################################################
-# ADDENDA 9: Use a private Docker registry
+# ADDENDA 8: Use a private Docker registry
 #########################################################################################
 
 Organizations may not necessarily give direct access to public repositories, mainly for security reasons.  
