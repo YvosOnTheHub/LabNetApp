@@ -8,6 +8,9 @@ ssh -o "StrictHostKeyChecking no" root@rhel6 mv harvest.yml /opt/harvest/
 sleep 10
 ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
 
+echo "### Harvest Status:"
+ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status"
+
 echo "### Integrating Harvest with Kubernetes & Prometheus"
 cd ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario03/4_Harvest
 
