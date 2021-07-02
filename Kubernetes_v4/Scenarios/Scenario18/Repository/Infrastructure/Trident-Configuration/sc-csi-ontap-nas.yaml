@@ -6,4 +6,4 @@ metadata:
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: csi.trident.netapp.io
 parameters:
-  backendType: "ontap-nas"
+  backendType: "ontap-nas" 
