@@ -1,15 +1,17 @@
 #!/bin/bash
 
 ssh -o "StrictHostKeyChecking no" root@rhel6 wget https://github.com/NetApp/harvest/releases/download/v21.05.2/harvest-21.05.2-1.x86_64.rpm
+sleep 15
 ssh -o "StrictHostKeyChecking no" root@rhel6 wget https://raw.githubusercontent.com/YvosOnTheHub/LabNetApp/master/Kubernetes_v4/Scenarios/Scenario03/4_Harvest/harvest.yml
 ssh -o "StrictHostKeyChecking no" root@rhel6 yum install -y harvest-21.05.2-1.x86_64.rpm
 ssh -o "StrictHostKeyChecking no" root@rhel6 rm -f /opt/harvest/harvest.yml
 ssh -o "StrictHostKeyChecking no" root@rhel6 mv harvest.yml /opt/harvest/
-sleep 10
 ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
 
-echo "### Harvest Status:"
-ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status"
+HARVESTSTATUS=$(ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status" | grep lod | awk '{print $3}')
+if [[ $HARVESTSTATUS -eq "not" ]];then
+  ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
+fi
 
 echo "### Integrating Harvest with Kubernetes & Prometheus"
 cd ~/LabNetApp/Kubernetes_v4/Scenarios/Scenario03/4_Harvest
