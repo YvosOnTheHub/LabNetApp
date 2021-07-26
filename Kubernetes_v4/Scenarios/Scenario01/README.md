@@ -13,7 +13,8 @@ NAME      VERSION
 trident   20.07.1
 ```
 
-Let's first download the version you would like to install:
+Let's first download the version you would like to use.  
+Technically, if you decide to install Trident with Helm, you would not even need to perform this step, however throughout this lab, we will use the binary _tridentctl_ a few times, so we still to download it.
 
 ```bash
 cd

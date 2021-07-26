@@ -53,7 +53,10 @@ echo "Install new Trident Operator (21.04.1) with Helm"
 echo "#######################################################################################################"
 
 kubectl create namespace trident
-helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident
+helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
+helm install trident netapp-trident/trident-operator --version 21.4.1 -n trident
+# DEPRECATED:
+# helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident
 
 sleep 30s
 echo "#######################################################################################################"

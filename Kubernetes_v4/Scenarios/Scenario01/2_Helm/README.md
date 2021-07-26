@@ -20,9 +20,12 @@ For information, Helm 3.2 introduced a new parameter called _--create-namespace_
 $ kubectl create namespace trident
 namespace/trident created
 
-$ helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident
+$ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
+"netapp-trident" has been added to your repositories
+
+$ helm install trident netapp-trident/trident-operator --version 21.4.1 -n trident
 NAME: trident
-LAST DEPLOYED: Tue Jun 22 16:10:02 2021
+LAST DEPLOYED: Mon Jul 26 16:10:02 2021
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -45,7 +48,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2021-06-22 16:16:08.107874297 +0000 UTC deployed        trident-operator-21.04.1        21.04.1
+trident trident         1               2021-07-26 16:16:08.107874297 +0000 UTC deployed        trident-operator-21.04.1        21.04.1
 ```
 
 Also quite easy !  

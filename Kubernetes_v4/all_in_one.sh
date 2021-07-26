@@ -121,7 +121,9 @@ cp trident-installer/tridentctl /usr/bin/
 # Currently the imagePullPolicy for the autosupport image is set to "Always" which may cause issues when the Docker pull quota is empty
 # That's why I use the tridentAutosupportImage in the helm chart which will retrieve the image from the local repo & not use the public repo anymore
 kubectl create namespace trident
-helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
+helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
+helm install trident netapp-trident/trident-operator --version 21.4.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
+#helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
 
 while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
 do
