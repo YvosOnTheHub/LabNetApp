@@ -11,7 +11,7 @@ echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
 echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
 echo "# 1. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
-echo "# 2. INSTALL TRIDENT OPERATOR 21.04.1 WITH HELM"
+echo "# 2. INSTALL TRIDENT OPERATOR 21.07.0 WITH HELM"
 echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
@@ -97,7 +97,7 @@ sh Addendum/Addenda08/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 2. INSTALL TRIDENT OPERATOR 21.04.1 WITH HELM"
+echo "# 2. INSTALL TRIDENT OPERATOR 21.07.0 WITH HELM"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -111,19 +111,16 @@ kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
 sleep 2s
 
 cd
-mkdir 21.04.1
-cd 21.04.1
-wget https://github.com/NetApp/trident/releases/download/v21.04.1/trident-installer-21.04.1.tar.gz
-tar -xf trident-installer-21.04.1.tar.gz
+mkdir 21.07.0
+cd 21.07.0
+wget https://github.com/NetApp/trident/releases/download/v21.07.0/trident-installer-21.07.0.tar.gz
+tar -xf trident-installer-21.07.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
-# Currently the imagePullPolicy for the autosupport image is set to "Always" which may cause issues when the Docker pull quota is empty
-# That's why I use the tridentAutosupportImage in the helm chart which will retrieve the image from the local repo & not use the public repo anymore
 kubectl create namespace trident
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 21.4.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
-#helm install trident trident-installer/helm/trident-operator-21.04.1.tgz -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01
+helm install trident netapp-trident/trident-operator --version 21.7.0 -n trident
 
 while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
 do

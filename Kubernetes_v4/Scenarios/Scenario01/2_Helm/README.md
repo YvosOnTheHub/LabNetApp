@@ -23,9 +23,9 @@ namespace/trident created
 $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 "netapp-trident" has been added to your repositories
 
-$ helm install trident netapp-trident/trident-operator --version 21.4.1 -n trident
+$ helm install trident netapp-trident/trident-operator --version 21.7.0 -n trident
 NAME: trident
-LAST DEPLOYED: Mon Jul 26 16:10:02 2021
+LAST DEPLOYED: Mon Aug  2 07:46:38 2021
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -48,7 +48,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2021-07-26 16:16:08.107874297 +0000 UTC deployed        trident-operator-21.04.1        21.04.1
+trident trident         1               2021-08-02 07:46:38.154347422 +0000 UTC deployed        trident-operator-21.07.0        21.07.0
 ```
 
 Also quite easy !  
@@ -59,14 +59,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 21.04.1        | 21.04.1        |
+| 21.07.0        | 21.07.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v21.04.1
+  Version:    v21.07.0
 ```
 
 ## What's next

@@ -4,7 +4,7 @@
 
 **GOAL:**  
 Starting with Trident 20.07, it is now possible to an Operator to upgrade from non-Operator based architectures.  
-Before moving to the upgrade to Trident 21.04.1, we will first need to delete & clean up the current deployment.  
+Before moving to the upgrade to Trident 21.07.0, we will first need to delete & clean up the current deployment.  
 
 ## A. Do some optional preparation work
 
@@ -88,14 +88,14 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2021-06-22T13:43:25Z
+  Creation Timestamp:  2021-08-02T13:43:25Z
   Generation:          1
   Managed Fields:
     API Version:  trident.netapp.io/v1
     Manager:         trident-operator
     Operation:       Update
-    Time:            2021-06-22T13:43:50Z
-  Resource Version:  3648306
+    Time:            2021-08-02T13:43:50Z
+  Resource Version:  3524498
   Self Link:         /apis/trident.netapp.io/v1/tridentorchestrators/trident
   UID:               8384f117-9729-48cd-a2ee-36b08340f3f9
 Spec:
@@ -115,12 +115,13 @@ Status:
     k8sTimeout:           30
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
+    Probe Port:           17546
     Silence Autosupport:  false
-    Trident Image:        netapp/trident:21.04.1
+    Trident Image:        netapp/trident:21.07.0
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v21.04.1
+  Version:                v21.07.0
 Events:
   Type    Reason      Age    From                        Message
   ----    ------      ----   ----                        -------
@@ -133,12 +134,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 21.04.1        | 21.04.1        |
+| 21.07.0        | 21.07.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   21.04.1
+trident   21.07.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -153,7 +154,7 @@ $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v21.04.1
+  Version:    v21.07.0
 ```
 
 ## D. What's next
