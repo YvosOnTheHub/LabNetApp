@@ -3,9 +3,9 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep trident | grep 21.07.0 | wc -l) -ne 0 ]]
+if [[  $(docker images | grep trident | grep 21.07.1 | wc -l) -ne 0 ]]
   then
-    echo "TRIDENT 21.07.0 images already present. Nothing to do"
+    echo "TRIDENT 21.07.1 images already present. Nothing to do"
     exit 0
 fi
 
@@ -30,7 +30,7 @@ do
   echo "# LOGIN on $host & PULLING TRIDENT IMAGES FROM DOCKER HUB"
   echo "#########################################################"
   ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident:21.07.0
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident-operator:21.07.0
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident:21.07.1
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident-operator:21.07.1
   ssh -o "StrictHostKeyChecking no" root@$host docker pull netapp/trident-autosupport:21.01
 done

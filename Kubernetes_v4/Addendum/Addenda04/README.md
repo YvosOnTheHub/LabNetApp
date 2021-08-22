@@ -26,7 +26,7 @@ Last, we will install the NetApp ONTAP Collection from the Ansible Galaxy
 $ ansible-galaxy collection install netapp.ontap
 Process install dependency map
 Starting collection install process
-Installing 'netapp.ontap:20.11.0' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
+Installing 'netapp.ontap:21.08.2' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
 ```
 
 Now that Ansible is installed, let's configure the host file

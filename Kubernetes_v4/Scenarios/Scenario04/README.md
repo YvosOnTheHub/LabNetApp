@@ -74,7 +74,7 @@ Filesystem           1K-blocks      Used Available Use% Mounted on
                        5242880       704   5242176   0% /var/lib/ghost/content
 
 
-$ kubectl exec -n ghost blog-57d7d4886-5bsml -- ls /var/lib/ghost/content
+$ kubectl exec -n ghost $(kubectl -n ghost get pod -o name) -- ls /var/lib/ghost/content
 apps
 data
 images

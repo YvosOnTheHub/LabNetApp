@@ -18,6 +18,6 @@ echo "#########################################################"
 echo "# LOGIN on $1 & PULLING TRIDENT IMAGES FROM DOCKER HUB"
 echo "#########################################################"
 ssh -o "StrictHostKeyChecking no" root@$1 docker login -u $2 -p $3
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.07.0
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.07.0
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.07.1
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.07.1
 ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-autosupport:21.01

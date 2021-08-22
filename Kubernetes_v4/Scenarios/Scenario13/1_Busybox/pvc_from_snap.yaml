@@ -7,8 +7,8 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: storage-class-nas
+      storage: 10Gi
+  storageClassName: storage-class-nas-snap-reserve
   dataSource:
     name: mydata-snapshot
     kind: VolumeSnapshot

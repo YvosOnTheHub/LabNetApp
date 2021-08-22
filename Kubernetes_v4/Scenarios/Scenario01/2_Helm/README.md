@@ -3,7 +3,10 @@
 #########################################################################################
 
 Helm is a package manager that is very popular when it comes to Kubernetes. You can easily deploy your application & all its objects with just one command.  
-This tool is already present in the LabOnDemand:
+Also, the Trident Operator Helm Chart has been available on the artifact hub since v21.01:
+https://artifacthub.io/packages/helm/netapp-trident/trident-operator
+
+Helm is already present in the LabOnDemand:
 
 ```bash
 $ helm version
@@ -23,9 +26,9 @@ namespace/trident created
 $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 "netapp-trident" has been added to your repositories
 
-$ helm install trident netapp-trident/trident-operator --version 21.7.0 -n trident
+$ helm install trident netapp-trident/trident-operator --version 21.7.1 -n trident
 NAME: trident
-LAST DEPLOYED: Mon Aug  2 07:46:38 2021
+LAST DEPLOYED: Mon Aug  22 07:46:38 2021
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -48,7 +51,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2021-08-02 07:46:38.154347422 +0000 UTC deployed        trident-operator-21.07.0        21.07.0
+trident trident         1               2021-08-22 07:46:38.154347422 +0000 UTC deployed        trident-operator-21.07.1        21.07.1
 ```
 
 Also quite easy !  
@@ -59,14 +62,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 21.07.0        | 21.07.0        |
+| 21.07.1        | 21.07.1        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v21.07.0
+  Version:    v21.07.1
 ```
 
 ## What's next

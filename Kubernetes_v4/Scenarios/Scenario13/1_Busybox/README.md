@@ -14,9 +14,15 @@ sh scenario13_busybox_pull_images.sh my_login my_password
 ## A. Prepare the environment
 
 We will create an app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. (cf [Scenario02](../../Scenario02)).  
+For this scenario, we will use a specific backend, as well as a storage class, in order to see how snapshot space usage is calculated.  
+I specifically chose a high snapshot reserve value of 40%, so that we can really see the impact.  
 
 ```bash
+$ kubectl create -n trident -f backend_nas-snap_reserve.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-snap-reserve created
+$ kubectl create -f sc-csi-ontap-nas_snap-reserve.yaml
+storageclass.storage.k8s.io/storage-class-nas-snap-reserve created
+
 $ kubectl create namespace busybox
 namespace/busybox created
 
@@ -36,10 +42,10 @@ replicaset.apps/busybox-767768d776   1         1         1       5m1s
 
 $ kubectl get pvc,pv -n busybox
 NAME                           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/mydata   Bound    pvc-e6a0aad2-d135-408f-aae4-5477238cabcc   1Gi        RWX            storage-class-nas   7m28s
+persistentvolumeclaim/mydata   Bound    pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521   10Gi       RWX            storage-class-nas   7m28s
 
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM            STORAGECLASS        REASON   AGE
-persistentvolume/pvc-e6a0aad2-d135-408f-aae4-5477238cabcc   1Gi        RWX            Delete           Bound    busybox/mydata   storage-class-nas            7m26s
+persistentvolume/pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521   10Gi       RWX            Delete           Bound    busybox/mydata   storage-class-nas            7m26s
 ```
 
 ## B. Create a snapshot
@@ -48,10 +54,10 @@ Before doing so, let's create a file in our PVC, that will be deleted once the s
 That way, there is a difference between the current filesystem & the snapshot content.  
 
 ```bash
-$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- df /data
-Filesystem           1K-blocks      Used Available Use% Mounted on
-192.168.0.135:/nas1_pvc_e6a0aad2_d135_408f_aae4_5477238cabcc
-                        996160       256    995904   0% /data
+$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- df -h /data
+Filesystem                Size      Used Available Use% Mounted on
+192.168.0.135:/sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521
+                         10.0G    256.0K     10.0G   0% /data
 
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- touch /data/test.txt
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/test.txt
@@ -61,6 +67,23 @@ $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- more /data/te
 Trident is great!
 ```
 
+The PVC has been requested for 10GB, which is also what you can see in the POD.  
+However, let's take a look at the ONTAP level.  
+
+```bash
+$ export VOLUME=$(kubectl get pv $( kubectl get pvc mydata -n busybox -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}')
+$ echo $VOLUME
+sr_pvc_544cf44a_ad0c_434d_b588_927cae359024
+
+$ ssh -l vsadmin 192.168.0.135 vol show -volume $VOLUME -fields size,available,percent-snapshot-space
+vserver volume                                      size    available percent-snapshot-space
+------- ------------------------------------------- ------- --------- --------------------------
+nfs_svm sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521 16.67GB 10.00GB   40%
+```
+
+We have set a 40% snapshot reserve in the backend file, space that is not taken from the PVC size.  
+The overall size of the volume in ONTAP will be calculated as follows: PVC_Size / ((100 - Snap_Reserve)/100), hence the 16GB you can see here.  
+
 Now, we can proceed with the snapshot creation
 
 ```bash
@@ -69,20 +92,20 @@ volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot created
 
 $ kubectl get volumesnapshot -n busybox
 NAME              READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-mydata-snapshot   true         mydata                              1Gi           csi-snap-class   snapcontent-6376456d-b4f6-4def-b572-0a0b295295ae   5s             5s
+mydata-snapshot   true         mydata                              1Gi           csi-snap-class   snapcontent-912985d7-8a8c-443a-9de3-bea1165ae26f   5s             5s
 
 $ tridentctl -n trident get volume
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-|                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
-| pvc-e6a0aad2-d135-408f-aae4-5477238cabcc | 1.0 GiB | storage-class-nas | file     | 7a7553c7-ddce-4c44-9325-04cd1e136dc5 | online | true    |
-+------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
++------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
+|                   NAME                   |  SIZE   |         STORAGE CLASS          | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
++------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
+| pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521 | 1.0 GiB | storage-class-nas-snap-reserve | file     | 7fe1e63a-c1b0-4363-a047-d83e6401d92f | online | true    |
++------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
 
 $ tridentctl -n trident get snapshot
 +-----------------------------------------------+------------------------------------------+
 |                     NAME                      |                  VOLUME                  |
 +-----------------------------------------------+------------------------------------------+
-| snapshot-6376456d-b4f6-4def-b572-0a0b295295ae | pvc-e6a0aad2-d135-408f-aae4-5477238cabcc |
+| snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f | pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521 |
 +-----------------------------------------------+------------------------------------------+
 ```
 
@@ -92,17 +115,14 @@ With ONTAP, you will end up with a *ONTAP Snapshot*, a _ReadOnly_ object, which 
 You can see it by browsing through System Manager, by connecting with Putty to the _cluster1_ profile (admin/Netapp1!) or using the following SSH command:
 
 ```bash
-$ kubectl get pv $( kubectl get pvc mydata -n busybox -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}{"\n"}'
-nas1_pvc_e6a0aad2_d135_408f_aae4_5477238cabcc
-
-$ ssh -l vsadmin 192.168.0.135 vol snaps show -volume nas1_pvc_e6a0aad2_d135_408f_aae4_5477238cabcc
+$ ssh -l vsadmin 192.168.0.135 vol snaps show -volume $VOLUME
                                                                  ---Blocks---
 Vserver  Volume   Snapshot                                  Size Total% Used%
 -------- -------- ------------------------------------- -------- ------ -----
-nfs_svm  nas1_pvc_e6a0aad2_d135_408f_aae4_5477238cabcc
-                  snapshot-6376456d-b4f6-4def-b572-0a0b295295ae 208KB 0%  32%
-                  daily.2021-06-17_0010                    256KB     0%   36%
-                  hourly.2021-06-17_0205                   272KB     0%   38%
+nfs_svm  sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521
+                  hourly.2021-08-02_1005                   196KB     0%   51%
+                  hourly.2021-08-02_1105                   216KB     0%   53%
+                  snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f 176KB 0%  48%
 ```
 
 Notice, that you may also see ONTAP scheduled snapshots.
@@ -110,12 +130,12 @@ About those, you can easily access them from within the container, but only if y
 
 ```bash
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/
-total 32
-drwxrwxrwx    2 99       99            4096 Jun 16 13:19 daily.2021-06-17_0010
-drwxrwxrwx    2 99       99            4096 Jun 16 13:19 hourly.2021-06-17_0205
-drwxrwxrwx    2 99       99            4096 Jun 16 13:19 snapshot-6376456d-b4f6-4def-b572-0a0b295295ae
+total 12
+drwxrwxrwx    2 99       99            4096 Aug  2 10:02 hourly.2021-08-02_1005
+drwxrwxrwx    2 99       99            4096 Aug  2 10:02 hourly.2021-08-02_1105
+drwxrwxrwx    2 99       99            4096 Aug  2 10:02 snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f
 
-$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/snapshot-6376456d-b4f6-4def-b572-0a0b295295ae
+$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f
 total 0
 -rw-r--r--    1 99       99               6 Jun 16 13:22 test.txt
 ```
