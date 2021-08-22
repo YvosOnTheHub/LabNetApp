@@ -32,7 +32,7 @@ deployment.apps/busybox created
 
 $ kubectl get all -n busybox
 NAME                           READY   STATUS    RESTARTS   AGE
-pod/busybox-767768d776-dh929   1/1     Running   0          5m1s
+pod/busybox-767768d776-f7b9n   1/1     Running   0          5m1s
 
 NAME                      READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/busybox   1/1     1            1           5m1s
@@ -42,10 +42,10 @@ replicaset.apps/busybox-767768d776   1         1         1       5m1s
 
 $ kubectl get pvc,pv -n busybox
 NAME                           STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/mydata   Bound    pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521   10Gi       RWX            storage-class-nas   7m28s
+persistentvolumeclaim/mydata   Bound    pvc-d414549c-79c8-456f-aded-a6232282d5cf   10Gi       RWX            storage-class-nas   7m28s
 
 NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM            STORAGECLASS        REASON   AGE
-persistentvolume/pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521   10Gi       RWX            Delete           Bound    busybox/mydata   storage-class-nas            7m26s
+persistentvolume/pvc-d414549c-79c8-456f-aded-a6232282d5cf   10Gi       RWX            Delete           Bound    busybox/mydata   storage-class-nas            7m26s
 ```
 
 ## B. Create a snapshot
@@ -56,7 +56,7 @@ That way, there is a difference between the current filesystem & the snapshot co
 ```bash
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- df -h /data
 Filesystem                Size      Used Available Use% Mounted on
-192.168.0.135:/sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521
+192.168.0.135:/sr_pvc_d414549c_79c8_456f_aded_a6232282d5cf
                          10.0G    256.0K     10.0G   0% /data
 
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- touch /data/test.txt
@@ -73,12 +73,12 @@ However, let's take a look at the ONTAP level.
 ```bash
 $ export VOLUME=$(kubectl get pv $( kubectl get pvc mydata -n busybox -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}')
 $ echo $VOLUME
-sr_pvc_544cf44a_ad0c_434d_b588_927cae359024
+sr_pvc_d414549c_79c8_456f_aded_a6232282d5cf
 
 $ ssh -l vsadmin 192.168.0.135 vol show -volume $VOLUME -fields size,available,percent-snapshot-space
 vserver volume                                      size    available percent-snapshot-space
 ------- ------------------------------------------- ------- --------- --------------------------
-nfs_svm sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521 16.67GB 10.00GB   40%
+nfs_svm sr_pvc_d414549c_79c8_456f_aded_a6232282d5cf 16.67GB 10.00GB   40%
 ```
 
 We have set a 40% snapshot reserve in the backend file, space that is not taken from the PVC size.  
@@ -92,20 +92,20 @@ volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot created
 
 $ kubectl get volumesnapshot -n busybox
 NAME              READYTOUSE   SOURCEPVC   SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
-mydata-snapshot   true         mydata                              1Gi           csi-snap-class   snapcontent-912985d7-8a8c-443a-9de3-bea1165ae26f   5s             5s
+mydata-snapshot   true         mydata                              232Ki         csi-snap-class   snapcontent-5b686534-4742-4010-9766-01ecea1c49a2   5s             5s
 
 $ tridentctl -n trident get volume
 +------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |         STORAGE CLASS          | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
-| pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521 | 1.0 GiB | storage-class-nas-snap-reserve | file     | 7fe1e63a-c1b0-4363-a047-d83e6401d92f | online | true    |
+| pvc-d414549c-79c8-456f-aded-a6232282d5cf | 10 GiB | storage-class-nas-snap-reserve | file     | c6313961-1ee2-457d-82b0-64fa48a38492 | online | true    |
 +------------------------------------------+---------+--------------------------------+----------+--------------------------------------+--------+---------+
 
 $ tridentctl -n trident get snapshot
 +-----------------------------------------------+------------------------------------------+
 |                     NAME                      |                  VOLUME                  |
 +-----------------------------------------------+------------------------------------------+
-| snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f | pvc-6f3caa6d-491e-4a63-a54d-ecfb94b1d521 |
+| snapshot-5b686534-4742-4010-9766-01ecea1c49a2 | pvc-d414549c-79c8-456f-aded-a6232282d5cf |
 +-----------------------------------------------+------------------------------------------+
 ```
 
@@ -119,10 +119,10 @@ $ ssh -l vsadmin 192.168.0.135 vol snaps show -volume $VOLUME
                                                                  ---Blocks---
 Vserver  Volume   Snapshot                                  Size Total% Used%
 -------- -------- ------------------------------------- -------- ------ -----
-nfs_svm  sr_pvc_6f3caa6d_491e_4a63_a54d_ecfb94b1d521
-                  hourly.2021-08-02_1005                   196KB     0%   51%
-                  hourly.2021-08-02_1105                   216KB     0%   53%
-                  snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f 176KB 0%  48%
+nfs_svm  sr_pvc_d414549c_79c8_456f_aded_a6232282d5cf
+                  snapshot-5b686534-4742-4010-9766-01ecea1c49a2 160KB 0%  32%
+                  hourly.2021-08-22_1105                   196KB     0%   37%
+                  hourly.2021-08-22_1205                   216KB     0%   39%
 ```
 
 Notice, that you may also see ONTAP scheduled snapshots.
@@ -131,13 +131,13 @@ About those, you can easily access them from within the container, but only if y
 ```bash
 $ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/
 total 12
-drwxrwxrwx    2 99       99            4096 Aug  2 10:02 hourly.2021-08-02_1005
-drwxrwxrwx    2 99       99            4096 Aug  2 10:02 hourly.2021-08-02_1105
-drwxrwxrwx    2 99       99            4096 Aug  2 10:02 snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f
+drwxrwxrwx    2 99       99            4096 Aug 22 10:57 hourly.2021-08-22_1105
+drwxrwxrwx    2 99       99            4096 Aug 22 10:57 hourly.2021-08-22_1205
+drwxrwxrwx    2 99       99            4096 Aug 22 10:57 snapshot-5b686534-4742-4010-9766-01ecea1c49a2
 
-$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/snapshot-912985d7-8a8c-443a-9de3-bea1165ae26f
+$ kubectl exec -n busybox $(kubectl get pod -n busybox -o name) -- ls -l /data/.snapshot/snapshot-5b686534-4742-4010-9766-01ecea1c49a2
 total 0
--rw-r--r--    1 99       99               6 Jun 16 13:22 test.txt
+-rw-r--r--    1 99       99               6 Aug 22 13:22 test.txt
 ```
 
 Finally, let's delete the file we created earlier.
@@ -165,13 +165,13 @@ $ kubectl create -n busybox -f pvc_from_snap.yaml
 persistentvolumeclaim/mydata-from-snap created
 
 $ kubectl get pvc,pv -n busybox
-NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/mydata             Bound    pvc-e6a0aad2-d135-408f-aae4-5477238cabcc   1Gi        RWX            storage-class-nas   19h
-persistentvolumeclaim/mydata-from-snap   Bound    pvc-8cc7c1f7-399c-4a85-9b0d-d8fbd05e6c1f   1Gi        RWX            storage-class-nas   11s
+NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                     AGE
+persistentvolumeclaim/mydata             Bound    pvc-d414549c-79c8-456f-aded-a6232282d5cf   10Gi       RWX            storage-class-nas-snap-reserve   149m
+persistentvolumeclaim/mydata-from-snap   Bound    pvc-4811baa9-2ffc-4a51-b4e1-829455ba52c7   10Gi       RWX            storage-class-nas-snap-reserve   14s
 
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS        REASON   AGE
-persistentvolume/pvc-8cc7c1f7-399c-4a85-9b0d-d8fbd05e6c1f   1Gi        RWX            Delete           Bound    busybox/mydata-from-snap   storage-class-nas            9s
-persistentvolume/pvc-e6a0aad2-d135-408f-aae4-5477238cabcc   1Gi        RWX            Delete           Bound    busybox/mydata             storage-class-nas            19h
+NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                      STORAGECLASS                     REASON   AGE
+persistentvolume/pvc-4811baa9-2ffc-4a51-b4e1-829455ba52c7   10Gi       RWX            Delete           Bound    busybox/mydata-from-snap   storage-class-nas-snap-reserve            13s
+persistentvolume/pvc-d414549c-79c8-456f-aded-a6232282d5cf   10Gi       RWX            Delete           Bound    busybox/mydata             storage-class-nas-snap-reserve            149m
 ```
 
 Your clone has been created, but what does it translate to at the storage level?  
@@ -184,20 +184,21 @@ $ curl -X GET -ku vsadmin:Netapp1!  "https://192.168.0.135/api/storage/volumes?c
 {
   "records": [
     {
-      "uuid": "f434ba34-cf43-11eb-83c4-005056b03185",
-      "name": "nas1_pvc_8cc7c1f7_399c_4a85_9b0d_d8fbd05e6c1f",
+      "uuid": "7c732af2-034c-11ec-a246-00505681d6fc",
+      "name": "sr_pvc_4811baa9_2ffc_4a51_b4e1_829455ba52c7",
       "clone": {
         "is_flexclone": true,
         "parent_snapshot": {
-          "name": "snapshot-6376456d-b4f6-4def-b572-0a0b295295ae"
+          "name": "snapshot-5b686534-4742-4010-9766-01ecea1c49a2"
         },
         "parent_volume": {
-          "name": "nas1_pvc_e6a0aad2_d135_408f_aae4_5477238cabcc"
+          "name": "sr_pvc_d414549c_79c8_456f_aded_a6232282d5cf"
         }
       }
     }
   ],
   "num_records": 1
+}
 ```
 
 ## D. Recover the data of your application
@@ -214,8 +215,8 @@ That will trigger a new POD creation with the updated configuration:
 ```bash
 $ kubectl get -n busybox pod
 NAME                       READY   STATUS        RESTARTS   AGE
-busybox-69f765569b-rh2fs   1/1     Running       0          5s
-busybox-767768d776-dh929   1/1     Terminating   19         19h
+busybox-6d688b88c4-x94cm   1/1     Running       0          8s
+busybox-767768d776-f7b9n   1/1     Terminating   2          150m
 ```
 
 Now, if you look at the files this POD has access to (the PVC), you will see that the *lost data* (file: test.txt) is back!
