@@ -25,9 +25,9 @@ We then use this token to request data from the Hub.
 
 ```bash
 $ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-$ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
-RateLimit-Limit: 100;w=21600
-RateLimit-Remaining: 0;w=21600
+$ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit
+ratelimit-limit: 100;w=21600
+ratelimit-remaining: 0;w=21600
 ```
 
 You most probably will get the same result, ie no _pull request_ left...  
@@ -37,9 +37,9 @@ Let's do the same, but this time with your own user. You just need to replace th
 
 ```bash
 $ TOKEN=$(curl --user 'username:password' "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-$ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep RateLimit
-RateLimit-Limit: 200;w=21600
-RateLimit-Remaining: 197;w=21600
+$ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit
+ratelimit-limit: 200;w=21600
+ratelimit-remaining: 197;w=21600
 ```
 
 This time, you will see that you have plenty of _pull requests_ left to use.  
