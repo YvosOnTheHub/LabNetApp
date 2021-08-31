@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: blogclone
   labels:
-    scenario: clone
+    app.kubernetes.io/name: scenario13
+    app: blogclone
 spec:
   type: NodePort
   selector:
+    app.kubernetes.io/name: scenario13
     app: blogclone
   ports:
   - protocol: TCP

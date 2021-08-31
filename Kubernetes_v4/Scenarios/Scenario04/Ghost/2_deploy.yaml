@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: blog
   labels:
-    app: blog
+    app.kubernetes.io/name: scenario04
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: blog
+      app.kubernetes.io/name: scenario04
   template:
     metadata:
       labels:
-        app: blog
+        app.kubernetes.io/name: scenario04
     spec:
       containers:
       - name: blog

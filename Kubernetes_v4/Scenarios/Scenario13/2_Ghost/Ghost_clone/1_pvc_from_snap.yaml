@@ -2,6 +2,9 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: mydata-from-snap
+  labels:
+    app.kubernetes.io/name: scenario13
+    app: blogclone
 spec:
   accessModes:
     - ReadWriteMany
