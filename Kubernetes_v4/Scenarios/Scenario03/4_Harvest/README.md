@@ -12,9 +12,9 @@ Let's start by downloading Harvest & installing it (on _rhel6_):
 
 ```bash
 $ cd
-$ wget https://github.com/NetApp/harvest/releases/download/v21.05.2/harvest-21.05.2-1.x86_64.rpm
+$ wget https://github.com/NetApp/harvest/releases/download/v21.05.4/harvest-21.05.4-2.x86_64.rpm
 $ wget https://raw.githubusercontent.com/YvosOnTheHub/LabNetApp/master/Kubernetes_v4/Scenarios/Scenario03/4_Harvest/harvest.yml
-$ yum install harvest-21.05.2-1.x86_64.rpm
+$ yum install harvest-21.05.4-2.x86_64.rpm
 $ rm -f /opt/harvest/harvest.yml
 $ mv harvest.yml /opt/harvest/
 $ cd /opt/harvest/
