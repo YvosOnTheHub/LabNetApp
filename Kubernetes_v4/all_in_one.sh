@@ -10,14 +10,15 @@ echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
 echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
-echo "# 1. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
-echo "# 2. INSTALL TRIDENT OPERATOR 21.07.1 WITH HELM"
-echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
-echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
-echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
-echo "# 6. INSTALL & CONFIGURE HARVEST"
-echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE" 
-echo "# 8. UPDATE BASHRC"
+echo "# 1. UPGRADE HELM"
+echo "# 2. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
+echo "# 3. INSTALL TRIDENT OPERATOR 21.07.1 WITH HELM"
+echo "# 4. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
+echo "# 5. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 6. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 7. INSTALL & CONFIGURE HARVEST"
+echo "# 8. ENABLE POD SCHEDULING ON THE MASTER NODE" 
+echo "# 9. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -85,7 +86,21 @@ fi
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 1. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
+echo "# 1. UPGRADE HELM"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+cd ~/helm
+rm -rf linux-amd64
+wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
+tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/helm
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 2. CLEAN UP THE CURRENT ENVIRONMENT & PUSH TRIDENT IMAGES TO PRIVATE REPO"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -97,7 +112,7 @@ sh Addendum/Addenda08/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 2. INSTALL TRIDENT OPERATOR 21.07.1 WITH HELM"
+echo "# 3. INSTALL TRIDENT OPERATOR 21.07.1 WITH HELM"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -131,7 +146,7 @@ done
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 3. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
+echo "# 4. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -142,7 +157,7 @@ sh Scenarios/Scenario02/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 5. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -153,7 +168,7 @@ sh Scenarios/Scenario05/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 6. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -164,7 +179,7 @@ sh Scenarios/Scenario03/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 6. INSTALL & CONFIGURE HARVEST"
+echo "# 7. INSTALL & CONFIGURE HARVEST"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -175,7 +190,7 @@ sh Scenarios/Scenario03/4_Harvest/scenario03_harvest_install.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE"
+echo "# 8. ENABLE POD SCHEDULING ON THE MASTER NODE"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -185,7 +200,7 @@ kubectl taint nodes rhel3 node-role.kubernetes.io/master-
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 8. UPDATE BASHRC"
+echo "# 9. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
