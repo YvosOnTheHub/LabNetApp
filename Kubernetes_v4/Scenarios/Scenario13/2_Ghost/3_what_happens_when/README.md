@@ -21,13 +21,18 @@ Let's start by cleaning this up (remove the Deployment & the services, so that w
 Depending on which part of this scenario you have done, you can use one or both of the following blocks:
 
 ```bash
-$ kubectl delete -n ghost all -l scenario=snap
+$ kubectl delete -n ghost all -l app=blog
+pod "blog-6cbd945df-p8r8t" deleted
 service "blog" deleted
 deployment.apps "blog" deleted
+replicaset.apps "blog-6d864d5bb" deleted
 
-$ kubectl delete -n ghost all -l scenario=clone
+
+$ kubectl delete -n ghost all -l app=blogclone
+pod "blogclone-6d864d5bb-kbbdr" deleted
 service "blogclone" deleted
 deployment.apps "blogclone" deleted
+replicaset.apps "blogclone-6d864d5bc" deleted
 ```
 
 Once the cleanup is done, you will only have the following left:

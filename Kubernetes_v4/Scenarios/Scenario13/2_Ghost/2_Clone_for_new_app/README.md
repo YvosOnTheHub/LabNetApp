@@ -15,12 +15,18 @@ deployment.apps/blogclone created
 $ kubectl create -n ghost -f Ghost_clone/3_service.yaml
 service/blogclone created
 
-$ kubectl get all -n ghost -l scenario=clone
-NAME                TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
-service/blogclone   NodePort   10.106.214.203   <none>        80:30081/TCP   12s
+$ kubectl get all -n ghost -l app==blogclone
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/blogclone-6d864d5bb-kbbdr   1/1     Running   0          2m35s
+
+NAME                TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/blogclone   NodePort   10.107.181.62   <none>        80:30081/TCP   2m31s
 
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/blogclone   1/1     1            1           28s
+deployment.apps/blogclone   1/1     1            1           2m35s
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/blogclone-6d864d5bb   1         1         1       2m35s
 ```
 
 Let's check the result:  
