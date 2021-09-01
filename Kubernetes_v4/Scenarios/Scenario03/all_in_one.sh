@@ -21,7 +21,7 @@ PROM="DEPRECATED"
 #PROM="UPDATE"
 
 if [[ $PROM == "DEPRECATED" ]];then
-  # https://github.com/helm/charts/tree/master/stable/prometheus-operator
+  # DOC: https://github.com/helm/charts/tree/master/stable/prometheus-operator
   helm repo add stable https://charts.helm.sh/stable
   helm repo update
   helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
@@ -30,13 +30,14 @@ elif [[ $PROM == "UPDATE" ]];then
   helm uninstall -n monitoring prom-operator
   kubectl delete ns monitoring
   kubectl get crd -o name | grep monitoring | xargs kubectl delete
+  kubectl delete -n kube-system svc prom-operator-prometheus-o-kubelet
   sleep 10
   
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
   helm repo update
 
   kubectl create ns monitoring
-  helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 --set grafana.persistence.enabled=true,grafana.service.type=NodePort,prometheus.service.type=NodePort
+  helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 -f 1_Upgrade/prometheus-stack-values.yaml
 fi
 
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 1 ]

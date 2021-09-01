@@ -1,0 +1,16 @@
+alertmanager:
+  enabled: false
+  
+nodeExporter:
+  enabled: false
+  
+service:
+  nodePort: 32105
+  type: NodePort
+  
+grafana:
+  persistence:
+    enabled: true
+  service:
+    nodePort: 30267
+    type: NodePort

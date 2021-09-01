@@ -54,10 +54,10 @@ admin-user:      5 bytes
 OK, so the data is there, and is encrypted... However, the admin can retrieve this information
 
 ```bash
-$ kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-user}" | base64 --decode ; echo
+$ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.data.admin-user}" | base64 --decode ; echo
 admin
 
-$ kubectl get secret -n monitoring prom-operator-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+$ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 prom-operator
 ```
 

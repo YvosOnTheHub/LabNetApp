@@ -159,6 +159,26 @@ Spec:
   Debug:      true
 ```
 
-## H. What's next
+## H. How do I quickly retrieve CPU & Memory usage for my Kubernetes nodes
+
+```bash
+kubectl describe nodes | grep -A 3 -e "^\\s*Resource"
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                350m (17%)  0 (0%)
+  memory             70Mi (4%)   170Mi (9%)
+--
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                350m (17%)  0 (0%)
+  memory             70Mi (4%)   170Mi (9%)
+--
+  Resource           Requests    Limits
+  --------           --------    ------
+  cpu                800m (40%)  0 (0%)
+  memory             0 (0%)      0 (0%)
+```
+
+## I. What's next
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
