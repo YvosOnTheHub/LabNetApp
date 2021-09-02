@@ -3,10 +3,11 @@ alertmanager:
   
 nodeExporter:
   enabled: false
-  
-service:
-  nodePort: 32105
-  type: NodePort
+
+prometheus:  
+  service:
+    nodePort: 32105
+    type: NodePort
   
 grafana:
   persistence:
