@@ -135,9 +135,10 @@ tar -xf trident-installer-21.07.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
-kubectl create namespace trident
+#kubectl create namespace trident
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 21.7.1 -n trident
+#helm install trident netapp-trident/trident-operator --version 21.7.1 -n trident
+helm install trident netapp-trident/trident-operator --version 21.7.1 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01,operatorImage=registry.demo.netapp.com/trident-operator:21.07.1,tridentImage=registry.demo.netapp.com/trident:21.07.1
 
 while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
 do
