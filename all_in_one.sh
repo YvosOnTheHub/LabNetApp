@@ -107,6 +107,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
+cd ~/LabNetApp/Kubernetes_v4
 sh Scenarios/Scenario01/2_Helm/trident_uninstall.sh
 sh Addendum/Addenda08/4_Private_repo/push_trident_images_to_repo.sh rhel3 $1 $2
 
