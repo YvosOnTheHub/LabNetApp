@@ -78,6 +78,7 @@ else
   echo "#######################################################################################################"
   echo
 
+  cd ~/LabNetApp/Kubernetes_v4
   sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel1 $1 $2
   sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel2 $1 $2
   sh Addendum/Addenda08/2_Lazy_Images/pull_setup_images.sh rhel3 $1 $2
