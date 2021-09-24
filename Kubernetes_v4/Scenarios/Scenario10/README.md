@@ -13,7 +13,7 @@ The following parameters can be used in the Virtual Pools:
 - snapshotReserve
 - encryption
 - unixPermissions
-- snapshotDir
+- snapshotDir (using this parameter may cause issues with Centos8/RHEL8 as the .snapshot file-system is readonly)
 - exportPolicy
 - securityStyle
 - tieringPolicy

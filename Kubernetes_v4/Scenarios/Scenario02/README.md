@@ -39,6 +39,20 @@ Note that _secrets_ can be used by multiple _TridentBackendConfigs_.
 You will find in this directory a few backends YAML files, as well as secrets.  
 You can decide to use all of them, only a subset of them or modify them as you wish
 
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+The backend files contain the parameter _snapshotDir: 'true'_ which makes the .snapshot folders visible inside the POD.
+This works perfectly well with this Lab on Demand environment (Centos7). However, if you plan on using it on your own infrastructure or in another lab (Centos8+), you may get the following error when creating an app:
+
+```bash
+kubectl logs -n ghost1  blog-bc476b85c-ts9td
+chown: /var/lib/ghost/content/.snapshot: Read-only file system
+```
+
+You can then simply edit the backend file & remove this parameter, which will resolve the situation
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
 Here are the 2 backends & their corresponding driver, both using the secret stored in the file _secret_ontap_nfs-svm.yaml_:
 
 - backend_nas-default.yaml        ONTAP-NAS

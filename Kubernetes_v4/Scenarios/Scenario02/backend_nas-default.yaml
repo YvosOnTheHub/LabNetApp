@@ -9,7 +9,7 @@ spec:
   managementLIF: 192.168.0.135
   storagePrefix: nas1_
   defaults:
-    snapshotDir: 'true'
+    snapshotDir: 'true'       # using this parameter may cause issues with Centos8/RHEL8 as the .snapshot file-system is readonly
     snapshotPolicy: default
   credentials:
     name: ontap-nfs-svm-secret-username
