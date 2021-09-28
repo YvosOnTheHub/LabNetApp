@@ -67,7 +67,7 @@ echo " TO LOG INTO ArgoCD WITH 'admin', USE THE FOLLOWING PASSWORD: $ARGOCDPWD"
 echo "#######################################################################################################"
 echo
 
-if [[  $(more ~/.bashrc | grep kedit | wc -l) -ne 0 ]];then
+if [[  $(more ~/.bashrc | grep kedit | wc -l) -eq 0 ]];then
   echo
   echo "#######################################################################################################"
   echo "#"
