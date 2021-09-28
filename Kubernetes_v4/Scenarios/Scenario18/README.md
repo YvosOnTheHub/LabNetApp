@@ -197,6 +197,7 @@ $ echo -e "\nallowVolumeExpansion: true" >> ~/Repository/Infrastructure/Trident-
 Now that the code is updated locally, you can perform the commit & push steps in order to bring the changes to your Gitea repository.  
 
 ```bash
+cd ~/Repository
 git adcom "added expansion feature"
 git push
 ```
@@ -219,6 +220,7 @@ We will apply a version change of the image, as well as increasing the PVC attac
 ```bash
 sed -i 's/5/10/' ~/Repository/Apps/Ghost/1_pvc.yaml
 sed -i 's/2\.6/3\.13/' ~/Repository/Apps/Ghost/2_deploy.yaml
+cd ~/Repository
 git adcom "ghost update to 3.13 & bigger pvc"
 git push
 ```
@@ -247,6 +249,7 @@ The only differences between both version's manifests are located in the images 
 ```bash
 sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
 sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
+cd ~/Repository
 git adcom "trident update to 21.04.1"
 git push
 ```
