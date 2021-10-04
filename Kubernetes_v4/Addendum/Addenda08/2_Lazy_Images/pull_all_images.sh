@@ -14,14 +14,14 @@ echo "# PULLING IMAGES FROM DOCKER HUB"
 echo "################################"
 
 echo "####################################"
-echo "# netapp/trident:21.07.1"
+echo "# netapp/trident:21.07.2"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.07.1
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.07.2
 
 echo "####################################"
-echo "# netapp/trident-operator:21.07.1"
+echo "# netapp/trident-operator:21.07.2"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.07.1
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.07.2
 
 echo "####################################"
 echo "# netapp/trident-autosupport:21.01"

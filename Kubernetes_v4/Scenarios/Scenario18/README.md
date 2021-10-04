@@ -103,7 +103,7 @@ Let's check that Trident has been indeed installed:
 ```bash
 $ kubectl get tver -n trident
 NAME      VERSION
-trident   21.04.0
+trident   21.07.1
 ```
 
 By the way, these ArgoCD apps are actually Kubernetes objects:
@@ -243,12 +243,12 @@ Once the update is done, you will the following:
 
 ### 3. Infrastructure update: new version of Trident
 
-This scenario was built around Trident 21.04.0. With the availability of Trident 21.04.1 we also test its upgrade mechanism.  
+This scenario was built around Trident 21.07.1. With the availability of Trident 21.07.2 we also test its upgrade mechanism.  
 The only differences between both version's manifests are located in the images to be used. Let's proceed with the changes.
 
 ```bash
-sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
-sed -i 's/21.04.0/21.04.1/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
+sed -i 's/21.07.1/21.07.2/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
+sed -i 's/21.07.1/21.07.2/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
 cd ~/Repository
 git adcom "trident update to 21.04.1"
 git push

@@ -37,26 +37,26 @@ echo "##########################################################################
 sh trident_uninstall.sh
 
 echo "#######################################################################################################"
-echo "Download Trident 21.07.1"
+echo "Download Trident 21.07.2"
 echo "#######################################################################################################"
 
 cd
-mkdir 21.07.1
-cd 21.07.1
-wget https://github.com/NetApp/trident/releases/download/v21.07.1/trident-installer-21.07.1.tar.gz
-tar -xf trident-installer-21.07.1.tar.gz
+mkdir 21.07.2
+cd 21.07.2
+wget https://github.com/NetApp/trident/releases/download/v21.07.2/trident-installer-21.07.2.tar.gz
+tar -xf trident-installer-21.07.2.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
 echo "#######################################################################################################"
-echo "Install new Trident Operator (21.07.1) with Helm"
+echo "Install new Trident Operator (21.07.2) with Helm"
 echo "#######################################################################################################"
 
 kubectl create namespace trident
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 21.7.1 -n trident
+helm install trident netapp-trident/trident-operator --version 21.7.2 -n trident
 # DEPRECATED:
-# helm install trident trident-installer/helm/trident-operator-21.07.1.tgz -n trident
+# helm install trident trident-installer/helm/trident-operator-21.07.2.tgz -n trident
 
 sleep 30s
 echo "#######################################################################################################"

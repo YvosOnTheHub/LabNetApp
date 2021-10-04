@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 21.07.1
+# SCENARIO 1: Trident upgrade to 21.07.2
 #########################################################################################
 
 **GOAL:**  
@@ -18,10 +18,10 @@ Technically, if you decide to install Trident with Helm, you would not even need
 
 ```bash
 cd
-mkdir 21.07.1
-cd 21.07.1
-wget https://github.com/NetApp/trident/releases/download/v21.07.1/trident-installer-21.07.1.tar.gz
-tar -xf trident-installer-21.07.1.tar.gz
+mkdir 21.07.2
+cd 21.07.2
+wget https://github.com/NetApp/trident/releases/download/v21.07.2/trident-installer-21.07.2.tar.gz
+tar -xf trident-installer-21.07.2.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
