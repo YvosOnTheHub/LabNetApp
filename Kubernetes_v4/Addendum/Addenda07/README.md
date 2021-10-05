@@ -125,3 +125,37 @@ From there you can use the following shortcuts to manage your workplaces:
 
 More information can be found here:
 https://www.linuxcloudvps.com/blog/install-and-use-tmux-on-centos/
+
+
+## D. KREW
+
+Kubernetes is a lot about CLI & Kubectl will quickly become your best friend.  
+You may some time reach kubectl's limits & start building your own shortcuts or scripts to get the information you are looking for.  
+Krew is a Kubernetes plugin management tool that can become pretty handy. Plenty of plugins are already available to display resources, secrets, usage & much more.  
+You can find some information about Krew on this link: https://krew.sigs.k8s.io/
+
+Let's install it & run it:
+
+```bash
+(
+  set -x; cd "$(mktemp -d)" &&
+  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" &&
+  tar zxvf krew.tar.gz &&
+  KREW=./krew-"${OS}_${ARCH}" &&
+  "$KREW" install krew
+)
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+bash
+```
+
+You can then use the _kubectl krew search_ to list all the available plugins & _kubectl kree install_ command to install a specific one.  
+Here are a few I have tested:
+
+- **get-all**: will display all the objects of a namespace (ie many more than with _kubectl get -A_)
+- **view-utilization**: displays CPU/RAM utilization of the cluster
+- **rbac-view**: graphical view of all RBAC configured on the cluster, with a filter feature
+- **tree**: displays a hierarchical view of some objects (ex: deployment => replicaset => pod)
+- **view-secret**: decyphers & displays a secret (faster than running jsonpath + base64)
