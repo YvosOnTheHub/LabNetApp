@@ -204,6 +204,10 @@ rules:
   - tridentsnapshots
   - tridentbackendconfigs
   - tridentbackendconfigs/status
+  - tridentmirrorrelationships
+  - tridentmirrorrelationships/status
+  - tridentsnapshotinfos
+  - tridentsnapshotinfos/status
   - tridentprovisioners # Required for Tprov
   - tridentprovisioners/status # Required to update Tprov's status section
   - tridentorchestrators # Required for Torc
@@ -390,7 +394,7 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: trident-operator
-        image: registry.demo.netapp.com/trident-operator:21.07.1
+        image: netapp/trident-operator:21.07.1
         imagePullPolicy: IfNotPresent
         name: trident-operator
       nodeSelector:
