@@ -8,8 +8,9 @@ ssh -o "StrictHostKeyChecking no" root@rhel6 rm -f /opt/harvest/harvest.yml
 ssh -o "StrictHostKeyChecking no" root@rhel6 mv harvest.yml /opt/harvest/
 ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
 
-HARVESTSTATUS=$(ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status" | grep lod | awk '{print $3}')
-if [[ $HARVESTSTATUS -eq "not" ]];then
+#HARVESTSTATUS=$(ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status" | grep lod | awk '{print $3}')
+HARVESTSTATUS=$(ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest status" | grep lod | grep not | wc -l)
+if [[ $HARVESTSTATUS -eq "1" ]];then
   ssh -o "StrictHostKeyChecking no" root@rhel6 "cd /opt/harvest && bin/harvest start"
 fi
 

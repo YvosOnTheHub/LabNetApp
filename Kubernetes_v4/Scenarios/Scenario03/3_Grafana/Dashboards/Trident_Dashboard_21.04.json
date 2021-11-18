@@ -1219,7 +1219,9 @@
   "schemaVersion": 25,
   "style": "dark",
   "tags": [
-    "21.04"
+    "21.04",
+    "21.07",
+    "21.10"
   ],
   "templating": {
     "list": []
