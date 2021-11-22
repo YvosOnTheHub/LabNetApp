@@ -60,10 +60,10 @@ If all went well, you should see a new _Target_ showing up in Prometheus, with a
 
 <p align="center"><img src="../Images/Prometheus_Harvest.jpg"></p>
 
-Last, Harvest comes with a predefined set of dashboards. If you would to import them into this environment, I would recommend looking into the following link which also describes how to generate a API Token in Grafana, which will be used by Harvest:  
+Last, Harvest comes with a predefined set of dashboards. If you would like to import them into this environment, I would recommend looking into the following link which also describes how to generate a API Token in Grafana, which will be used by Harvest:  
 https://github.com/NetApp/harvest/blob/main/cmd/tools/grafana/README.md
 
-As you will not need the ONTAP 7Mode dashboard, you can use the following command to only import dashboards related to ONTAP 9:
+As you will not need the ONTAP 7Mode dashboard, you can use the following command on the host RHEL6 to only import dashboards related to ONTAP 9:
 
 ```bash
 $ cd ~/harvest
