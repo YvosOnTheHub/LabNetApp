@@ -14,6 +14,7 @@ NAME            NAMESPACE       REVISION        UPDATED                         
 prom-operator   monitoring      2               2020-11-09 12:36:19.238070417 +0000 UTC deployed        prometheus-operator-9.3.1       0.38.1
 ```
 
+<!-- OLD
 In November 2020, the _stable_ Helm repository moved to a new URL: https://charts.helm.sh/stable.  
 In order to install or update a new Helm chart, you will need to update the repository, which still points to the old URL: https://kubernetes-charts.storage.googleapis.com.  
 
@@ -21,27 +22,62 @@ In order to install or update a new Helm chart, you will need to update the repo
 helm repo add stable https://charts.helm.sh/stable
 helm repo update
 ```
+-->
 
-## A. Modify the Prometheus configuration
+## A. Clean up the environment
 
+The Prometheus operator comes with a Grafana version that is pretty old. Using new dashboards may require features that do not exist in this environment.  
+We will then first start by installing a much more recent Prometheus stack.  
+
+But before, we need to clean up the existing environment:
+
+```bash
+helm uninstall -n monitoring prom-operator
+kubectl delete ns monitoring
+kubectl get crd -o name | grep monitoring | xargs kubectl delete
+kubectl delete -n kube-system svc prom-operator-prometheus-o-kubelet
+```
+
+## B. Prometheus Stack installation
+
+We can now proceed with the Prometheus stack installation with Helm.  
 The PVC that will be created by Helm will use the _default_ storage class. Make sure you have one before moving on.  
 If none is currently set to _default_, you can use the [Addenda02](../../Addendum/Addenda02) to help you create one.  
 
-Let's proceed with the upgrade:
+Note that the parameters used for this new installation are all in the _prometheus-stack-values_ yaml file passed as a variable with Helm.  
+Take a look at its content & update it as you wish.
 
 ```bash
-$ helm upgrade prom-operator stable/prometheus-operator --namespace monitoring --set prometheusOperator.createCustomResource=false,grafana.persistence.enabled=true
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+kubectl create ns monitoring
+helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 -f prometheus-stack-values.yaml
 ```
 
-If you now check the volumes attached to this namespace, you will see a new one:
+Once done you can see the result:
 
 ```bash
-$ kubectl get pvc,pv -n monitoring
-NAME                                          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/prom-operator-grafana   Bound    pvc-7fe5ff86-c80f-4553-a09f-b26a7675a5cd   10Gi       RWO            storage-class-nas   154m
+$ helm list -n monitoring
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
+prometheus-operator     monitoring      1               2021-11-22 11:05:45.173079701 +0000 UTC deployed        kube-prometheus-stack-15.4.6    0.47.0
 
-NAME                                                        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                              STORAGECLASS        REASON   AGE
-persistentvolume/pvc-7fe5ff86-c80f-4553-a09f-b26a7675a5cd   10Gi       RWO            Delete           Bound    monitoring/prom-operator-grafana   storage-class-nas            154m
+$ kubectl get -n monitoring svc,pod,pvc
+NAME                                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/prometheus-operated                      ClusterIP   None             <none>        9090/TCP         149m
+service/prometheus-operator-grafana              NodePort    10.102.230.219   <none>        80:30267/TCP     149m
+service/prometheus-operator-kube-p-operator      ClusterIP   10.108.174.241   <none>        443/TCP          149m
+service/prometheus-operator-kube-p-prometheus    NodePort    10.106.89.221    <none>        9090:32105/TCP   149m
+service/prometheus-operator-kube-state-metrics   ClusterIP   10.100.84.121    <none>        8080/TCP         149m
+
+NAME                                                         READY   STATUS    RESTARTS   AGE
+pod/prometheus-operator-grafana-58947c859-ms5hh              2/2     Running   0          146m
+pod/prometheus-operator-kube-p-operator-84f75f8bc9-ffr5w     1/1     Running   0          149m
+pod/prometheus-operator-kube-state-metrics-957fc5f95-7w9r5   1/1     Running   0          149m
+pod/prometheus-prometheus-operator-kube-p-prometheus-0       2/2     Running   1          146m
+
+NAME                                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+persistentvolumeclaim/prometheus-operator-grafana   Bound    pvc-535ed400-573e-4812-8aa4-a454573a47b1   10Gi       RWO            storage-class-nas   149m
 ```
 
 ## B. Install a Grafana plug-in
