@@ -46,6 +46,19 @@ Here is a diagram of the result. As you can see, the frontend is composed of 2 P
 
 <p align="center"><img src="../Images/1_Wordpress_install.jpg"></p>
 
+```bash
+$ kubectl get -n wp deploy,rs,pod -l app.kubernetes.io/name=wordpress
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/wp-wordpress   2/2     2            2           95m
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/wp-wordpress-58b4dfc8d   2         2         2       95m
+
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/wp-wordpress-58b4dfc8d-cwwtc   1/1     Running   0          95m
+pod/wp-wordpress-58b4dfc8d-xzcxd   1/1     Running   0          95m
+```
+
 Last, you can access this application through the external IP displayed by the following command (in my case 192.168.0.140):
 
 ```bash
@@ -59,17 +72,6 @@ wp-wordpress   LoadBalancer   10.108.222.74   192.168.0.140   80:32491/TCP,443:3
 This weekend is a big day, and I need more frontend pods to absorb the incoming load. Let's scale it !
 
 ```bash
-$ kubectl get -n wp deploy,rs,pod -l app.kubernetes.io/name=wordpress
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/wp-wordpress   2/2     2            2           95m
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/wp-wordpress-58b4dfc8d   2         2         2       95m
-
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/wp-wordpress-58b4dfc8d-cwwtc   1/1     Running   0          95m
-pod/wp-wordpress-58b4dfc8d-xzcxd   1/1     Running   0          95m
-
 $ kubectl scale -n wp deploy wp-wordpress --replicas=3
 deployment.apps/wp-wordpress scaled
 
@@ -96,18 +98,6 @@ A new version of Wordpress has been released, & I want to upgrade my environment
 Note that I use an image that I have already uploaded to the local repository. If you can directly pull the image from the docker hub, you can just remove the _registry.demo.netapp.com/_ part from the patch command.
 
 ```bash
-$ kubectl get -n wp deploy,rs,pod -l app.kubernetes.io/name=wordpress
-NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/wp-wordpress   3/3     3            3           131m
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/wp-wordpress-58b4dfc8d   3         3         3       131m
-
-NAME                               READY   STATUS    RESTARTS   AGE
-pod/wp-wordpress-58b4dfc8d-cwwtc   1/1     Running   0          130m
-pod/wp-wordpress-58b4dfc8d-tcl84   1/1     Running   0          34m
-pod/wp-wordpress-58b4dfc8d-xzcxd   1/1     Running   0          130m
-
 $ kubectl patch -n wp deploy wp-wordpress -p '{"spec":{"template":{"spec":{"containers":[{"name":"wordpress","image":"registry.demo.netapp.com/bitnami/wordpress:5.8.2-debian-10-r12"}]}}}}'
 deployment.apps/wp-wordpress patched
 
