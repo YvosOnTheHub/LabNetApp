@@ -1,0 +1,11 @@
+wordpressUsername: admin
+wordpressPassword: demolod
+wordpressBlogName: "demo RWO and NFS"
+
+image:
+  tag: 5.8.1-debian-10-r59
+  
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
