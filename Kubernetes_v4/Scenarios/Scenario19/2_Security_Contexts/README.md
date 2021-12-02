@@ -80,14 +80,14 @@ persistentvolumeclaim "sc19-pvc" deleted
 deployment.apps "sc19-rwo-iscsi" deleted
 ```
 
-In this use case, you see the _fsGroup_ (2001) & _runAsUser_ (2002)were transposed in the result on the attached PVC.
+In this use case, you see the _fsGroup_ (2001) & _runAsUser_ (2002) were transposed in the result on the attached PVC (refer to the _ls -ld_ commands).
 
 The following diagram summarizes all the different possibilities and proves that the fsGroup paramater is only used for RWO iSCSI & RWO NFS with fsType set.  
 
 <p align="center"><img src="../Images/2_securitycontext_result.jpg"></p>
 
 Side note, one of the image layers (5th layer) creates a user called _node_ & a group also called _node_, both with the ID 1000.  
-That is the one used to install the Ghost application in the unix baseline.
+That is the one used to install the Ghost application in the unix base image.
 
 ```bash
 addgroup -g 1000 node && adduser -u 1000 -G node
