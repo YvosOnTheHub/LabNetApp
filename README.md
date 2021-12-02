@@ -24,7 +24,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
-[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident (v21.07.2) :arrows_counterclockwise:  
+[1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident (v21.07.2)  
 [2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest :arrows_counterclockwise:  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
@@ -36,12 +36,13 @@ Scenarios
 [10.](Kubernetes_v4/Scenarios/Scenario10) Using Virtual Storage Pools  
 [11.](Kubernetes_v4/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v4/Scenarios/Scenario12) Dynamic export policy management  
-[13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows :arrows_counterclockwise:  
+[13.](Kubernetes_v4/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
 [14.](Kubernetes_v4/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v4/Scenarios/Scenario15) Caring about location or about CSI Topology  
 [16.](Kubernetes_v4/Scenarios/Scenario16) Performance control  
 [17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
-[18.](Kubernetes_v4/Scenarios/Scenario18) Kubernetes, Trident & GitOps :new:  
+[18.](Kubernetes_v4/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
+[19.](Kubernetes_v4/Scenarios/Scenario19) Let's talk about protocols & access modes ! :new:  
 
 Addendum
 --------
