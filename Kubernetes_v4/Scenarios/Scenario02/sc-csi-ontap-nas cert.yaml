@@ -6,3 +6,4 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas"
   storagePools: "nas-cert:aggr1"
+allowVolumeExpansion: true
