@@ -32,14 +32,14 @@ I will use Helm to deploy Wordpress. All the variables are gathered in the _word
 
 ```bash
 kubectl create ns wp
-helm install wp bitnami/wordpress --namespace wp --create-namespace -f wordpress_values_rwx.yaml
+helm install wp bitnami/wordpress --namespace wp -f wordpress_values_rwx.yaml
 ```
 
 **OR** if you need local container images
 
 ```bash
 kubectl create ns wp
-helm install wp bitnami/wordpress --namespace wp --create-namespace -f wordpress_values_rwx.yaml --set global.imageRegistry=registry.demo.netapp.com
+helm install wp bitnami/wordpress --namespace wp -f wordpress_values_rwx.yaml --set global.imageRegistry=registry.demo.netapp.com
 ```
 
 Here is a diagram of the result. As you can see, the frontend is composed of 2 POD mounting the same volume:
@@ -125,14 +125,14 @@ This time, the Helm variables are gathered in the _wordpress_values_rwo.yaml_:
 
 ```bash
 kubectl create ns wprwo
-helm install wp bitnami/wordpress --namespace wprwo --create-namespace -f wordpress_values_rwx.yaml
+helm install wp bitnami/wordpress --namespace wprwo -f wordpress_values_rwo.yaml
 ```
 
 **OR** if you need local container images
 
 ```bash
 kubectl create ns wprwo
-helm install wp bitnami/wordpress --namespace wprwo --create-namespace -f wordpress_values_rwx.yaml --set global.imageRegistry=registry.demo.netapp.com
+helm install wp bitnami/wordpress --namespace wprwo -f wordpress_values_rwo.yaml --set global.imageRegistry=registry.demo.netapp.com
 ```
 
 The resulting objects of a succesful deployment are the following:
@@ -201,6 +201,9 @@ deployment.apps/wp-wordpress scaled
 Now, what about upgrades ? It will fail for the very same reason!
 
 ```bash
+$ kubectl patch -n wprwo deploy wp-wordpress -p '{"spec":{"template":{"spec":{"containers":[{"name":"wordpress","image":"registry.demo.netapp.com/bitnami/wordpress:5.8.2-debian-10-r12"}]}}}}'
+deployment.apps/wp-wordpress patched
+
 $ kubectl get -n wprwo deploy,rs,pod,pvc -l app.kubernetes.io/name=wordpress
 NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/wp-wordpress   1/1     1            1           4h59m
