@@ -24,6 +24,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
+[0.](Kubernetes_v4/Scenarios/Scenario00) Best Practices & Advices :new:  
 [1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident (v21.07.2)  
 [2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest :arrows_counterclockwise:  
@@ -42,7 +43,8 @@ Scenarios
 [16.](Kubernetes_v4/Scenarios/Scenario16) Performance control  
 [17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
 [18.](Kubernetes_v4/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
-[19.](Kubernetes_v4/Scenarios/Scenario19) Let's talk about protocols & access modes ! :new:  
+[19.](Kubernetes_v4/Scenarios/Scenario19) Let's talk about protocols & access modes !  
+[20.](Kubernetes_v4/Scenarios/Scenario20) About Generic Ephemeral Volumes :new:  
 
 Addendum
 --------
@@ -58,8 +60,9 @@ Addendum
 [9.](Kubernetes_v4/Addendum/Addenda09) How to upgrade ONTAP  
 [10.](Kubernetes_v4/Addendum/Addenda10) How to install & prepare HAProxy  
 [11.](Kubernetes_v4/Addendum/Addenda11) How to create a S3 Bucket on ONTAP  
-[12.](Kubernetes_v4/Addendum/Addenda12) Set up a simple Source Code Repository :new:  
-[13.](Kubernetes_v4/Addendum/Addenda13) Install ArgoCD in this lab :new:  
+[12.](Kubernetes_v4/Addendum/Addenda12) Set up a simple Source Code Repository  
+[13.](Kubernetes_v4/Addendum/Addenda13) Install ArgoCD in this lab  
+[14.](Kubernetes_v4/Addendum/Addenda14) Upgrade Kubernetes :new:  
 
 <!-- ICONS
 :new:
