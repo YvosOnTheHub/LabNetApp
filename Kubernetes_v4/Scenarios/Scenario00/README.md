@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 0: Let's review some Best Practices & advices about Astra Trident
+# SCENARIO 0: Let's review some Best Practices & advices 
 #########################################################################################
 
 As a CSI Driver, Astra Trident provides most of the features proposed by the CNCF standard ([CSI Snapshots](../Scenario13), [CSI Topology](../Scenario15), [Volume Expansion](../Scenario09), ...). However, as a NetApp product, it proposes a lot more good stuff, implemented both at the storage level & in Trident! We will review here a few _Best Practices_, as well as advices I have put together over the years.
@@ -127,3 +127,4 @@ Here are two options that you can put in place in this context:
 
 Maybe a bit off context, but I will still recommand looking at [Spot.io](https://spot.io/products/ocean-suite/) to bring in Continuous Optimization.
 
+Now that you have read this whole page, I invite you to look into the different [scenarios](https://github.com/YvosOnTheHub/LabNetApp), & have fun !
