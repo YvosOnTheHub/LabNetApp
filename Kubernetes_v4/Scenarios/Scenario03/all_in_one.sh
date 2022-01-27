@@ -40,10 +40,10 @@ elif [[ $PROM == "UPDATE" ]];then
   helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 -f 1_Upgrade/prometheus-stack-values.yaml
 fi
 
-while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 1 ]
-do
-  echo "sleep a bit ..."
-  sleep 5
+PODNAME=$(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name)
+until [[ $(kubectl -n monitoring get $PODNAME -o=jsonpath='{.status.conditions[?(@.type=="ContainersReady")].status}') == 'True' ]]; do
+    echo "waiting for the Grafana POD to be fully ready ..."
+    sleep 5
 done
 
 echo "#######################################################################################################"

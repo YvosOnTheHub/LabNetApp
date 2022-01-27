@@ -151,7 +151,7 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 bash
 ```
 
-You can then use the _kubectl krew search_ to list all the available plugins & _kubectl kree install_ command to install a specific one.  
+You can then use the _kubectl krew search_ to list all the available plugins & _kubectl krew install_ command to install a specific one.  
 Here are a few I have tested:
 
 - **get-all**: will display all the objects of a namespace (ie many more than with _kubectl get -A_)
