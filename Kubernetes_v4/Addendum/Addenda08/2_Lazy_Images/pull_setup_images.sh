@@ -32,6 +32,7 @@ echo "#############################################"
 echo "# Dealing with the Prometheus operator images"
 echo "#############################################"
 ssh -o "StrictHostKeyChecking no" root@$1 docker pull busybox:1.31.1
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull jettech/kube-webhook-certgen:v1.5.0
 
 GRAFANAHOST=$(kubectl get pod -n monitoring -l app.kubernetes.io/name=grafana -o=jsonpath='{.items[0].spec.nodeName}')
 if [[ $1 != $GRAFANAHOST ]];then
