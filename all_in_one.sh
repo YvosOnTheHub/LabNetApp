@@ -211,12 +211,10 @@ echo
 
 cp ~/.bashrc ~/.bashrc.bak
 cat <<EOT >> ~/.bashrc
-source <(kubectl completion bash)
-complete -F __start_kubectl k
-
 alias kc='kubectl create'
 alias kg='kubectl get'
 alias kdel='kubectl delete'
+alias kx='kubectl exec -it'
 alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
 alias trident='tridentctl -n trident'

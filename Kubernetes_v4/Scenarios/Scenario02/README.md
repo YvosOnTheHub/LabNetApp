@@ -119,7 +119,7 @@ At this point, end-users can now create PVC against one of theses storage classe
 Trident 21.01 introduced the possibility to configure Trident backends with SSL certificates, instead of traditional user/password methods.  
 We will see here how to easily enable this feature.  
 
-First, we need to create a public key (.pem file) & a private key (a .key file) on the host that own tridentctl.  
+First, we need to create a public key (.pem file) & a private key (a .key file) on the host that owns tridentctl.  
 As this will be used against a SVM, I need specify a SVM user that will correspond to this certificate (ex: _vsadmin_)
 
 ```bash
@@ -127,10 +127,11 @@ openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -keyout k8senv.key -out k8s
 ```
 
 The next steps are done with the ONTAP CLI (enable authentication & certificate copy/paste).  
+For the first command, use the content of the k8senv.pem file.  
 
 ```bash
-$ security ssl modify -vserver nfs_svm -client-enabled true
 $ security cert install -type client-ca -cert-name vsadmin_trident -vserver nfs_svm
+$ security ssl modify -vserver nfs_svm -client-enabled true
 $ security cert show -vserver nfs_svm -type client-ca
   (security certificate show)
 Vserver    Serial Number   Certificate Name                       Type
@@ -159,7 +160,7 @@ vsadmin        ontapi      cert          vsadmin          -      none
 ```
 
 Back to the Kubernetes host, we can now proceed with the backend creation.  
-Keep in mind that these certicates will be used in an encoded format by Trident:
+Keep in mind that these certificates will be used in an encoded format by Trident:
 
 ```bash
 base64 -w 0 k8senv.pem >> cert_base64
@@ -169,21 +170,11 @@ base64 -w 0 k8senv.key >> key_base64
 You now need to edit the _backend-nas-cert.json_ file & replace the 2 parameters: _clientCertificate_ & _clientPrivateKey_.  
 
 ```bash
-$ kubectl create -n trident -f secret_ontap_nfs-svm_cert.yaml
-secret/ontap-nfs-svm-secret created
-
-$ kubectl create -n trident -f backend-nas-cert.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-cert created
-
-$ kubectl get tbc -n trident backend-tbc-ontap-nas-cert
-NAME                                                                    BACKEND NAME      BACKEND UUID                           PHASE   STATUS
-tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-cert       nas-cert          9f6d53b4-7102-4f86-900d-5a76e3665903   Bound   Success
-
-$ trident get backend nas-cert
+$ tridenct create -n trident -f backend-nas-cert.json
 +-----------------+-------------------+--------------------------------------+--------+---------+
 |      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
 +-----------------+-------------------+--------------------------------------+--------+---------+
-| nas-cert        | ontap-nas         | 9f6d53b4-7102-4f86-900d-5a76e3665903 | online |       0 |
+| NAS_Cert        | ontap-nas         | 9f6d53b4-7102-4f86-900d-5a76e3665903 | online |       0 |
 +-----------------+-------------------+--------------------------------------+--------+---------+
 
 $ kubectl create -f sc-csi-ontap-nas-cert.yaml
