@@ -5,7 +5,7 @@
 **GOAL:**  
 Kubernetes 1.17 promoted [CSI Snapshots to Beta](https://kubernetes.io/blog/2019/12/09/kubernetes-1-17-feature-cis-volume-snapshot-beta/).  
 This has been fully supported starting with Trident 20.01.1.  
-(by the way, CSI Snapshots have been promoted HA with Kubernetes 1.20)
+(by the way, CSI Snapshots have been promoted GA with Kubernetes 1.20)
 
 While snapshots can be used for many use cases, we will see here 2 different ones, which share the same beginning:
 
