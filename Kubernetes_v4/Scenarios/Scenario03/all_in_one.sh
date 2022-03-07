@@ -40,17 +40,22 @@ elif [[ $PROM == "UPDATE" ]];then
   helm install prometheus-operator prometheus-community/kube-prometheus-stack -n monitoring --version 15.4.6 -f 1_Upgrade/prometheus-stack-values.yaml
 fi
 
+frames="/ | \\ -"
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 1 ]; do
-    echo "waiting for the Grafana POD to exist ..."
-    sleep 5
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the Grafana POD to exist $frame" 
+    done
 done
+echo
 
 PODNAME=$(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name)
 until [[ $(kubectl -n monitoring get $PODNAME -o=jsonpath='{.status.conditions[?(@.type=="ContainersReady")].status}') == 'True' ]]; do
-    echo "waiting for the Grafana POD to be fully ready ..."
-    sleep 5
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the Grafana POD to be fully ready $frame" 
+    done
 done
 
+echo
 echo "#######################################################################################################"
 echo "Install Pie Chart Plugin in Grafana"
 echo "#######################################################################################################"

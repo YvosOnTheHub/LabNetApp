@@ -141,10 +141,11 @@ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 #helm install trident netapp-trident/trident-operator --version 21.7.2 -n trident
 helm install trident netapp-trident/trident-operator --version 21.7.2 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:21.01,operatorImage=registry.demo.netapp.com/trident-operator:21.07.2,tridentImage=registry.demo.netapp.com/trident:21.07.2
 
-while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
-do
-  echo "sleep a bit ..."
-  sleep 10
+frames="/ | \\ -"
+while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
+    done
 done
 
 echo

@@ -26,11 +26,13 @@ echo "##########################################################################
 echo "Uninstall Trident's provisioner & remaining objects"
 echo "#######################################################################################################"
 
-while [ $(kubectl get crd | grep trident | wc -l) -ne 1 ]
-do
-  echo "sleep a bit ..."
-  sleep 10
+frames="/ | \\ -"
+while [ $(kubectl get crd | grep trident | wc -l) -ne 1 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rSleeping a bit $frame" 
+    done
 done
+echo
 
 if [ $(kubectl get crd | grep tridentprov | wc -l) -eq 1 ]
   then

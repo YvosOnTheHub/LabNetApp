@@ -6,3 +6,4 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas-economy"
   storagePools: "nas-eco-default:aggr1"
+allowVolumeExpansion: true

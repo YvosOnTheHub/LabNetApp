@@ -24,7 +24,7 @@ fi
 for host in "${hosts[@]}"
 do
   echo "#########################################################"
-  echo "# LOGIN on $host & PULLING TRIDENT IMAGES FROM DOCKER HUB"
+  echo "# LOGIN on $host & PULLING IMAGES FROM DOCKER HUB"
   echo "#########################################################"
   ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
   ssh -o "StrictHostKeyChecking no" root@$host docker pull grafana/grafana:7.0.3
