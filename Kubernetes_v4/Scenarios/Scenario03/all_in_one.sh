@@ -62,10 +62,10 @@ echo "##########################################################################
 
 kubectl exec -n monitoring -it $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name) -c grafana -- grafana-cli plugins install grafana-piechart-panel
 kubectl scale -n monitoring deploy -l app.kubernetes.io/name=grafana --replicas=0
-while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 0 ]
-do
-  echo "sleep a bit ..."
-  sleep 5
+while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 0 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the Grafana Deployment to be scaled down $frame" 
+    done
 done
 kubectl scale -n monitoring deploy -l app.kubernetes.io/name=grafana --replicas=1
 

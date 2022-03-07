@@ -14,8 +14,8 @@ Let's start by downloading Harvest & installing it (on _rhel6_):
 
 ```bash
 $ cd
-$ wget https://github.com/NetApp/harvest/releases/download/v21.11.0/harvest-21.11.0-1_linux_amd64.tar.gz
-$ tar -xvf harvest-21.11.0-1_linux_amd64.tar.gz
+$ wget https://github.com/NetApp/harvest/releases/download/v.22.02.0/harvest-22.02.0-4_linux_amd64.tar.gz
+$ tar -xvf harvest-22.02.0-4_linux_amd64.tar.gz
 $ mv harvest*amd64 harvest
 $ rm -f ~/harvest/harvest.yml
 $ mv harvest.yml harvest/
