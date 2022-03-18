@@ -167,15 +167,17 @@ base64 -w 0 k8senv.pem >> cert_base64
 base64 -w 0 k8senv.key >> key_base64
 ```
 
-You now need to edit the _backend-nas-cert.json_ file & replace the 2 parameters: _clientCertificate_ & _clientPrivateKey_.  
+You now need to edit the two _cert_ yaml files in this folder:
+
+- _backend-nas-cert.yaml_ replace the parameter _clientCertificate_
+- _secret_ontap_nfs-svm_cert.yaml_ replace the parameter _clientPrivateKey_.  
 
 ```bash
-$ tridenct create -n trident -f backend-nas-cert.json
-+-----------------+-------------------+--------------------------------------+--------+---------+
-|      NAME       |  STORAGE DRIVER   |                 UUID                 | STATE  | VOLUMES |
-+-----------------+-------------------+--------------------------------------+--------+---------+
-| NAS_Cert        | ontap-nas         | 9f6d53b4-7102-4f86-900d-5a76e3665903 | online |       0 |
-+-----------------+-------------------+--------------------------------------+--------+---------+
+$ kubectl create -n trident -f secret_ontap_nfs-svm_cert.yaml
+secret/ontap-nfs-svm-secret-cert created
+
+$ kubectl create -n trident -f backend_nas-cert.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-cert created
 
 $ kubectl create -f sc-csi-ontap-nas-cert.yaml
 storageclass.storage.k8s.io/storage-class-nas-cert created
