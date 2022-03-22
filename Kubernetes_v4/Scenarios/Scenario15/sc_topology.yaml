@@ -4,6 +4,15 @@ metadata:
   name: sc-topology
 provisioner: csi.trident.netapp.io
 volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+- matchLabelExpressions:
+  - key: topology.kubernetes.io/zone
+    values:
+    - east
+    - west
+  - key: topology.kubernetes.io/region
+    values:
+    - trident
 parameters:
   backendType: "ontap-nas"
   storagePools: "nas-east:aggr1;nas-west:aggr1"
