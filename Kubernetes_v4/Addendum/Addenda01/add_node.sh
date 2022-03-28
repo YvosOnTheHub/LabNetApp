@@ -2,6 +2,14 @@
 
 # PARAMETER1: name of the host to add
 
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    echo "Please add the following parameters to the shell script:"
+    echo " - Parameter1: Host to add to the cluster"
+    exit 0
+fi
+
 # Number of nodes at the end of the script
 TARGET=$(kubectl get nodes | grep Ready | wc -l)
 TARGET=$((++TARGET))

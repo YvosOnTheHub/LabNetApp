@@ -96,7 +96,7 @@ cd ~/helm
 rm -rf linux-amd64
 wget https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz
 tar -zxvf helm-v3.6.3-linux-amd64.tar.gz
-mv linux-amd64/helm /usr/local/bin/helm
+mv -f linux-amd64/helm /usr/bin/helm
 helm repo add "stable" "https://charts.helm.sh/stable" --force-update
 
 echo
