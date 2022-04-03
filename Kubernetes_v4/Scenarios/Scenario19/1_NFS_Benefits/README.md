@@ -135,7 +135,7 @@ kubectl create ns wprwo
 helm install wp bitnami/wordpress --namespace wprwo -f wordpress_values_rwo.yaml --set global.imageRegistry=registry.demo.netapp.com
 ```
 
-The resulting objects of a succesful deployment are the following:
+The resulting objects of a successful deployment are the following:
 
 ```bash
 $ kubectl get -n wprwo deploy,sts,rs,pod,pvc
