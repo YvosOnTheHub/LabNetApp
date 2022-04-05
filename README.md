@@ -24,10 +24,10 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 Scenarios  
 ---------  
-[0.](Kubernetes_v4/Scenarios/Scenario00) Best Practices & Advices :new:  
+[0.](Kubernetes_v4/Scenarios/Scenario00) Best Practices & Advices  
 [1.](Kubernetes_v4/Scenarios/Scenario01) Upgrade/Install Trident (v21.07.2)  
 [2.](Kubernetes_v4/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
-[3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest :arrows_counterclockwise:  
+[3.](Kubernetes_v4/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest  
 [4.](Kubernetes_v4/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v4/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
 [6.](Kubernetes_v4/Scenarios/Scenario06) Deploy your first app with Block storage  
@@ -44,7 +44,8 @@ Scenarios
 [17.](Kubernetes_v4/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
 [18.](Kubernetes_v4/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
 [19.](Kubernetes_v4/Scenarios/Scenario19) Let's talk about protocols & access modes !  
-[20.](Kubernetes_v4/Scenarios/Scenario20) About Generic Ephemeral Volumes :new:  
+[20.](Kubernetes_v4/Scenarios/Scenario20) About Generic Ephemeral Volumes  
+[21.](Kubernetes_v4/Scenarios/Scenario21) Persistent Volumes and Virtual vClusters :new:  
 
 Addendum
 --------

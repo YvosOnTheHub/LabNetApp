@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: sc_vc1
+  storageClassName: sc-vc1

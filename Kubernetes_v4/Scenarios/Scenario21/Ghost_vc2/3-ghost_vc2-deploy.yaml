@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blog-vc1
+  name: blog-vc2
   labels:
-    app.kubernetes.io/name: sc21_vc1
+    app.kubernetes.io/name: sc21_vc
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: sc21_vc1
+      app.kubernetes.io/name: sc21_vc2
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: sc21_vc1
+        app.kubernetes.io/name: sc21_vc2
     spec:
       containers:
       - name: blog
@@ -28,4 +28,4 @@ spec:
       volumes:
       - name: content
         persistentVolumeClaim:
-          claimName: blog-content-vc1
+          claimName: blog-content-vc2

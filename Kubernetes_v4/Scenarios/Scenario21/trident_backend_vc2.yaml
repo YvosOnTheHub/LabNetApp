@@ -15,6 +15,6 @@ spec:
   defaults:
     snapshotDir: 'false'
     snapshotPolicy: default
-    snapshotReserve: 5
+    snapshotReserve: '5'
   credentials:
-    name: sc21_credentials
+    name: sc21-credentials
