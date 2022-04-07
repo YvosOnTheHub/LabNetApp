@@ -39,7 +39,7 @@ tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-east created
 ```
 
 We can now create a Kubernetes Storage Class that does not necessarily point to a particular Trident Backend.  
-One could decide to also implement topology at the Storage Class level (cf the _sc_east_ & _sc_west_ yaml files for examples.)
+We will use the _sc_topology.yaml_ file which refers to both regions & zones. One could decide to implement separate storage classes (1 for each region), however, letting Trident decide where to create the volume based on one single Storage Class is easier to manage.
 
 ```bash
 $ kubectl create -f sc_topology.yaml
@@ -78,7 +78,6 @@ NAME                                       CAPACITY   ACCESS MODES   RECLAIM POL
 ```
 
 As you can see, both PVC have not yet been created, simply because of the _volumeBindingMode_ parameter set in the storage class.  
-If topology parameters were also definied in the storage classes, not sure the _volumeBindingMode_ would make sense, as you already know where it would be created.
 
 ```bash
 $ kubectl describe -n topology pvc pvc-west | grep -C 3 Events
@@ -96,8 +95,8 @@ If you take a look the POD yaml files, you will notice I have used the **nodeAff
 
 As expected:
 
-- the **WEST** Pod should run on **Host1**
-- the **EAST** Pod should run on **Host2**
+- the **WEST** Pod should run on either **Host1** or **Host2**
+- the **EAST** Pod should run on **Host3** (or **Host4** if you have already added this fourth node)
 
 ```bash
 $ kubectl create -n topology -f pod-centos-west.yaml
@@ -107,13 +106,13 @@ $ kubectl create -n topology -f pod-centos-east.yaml
 pod/centos-east created
 ```
 
-Now that the PODs have been requested, you can also see that the PVC-WEST has been succesfully created.
+Now that the PODs have been requested, you can also see that both PVC have been succesfully created.
 
 ```bash
 $ kubectl get pvc -n topology
-NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-pvc-east     Bound    pvc-d0a8aa71-840b-4248-92d6-850b680988a3   5Gi        RWX            sc-topology-east    15h
-pvc-west     Bound    pvc-f468c589-1a88-4393-a827-f6bd0b4c1902   5Gi        RWX            sc-topology-west    15h
+NAME         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
+pvc-east     Bound    pvc-d0a8aa71-840b-4248-92d6-850b680988a3   5Gi        RWX            sc-topology      15h
+pvc-west     Bound    pvc-f468c589-1a88-4393-a827-f6bd0b4c1902   5Gi        RWX            sc-topology      15h
 ```
 
 Finally, let's check that our 2 PODs have been created on the right hosts, as expected:
@@ -121,8 +120,27 @@ Finally, let's check that our 2 PODs have been created on the right hosts, as ex
 ```bash
 $ kubectl get pod -n topology -o wide
 NAME             READY   STATUS    RESTARTS   AGE     IP          NODE    NOMINATED NODE   READINESS GATES
-centos-east      1/1     Running   0          97s     10.44.0.8   rhel2   <none>           <none>
-centos-west      1/1     Running   0          92s     10.36.0.5   rhel1   <none>           <none>
+centos-east      1/1     Running   0          97s     10.44.0.8   rhel3   <none>           <none>
+centos-west      1/1     Running   0          92s     10.36.0.5   rhel2   <none>           <none>
+```
+
+Last check, each volume in ONTAP should have a prefix related to its region:
+
+```bash
+$ curl -X GET -ku vsadmin:Netapp1! "https://192.168.0.135/api/storage/volumes?name=*st_pvc*" -H "accept: application/json"
+{
+  "records": [
+    {
+      "uuid": "15d666a3-b64f-11ec-8f11-005056818e21",
+      "name": "west_pvc_f468c589_1a88_4393_a827_f6bd0b4c1902"
+    },
+    {
+      "uuid": "ebdad3f2-b64e-11ec-8f11-005056818e21",
+      "name": "east_pvc_d0a8aa71_840b_4248_92d6_850b680988a3"
+    }
+  ],
+  "num_records": 2
+}
 ```
 
 => Tadaaaa!

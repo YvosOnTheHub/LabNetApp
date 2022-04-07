@@ -15,18 +15,18 @@ if [ $(kubectl get nodes -o=jsonpath='{range .items[*]}[{.metadata.name}, {.meta
     echo "Add Region & Zone labels to Kubernetes nodes"
     echo "#######################################################################################################"
 
-    kubectl label node rhel1 "topology.kubernetes.io/region=trident"
-    kubectl label node rhel2 "topology.kubernetes.io/region=trident"
-    kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+    kubectl label node rhel1 "topology.kubernetes.io/region=west"
+    kubectl label node rhel2 "topology.kubernetes.io/region=west"
+    kubectl label node rhel3 "topology.kubernetes.io/region=east"
 
-    kubectl label node rhel1 "topology.kubernetes.io/zone=west"
-    kubectl label node rhel2 "topology.kubernetes.io/zone=east"
-    kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+    kubectl label node rhel1 "topology.kubernetes.io/zone=west1"
+    kubectl label node rhel2 "topology.kubernetes.io/zone=west1"
+    kubectl label node rhel3 "topology.kubernetes.io/zone=east1"
 
     if [ $(kubectl get nodes | wc -l) = 5 ]
     then
-      kubectl label node rhel4 "topology.kubernetes.io/region=trident"
-      kubectl label node rhel4 "topology.kubernetes.io/zone=north"
+      kubectl label node rhel4 "topology.kubernetes.io/region=east"
+      kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
     fi      
 fi
 

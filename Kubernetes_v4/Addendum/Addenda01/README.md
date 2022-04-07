@@ -126,8 +126,8 @@ As Trident contains a DaemonSet, it will create one of these objects on RHEL4 be
 In order to take them into account, you must restart the Trident Controller (of kind Deployment) by simply deleting the current pod.
 
 ```bash
-kubectl label node rhel4 "topology.kubernetes.io/region=trident"
-kubectl label node rhel4 "topology.kubernetes.io/zone=west"
+kubectl label node rhel4 "topology.kubernetes.io/region=east"
+kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
 kubectl delete -n trident pod -l app=controller.csi.trident.netapp.io
 ```
 

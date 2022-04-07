@@ -120,12 +120,12 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-kubectl label node rhel1 "topology.kubernetes.io/region=trident"
-kubectl label node rhel2 "topology.kubernetes.io/region=trident"
-kubectl label node rhel3 "topology.kubernetes.io/region=trident"
-kubectl label node rhel1 "topology.kubernetes.io/zone=west"
-kubectl label node rhel2 "topology.kubernetes.io/zone=east"
-kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+kubectl label node rhel1 "topology.kubernetes.io/region=west"
+kubectl label node rhel2 "topology.kubernetes.io/region=west"
+kubectl label node rhel3 "topology.kubernetes.io/region=east"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west1"
+kubectl label node rhel2 "topology.kubernetes.io/zone=west1"
+kubectl label node rhel3 "topology.kubernetes.io/zone=east1"
 sleep 2s
 
 cd

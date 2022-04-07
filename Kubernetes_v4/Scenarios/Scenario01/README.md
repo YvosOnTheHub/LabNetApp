@@ -51,14 +51,14 @@ If they are not, you can create them with the following commands:
 
 ```bash
 # LABEL "REGION"
-kubectl label node rhel1 "topology.kubernetes.io/region=trident"
-kubectl label node rhel2 "topology.kubernetes.io/region=trident"
-kubectl label node rhel3 "topology.kubernetes.io/region=trident"
+kubectl label node rhel1 "topology.kubernetes.io/region=west"
+kubectl label node rhel2 "topology.kubernetes.io/region=west"
+kubectl label node rhel3 "topology.kubernetes.io/region=east"
 
 # LABEL "ZONE"
-kubectl label node rhel1 "topology.kubernetes.io/zone=west"
-kubectl label node rhel2 "topology.kubernetes.io/zone=east"
-kubectl label node rhel3 "topology.kubernetes.io/zone=admin"
+kubectl label node rhel1 "topology.kubernetes.io/zone=west1"
+kubectl label node rhel2 "topology.kubernetes.io/zone=west1"
+kubectl label node rhel3 "topology.kubernetes.io/zone=east1"
 ```
 
 Last, if you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  

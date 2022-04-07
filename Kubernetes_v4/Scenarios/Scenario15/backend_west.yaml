@@ -11,5 +11,5 @@ spec:
   credentials:
     name: ontap-nfs-svm-secret-username
   supportedTopologies:
-    - topology.kubernetes.io/region: trident
-    - topology.kubernetes.io/zone: west
+    - topology.kubernetes.io/region: west
+    - topology.kubernetes.io/zone: west1

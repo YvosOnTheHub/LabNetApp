@@ -8,11 +8,12 @@ allowedTopologies:
 - matchLabelExpressions:
   - key: topology.kubernetes.io/zone
     values:
-    - east
-    - west
+    - east1
+    - west1
   - key: topology.kubernetes.io/region
     values:
-    - trident
+    - east
+    - west
 parameters:
   backendType: "ontap-nas"
   storagePools: "nas-east:aggr1;nas-west:aggr1"
