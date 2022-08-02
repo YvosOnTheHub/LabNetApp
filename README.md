@@ -45,7 +45,7 @@ Scenarios
 [18.](Kubernetes_v5/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
 [19.](Kubernetes_v5/Scenarios/Scenario19) Let's talk about protocols & access modes !  
 [20.](Kubernetes_v5/Scenarios/Scenario20) About Generic Ephemeral Volumes  
-<!--[21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Virtual vClusters    -->
+[21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Virtual vClusters  
 
 Addendum
 --------

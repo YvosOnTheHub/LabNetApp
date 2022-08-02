@@ -35,6 +35,13 @@ Let's see this in action! We are going to create 2 vClusters in this environment
 
 ## A. PreRequisites
 
+If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario09_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
+
+```bash
+sh scenario21_pull_images.sh my_login my_password
+```
+
 In order to best benefit from this experiment, you will first need to:
 
 - Install MetalLB: cf [Addenda05](../../Addendum/Addenda05)
@@ -44,11 +51,11 @@ With 4 nodes, your cluster will look the following:
 
 ```bash
 $ kubectl get nodes -o wide
-NAME    STATUS   ROLES    AGE     VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
-rhel1   Ready    <none>   596d    v1.18.6   192.168.0.61   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
-rhel2   Ready    <none>   596d    v1.18.6   192.168.0.62   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
-rhel3   Ready    master   596d    v1.18.6   192.168.0.63   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
-rhel4   Ready    <none>   3d19h   v1.18.6   192.168.0.64   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+NAME    STATUS   ROLES                  AGE    VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
+rhel1   Ready    <none>                 719d   v1.22.3   192.168.0.61   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+rhel2   Ready    <none>                 263d   v1.22.3   192.168.0.62   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+rhel3   Ready    control-plane,master   719d   v1.22.3   192.168.0.63   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+rhel4   Ready    <none>                 1d1h   v1.22.3   192.168.0.64   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
 ```
 
 If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
@@ -84,7 +91,7 @@ storageclass.storage.k8s.io/sc-vc2 created
 This is really the easiest thing ever... In short, download & use:
 
 ```bash
-curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
+curl -s -L "https://github.com/loft-sh/vcluster/releases/v0.11.0" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
 mv vcluster /usr/local/bin
 ```
 
@@ -110,55 +117,42 @@ We are now ready to create 2 virtual clusters !
 The admin can deeply customize the setup of the vClusters through the use of a parameter YAML file.  
 In my case, I have specified a resource limit for the Control Planes & the labels to look for on the nodes.  
 
-```bash
-$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc1.yaml --expose
-[info]   Creating namespace vc1
-[info]   execute command: helm upgrade vcluster-1 vcluster --repo https://charts.loft.sh --version 0.7.1 --kubeconfig /tmp/918707822 --namespace vc1 --install --repository-config='' --values /tmp/3715143884 --values vcluster_vc1.yaml
-[done] √ Successfully created virtual cluster vcluster-1 in namespace vc1.
-- Use 'vcluster connect vcluster-1 --namespace vc1' to access the virtual cluster
-- Use 'vcluster connect vcluster-1 --namespace vc1 -- kubectl get ns' to run a command directly within the vcluster
+I have also used the following arguments:
 
-$ vcluster create vcluster-2 -n vc2 -f ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc2.yaml --expose
-[info]   Creating namespace vc2
-[info]   execute command: helm upgrade vcluster-2 vcluster --repo https://charts.loft.sh --version 0.7.1 --kubeconfig /tmp/3188407328 --namespace vc2 --install --repository-config='' --values /tmp/950448126 --values vcluster_vc2.yaml
-[done] √ Successfully created virtual cluster vcluster-2 in namespace vc2.
+- _expose_: the vCluster will be reachable through a LoadBalancer service (ie IP address given by MetalLB)
+- _connect=false_: will not automatically connect to the cluster after the creation is successful
+
+```bash
+$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc1.yaml --expose --connect=false
+info   Creating namespace vc1
+info   Create vcluster vcluster-1...
+info   execute command: helm upgrade vcluster-1 https://charts.loft.sh/charts/vcluster-0.11.0.tgz --kubeconfig /tmp/3080364138 --namespace vc1 --install --repository-config='' --values /tmp/976661125 --values /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc1.yaml
+done √ Successfully created virtual cluster vcluster-1 in namespace vc1.
+- Use 'vcluster connect vcluster-1 --namespace vc1' to access the virtual cluster
+- Use `vcluster connect vcluster-1 --namespace vc1 -- kubectl get ns` to run a command directly within the vcluster
+
+$ vcluster create vcluster-2 -n vc2 -f ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc2.yaml --expose --connect=false
+info   Creating namespace vc2
+info   Create vcluster vcluster-2...
+info   execute command: helm upgrade vcluster-1 https://charts.loft.sh/charts/vcluster-0.11.0.tgz --kubeconfig /tmp/1639504954 --namespace vc2 --install --repository-config='' --values /tmp/2943026640 --values /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/vcluster_vc2.yaml
+done √ Successfully created virtual cluster vcluster-2 in namespace vc2.
 - Use 'vcluster connect vcluster-2 --namespace vc2' to access the virtual cluster
-- Use 'vcluster connect vcluster-2 --namespace vc2 -- kubectl get ns' to run a command directly within the vcluster
+- Use `vcluster connect vcluster-2 --namespace vc2 -- kubectl get ns` to run a command directly within the vcluster
 
 $ vcluster list
- NAME         NAMESPACE   CREATED                         AGE
- vcluster-1   vc1         2022-04-01 08:05:40 +0000 UTC   5m38s
- vcluster-2   vc2         2022-04-01 08:08:24 +0000 UTC   2m54s
-```
+NAME         NAMESPACE   STATUS    CONNECTED   CREATED                         AGE
+ vcluster-1   vc1         Running               2022-08-02 09:43:13 +0000 UTC   9m18s
+ vcluster-2   vc2         Running               2022-08-02 09:51:48 +0000 UTC   43s
 
-I would recommend looking into how to connect to a vCluster to see the extent of what it possible: https://www.vcluster.com/docs/getting-started/connect.  
-As there is a LoadBalancer configured, the IP address of the vCluster end-point will be automatically assigned.  
-Also, let's create the kubeconfig files related to each vCluster:
-
-```bash
-$ vcluster connect vcluster-1 -n vc1 --kube-config ~/kubeconfig_vc1.yaml
-[info]   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.140
-[info]   Use 'vcluster connect vcluster-1 -n vc1 -- kubectl get ns' to execute a command directly within this terminal
-[done] √ Virtual cluster kube config written to: /root/kubeconfig_vc1.yaml. You can access the cluster via 'kubectl --kubeconfig /root/kubeconfig_vc1.yaml get namespaces'
-
-$ vcluster connect vcluster-2 -n vc2 --kube-config ~/kubeconfig_vc2.yaml
-[info]   Using vcluster vcluster-2 load balancer endpoint: 192.168.0.141
-[info]   Use 'vcluster connect vcluster-2 -n vc2 -- kubectl get ns' to execute a command directly within this terminal
-[done] √ Virtual cluster kube config written to: /root/kubeconfig_vc2.yaml. You can access the cluster via 'kubectl --kubeconfig /root/kubeconfig_vc2.yaml get namespaces'
-```
-
-After a few seconds, you should see all the vClusters pods in a running state:
-
-```bash
 $ kubectl get -n vc1 pod -o wide
-NAME                                                READY   STATUS    RESTARTS   AGE   IP               NODE    NOMINATED NODE   READINESS GATES
-coredns-cb89b564-fj6nx-x-kube-system-x-vcluster-1   1/1     Running   0          61m   192.168.24.68    rhel3   <none>           <none>
-vcluster-1-0                                        2/2     Running   0          63m   192.168.24.131   rhel4   <none>           <none>
+NAME                                                  READY   STATUS    RESTARTS   AGE   IP              NODE    NOMINATED NODE   READINESS GATES
+coredns-55bd85cf4b-9h5sv-x-kube-system-x-vcluster-1   1/1     Running   0          17m   192.168.24.32   rhel1   <none>           <none>
+vcluster-1-0                                          2/2     Running   0          18m   192.168.24.34   rhel1   <none>           <none>
 
 $ kubectl get -n vc2 pod -o wide
-NAME                                                READY   STATUS    RESTARTS   AGE   IP               NODE    NOMINATED NODE   READINESS GATES
-coredns-cb89b564-t6g2z-x-kube-system-x-vcluster-2   1/1     Running   0          47m   192.168.24.69    rhel3   <none>           <none>
-vcluster-2-0                                        2/2     Running   0          47m   192.168.24.132   rhel4   <none>           <none>
+NAME                                                  READY   STATUS    RESTARTS   AGE     IP               NODE    NOMINATED NODE   READINESS GATES
+coredns-55bd85cf4b-4wkkt-x-kube-system-x-vcluster-1   1/1     Running   0          9m30s   192.168.24.201   rhel2   <none>           <none>
+vcluster-2-0                                          2/2     Running   0          10m     192.168.24.48    rhel1   <none>           <none>
 ```
 
 The _vcluster_ pod is the "control plane" of your tenant, which runs K3S.  
@@ -166,35 +160,35 @@ You may wonder what the other POD is? It is the system POD running in the vClust
 
 ```bash
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get pod -A
-NAMESPACE     NAME                     READY   STATUS    RESTARTS   AGE
-kube-system   coredns-cb89b564-fj6nx   1/1     Running   0          3h50m
+NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+kube-system   coredns-55bd85cf4b-9h5sv   1/1     Running   0          20m
 ```
 
-Our two vClusters are now up & running. Let's look closely at what we have here:
+Our two vClusters are now up & running. Let's look closely at what we have here in the first one:
 
 ```bash
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get nodes -o wide
-NAME    STATUS   ROLES    AGE     VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
-rhel1   Ready    <none>   60m     v1.18.6   10.103.188.115   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
-rhel2   Ready    <none>   60m     v1.18.6   10.103.246.161   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+NAME    STATUS   ROLES    AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
+rhel2   Ready    <none>   20m   v1.22.3   10.103.111.65   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+rhel1   Ready    <none>   20m   v1.22.3   10.97.93.139    <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
 
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get namespaces
 NAME              STATUS   AGE
-default           Active   45m
-kube-system       Active   45m
-kube-public       Active   45m
-kube-node-lease   Active   45m
+default           Active   21m
+kube-system       Active   21m
+kube-public       Active   21m
+kube-node-lease   Active   21m
 
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get svc -A
-NAMESPACE     NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                  AGE
-default       kubernetes   ClusterIP   10.102.158.21   <none>        443/TCP                  45m
-kube-system   kube-dns     ClusterIP   10.96.245.47    <none>        53/UDP,53/TCP,9153/TCP   45m
+NAMESPACE     NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                  AGE
+default       kubernetes   ClusterIP   10.107.102.144   <none>        443/TCP                  21m
+kube-system   kube-dns     ClusterIP   10.104.169.59    <none>        53/UDP,53/TCP,9153/TCP   21m
 
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get crd
 NAME                              CREATED AT
-addons.k3s.cattle.io              2022-04-01T08:06:06Z
-helmcharts.helm.cattle.io         2022-04-01T08:06:06Z
-helmchartconfigs.helm.cattle.io   2022-04-01T08:06:06Z
+addons.k3s.cattle.io              2022-08-02T09:43:30Z
+helmcharts.helm.cattle.io         2022-08-02T09:43:30Z
+helmchartconfigs.helm.cattle.io   2022-08-02T09:43:30Z
 
 $ vcluster connect vcluster-1 --namespace vc1 -- kubectl get sc
 No resources found in default namespace.
@@ -206,9 +200,24 @@ A few things to notice:
 - There is no Trident resource in the vCluster, nor storage class, as these are managed directly from the underlying cluster
 - From a vCluster standpoint, the nodes INTERNAL IP are different from the once you find using the _kubectl get nodes_ command on the underlying cluster
 
-In order to create Persistent Volumes, the Kubernetes admin will have to provide the vCluster admin or the end-users with the right Storage Class to use.
+In order to create Persistent Volumes, the Kubernetes admin will have to provide the vCluster admin or the end-users with the right Storage Class to use. Note that you can also create customer storage classes within the vCluster.  
 
 ## E. Use vClusters
+
+I would recommend looking into how to connect to a vCluster to see the extent of what it possible: https://www.vcluster.com/docs/getting-started/connect.  
+Let's create the kubeconfig files related to each vCluster:
+
+```bash
+$ vcluster connect vcluster-1 -n vc1 --kube-config ~/kubeconfig_vc1.yaml --update-current=false
+info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.140
+done √ Virtual cluster kube config written to: /root/kubeconfig_vc1.yaml
+- Use `kubectl --kubeconfig /root/kubeconfig_vc1.yaml get namespaces` to access the vcluster
+
+$ vcluster connect vcluster-2 -n vc2 --kube-config ~/kubeconfig_vc2.yaml --update-current=false
+info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.141
+done √ Virtual cluster kube config written to: /root/kubeconfig_vc2.yaml
+- Use `kubectl --kubeconfig /root/kubeconfig_vc2.yaml get namespaces` to access the vcluster
+```
 
 The vCluster admin & end-users would be provided with their own kubeconfig file to use, which can be exported in the KUBECONFIG variable.  
 In this lab, I will just use the parameter _--kubeconfig_ with the kubectl command in order to avoir juggling with multiple terminals.
@@ -217,9 +226,9 @@ As a vCluster admin, let's first check what we have:
 
 ```bash
 $ kubectl --kubeconfig ~/kubeconfig_vc1.yaml get nodes -o wide
-NAME    STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
-rhel1   Ready    <none>   59m   v1.18.6   10.103.188.115   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
-rhel2   Ready    <none>   59m   v1.18.6   10.103.246.161   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+NAME    STATUS   ROLES    AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                                      KERNEL-VERSION          CONTAINER-RUNTIME
+rhel2   Ready    <none>   23m   v1.22.3   10.103.111.65   <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
+rhel1   Ready    <none>   23m   v1.22.3   10.97.93.139    <none>        Red Hat Enterprise Linux Server 7.5 (Maipo)   3.10.0-862.el7.x86_64   docker://18.9.1
 ```
 
 Let's install Ghost on this vCluster. For that, you can use the _ghost_vc1.sh_ file from the Ghost_vc1 directory.  
@@ -235,13 +244,13 @@ deployment.apps/blog-vc1 created
 
 $ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 get svc,pod,pvc
 NAME               TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-service/blog-vc1   LoadBalancer   10.98.133.177   192.168.0.142   80:31291/TCP   91s
+service/blog-vc1   LoadBalancer   10.102.157.98   192.168.0.142   80:31930/TCP   119s
 
 NAME                            READY   STATUS    RESTARTS   AGE
-pod/blog-vc1-768464bb45-qtg78   1/1     Running   0          90s
+pod/blog-vc1-6c78b9fb9d-9pct6   1/1     Running   0          118s
 
 NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-persistentvolumeclaim/blog-content-vc1   Bound    pvc-1e6211a9-a201-4523-8e5a-bf0386132dc8   5Gi        RWX            sc-vc1         91s
+persistentvolumeclaim/blog-content-vc1   Bound    pvc-42c63348-2629-4242-82eb-f0795801ee2e   5Gi        RWX            sc-vc1         119s
 ```
 
 You can now connect to the IP address provided to the Ghost service by the LoadBalancer in order to use this app (192.168.0.142 in this example).  
@@ -250,36 +259,72 @@ Let's see what corresponding resources we have on the underlying cluster:
 ```bash
 $ kubectl get -n vc1 pod,svc,pvc -l vcluster.loft.sh/namespace=ghostvc1
 NAME                                                    READY   STATUS    RESTARTS   AGE
-pod/blog-vc1-768464bb45-qtg78-x-ghostvc1-x-vcluster-1   1/1     Running   0          5m16s
+pod/blog-vc1-6c78b9fb9d-9pct6-x-ghostvc1-x-vcluster-1   1/1     Running   0          2m36s
 
 NAME                                       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-service/blog-vc1-x-ghostvc1-x-vcluster-1   LoadBalancer   10.98.133.177   192.168.0.142   80:31291/TCP   5m17s
+service/blog-vc1-x-ghostvc1-x-vcluster-1   LoadBalancer   10.102.157.98   192.168.0.142   80:31930/TCP   2m37s
 
 NAME                                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-persistentvolumeclaim/blog-content-vc1-x-ghostvc1-x-vcluster-1   Bound    pvc-1e6211a9-a201-4523-8e5a-bf0386132dc8   5Gi        RWX            sc-vc1         5m17s
+persistentvolumeclaim/blog-content-vc1-x-ghostvc1-x-vcluster-1   Bound    pvc-42c63348-2629-4242-82eb-f0795801ee2e   5Gi        RWX            sc-vc1         2m37s
 ```
 
 Here again we see the same resources, but from a different perspective & with a different naming convention.  
-The vCluster2 could also decide to deploy Ghost (with the script ghost_vc1.sh in the Ghost_vc2 folder).
+The vCluster2 could also decide to deploy Ghost (with the script ghost_vc2.sh in the Ghost_vc2 folder).
 
 <p align="center"><img src="Images/2_vclusters_ghost.jpg"></p>
 
-## F. Clean up
+## F. What about CSI Snapshots
+
+If the current setup does not yet have a volume snapshot class at the cluster level, you can find in the Scenario13 folder:
+
+```bash
+$ kubectl create -f ../Scenario13/sc-volumesnapshot.yaml
+volumesnapshotclass.snapshot.storage.k8s.io/csi-snap-class created
+```
+
+This volume snapshot class can be made available through the vcluster parameter _volumesnapshots:enabled:true_ (already set here).  
+Let's create a CSI snapshot & a new PVC from it.  
+
+```bash
+$ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 get volumesnapshotclass
+NAME                                                         DRIVER                  DELETIONPOLICY   AGE
+volumesnapshotclass.snapshot.storage.k8s.io/csi-snap-class   csi.trident.netapp.io   Delete           42s
+
+$ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 create -f pvc-snapshot.yaml
+volumesnapshot.snapshot.storage.k8s.io/blog-content-vc1-snapshot created
+
+$ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 get pvc,volumesnapshot
+NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/blog-content-vc1   Bound    pvc-b62d4555-69c0-449e-a05e-d40dc06d7ed1   5Gi        RWX            sc-vc1         9m32s
+
+NAME                                                     READYTOUSE   SOURCEPVC          SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
+volumesnapshot.snapshot.storage.k8s.io/blog-content-vc1-snapshot   true         blog-content-vc1                           744Ki         csi-snap-class   snapcontent-cb084431-baff-4ce9-b34f-5a39f50e58c2   57s            56s
+
+$ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 create -f Ghost_vc1/pvc_from_snap.yaml
+persistentvolumeclaim/blog-content-vc1-from-snap created
+
+$ kubectl --kubeconfig ~/kubeconfig_vc1.yaml -n ghostvc1 get pvc
+NAME                         STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+blog-content-vc1             Bound    pvc-b62d4555-69c0-449e-a05e-d40dc06d7ed1   5Gi        RWX            sc-vc1         11m
+blog-content-vc1-from-snap   Bound    pvc-a08d87bb-144f-4f7a-9a22-33fdd78f8766   5Gi        RWX            sc-vc1         12s
+```
+
+There you go. We just saw how to easily give access to CSI snapshots to a vCluster user. 
+
+## G. Clean up
 
 Deleting the vClusters is pretty straight forward. Note that all resources created within the vCluster will also be deleted:
 
 ```bash
 $ vcluster delete vcluster-1 -n vc1 --delete-namespace
-[info]   Delete helm chart with helm delete vcluster-1 --namespace vc1 --kubeconfig /tmp/3587168754 --repository-config=''
-[done] √ Successfully deleted virtual cluster vcluster-1 in namespace vc1
-[done] √ Successfully deleted virtual cluster pvc data-vcluster-1-0 in namespace vc1
-[done] √ Successfully deleted virtual cluster namespace vc1
+info   Delete vcluster vcluster-1...
+done √ Successfully deleted virtual cluster vcluster-1 in namespace vc1
+done √ Successfully deleted virtual cluster namespace vc1
 
 $ vcluster delete vcluster-2 -n vc2 --delete-namespace
-[info]   Delete helm chart with helm delete vcluster-2 --namespace vc2 --kubeconfig /tmp/799684953 --repository-config=''
-[done] √ Successfully deleted virtual cluster vcluster-2 in namespace vc2
-[done] √ Successfully deleted virtual cluster pvc data-vcluster-2-0 in namespace vc2
-[done] √ Successfully deleted virtual cluster namespace vc2
+info   Delete vcluster vcluster-2...
+done √ Successfully deleted virtual cluster vcluster-2 in namespace vc2
+done √ Successfully deleted virtual cluster namespace vc2
 ```
 
 ## What's next

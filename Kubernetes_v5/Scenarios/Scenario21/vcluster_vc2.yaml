@@ -1,6 +1,4 @@
 vcluster:
-  extraArgs:
-    - --service-cidr=10.96.0.0/12
   resources:
     limits:
       memory: 512Mi

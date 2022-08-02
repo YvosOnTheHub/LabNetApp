@@ -1,0 +1,15 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: blog-content-vc1-from-snap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sc-vc1
+  dataSource:
+    name: blog-content-vc1-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
