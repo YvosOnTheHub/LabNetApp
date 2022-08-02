@@ -1,0 +1,16 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-snap-reserve
+spec:
+  version: 1
+  backendName: nas-snap-reserve
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: sr_
+  defaults:
+    snapshotDir: 'true'     # using this parameter may cause issues with Centos8/RHEL8 as the .snapshot file-system is readonly
+    snapshotPolicy: default
+    snapshotReserve: '40'
+  credentials:
+    name: ontap-nfs-svm-secret-username

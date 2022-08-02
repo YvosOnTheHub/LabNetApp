@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-limit-aggr
+spec:
+  version: 1
+  backendName: nas-limit-aggr
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.101
+  limitAggregateUsage: 40%
+  svm: nfs_svm
+  defaults:
+    spaceReserve: volume
+  credentials:
+    name: ontap-cluster-secret-username

@@ -20,7 +20,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
       "uuid": "0dd40303-d469-4e83-86c6-2fca7838e067"
     }
   ],
-  "name": "test",
+  "name": "scenario7_2",
   "size": "10g",
   "style": "flexvol",
   "svm": {
@@ -58,7 +58,7 @@ Please note that:
 - The volume hosting the LUN is going to be renamed once imported in order to follow the CSI specifications
 
 ```bash
-$ tridentctl -n trident import volume SAN-default scenario8_2 -f pvc_rwo_import.yaml
+$ tridentctl -n trident import volume san-secured scenario7_2 -f pvc_rwo_import.yaml
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
@@ -74,7 +74,7 @@ Notice that the volume full name on the storage backend has changed to respect t
 
 ```bash
 $ kubectl get pv $(kubectl get pvc lun-import -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}{"\n"}'
-nas1_pvc_ac9ba4b2_7dce_4241_8c8e_a4ced9cf7dcf
+san_chap_pvc_92b0e330_4dd6_4de2_a6ac_9adce4538b7a
 ```
 
 Even though the name of the original PV has changed, you can still see it if you look into its annotations.

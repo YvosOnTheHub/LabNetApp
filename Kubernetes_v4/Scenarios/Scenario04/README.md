@@ -23,7 +23,7 @@ sh scenario04_pull_images.sh my_login my_password
 ## A. Create the app
 
 We will create this app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario04](../Scenario04))
+We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario02](../Scenario02))
 
 ```bash
 $ kubectl create namespace ghost

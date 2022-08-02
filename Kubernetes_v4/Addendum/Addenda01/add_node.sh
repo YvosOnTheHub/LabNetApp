@@ -22,10 +22,10 @@ EOF"
 ssh -o "StrictHostKeyChecking no" root@$1 sysctl --system
 
 ssh -o "StrictHostKeyChecking no" root@$1 setenforce 0
-ssh -o "StrictHostKeyChecking no" root@$1 sed -i 's/^SELINUX=enforcing$/SELINUX=Disabled/' /etc/selinux/config
-ssh -o "StrictHostKeyChecking no" root@$1 swapoff -a
+ssh -o "StrictHostKeyChecking no" root@$1 "sed -i 's/^SELINUX=enforcing$/SELINUX=Disabled/' /etc/selinux/config"
+ssh -o "StrictHostKeyChecking no" root@$1 "swapoff -a"
 ssh -o "StrictHostKeyChecking no" root@$1 cp /etc/fstab /etc/fstab.bak
-ssh -o "StrictHostKeyChecking no" root@$1 sed -e '/swap/ s/^#*/#/g' -i /etc/fstab
+ssh -o "StrictHostKeyChecking no" root@$1 "sed -e '/swap/ s/^#*/#/g' -i /etc/fstab"
 
 ssh -o "StrictHostKeyChecking no" root@$1 "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]

@@ -3,7 +3,7 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep mysql | grep 5.7 | wc -l) -ne 0 ]]
+if [[  $(docker images | grep mysql | grep 5.7.30 | wc -l) -ne 0 ]]
   then
     echo "MYSQL image already present. Nothing to do"
     exit 0
@@ -30,5 +30,5 @@ do
   echo "# DOCKER LOGIN ON $host & PULLING MYSQL IMAGE"
   echo "##############################################"
   ssh -o "StrictHostKeyChecking no" root@$host docker login -u $1 -p $2
-  ssh -o "StrictHostKeyChecking no" root@$host docker pull mysql:5.7
+  ssh -o "StrictHostKeyChecking no" root@$host docker pull mysql:5.7.30
 done

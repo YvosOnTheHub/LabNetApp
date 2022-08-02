@@ -3,7 +3,7 @@
 #########################################################################################
 
 Some of you may not allow direct management access between Kubernetes & ONTAP. However, a proxy can be configured between both layers to redirect traffic.  
-The [Addenda10](../../Addendum/Addenda10) guides you through the installation of HAProxy. We will here see how to continue its configuration to accept Trident Management flows to access ONTAP.  
+The [Addenda09](../../Addendum/Addenda09) guides you through the installation of HAProxy. We will here see how to continue its configuration to accept Trident Management flows to access ONTAP.  
 
 As Trident communicates with ONTAP through HTTPS, we will first need to create a certificate (self-signed in this example).  
 HAProxy requires both the key & the certificate to be concatenated into a single .pem file.  
@@ -13,6 +13,9 @@ mkdir ~/haproxycert
 cd ~/haproxycert
 openssl genpkey -algorithm RSA -out privkey.pem
 openssl req -new -x509 -key privkey.pem -out selfcert.pem -days 366
+
+openssl req -new -x509 -key privkey.pem -out selfcert.pem -days 366 -subj "/C=FR/ST=IdF/L=Paris/O=YvosCorp/OU=IT/CN=demo.netapp.com/emailAddress=admin@demo.netapp.com"
+
 cat selfcert.pem privkey.pem > haproxy.pem
 ```
 
@@ -25,7 +28,7 @@ All requests coming on port 8443 (in this example) will be forwarded to the SVM 
 $ cat <<EOT >> /etc/haproxy/haproxy.cfg
 
 frontend tridentnashttp
-  bind *:8443 ssl crt ~/haproxycert/haproxy.pem
+  bind *:8443 ssl crt /root/haproxycert/haproxy.pem
   default_backend ontapnashttp
 
 backend ontapnashttp
@@ -55,7 +58,7 @@ If you take a look a the backend json file, you will notice that its management 
 $ kubectl create -n trident -f backend_proxy.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-proxy created
 
-$ kubectl create -f sc-proxy.yaml
+$ kubectl create -f sc_proxy.yaml
 storageclass.storage.k8s.io/sc-proxy created
 ```
 

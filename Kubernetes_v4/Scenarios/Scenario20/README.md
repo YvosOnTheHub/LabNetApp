@@ -14,7 +14,8 @@ Kubernetes proposes different types of ephemeral volumes:
 - **generic ephemeral volumes** (_supported by Trident_)
 
 This chapter focuses on the last category which was introduced as an alpha feature in Kubernetes 1.19 (Beta in K8S 1.21 & GA in K8S 1.23).  
-Please refer to [Addenda14](../../Addendum/Addenda14) in order to upgrade this environment.
+Please refer to [Addenda14](../../Addendum/Addenda14) in order to upgrade this environment.  
+We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario02](../Scenario02)).  
 
 The construct of a POD manifest with Generic Ephemeral Volumes is pretty similar to what you would see with StatefulSets, ie the volume definition is included in the POD object. This folder contains a simple busybox pod manifest. You will see that :
 

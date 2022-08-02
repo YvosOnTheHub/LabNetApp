@@ -1,0 +1,16 @@
+wordpressUsername: admin
+wordpressPassword: demolod
+wordpressBlogName: "demo RWX and NFS"
+replicaCount: 2
+
+image:
+  tag: 5.8.1-debian-10-r59
+
+persistence:
+  accessModes: 
+    - ReadWriteMany
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m

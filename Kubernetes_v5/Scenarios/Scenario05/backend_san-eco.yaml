@@ -1,0 +1,13 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-san-eco
+spec:
+  version: 1
+  backendName: san-eco
+  storageDriverName: ontap-san-economy
+  managementLIF: 192.168.0.136
+  storagePrefix: san2_
+  useCHAP: true
+  credentials:
+    name: ontap-iscsi-svm-secret-chap

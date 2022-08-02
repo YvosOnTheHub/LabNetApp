@@ -1,0 +1,77 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    recurrent_parameters: &recurrent_parameters
+      hostname: 192.168.0.101
+      username: admin 
+      password: Netapp1!
+      https: true
+      validate_certs: false
+
+  name: Secured SVM Creation
+  tasks:
+  - name: Create SVM
+    netapp.ontap.na_ontap_svm:
+     state: present
+     name: "svm_secured"
+     root_volume: "root"
+     root_volume_aggregate: "aggr1" 
+     root_volume_security_style: unix
+     allowed_protocols: nfs,iscsi
+     aggr_list: "aggr1,aggr2"
+     <<: *recurrent_parameters
+
+  - name: Create Specific User
+    netapp.ontap.na_ontap_user:
+     state: present
+     name: trident
+     applications: ontapi,http
+     authentication_method: password
+     set_password: Netapp1!
+     lock_user: False
+     role_name: vsadmin
+     vserver: svm_secured
+     <<: *recurrent_parameters
+
+  - name: Enable NFS
+    netapp.ontap.na_ontap_nfs:
+     state: present
+     service_state: started
+     vserver: svm_secured 
+     nfsv3: enabled
+     nfsv4: disabled
+     nfsv41: disabled
+     <<: *recurrent_parameters
+
+  - name: Create ExportPolicyRule for the default policy
+    netapp.ontap.na_ontap_export_policy_rule:
+     state: present
+     policy_name: default
+     vserver: svm_secured
+     rule_index: 1
+     client_match: 192.168.0.0/24
+     ro_rule: any
+     rw_rule: any
+     protocol: any
+     super_user_security: any
+     allow_suid: true
+     <<: *recurrent_parameters
+
+  - name: Create iSCSI Igroup for Trident
+    na_ontap_igroup:
+     state: present
+     name: trident
+     initiator_group_type: iscsi
+     ostype: linux
+     vserver: svm_secured
+     <<: *recurrent_parameters
+
+  - name: Enable iSCSI
+    netapp.ontap.na_ontap_iscsi:
+     state: present
+     service_state: started
+     vserver: svm_secured 
+     <<: *recurrent_parameters

@@ -3,15 +3,15 @@
 This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams. 
 You will find several exercises, described in a step-by-step fashion, that you can use on the NetApp Lab-on-Demand  or on your own environment.  
 
-<!-- ## A. Kubernetes v4 (with CSI) :new:  -->
+<!-- ## A. Kubernetes v5 (with CSI) :new:  -->
 
-The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v4.0**" which comes with Trident :trident: 20.07.1 already installed on Kubernetes 1.18.6.  
+The section has been tested with the Lab-on-Demand Using "**Trident with Kubernetes and ONTAP v5.0**" which comes with Trident :trident: 21.10.0 already installed on Kubernetes 1.22.3.  
 
 **Most labs will be done by connecting with Putty to the RHEL3 host (root/Netapp1!).  
 I assume each scenario will be run in its own directory. Also, you will find a README file for each scenario.**  
 
 Last, there are plenty of commands to write or copy/paste.  
-Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v4/Addendum/Addenda00) !  
+Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v5/Addendum/Addenda00) !  
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
@@ -21,6 +21,56 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+Scenarios  
+---------  
+[0.](Kubernetes_v5/Scenarios/Scenario00) Best Practices & Advices  
+[1.](Kubernetes_v5/Scenarios/Scenario01) Upgrade/Install Trident (22.01.1)  
+[2.](Kubernetes_v5/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
+[3.](Kubernetes_v5/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest  
+[4.](Kubernetes_v5/Scenarios/Scenario04) Deploy your first app with File storage  
+[5.](Kubernetes_v5/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
+[6.](Kubernetes_v5/Scenarios/Scenario06) Deploy your first app with Block storage  
+[7.](Kubernetes_v5/Scenarios/Scenario07) Use the 'import' feature of Trident  
+[8.](Kubernetes_v5/Scenarios/Scenario08) Consumption control  
+[9.](Kubernetes_v5/Scenarios/Scenario09) Expanding Persistent Volumes  
+[10.](Kubernetes_v5/Scenarios/Scenario10) Using Virtual Storage Pools  
+[11.](Kubernetes_v5/Scenarios/Scenario11) StatefulSets & Storage consumption  
+[12.](Kubernetes_v5/Scenarios/Scenario12) Dynamic export policy management  
+[13.](Kubernetes_v5/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
+[14.](Kubernetes_v5/Scenarios/Scenario14) About security  
+[15.](Kubernetes_v5/Scenarios/Scenario15) Caring about location or about CSI Topology  
+[16.](Kubernetes_v5/Scenarios/Scenario16) Performance control  
+[17.](Kubernetes_v5/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
+[18.](Kubernetes_v5/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
+[19.](Kubernetes_v5/Scenarios/Scenario19) Let's talk about protocols & access modes !  
+[20.](Kubernetes_v5/Scenarios/Scenario20) About Generic Ephemeral Volumes  
+<!--[21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Virtual vClusters    -->
+
+Addendum
+--------
+[0.](Kubernetes_v5/Addendum/Addenda00) Useful commands  
+[1.](Kubernetes_v5/Addendum/Addenda01) Add a node to the cluster  
+[2.](Kubernetes_v5/Addendum/Addenda02) Specify a default storage class  
+[3.](Kubernetes_v5/Addendum/Addenda03) Allow user PODs on the master node  
+[4.](Kubernetes_v5/Addendum/Addenda04) Install Ansible on RHEL3 (Kubernetes Master)  
+[5.](Kubernetes_v5/Addendum/Addenda05) Install a Load Balancer (MetalLB)  
+[6.](Kubernetes_v5/Addendum/Addenda06) Install the Kubernetes dashboard  
+[7.](Kubernetes_v5/Addendum/Addenda07) Install cool tools :arrows_counterclockwise:  
+[8.](Kubernetes_v5/Addendum/Addenda08) How to run this lab with the Docker hub rate limiting  
+[9.](Kubernetes_v5/Addendum/Addenda09) How to install & prepare HAProxy  
+[10.](Kubernetes_v5/Addendum/Addenda10) How to create a S3 Bucket on ONTAP  
+[11.](Kubernetes_v5/Addendum/Addenda11) Set up a simple Source Code Repository  
+[12.](Kubernetes_v5/Addendum/Addenda12) Install ArgoCD in this lab  
+
+<!-- ICONS
+:new:
+:arrows_counterclockwise:
+-->
+
+<!-- OLD CONTENT
+
+## A. Kubernetes v4
 
 Scenarios  
 ---------  
@@ -63,14 +113,7 @@ Addendum
 [11.](Kubernetes_v4/Addendum/Addenda11) How to create a S3 Bucket on ONTAP  
 [12.](Kubernetes_v4/Addendum/Addenda12) Set up a simple Source Code Repository  
 [13.](Kubernetes_v4/Addendum/Addenda13) Install ArgoCD in this lab  
-[14.](Kubernetes_v4/Addendum/Addenda14) Upgrade Kubernetes :new:  
-
-<!-- ICONS
-:new:
-:arrows_counterclockwise:
--->
-
-<!-- OLD CONTENT
+[14.](Kubernetes_v4/Addendum/Addenda14) Upgrade Kubernetes :new: 
 
 ## B. Kubernetes v2 (with CSI)
 

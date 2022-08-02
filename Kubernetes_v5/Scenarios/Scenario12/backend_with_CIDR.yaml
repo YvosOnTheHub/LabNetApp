@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-export-with-cidr
+spec:
+  version: 1
+  backendName: export-with-cidr
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: exp1_
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  credentials:
+    name: ontap-nfs-svm-secret-username

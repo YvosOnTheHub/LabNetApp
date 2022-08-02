@@ -1,0 +1,28 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-east
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+             - east1
+  volumes:
+    - name: nfsstorage
+      persistentVolumeClaim:
+       claimName: pvc-east
+  containers:
+    - name: busybox
+      image: registry.demo.netapp.com/busybox:1.35.0
+      command:
+        - /bin/sh
+        - "-c"
+        - "sleep 60m"
+      volumeMounts:
+        - mountPath: "/data"
+          name: nfsstorage

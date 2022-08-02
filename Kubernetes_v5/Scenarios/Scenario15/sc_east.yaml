@@ -1,0 +1,16 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-topology-east
+provisioner: csi.trident.netapp.io
+allowedTopologies:
+- matchLabelExpressions:
+  - key: topology.kubernetes.io/zone
+    values:
+    - east1
+  - key: topology.kubernetes.io/region
+    values:
+    - east
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "nas-east:aggr1"

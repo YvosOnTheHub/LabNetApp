@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvrd
+spec:
+  accessModes:
+  - ReadOnlyMany
+  capacity:
+    storage: 4Gi
+  nfs:
+    path: /trident_qtree_pool_nas2_LRHCOABWFT
+    server: 192.168.0.135

@@ -1,0 +1,13 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "NAS_LimitAggr",
+    "managementLIF": "192.168.0.101",
+    "svm": "nfs_svm",
+    "username": "admin",
+    "password": "Netapp1!",
+    "limitAggregateUsage": "40%",
+    "defaults": {
+        "spaceReserve": "volume"
+      }
+}

@@ -1,0 +1,11 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "Export_with_CIDR",
+    "managementLIF": "192.168.0.135",
+    "storagePrefix": "exp1_",
+    "username": "vsadmin",
+    "password": "Netapp1!",
+    "autoExportCIDRs": ["192.168.0.0/24"],
+    "autoExportPolicy": true
+}

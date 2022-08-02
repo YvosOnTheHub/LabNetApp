@@ -1,0 +1,19 @@
+alertmanager:
+  enabled: false
+  
+nodeExporter:
+  enabled: false
+
+prometheus:  
+  service:
+    nodePort: 32105
+    type: NodePort
+  
+grafana:
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteMany
+  service:
+    nodePort: 30267
+    type: NodePort

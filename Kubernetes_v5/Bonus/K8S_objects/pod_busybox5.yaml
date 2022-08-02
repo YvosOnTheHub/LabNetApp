@@ -1,0 +1,17 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-pod5
+spec:
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc5
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume

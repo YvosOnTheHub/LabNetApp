@@ -80,7 +80,7 @@ docker push registry.demo.netapp.com/trident-autosupport:21.01
 if [[  $(docker images | grep 'ghost' | grep 2.6 | wc -l) -ne 1 ]]
   then
     echo "########################################"
-    echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB"
+    echo "# PULLING GHOST IMAGES FROM DOCKER HUB"
     echo "########################################"
 
     docker login -u $1 -p $2
@@ -89,7 +89,7 @@ if [[  $(docker images | grep 'ghost' | grep 2.6 | wc -l) -ne 1 ]]
 fi
 
 echo "####################################"
-echo "# TAG & PUSH OTHER IMAGES"
+echo "# TAG & PUSH GHOST IMAGES"
 echo "####################################"
 
 docker tag ghost:2.6-alpine registry.demo.netapp.com/ghost:2.6-alpine

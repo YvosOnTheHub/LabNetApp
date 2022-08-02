@@ -1,0 +1,19 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-topology
+provisioner: csi.trident.netapp.io
+volumeBindingMode: WaitForFirstConsumer
+allowedTopologies:
+- matchLabelExpressions:
+  - key: topology.kubernetes.io/zone
+    values:
+    - east1
+    - west1
+  - key: topology.kubernetes.io/region
+    values:
+    - east
+    - west
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "nas-east:aggr1;nas-west:aggr1"

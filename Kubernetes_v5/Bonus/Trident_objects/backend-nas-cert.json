@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "NAS_Cert",
+    "managementLIF": "192.168.0.135",
+    "storagePrefix": "cert_",
+    "clientCertificate": "copy_and_paste_the_content_of_the_encoded_cert_base64_file",
+    "clientPrivateKey": "copy_and_paste_the_content_of_the_encoded_key_base64_file"
+}

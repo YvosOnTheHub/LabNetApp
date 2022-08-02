@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-vc2
+  labels:
+    app.kubernetes.io/name: sc21_vc2
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: sc21_vc2
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 2368

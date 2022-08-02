@@ -1,0 +1,20 @@
+Exporters:
+  Harvest:
+    exporter: Prometheus
+    port: 31000
+
+Defaults:
+  collectors:
+    - Zapi
+    - ZapiPerf
+  exporters:
+    - Harvest
+  use_insecure_tls: true
+
+Pollers:
+  cluster1:
+    datacenter: lod
+    addr: 192.168.0.101
+    auth_style: basic_auth
+    username: admin
+    password: Netapp1!
