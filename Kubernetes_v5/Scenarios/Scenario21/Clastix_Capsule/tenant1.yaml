@@ -13,3 +13,6 @@ spec:
     quota: 3
   nodeSelector:
     tenant1: "true"
+  storageClasses:
+    allowed:
+    - sc-tenant1

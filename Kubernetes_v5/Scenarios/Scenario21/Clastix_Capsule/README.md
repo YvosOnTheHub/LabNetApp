@@ -66,6 +66,7 @@ The first Tenant we are going to create contains a few parameters:
 - Only allows images from the private registry _registry.demo.netapp.com_
 - The user _owner1_ can create & manage up to 3 namespaces
 - Apps running in this tenant are limited to nodes with the "tenant1:true" label (essentially nodes RHEL1 & RHEL2)
+- PVC can only be created against the _sc-tenant1_ storage class  
 
 To learn more about how to configure Capsule, please refer to https://capsule.clastix.io/docs/general/tutorial 
 
