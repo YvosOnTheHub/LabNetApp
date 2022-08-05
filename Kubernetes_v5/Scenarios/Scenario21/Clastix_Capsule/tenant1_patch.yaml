@@ -1,0 +1,7 @@
+spec:
+  additionalRoleBindings:
+  - clusterRoleName: capsule-volume-snapshot
+    subjects:
+    - apiGroup: rbac.authorization.k8s.io
+      kind: User
+      name: owner1

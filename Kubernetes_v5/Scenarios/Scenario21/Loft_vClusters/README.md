@@ -218,7 +218,7 @@ $ kubectl --kubeconfig ~/kubeconfig_vc1 -n ghostvc1 get volumesnapshotclass
 NAME                                                         DRIVER                  DELETIONPOLICY   AGE
 volumesnapshotclass.snapshot.storage.k8s.io/csi-snap-class   csi.trident.netapp.io   Delete           42s
 
-$ kubectl --kubeconfig ~/kubeconfig_vc1 -n ghostvc1 create -f Ghost_vc1/pvc-snapshot.yaml
+$ kubectl --kubeconfig ~/kubeconfig_vc1 -n ghostvc1 create -f Ghost_vc1/pvc_snapshot.yaml
 volumesnapshot.snapshot.storage.k8s.io/blog-content-vc1-snapshot created
 
 $ kubectl --kubeconfig ~/kubeconfig_vc1 -n ghostvc1 get pvc,volumesnapshot

@@ -187,7 +187,64 @@ tenant2   Active   1                 0                 {"tenant2":"true"}   19h
 
 ## E. What about CSI Snapshots
 
-Capsule does not natively support CSI Snapshots at this time. However, high levels of optimizations can be granted, one could active this feature.
+Capsule does not natively support CSI Snapshots at this time. However, as Capsule is highly customizable, you can easily enable this feature by yourself.  
+This would be done by adding a new role to the Tenant user/group. In this lab, the role will be limited to _volumesnapshots_ objects.
+
+```bash
+$ kubectl create clusterrole_volumesnapshots
+clusterrole.rbac.authorization.k8s.io/capsule-volume-snapshot created
+
+$ kubectl describe clusterrole capsule-volume-snapshot -n tenant1-ghost
+Name:         capsule-volume-snapshot
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources                                       Non-Resource URLs  Resource Names  Verbs
+  ---------                                       -----------------  --------------  -----
+  volumesnapshots.snapshot.storage.k8s.io         []                 []              [create get list watch update delete]
+  volumesnapshots.snapshot.storage.k8s.io/status  []                 []              [update]
+```
+
+Once this is done, you can patch or edit the tenant to add this new role:
+
+```bash
+$ kubectl patch tenant/tenant1 --type=merge --patch-file tenant1_patch.yaml
+tenant.capsule.clastix.io/tenant1 patched
+
+$ kubectl describe tenant tenant1 | grep -A 10 Events
+Events:
+  Type    Reason                    Age                    From               Message
+  ----    ------                    ----                   ----               -------
+  Normal  NamespaceCreationWebhook  9m59s                  tenant-webhook     Namespace tenant1-ghost has been assigned to the desired Tenant
+  Normal  tenant1-ghost             7m40s (x4 over 9m59s)  tenant-controller  Ensuring Namespace metadata
+  Normal  tenant1-ghost             7m40s (x4 over 9m59s)  tenant-controller  Ensuring RoleBinding capsule-tenant1-0-admin
+  Normal  tenant1-ghost             7m40s (x4 over 9m59s)  tenant-controller  Ensuring RoleBinding capsule-tenant1-1-capsule-namespace-deleter
+  Normal  tenant1-ghost             7m40s (x2 over 7m40s)  tenant-controller  Ensuring RoleBinding capsule-tenant1-2-capsule-volume-snapshot
+```
+
+There you go, patch successful!  
+
+Finally, you can now create CSI Snapshots & new volumes from these snapshots!  
+Note that, in this configuration, the tenant owner does not have the capability to list all available snapshot classes, same as storage classes.  
+
+```bash
+$ kubectl --kubeconfig owner1-tenant1.kubeconfig -n tenant1-ghost create -f pvc_snapshot.yaml
+volumesnapshot.snapshot.storage.k8s.io/blog-content-tenant1-snapshot created
+
+$ kubectl --kubeconfig owner1-tenant1.kubeconfig -n tenant1-ghost create -f pvc_from_snap.yaml
+persistentvolumeclaim/blog-content-tenant1-from-snap created
+
+$ kubectl --kubeconfig owner1-tenant1.kubeconfig -n tenant1-ghost get pvc,volumesnapshot
+NAME                                                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/blog-content-tenant1             Bound    pvc-dd82a7e7-5ee2-4463-bb4d-2b979dc34a1d   5Gi        RWX            sc-tenant1     3m22s
+persistentvolumeclaim/blog-content-tenant1-from-snap   Bound    pvc-fc47f540-0245-4430-8e45-2e5dabbcb1e9   5Gi        RWX            sc-tenant1     24s
+
+NAME                                                                   READYTOUSE   SOURCEPVC              SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
+volumesnapshot.snapshot.storage.k8s.io/blog-content-tenant1-snapshot   true         blog-content-tenant1                           748Ki         csi-snap-class   snapcontent-bae79455-a890-4add-8e80-73e1e5ef76ca   83s            82s
+```
+
+& voilà. This opens the door to lots of fun !
+
 
 ## F. Clean up
 
