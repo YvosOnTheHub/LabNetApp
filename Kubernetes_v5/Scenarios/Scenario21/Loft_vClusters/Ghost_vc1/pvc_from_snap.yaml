@@ -8,7 +8,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: sc-vc1
+  storageClassName: sc-tenant1
   dataSource:
     name: blog-content-vc1-snapshot
     kind: VolumeSnapshot

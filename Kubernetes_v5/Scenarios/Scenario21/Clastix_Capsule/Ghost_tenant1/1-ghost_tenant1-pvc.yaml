@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: blog-content-vc1
+  name: blog-content-tenant1
   labels:
-    app.kubernetes.io/name: sc21_vc1
+    app.kubernetes.io/name: sc21_tenant1
 spec:
   accessModes:
   - ReadWriteMany
   resources:
     requests:
       storage: 5Gi
-  storageClassName: sc-vc1
+  storageClassName: sc-tenant1

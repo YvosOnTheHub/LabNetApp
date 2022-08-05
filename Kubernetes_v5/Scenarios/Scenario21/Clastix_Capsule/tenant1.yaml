@@ -1,0 +1,15 @@
+apiVersion: capsule.clastix.io/v1beta1
+kind: Tenant
+metadata:
+  name: tenant1
+spec:
+  owners:
+  - name: owner1
+    kind: User
+  containerRegistries:
+    allowed:
+    - registry.demo.netapp.com
+  namespaceOptions:
+    quota: 3
+  nodeSelector:
+    tenant1: "true"

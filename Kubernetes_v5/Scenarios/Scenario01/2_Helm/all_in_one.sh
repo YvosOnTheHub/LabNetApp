@@ -10,7 +10,7 @@ if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -e
       echo " - Parameter1: Docker hub login"
       echo " - Parameter2: Docker hub password"
       exit 0
-  elif 
+  else 
        sh ../scenario01_pull_images.sh $1 $2
   fi
 fi
@@ -58,10 +58,16 @@ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 helm repo update
 helm install trident netapp-trident/trident-operator --version 22.1.1 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.01,operatorImage=registry.demo.netapp.com/trident-operator:22.01.1,tridentImage=registry.demo.netapp.com/trident:22.01.1
 
-sleep 30s
 echo "#######################################################################################################"
 echo "Check"
 echo "#######################################################################################################"
+
+frames="/ | \\ -"
+while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
+    done
+done
 
 tridentctl -n trident version
 

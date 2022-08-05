@@ -10,7 +10,7 @@ if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -e
       echo " - Parameter1: Docker hub login"
       echo " - Parameter2: Docker hub password"
       exit 0
-  elif 
+  else 
        sh ../scenario01_pull_images.sh $1 $2
   fi
 fi
@@ -65,16 +65,16 @@ echo "##########################################################################
 
 sed -i s,netapp\/,registry.demo.netapp.com\/, bundle.yaml
 kubectl create -f ~/22.01.1/trident-installer/deploy/bundle.yaml
-sleep 30
 
 echo "#######################################################################################################"
 echo "Check"
 echo "#######################################################################################################"
 
-while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]
-do
-  echo "sleep a bit ..."
-  sleep 10
+frames="/ | \\ -"
+while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
+    done
 done
 
 tridentctl -n trident version

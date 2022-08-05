@@ -6,7 +6,7 @@ vcluster:
 sync:
   nodes:
     enabled: true
-    nodeSelector: "vcluster2=true"
+    nodeSelector: "tenant2=true"
 
 syncer:
   resources:

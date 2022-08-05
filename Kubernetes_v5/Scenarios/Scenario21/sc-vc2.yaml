@@ -1,9 +1,0 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: sc-vc2
-provisioner: csi.trident.netapp.io
-parameters:
-  backendType: "ontap-nas"
-  storagePools: "vc2:aggr2"
-allowVolumeExpansion: true

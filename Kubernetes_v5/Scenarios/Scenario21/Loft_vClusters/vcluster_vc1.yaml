@@ -6,7 +6,7 @@ vcluster:
 sync:
   nodes:
     enabled: true
-    nodeSelector: "vcluster1=true"
+    nodeSelector: "tenant1=true"
   volumesnapshots:
     enabled: true
 

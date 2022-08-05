@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sc21-credentials
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Netapp1!
+---
+
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tenant1
+spec:
+  version: 1
+  backendName: tenant1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: tenant1_
+  limitVolumeSize: 5g
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  defaults:
+    snapshotDir: 'true'
+    snapshotPolicy: default
+    snapshotReserve: '10'
+  credentials:
+    name: sc21-credentials
+---
+
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tenant2
+spec:
+  version: 1
+  backendName: tenant2
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: tenant2_
+  limitVolumeSize: 20g
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  defaults:
+    snapshotDir: 'false'
+    snapshotPolicy: default
+    snapshotReserve: '5'
+  credentials:
+    name: sc21-credentials
