@@ -191,7 +191,7 @@ Capsule does not natively support CSI Snapshots at this time. However, as Capsul
 This would be done by adding a new role to the Tenant user/group. In this lab, the role will be limited to _volumesnapshots_ objects.
 
 ```bash
-$ kubectl create clusterrole_volumesnapshots
+$ kubectl create clusterrole_volumesnapshots.yaml
 clusterrole.rbac.authorization.k8s.io/capsule-volume-snapshot created
 
 $ kubectl describe clusterrole capsule-volume-snapshot -n tenant1-ghost
@@ -205,7 +205,8 @@ PolicyRule:
   volumesnapshots.snapshot.storage.k8s.io/status  []                 []              [update]
 ```
 
-Once this is done, you can patch or edit the tenant to add this new role:
+Once this is done, you can patch or edit the tenant to add this new role.  
+Check the _tenant1_patch.yaml_ file to read the patch content.
 
 ```bash
 $ kubectl patch tenant/tenant1 --type=merge --patch-file tenant1_patch.yaml
