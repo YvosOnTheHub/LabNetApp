@@ -37,8 +37,8 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-cd ~/LabNetApp/Kubernetes_v5
-sh Scenarios/Scenario01/2_Helm/all_in_one.sh $1 $2
+cd ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario01/2_Helm
+sh all_in_one.sh $1 $2
 
 echo
 echo "#######################################################################################################"
@@ -48,8 +48,8 @@ echo "#"
 echo "#######################################################################################################"
 echo
 
-cd ~/LabNetApp/Kubernetes_v5
-sh Scenarios/Scenario02/all_in_one.sh
+sleep 2s
+sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario02/all_in_one.sh 
 
 echo
 echo "#######################################################################################################"
