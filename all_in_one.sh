@@ -60,7 +60,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh Scenarios/Scenario05/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario05/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
@@ -71,7 +71,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh Scenarios/Scenario03/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
@@ -82,7 +82,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh Scenarios/Scenario03/4_Harvest/scenario03_harvest_install.sh
+sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/4_Harvest/scenario03_harvest_install.sh
 
 echo
 echo "#######################################################################################################"
@@ -103,8 +103,8 @@ echo "##########################################################################
 echo
 
 docker images | grep trident | grep -v -F 22. | awk '{print $3}' | xargs docker rmi
-ssh -o "StrictHostKeyChecking no" root@rhel1 "docker images | grep trident | grep -v -F 22. | awk '{print $3}' | xargs docker rmi"
-ssh -o "StrictHostKeyChecking no" root@rhel2 "docker images | grep trident | grep -v -F 22. | awk '{print $3}' | xargs docker rmi"
+ssh -o "StrictHostKeyChecking no" root@rhel1 "docker images | grep trident | grep -v -F 22. | awk '{print \$3}' | xargs docker rmi"
+ssh -o "StrictHostKeyChecking no" root@rhel2 "docker images | grep trident | grep -v -F 22. | awk '{print \$3}' | xargs docker rmi"
 
 echo
 echo "#######################################################################################################"
