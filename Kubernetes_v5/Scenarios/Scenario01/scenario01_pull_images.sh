@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# OPTIONAL PARAMETERS: 
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
@@ -9,19 +10,13 @@ if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -n
     exit 0
 fi
 
-if [ $# -eq 0 ]
-  then
-    echo "No arguments supplied"
-    echo "Please add the following parameters to the shell script:"
-    echo " - Parameter1: Docker hub login"
-    echo " - Parameter2: Docker hub password"
-    exit 0
+if [ $# -eq 2 ]; then
+   docker login -u $1 -p $2
 fi
 
 echo "##############################################################"
 echo "# PULL TRIDENT IMAGES FROM DOCKER HUB & PUSH TO LOCAL REPO"
 echo "##############################################################"
-docker login -u $1 -p $2
 docker pull netapp/trident:22.01.1
 docker pull netapp/trident-operator:22.01.1
 docker pull netapp/trident-autosupport:22.01

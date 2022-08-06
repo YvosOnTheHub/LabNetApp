@@ -17,7 +17,7 @@ This chapter focuses on the last category which was introduced as an alpha featu
 We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario02](../Scenario02)).  
 
 If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario09_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario09_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:
 
 ```bash
 sh scenario20_pull_images.sh my_login my_password

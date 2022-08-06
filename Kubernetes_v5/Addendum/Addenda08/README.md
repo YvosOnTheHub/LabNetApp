@@ -47,8 +47,4 @@ Now, let's see what we can do to manage this situation:
 - [use secrets](3_Secrets)
 - [use a private repository](4_Private_repo)
 
-In order to simplify the use of this lab, I went for the lazy (easy) way for the following reasons:
-
-- You will not need to custom Trident to include the Docker secret if you plan on upgrading
-- If you scale out the cluster, the Docker images will already be present on the new node (otherwise, you may get problems with DaemonSets)
-- No need to create a secret in every single one of the namespaces you may use
+Most of the scenarios are built with the private repository in mind. That will also reduce the number of images to download from the hub.Ò

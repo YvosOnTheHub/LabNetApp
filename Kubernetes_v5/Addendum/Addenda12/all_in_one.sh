@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# OPTIONAL PARAMETERS: 
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
@@ -8,7 +9,11 @@ echo "##############################################"
 echo "# ARGOCD IMAGES MANAGEMENT"
 echo "##############################################"
 
-sh addenda12_pull_images.sh $1 $2
+if [[ $# -eq 2 ]];then
+  sh addenda12_pull_images.sh $1 $2
+else
+  sh addenda12_pull_images.sh
+fi
 
 echo
 echo "#######################################################################################################"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# MANDATORY PARAMETERS: 
+# OPTIONAL PARAMETERS: 
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
@@ -9,6 +9,7 @@ echo "##########################################################################
 echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
+echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
 echo "# 1. INSTALL TRIDENT OPERATOR 22.01.1 WITH HELM"
 echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
 echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
@@ -32,13 +33,55 @@ fi
 echo
 echo "#######################################################################################################"
 echo "#"
+echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+if [[ $# -ne 2 ]];then
+  TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+  RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
+
+  if [[ $RATEREMAINING -eq 0 ]];then
+      echo "----------------------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub does not have any pull request left. Consider using your own credentials."
+      echo "----------------------------------------------------------------------------------------------------------"
+      echo
+      echo "Please restart the script with the following parameters:"
+      echo " - Parameter1: Docker hub login"
+      echo " - Parameter2: Docker hub password"
+      exit 0
+
+  elif [[ $RATEREMAINING -lt 20 ]];then
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      echo
+      echo "Please restart the script with the following parameters:"
+      echo " - Parameter1: Docker hub login"
+      echo " - Parameter2: Docker hub password"
+      exit 0
+  else
+      echo "--------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub seems to have plenty of pull requests left ($RATEREMAINING)."
+      echo "--------------------------------------------------------------------------------------------"
+  fi
+fi
+
+echo
+echo "#######################################################################################################"
+echo "#"
 echo "# 1. INSTALL TRIDENT OPERATOR 22.01.1 WITH HELM"
 echo "#"
 echo "#######################################################################################################"
 echo
 
 cd ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario01/2_Helm
-sh all_in_one.sh $1 $2
+if [[ $# -eq 2 ]];then
+  sh all_in_one.sh $1 $2
+else
+  sh all_in_one.sh
+fi
 
 echo
 echo "#######################################################################################################"

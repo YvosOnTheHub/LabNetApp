@@ -13,7 +13,7 @@ I consider that a Load Balancer, such as MetalLB, will assign an IP address to t
 Refer to [Addenda05](../Addenda05) to intall MetalLB.  
 
 If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario10_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario10_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:
 
 ```bash
 sh addenda12_pull_images.sh my_login my_password

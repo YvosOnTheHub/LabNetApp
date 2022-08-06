@@ -19,7 +19,7 @@ To best benefit from the scenario, you would first need to go through the follow
 
 If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
 Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario11_pull_images.sh_ to pull images utilized in this scenario. These images will then be pushed to the LoD private repo.  
-It uses 2 parameters, your Docker Hub _login_ & _password_:
+It uses 2 **optional** parameters, your Docker Hub _login_ & _password_:
 
 ```bash
 sh scenario11_pull_images.sh my_login my_password

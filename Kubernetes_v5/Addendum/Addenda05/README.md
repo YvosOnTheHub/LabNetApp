@@ -15,7 +15,7 @@ The range configured for MetalLB is 192.168.0.140 to 192.168.0.149.
 Obviously, if you need more addresses, feel free to upgrade the configMap.
 
 If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario10_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password:
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario10_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:
 
 ```bash
 sh addenda05_pull_images.sh my_login my_password
