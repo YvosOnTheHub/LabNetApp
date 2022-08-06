@@ -22,6 +22,7 @@ if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -e
       exit 0
     else
       sh ../scenario01_pull_images.sh
+    fi
   fi
 fi
 
@@ -80,4 +81,3 @@ while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
 done
 
 tridentctl -n trident version
-
