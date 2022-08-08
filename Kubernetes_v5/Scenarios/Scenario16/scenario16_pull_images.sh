@@ -4,10 +4,16 @@
 # PARAMETER1: Docker hub login
 # PARAMETER2: Docker hub password
 
-if [[  $(docker images | grep registry | grep dbench | wc -l) -ne 0 ]]
-  then
+if [[  $(docker images | grep registry | grep dbench | wc -l) -ne 0 ]]; then
     echo "DBENCH image already present. Nothing to do"
     exit 0
+fi
+
+if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "installed" ]]; then
+    echo "#######################################################################################################"
+    echo "Install JQ"
+    echo "#######################################################################################################"
+    yum install -y jq
 fi
 
 if [ $# -eq 2 ]; then

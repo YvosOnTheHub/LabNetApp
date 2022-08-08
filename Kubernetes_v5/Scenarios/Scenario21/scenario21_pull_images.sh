@@ -10,6 +10,14 @@ if [[  $(docker images | grep registry | grep ghost | grep 2.6-alpine | wc -l) -
     exit 0
 fi
 
+if [[ $(yum info jq -y | grep Repo | awk '{ print $3 }') != "installed" ]]
+  then
+    echo "#######################################################################################################"
+    echo "Install JQ"
+    echo "#######################################################################################################"
+    yum install -y jq
+fi
+
 if [ $# -eq 2 ]; then
   docker login -u $1 -p $2
 else

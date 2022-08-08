@@ -4,6 +4,13 @@
 # - PARAMETER1: Docker hub login
 # - PARAMETER2: Docker hub password
 
+if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "installed" ]]; then
+    echo "#######################################################################################################"
+    echo "Install JQ"
+    echo "#######################################################################################################"
+    yum install -y jq
+fi
+
 if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -eq 0 ]]; then
   if [ $# -eq 2 ]; then
     sh ../scenario01_pull_images.sh $1 $2  
@@ -88,6 +95,7 @@ while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
     done
 done
 
+echo
 tridentctl -n trident version
 
 echo "#######################################################################################################"

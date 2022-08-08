@@ -32,6 +32,13 @@ echo " 8. Push data to the repository"
 echo " 9. Update .bashrc (if not already done)"
 echo "#######################################################################################################"
 
+if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "installed" ]]; then
+    echo "#######################################################################################################"
+    echo "Install JQ"
+    echo "#######################################################################################################"
+    yum install -y jq
+fi
+
 # Install MetalLB, Gitea & ArgoCD
 if [[ $# -eq 2 ]]; then
   sh ../../Addendum/Addenda05/all_in_one.sh $1 $2
