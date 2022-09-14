@@ -203,4 +203,6 @@ The storage admin could update the ONTAP parameter to create a new 1TB ONTAP vol
 
 ## E. What's next
 
-You can go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp) to choose another scenario.
+You can now move on to the next section of this chapter: [What about CSI Snapshots](../5_What_about_csi_snapshots)
+
+Or you can go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp) to choose another scenario.

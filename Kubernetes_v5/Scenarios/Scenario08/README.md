@@ -15,3 +15,4 @@ This scenario will guide you through different ways to add control to your envir
 [2.](2_Trident_parameters) Trident parameters  
 [3.](3_ONTAP_parameters) ONTAP parameters  
 [4.](4_A_bit_of_everything) Mixing them all  
+[5.](5_What_about_csi_snapshots) What about CSI Snapshots ?  

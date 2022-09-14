@@ -149,6 +149,7 @@ docker images | grep trident | grep -v -F 22. | awk '{print $3}' | xargs docker 
 ssh -o "StrictHostKeyChecking no" root@rhel1 "docker images | grep trident | grep -v -F 22. | awk '{print \$3}' | xargs docker rmi"
 ssh -o "StrictHostKeyChecking no" root@rhel2 "docker images | grep trident | grep -v -F 22. | awk '{print \$3}' | xargs docker rmi"
 
+cd ../..
 echo
 echo "#######################################################################################################"
 echo "#"
