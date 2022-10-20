@@ -161,7 +161,7 @@ tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-export-without-cidr" d
 
 You can now move on to:
 
-- [Scenario13](../../Scenario13): CSI Snapshots Management
+- [Scenario13](../Scenario13): CSI Snapshots Management
 
 Maybe you could learn something in the different [addenda](https://github.com/YvosOnTheHub/LabNetApp)?
 Or go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp)

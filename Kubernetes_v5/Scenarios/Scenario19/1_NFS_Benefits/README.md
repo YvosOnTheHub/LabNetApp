@@ -5,7 +5,7 @@
 Shared PVs are by definition good when several PODs must access the same volume.  
 Here are a few use cases for RWX:
 
-- Scale-out: if the data sits outide of the POD, the container image will obviously be smaller & then faster to start. Also, scaling this application will only lead to multiplying the PODs, while the data & the volume will not change. A typical example is a Web Frontend, such as WordPress.
+- Scale-out: if the data sits outside of the POD, the container image will obviously be smaller & then faster to start. Also, scaling this application will only lead to multiplying the PODs, while the data & the volume will not change. A typical example is a Web Frontend, such as WordPress.
 - Upgrade: you probably prefer a non-disruptive upgrade of your application... Rolling updates are much easier & faster with shared PVs
 - Efficiency: if you were to use storage on the host, duplicating the same PVC over and over may lead to a quick lack of space left on the device
 - CI/CD: probably a consequences coming from the previous points, however, managing several versions of an application (build/test/run ...) while using the same volume can improve TTM.
@@ -19,10 +19,10 @@ We will see an example with a Wordpress application, which is made of the follow
 
 Let's start by running this application.  
 
-If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
 Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario19_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 parameters, your Docker Hub login & password, and will push them to the local private registry:
 
-Also, this scenario requires a LoadBalancer. If you have not installed one yet, you can refer to the MetalLB guide in [Addenda05](../Addenda05). 
+Also, this scenario requires a LoadBalancer. If you have not installed one yet, you can refer to the MetalLB guide in [Addenda05](../../../Addendum/Addenda05). 
 
 ```bash
 sh scenario19_pull_images.sh my_login my_password
