@@ -1,6 +1,40 @@
 #!/bin/bash
 
+# OPTIONAL PARAMETERS: 
+# - PARAMETER1: Docker hub login
+# - PARAMETER2: Docker hub password
+
 cd ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03
+
+if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "installed" ]]; then
+    echo "#######################################################################################################"
+    echo "Install JQ"
+    echo "#######################################################################################################"
+    yum install -y jq
+fi
+
+if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -eq 0 ]]; then
+  if [ $# -eq 2 ]; then
+    sh scenario03_pull_images.sh $1 $2  
+  else
+    TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+    RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
+
+    if [[ $RATEREMAINING -lt 20 ]];then
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
+      echo "---------------------------------------------------------------------------------------------------------------------------"
+      echo
+      echo "Please restart the script with the following parameters:"
+      echo " - Parameter1: Docker hub login"
+      echo " - Parameter2: Docker hub password"
+      exit 0
+    else
+      sh scenario03_pull_images.sh
+    fi
+  fi
+fi
+
 
 if [ $(kubectl get sc | grep "(default)" | wc -l) = 0 ]
   then

@@ -114,7 +114,11 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh
+if [[ $# -eq 2 ]];then
+  ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh $1 $2
+else
+  ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh
+fi
 
 echo
 echo "#######################################################################################################"

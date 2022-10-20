@@ -15,6 +15,13 @@ NAME            NAMESPACE       REVISION        UPDATED                         
 prometheus      monitoring      1               2022-01-14 02:09:45.542413997 +0000 UTC deployed        kube-prometheus-stack-23.1.2    0.52.0
 ```
 
+If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this scenario root directory _scenario03_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:
+
+```bash
+sh scenario03_pull_images.sh my_login my_password
+```
+
 We can now proceed with the Prometheus stack upgrade with Helm.  
 The PVC that will be created by Helm will use the _default_ storage class. Make sure you have one before moving on.  
 If none is currently set to _default_, you can use the [Addenda02](../../Addendum/Addenda02) to help you create one.  
