@@ -26,7 +26,7 @@ $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 
 $ helm install trident netapp-trident/trident-operator --version 22.7.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.07.0,operatorImage=registry.demo.netapp.com/trident-operator:22.07.0,tridentImage=registry.demo.netapp.com/trident:22.07.0
 NAME: trident
-LAST DEPLOYED: Mon Aug  22 07:46:38 2021
+LAST DEPLOYED: Mon Oct  20 07:46:38 2022
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -49,7 +49,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2021-08-22 07:46:38.154347422 +0000 UTC deployed        trident-operator-22.07.0        22.07.0
+trident trident         1               2022-10-22 07:46:38.154347422 +0000 UTC deployed        trident-operator-22.07.0        22.07.0
 ```
 
 Also quite easy !  
