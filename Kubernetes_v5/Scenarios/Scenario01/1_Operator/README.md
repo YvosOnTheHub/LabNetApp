@@ -37,7 +37,7 @@ $ kubectl -n netapp patch torc/trident --type=json -p='[
 ]'
 tridentorchestrator.trident.netapp.io/trident patched
 
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, bundle.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/22.01.1/trident-installer/deploy/bundle.yaml
 ```
 
 We can finally deploy the Operator, as well as all the necessary resources that go along with it:

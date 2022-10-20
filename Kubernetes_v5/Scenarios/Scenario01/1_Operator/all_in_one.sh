@@ -81,7 +81,7 @@ echo "##########################################################################
 echo "Install new Trident Operator (22.01.1)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, bundle.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/22.01.1/trident-installer/deploy/bundle.yaml
 kubectl create -f ~/22.01.1/trident-installer/deploy/bundle.yaml
 
 echo "#######################################################################################################"
