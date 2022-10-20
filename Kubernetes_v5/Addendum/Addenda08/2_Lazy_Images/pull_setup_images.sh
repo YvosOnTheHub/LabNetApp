@@ -14,19 +14,19 @@ echo "# PULLING IMAGES FROM DOCKER HUB"
 echo "################################"
 
 echo "####################################"
-echo "# netapp/trident:21.07.2"
+echo "# netapp/trident:22.07.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:21.07.2
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident:22.07.0
 
 echo "####################################"
-echo "# netapp/trident-operator:21.07.2"
+echo "# netapp/trident-operator:22.07.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:21.07.2
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-operator:22.07.0
 
 echo "####################################"
-echo "# netapp/trident-autosupport:21.01"
+echo "# netapp/trident-autosupport:22.07.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-autosupport:21.01
+ssh -o "StrictHostKeyChecking no" root@$1 docker pull netapp/trident-autosupport:22.07.0
 
 echo "#############################################"
 echo "# Dealing with the Prometheus operator images"

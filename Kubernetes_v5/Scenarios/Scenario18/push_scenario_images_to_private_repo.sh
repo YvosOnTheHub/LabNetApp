@@ -13,7 +13,7 @@ if [[ $(yum info jq -y | grep Repo | awk '{ print $3 }') != "installed" ]]
 fi
 
 
-if [[  $(docker images | grep 'netapp/trident' | grep 22.04.0 | wc -l) -ne 2 ]];then
+if [[  $(docker images | grep 'netapp/trident' | grep 22.04.0 | wc -l) -ne 3 ]];then
   if [ $# -eq 2 ]; then
     docker login -u $1 -p $2
   else
@@ -36,37 +36,37 @@ if [[  $(docker images | grep 'netapp/trident' | grep 22.04.0 | wc -l) -ne 2 ]];
   echo "# PULLING TRIDENT IMAGES FROM DOCKER HUB"
   echo "########################################"
  
-  if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -eq 0 ]]; then
-    docker pull netapp/trident:22.01.1
-    docker pull netapp/trident-operator:22.01.1
-    docker pull netapp/trident-autosupport:22.01
+  if [[  $(docker images | grep registry | grep trident | grep 22.07.0 | wc -l) -eq 0 ]]; then
+    docker pull netapp/trident:22.07.0
+    docker pull netapp/trident-operator:22.07.0
+    docker pull netapp/trident-autosupport:22.07.0
   fi
 
   docker pull netapp/trident:22.04.0
   docker pull netapp/trident-operator:22.04.0
-  docker pull netapp/trident-autosupport:22.04
+  docker pull netapp/trident-autosupport:22.04.0
 fi
 
 echo "####################################"
 echo "# TAGGING/PUSHING TRIDENT IMAGES"
 echo "####################################"
 
-if [[  $(docker images | grep registry | grep trident | grep 22.01.1 | wc -l) -eq 0 ]]; then
-  docker tag netapp/trident:22.01.1 registry.demo.netapp.com/trident:22.01.1
-  docker tag netapp/trident-operator:22.01.1 registry.demo.netapp.com/trident-operator:22.01.1
-  docker tag netapp/trident-autosupport:22.01 registry.demo.netapp.com/trident-autosupport:22.01
+if [[  $(docker images | grep registry | grep trident | grep 22.07.0 | wc -l) -eq 0 ]]; then
+  docker tag netapp/trident:22.07.0 registry.demo.netapp.com/trident:22.07.0
+  docker tag netapp/trident-operator:22.07.0 registry.demo.netapp.com/trident-operator:22.07.0
+  docker tag netapp/trident-autosupport:22.07.0 registry.demo.netapp.com/trident-autosupport:22.07.0
 
-  docker push registry.demo.netapp.com/trident:22.01.1
-  docker push registry.demo.netapp.com/trident-operator:22.01.1
-  docker push registry.demo.netapp.com/trident-autosupport:22.01
+  docker push registry.demo.netapp.com/trident:22.07.0
+  docker push registry.demo.netapp.com/trident-operator:22.07.0
+  docker push registry.demo.netapp.com/trident-autosupport:22.07.0
 fi
 
 docker tag netapp/trident:22.04.0 registry.demo.netapp.com/trident:22.04.0
 docker tag netapp/trident-operator:22.04.0 registry.demo.netapp.com/trident-operator:22.04.0
-docker tag netapp/trident-autosupport:22.04 registry.demo.netapp.com/trident-autosupport:22.04
+docker tag netapp/trident-autosupport:22.04.0 registry.demo.netapp.com/trident-autosupport:22.04.0
 docker push registry.demo.netapp.com/trident:22.04.0
 docker push registry.demo.netapp.com/trident-operator:22.04.0
-docker push registry.demo.netapp.com/trident-autosupport:22.04
+docker push registry.demo.netapp.com/trident-autosupport:22.04.0
 
 
 if [[  $(docker images | grep 'ghost' | grep 2.6 | wc -l) -ne 1 ]]

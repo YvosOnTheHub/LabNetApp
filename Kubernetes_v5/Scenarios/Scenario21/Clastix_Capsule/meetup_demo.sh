@@ -67,12 +67,12 @@ kubectl patch capsuleconfigurations.capsule.clastix.io capsule-default --type=me
 
 cat > 1_trident_install.sh << EOF
 echo "#######################################################################################################"
-echo "Install new Trident Operator (22.01.1) with Helm"
+echo "Install new Trident Operator (22.07.0) with Helm"
 echo "#######################################################################################################"
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 helm repo update
 sleep 5s
-helm install trident netapp-trident/trident-operator --version 22.1.1 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.01,operatorImage=registry.demo.netapp.com/trident-operator:22.01.1,tridentImage=registry.demo.netapp.com/trident:22.01.1
+helm install trident netapp-trident/trident-operator --version 22.7.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.07.0,operatorImage=registry.demo.netapp.com/trident-operator:22.07.0,tridentImage=registry.demo.netapp.com/trident:22.07.0
 
 frames="/ | \\ -"
 while [ \$(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do

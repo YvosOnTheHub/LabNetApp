@@ -103,7 +103,7 @@ Let's check that Trident has been indeed installed:
 ```bash
 $ kubectl get tver -n trident
 NAME      VERSION
-trident   22.01.1
+trident   22.04.0
 ```
 
 By the way, these ArgoCD apps are actually Kubernetes objects:
@@ -243,14 +243,14 @@ Once the update is done, you will the following:
 
 ### 3. Infrastructure update: new version of Trident
 
-This scenario was built around Trident 22.01.1. With the availability of Trident 22.04.0 we also test its upgrade mechanism.  
+This scenario was built around Trident 22.04.0. With the availability of Trident 22.07.0 we also test its upgrade mechanism.  
 The only differences between both version's manifests are located in the images to be used. Let's proceed with the changes.
 
 ```bash
-sed -i 's/22.01.1/22.04.0/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
-sed -i 's/22.01.1/22.04.0/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
+sed -i 's/22.04.0/22.07.0/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
+sed -i 's/22.04.0/22.07.0/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
 cd ~/Repository
-git adcom "trident update to 22.04.0"
+git adcom "trident update to 22.07.0"
 git push
 ```
 
@@ -265,7 +265,7 @@ After a few seconds (wait for the pods to restart), the App will be _Synced_ aga
 ```bash
 kubectl get tver -n trident
 NAME      VERSION
-trident   22.04.0
+trident   22.07.0
 ```
 
 There you go, you just upgraded Trident.
