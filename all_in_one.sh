@@ -115,9 +115,9 @@ echo
 
 sleep 2s
 if [[ $# -eq 2 ]];then
-  ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh $1 $2
+  sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh $1 $2
 else
-  ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh
+  sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/all_in_one.sh
 fi
 
 echo
