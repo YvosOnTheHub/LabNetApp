@@ -53,7 +53,7 @@ You can then simply edit the backend file & remove this parameter, which will re
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
-Here are the 2 backends & their corresponding driver, both using the secret stored in the file _secret_ontap_nfs-svm.yaml_:
+Here are the 2 backends & their corresponding driver, both using the secret stored in the file _secret_ontap_nfs-svm_username.yaml_:
 
 - backend_nas-default.yaml        ONTAP-NAS
 - backend_nas-eco-default.yaml    ONTAP-NAS-ECONOMY
@@ -62,10 +62,10 @@ Here are the 2 backends & their corresponding driver, both using the secret stor
 $ kubectl create -n trident -f secret_ontap_nfs-svm_username.yaml
 secret/ontap-nfs-svm-secret-username created
 
-$ kubectl create -n trident -f backend-nas-default.yaml
+$ kubectl create -n trident -f backend_nas-default.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-default created
 
-$ kubectl create -n trident -f backend-nas-eco-default.yaml
+$ kubectl create -n trident -f backend_nas-eco-default.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-eco-default created
 
 $ kubectl get tbc -n trident
