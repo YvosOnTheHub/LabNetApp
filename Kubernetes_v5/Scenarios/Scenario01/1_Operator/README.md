@@ -4,7 +4,7 @@
 
 **GOAL:**  
 The current environment comes with Trident manually installed as an Operator.  
-Before moving to the upgrade to Trident 22.07.0, we will first clean up the current deployment.  
+Before moving to the upgrade to Trident 22.10.0, we will first clean up the current deployment.  
 
 ## A. Do some optional preparation work
 
@@ -32,18 +32,18 @@ Let's modify the _Trident Orchestator_ to point the new installation to the priv
 
 ```bash
 $ kubectl -n netapp patch torc/trident --type=json -p='[ 
-    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:22.07.0"}, 
-    {"op":"add", "path":"/spec/autosupportImage", "value":"registry.demo.netapp.com/trident-autosupport:22.07.0"}
+    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:22.10.0"}, 
+    {"op":"add", "path":"/spec/autosupportImage", "value":"registry.demo.netapp.com/trident-autosupport:22.10.0"}
 ]'
 tridentorchestrator.trident.netapp.io/trident patched
 
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/22.07.0/trident-installer/deploy/bundle.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/22.10.0/trident-installer/deploy/bundle.yaml
 ```
 
 We can finally deploy the Operator, as well as all the necessary resources that go along with it:
 
 ```bash
-$ kubectl create -f ~/22.07.0/trident-installer/deploy/bundle.yaml
+$ kubectl create -f ~/22.10.0/trident-installer/deploy/bundle.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
@@ -114,15 +114,15 @@ Metadata:
   Resource Version:  20028639
   UID:               331ae347-8f9a-4f3d-b195-3939e0c16c6c
 Spec:
-  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:22.07.0
+  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:22.10.0
   Debug:              false
   Namespace:          trident
-  Trident Image:      registry.demo.netapp.com/trident:22.07.0
+  Trident Image:      registry.demo.netapp.com/trident:22.10.0
 Status:
   Current Installation Params:
     IPv6:                       false
     Autosupport Hostname:
-    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:22.07.0
+    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:22.10.0
     Autosupport Proxy:
     Autosupport Serial Number:
     Debug:                      false
@@ -134,11 +134,11 @@ Status:
     Log Format:           text
     Probe Port:           17546
     Silence Autosupport:  false
-    Trident Image:        registry.demo.netapp.com/trident:22.07.0
+    Trident Image:        registry.demo.netapp.com/trident:22.10.0
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v22.07.0
+  Version:                v22.10.0
 Events:
   Type    Reason     Age   From                        Message
   ----    ------     ----  ----                        -------
@@ -148,12 +148,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 22.07.0        | 22.07.0        |
+| 22.10.0        | 22.10.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   22.07.0
+trident   22.10.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -168,7 +168,7 @@ $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v22.07.0
+  Version:    v22.10.0
 ```
 
 ## D. What's next

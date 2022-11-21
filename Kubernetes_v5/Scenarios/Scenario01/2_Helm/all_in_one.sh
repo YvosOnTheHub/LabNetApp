@@ -11,7 +11,7 @@ if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "instal
     yum install -y jq
 fi
 
-if [[  $(docker images | grep registry | grep trident | grep 22.07.0 | wc -l) -eq 0 ]]; then
+if [[  $(docker images | grep registry | grep trident | grep 22.10.0 | wc -l) -eq 0 ]]; then
   if [ $# -eq 2 ]; then
     sh ../scenario01_pull_images.sh $1 $2  
   else
@@ -57,23 +57,23 @@ echo "##########################################################################
 sh trident_uninstall.sh
 
 echo "#######################################################################################################"
-echo "Download Trident 22.07.0"
+echo "Download Trident 22.10.0"
 echo "#######################################################################################################"
 
 cd
-mkdir 22.07.0 && cd 22.07.0
-wget https://github.com/NetApp/trident/releases/download/v22.07.0/trident-installer-22.07.0.tar.gz
-tar -xf trident-installer-22.07.0.tar.gz
+mkdir 22.10.0 && cd 22.10.0
+wget https://github.com/NetApp/trident/releases/download/v22.10.0/trident-installer-22.10.0.tar.gz
+tar -xf trident-installer-22.10.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
 echo "#######################################################################################################"
-echo "Install new Trident Operator (22.07.0) with Helm"
+echo "Install new Trident Operator (22.10.0) with Helm"
 echo "#######################################################################################################"
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart  
 helm repo update
-helm install trident netapp-trident/trident-operator --version 22.7.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.07.0,operatorImage=registry.demo.netapp.com/trident-operator:22.07.0,tridentImage=registry.demo.netapp.com/trident:22.07.0
+helm install trident netapp-trident/trident-operator --version 22.10.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.10.0,operatorImage=registry.demo.netapp.com/trident-operator:22.10.0,tridentImage=registry.demo.netapp.com/trident:22.10.0
 
 echo "#######################################################################################################"
 echo "Check"

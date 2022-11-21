@@ -13,7 +13,7 @@ if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "instal
     yum install -y jq
 fi
 
-if [[  $(docker images | grep registry | grep trident | grep 22.07.0 | wc -l) -eq 0 ]]; then
+if [[  $(docker images | grep registry | grep grafana | grep 7.0.3 | wc -l) -eq 0 ]]; then
   if [ $# -eq 2 ]; then
     sh scenario03_pull_images.sh $1 $2  
   else

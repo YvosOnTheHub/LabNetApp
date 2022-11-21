@@ -25,7 +25,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 Scenarios  
 ---------  
 [0.](Kubernetes_v5/Scenarios/Scenario00) Best Practices & Advices  
-[1.](Kubernetes_v5/Scenarios/Scenario01) Upgrade/Install Trident (22.07.0)  
+[1.](Kubernetes_v5/Scenarios/Scenario01) Upgrade/Install Trident (22.10.0)  
 [2.](Kubernetes_v5/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v5/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest  
 [4.](Kubernetes_v5/Scenarios/Scenario04) Deploy your first app with File storage  

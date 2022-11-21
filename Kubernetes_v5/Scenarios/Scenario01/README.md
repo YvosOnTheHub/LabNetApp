@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 22.07.0
+# SCENARIO 1: Trident upgrade to 22.10.0
 #########################################################################################
 
 **GOAL:**  
@@ -18,10 +18,10 @@ Technically, if you decide to install Trident with Helm, you would not even need
 
 ```bash
 cd
-mkdir 22.07.0
-cd 22.07.0
-wget https://github.com/NetApp/trident/releases/download/v22.07.0/trident-installer-22.07.0.tar.gz
-tar -xf trident-installer-22.07.0.tar.gz
+mkdir 22.10.0
+cd 22.10.0
+wget https://github.com/NetApp/trident/releases/download/v22.10.0/trident-installer-22.10.0.tar.gz
+tar -xf trident-installer-22.10.0.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 ```
@@ -70,7 +70,7 @@ sh scenario01_pull_images.sh my_login my_password
 
 Now, it's time to proceed with the installation of Trident :trident:!  
 
-Currently with the version 22.07, there are 4 ways to install Trident:  
+Currently with the version 22.10, there are 4 ways to install Trident:  
 [1.](1_Operator) Using Trident's Operator, introduced in 20.04  
 [2.](2_Helm) Using Helm to install Trident's operator, method introduced in 21.01  
 [3.] Using the _legacy_ way, via _tridentctl_  (not detailed here)  

@@ -53,7 +53,7 @@ Name:              trident-csi
 Namespace:         trident
 Labels:            app=controller.csi.trident.netapp.io
                    k8s_version=v1.22.3
-                   trident_version=v22.07.0
+                   trident_version=v22.10.0
 Annotations:       <none>
 Selector:          app=controller.csi.trident.netapp.io
 Type:              ClusterIP
