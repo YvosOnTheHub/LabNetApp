@@ -10,6 +10,9 @@ prometheus:
     type: NodePort
   
 grafana:
+  image:
+    repository: registry.demo.netapp.com/grafana/grafana
+    tag: 9.1.4
   persistence:
     enabled: true
     accessModes:

@@ -93,7 +93,7 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2022-10-20T02:05:17Z
+  Creation Timestamp:  2022-11-20T02:05:17Z
   Generation:          1
   Managed Fields:
     API Version:  trident.netapp.io/v1
@@ -105,12 +105,12 @@ Metadata:
     Fields Type:  FieldsV1
     Manager:      kubectl-patch
     Operation:    Update
-    Time:         2022-10-20T17:59:19Z
+    Time:         2022-11-20T17:59:19Z
     API Version:  trident.netapp.io/v1
     Manager:         trident-operator
     Operation:       Update
     Subresource:     status
-    Time:            2022-10-20T18:02:02Z
+    Time:            2022-11-20T18:02:02Z
   Resource Version:  20028639
   UID:               331ae347-8f9a-4f3d-b195-3939e0c16c6c
 Spec:

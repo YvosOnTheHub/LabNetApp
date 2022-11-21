@@ -30,15 +30,15 @@ Note that the parameters used for this new installation are all in the _promethe
 Take a look at its content & update it as you wish.
 
 ```bash
-helm upgrade -f prometheus-stack-values.yaml prometheus prometheus-community/kube-prometheus-stack -n monitoring
+helm upgrade -f prometheus-stack-values.yaml prometheus prometheus-community/kube-prometheus-stack -n monitoring --version 39.13.3
 ```
 
 Once done you can see the result:
 
 ```bash
 $ helm list -n monitoring
-NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-prometheus-operator     monitoring      1               2021-11-22 11:05:45.173079701 +0000 UTC deployed        kube-prometheus-stack-15.4.6    0.47.0
+NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                            APP VERSION
+prometheus-operator     monitoring      1               2022-11-21 11:05:45.173079701 +0000 UTC deployed        kube-prometheus-stack-39.13.3    0.58.0
 
 $ kubectl get -n monitoring svc,pod,pvc
 NAME                                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE

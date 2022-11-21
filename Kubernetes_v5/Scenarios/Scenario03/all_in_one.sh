@@ -13,7 +13,7 @@ if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "instal
     yum install -y jq
 fi
 
-if [[  $(docker images | grep registry | grep grafana | grep 7.0.3 | wc -l) -eq 0 ]]; then
+if [[  $(docker images | grep registry | grep grafana | grep 9.1.4 | wc -l) -eq 0 ]]; then
   if [ $# -eq 2 ]; then
     sh scenario03_pull_images.sh $1 $2  
   else
@@ -51,7 +51,7 @@ echo "##########################################################################
 
 # DOC: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 helm repo update
-helm upgrade -f 1_Upgrade/prometheus-stack-values.yaml prometheus prometheus-community/kube-prometheus-stack -n monitoring
+helm upgrade -f 1_Upgrade/prometheus-stack-values.yaml prometheus prometheus-community/kube-prometheus-stack -n monitoring --version 39.13.3
 
 frames="/ | \\ -"
 while [ $(kubectl get -n monitoring pod -l app.kubernetes.io/name=grafana --output=name | wc -l) -ne 1 ]; do
