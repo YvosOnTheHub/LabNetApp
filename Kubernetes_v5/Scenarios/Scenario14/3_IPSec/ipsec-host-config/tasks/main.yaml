@@ -1,0 +1,25 @@
+---
+# tasks file for ipsec-config
+- name: "ipsec-config | Install Packages"
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - strongswan
+  become: true
+
+- name: "ipsec-config | Copy swanctl.conf template"
+  template:
+    src: swanctl.conf.j2
+    dest: /etc/strongswan/swanctl/swanctl.conf
+  become: true
+
+- name: "ipsec-config | Reload swanctl config"
+  shell:
+    cmd: swanctl --load-all
+  become: true
+
+
+
