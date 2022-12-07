@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: busybox-secondary
+  namespace: secondary
+spec:
+  containers:
+  - name: busybox
+    image: busybox:1.35
+    args:
+     - sleep
+     - "infinity"
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: "/mnt/sharedvolume"
+      name: nas-volume
+  volumes:
+    - name: nas-volume
+      persistentVolumeClaim:
+        claimName: secondary-pvc

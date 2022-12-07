@@ -31,6 +31,10 @@ ssh -o "StrictHostKeyChecking no" root@$1 "swapoff -a"
 ssh -o "StrictHostKeyChecking no" root@$1 "cp /etc/fstab /etc/fstab.bak"
 ssh -o "StrictHostKeyChecking no" root@$1 "sed -e '/swap/ s/^#*/#/g' -i /etc/fstab"
 
+ssh -o "StrictHostKeyChecking no" root@$1 "sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf"
+ssh -o "StrictHostKeyChecking no" root@$1 "mpathconf --enable --with_multipathd y --find_multipaths n"
+ssh -o "StrictHostKeyChecking no" root@$1 "systemctl enable --now multipathd"
+
 ssh -o "StrictHostKeyChecking no" root@$1 "cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes

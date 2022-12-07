@@ -9,7 +9,20 @@ It is now time to add more backends that can be used for block storage.
 
 <p align="center"><img src="Images/scenario5.jpg"></p>
 
-## A. Create your first SAN backends
+## A. About Multipathing
+
+Astra Trident now strictly enforces the use of multipathing configuration in SAN environments, with a recommended value of `find_multipaths: no` in _multipath.conf_ file.
+
+Use of non-multipathing configuration or use of `find_multipaths: yes` or `find_multipaths: smart` value in multipath.conf file will result in mount failures. Trident has recommended the use of `find_multipaths: no` since the 21.07 release.  
+
+As multipathing is disabled in this lab, please run the following on each of the Kubernetes nodes to enable it:
+```bash
+sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf
+mpathconf --enable --with_multipathd y --find_multipaths n
+systemctl enable --now multipathd
+```
+
+## B. Create your first SAN backends
 
 Trident 21.04 introduced the possibility to manage Trident backends directly with _kubectl_, whereas it was previously solely feasible with _tridentctl_.  
 Managing backends this way is done with 2 different objects:
@@ -64,7 +77,7 @@ A few things to notice:
 - even though the backends were created with _kubectl_, you can see them with _tridentctl_
 - all backend modifications must be applied to the _trident backend config_ objects, not the _trident backend_ ones.
 
-## B. Create storage classes pointing to each new backend
+## C. Create storage classes pointing to each new backend
 
 You will also find in this directory a few storage class files.
 You can decide to use all of them, only a subset of them or modify them as you wish.  
@@ -81,7 +94,7 @@ storageclass.storage.k8s.io/storage-class-san-economy created
 
 If you have configured Grafana, you can go back to your dashboard, to check what is happening (cf http://192.168.0.63:30267).
 
-## C. Validate the CHAP configuration on the storage backend
+## D. Validate the CHAP configuration on the storage backend
 
 If you take a closer look at the SAN-secured definition file, you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
 You can learn more about it on the following link:  
@@ -101,7 +114,7 @@ iscsi_svm    default                CHAP   local     tridentchap   tridenttarget
 You find here both usernames set in the backend parameters.  
 Now, you can only see the CHAP configuraion on the host once a POD has mounted a PVC, which you will do in the Scenario07.
 
-## D. What's next
+## E. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 

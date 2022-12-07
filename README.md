@@ -25,7 +25,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 Scenarios  
 ---------  
 [0.](Kubernetes_v5/Scenarios/Scenario00) Best Practices & Advices  
-[1.](Kubernetes_v5/Scenarios/Scenario01) Upgrade/Install Trident (22.10.0)  
+[1.](Kubernetes_v5/Scenarios/Scenario01) Upgrade/Install Trident (22.10.0) :arrows_counterclockwise:  
 [2.](Kubernetes_v5/Scenarios/Scenario02) Configure your first NAS backends & storage classes  
 [3.](Kubernetes_v5/Scenarios/Scenario03) Upgrade and use Prometheus, Grafana & Harvest  
 [4.](Kubernetes_v5/Scenarios/Scenario04) Deploy your first app with File storage  
@@ -38,14 +38,15 @@ Scenarios
 [11.](Kubernetes_v5/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v5/Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v5/Scenarios/Scenario13) Kubernetes CSI Snapshots & PVC from Snapshot workflows  
-[14.](Kubernetes_v5/Scenarios/Scenario14) About security  
+[14.](Kubernetes_v5/Scenarios/Scenario14) About security :arrows_counterclockwise:  
 [15.](Kubernetes_v5/Scenarios/Scenario15) Caring about location or about CSI Topology  
 [16.](Kubernetes_v5/Scenarios/Scenario16) Performance control  
 [17.](Kubernetes_v5/Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
 [18.](Kubernetes_v5/Scenarios/Scenario18) Kubernetes, Trident & GitOps  
 [19.](Kubernetes_v5/Scenarios/Scenario19) Let's talk about protocols & access modes !  
 [20.](Kubernetes_v5/Scenarios/Scenario20) About Generic Ephemeral Volumes  
-[21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Multi Tenancy :arrows_counterclockwise:  
+[21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
+<!--[22.](Kubernetes_v5/Scenarios/Scenario22) Cross Namespace Volume Access :new:  -->
 
 Addendum
 --------
