@@ -18,7 +18,7 @@
 
 - name: "ipsec-config | Reload swanctl config"
   shell:
-    cmd: swanctl --load-all
+    cmd: swanctl --reload-settings
   become: true
 
 

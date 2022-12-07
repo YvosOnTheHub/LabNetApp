@@ -6,13 +6,7 @@ echo "##############################################################"
 IPSECKEY=$(openssl rand -base64 24)
 
 echo "##############################################################"
-echo "# UPDATE KEY IN HOST FILE"
+echo "# UPDATE ANSIBLE INVENTORY WITH KEY"
 echo "##############################################################"
 
-sed -i s/IPSECSECRET/$IPSECKEY/ hosts.yaml
-
-echo "##############################################################"
-echo "# RUN IPSEC PLAYBOOK"
-echo "##############################################################"
-
-ansible-playbook svm_secured_ipsec.yaml
+sed -i s/SC14KEY/$IPSECKEY/ /etc/ansible/hosts

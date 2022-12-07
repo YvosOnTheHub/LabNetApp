@@ -4,10 +4,10 @@
     - netapp.ontap
 
   vars:
-    recurrent_ontap_parameters: &recurrent_ontap_parameters
-      hostname: 192.168.0.101
-      username: admin 
-      password: Netapp1!
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
       https: true
       validate_certs: false
 
@@ -17,37 +17,37 @@
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'create', '-policy', 'secured_management', '-vserver', 'svm_secured',  '-allowed-addresses', '192.168.0.61/32,192.168.0.62/32,192.168.0.63/32', '-service', 'data-core']
       privilege: "advanced"
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Service Policy for Management (HTTPS)
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'secured_management', '-vserver', 'svm_secured',  '-allowed-addresses', '192.168.0.61/32,192.168.0.62/32,192.168.0.63/32', '-service', 'management-https']
       privilege: "advanced"
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Service Policy for NFS (Core)
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'create', '-policy', 'secured_nfs', '-vserver', 'svm_secured',  '-allowed-addresses', '0.0.0.0/0', '-service', 'data-core']
       privilege: "advanced"      
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Service Policy for NFS (Data)
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'secured_nfs', '-vserver', 'svm_secured',  '-allowed-addresses', '0.0.0.0/0', '-service', 'data-nfs']
       privilege: "advanced"      
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Service Policy for iSCSI (Core)
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'create', '-policy', 'secured_iscsi', '-vserver', 'svm_secured',  '-allowed-addresses', '0.0.0.0/0', '-service', 'data-core']
       privilege: "advanced"      
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Service Policy for iSCSI (Data)
     netapp.ontap.na_ontap_command:
       command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'secured_iscsi', '-vserver', 'svm_secured',  '-allowed-addresses', '0.0.0.0/0', '-service', 'data-iscsi']
       privilege: "advanced"      
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create Mgmt Interface
     netapp.ontap.na_ontap_interface:
@@ -60,7 +60,7 @@
       address: 192.168.0.210
       netmask: 255.255.255.0
       vserver: svm_secured
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create NFS Interface
     netapp.ontap.na_ontap_interface:
@@ -73,7 +73,7 @@
       address: 192.168.0.211
       netmask: 255.255.255.0
       vserver: svm_secured
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters
 
   - name: Create iSCSI Interface
     netapp.ontap.na_ontap_interface:
@@ -86,4 +86,4 @@
       address: 192.168.0.212
       netmask: 255.255.255.0
       vserver: svm_secured
-      <<: *recurrent_ontap_parameters
+      <<: *ontap_parameters

@@ -4,10 +4,10 @@
     - netapp.ontap
 
   vars:
-    recurrent_parameters: &recurrent_parameters
-      hostname: 192.168.0.210
-      username: trident 
-      password: Netapp1!
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
       https: true
       validate_certs: false
   
@@ -17,7 +17,7 @@
     na_ontap_info:
       state: info
       gather_subset: "export_policy_info"
-      <<: *recurrent_parameters
+      <<: *ontap_parameters
     register: netapp 
 
   - name: Modify root Export Policy
@@ -26,7 +26,7 @@
       name: root
       policy: "{{ netapp.ontap_info.export_policy_info[item].policy_name }}"
       vserver: svm_secured
-      <<: *recurrent_parameters      
+      <<: *ontap_parameters      
     with_items: "{{ netapp.ontap_info.export_policy_info }}"
     when: 
       - netapp.ontap_info.export_policy_info[item].policy_name is search('trident')
