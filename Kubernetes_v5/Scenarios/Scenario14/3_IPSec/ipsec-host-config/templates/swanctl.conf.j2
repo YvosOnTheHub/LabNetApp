@@ -1,0 +1,37 @@
+# Include config snippets
+# include conf.d/*.conf
+connections {
+    pol_rhel7_nfs_client {
+        children {
+            pol_rhel7_nfs_client {
+                esp_proposals = aes256gcm16
+                mode = transport
+                start_action = trap
+                local_ts = {{ ipsec_source_cidr }}[any/any]
+                remote_ts = {{ ipsec_target_cidr }}[any/any]
+                rekey_time = 28800
+                rekey_bytes = 0
+            }
+        }
+        keyingtries = 3
+        version = 2
+        local_addrs = {{ ipsec_source_cidr }}
+        remote_addrs = {{ ipsec_target_cidr }}
+        rekey_time = 86400
+        proposals = aes256-sha384-ecp384
+        local {
+            auth = psk
+             id = {{ ipsec_source_cidr }}
+        } 
+        remote {
+            auth = psk
+            id = {{ ipsec_target_cidr }}
+        }
+    }
+} 
+secrets {
+    ike-pol_rhel7_nfs_client {
+        secret = {{ ipsec_secret }}
+        id = {{ ipsec_target_cidr }}
+    }
+}

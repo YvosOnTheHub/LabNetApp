@@ -4,7 +4,7 @@
     - netapp.ontap
 
   vars:
-    recurrent_parameters: &recurrent_parameters
+    recurrent_ontap_parameters: &recurrent_ontap_parameters
       hostname: 192.168.0.101
       username: admin 
       password: Netapp1!
@@ -22,7 +22,7 @@
      root_volume_security_style: unix
      allowed_protocols: nfs,iscsi
      aggr_list: "aggr1,aggr2"
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters
 
   - name: Create Specific User
     netapp.ontap.na_ontap_user:
@@ -34,7 +34,7 @@
      lock_user: False
      role_name: vsadmin
      vserver: svm_secured
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters
 
   - name: Enable NFS
     netapp.ontap.na_ontap_nfs:
@@ -44,7 +44,7 @@
      nfsv3: enabled
      nfsv4: disabled
      nfsv41: disabled
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters
 
   - name: Create ExportPolicyRule for the default policy
     netapp.ontap.na_ontap_export_policy_rule:
@@ -58,7 +58,7 @@
      protocol: any
      super_user_security: any
      allow_suid: true
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters
 
   - name: Create iSCSI Igroup for Trident
     na_ontap_igroup:
@@ -67,11 +67,11 @@
      initiator_group_type: iscsi
      ostype: linux
      vserver: svm_secured
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters
 
   - name: Enable iSCSI
     netapp.ontap.na_ontap_iscsi:
      state: present
      service_state: started
      vserver: svm_secured 
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters

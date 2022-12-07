@@ -1,0 +1,5 @@
+---
+# defaults file for ipsec-host-config
+ipsec_target_cidr: 0.0.0.0/32
+ipsec_source_cidr: 0.0.0.0/0
+ipsec_secret: abcd

@@ -4,7 +4,7 @@
     - netapp.ontap
 
   vars:
-    recurrent_parameters: &recurrent_parameters
+    recurrent_ontap_parameters: &recurrent_ontap_parameters
       hostname: 192.168.0.101
       username: admin 
       password: Netapp1!
@@ -17,4 +17,4 @@
      state: present
      showmount : disabled
      vserver: svm_secured
-     <<: *recurrent_parameters
+     <<: *recurrent_ontap_parameters

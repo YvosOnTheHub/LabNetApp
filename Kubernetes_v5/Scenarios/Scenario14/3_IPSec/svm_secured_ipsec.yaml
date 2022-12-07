@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    recurrent_ontap_parameters: &recurrent_ontap_parameters
+      hostname: 192.168.0.101
+      username: admin 
+      password: Netapp1!
+      https: true
+      validate_certs: false
+
+  tasks:
+    - name: config IPSec for ONTAP
+      na_ontap_command:
+        command: ['security', 'ipsec', 'config', 'config', '-is-enabled', 'true']
+        <<: *recurrent_ontap_parameters
+    - name: config IPSec policy for ONTAP
+      na_ontap_command:
+        command: ['security', 'ipsec', 'policy', 'create', '-vserver', 'svm_secured', '-name', 'ipsec_k8s', '-local-ip-Subnets', '"{{ ipsec_target_cidr }}"', '-remote-ip-subnets', '"{{ ipsec_source_cidr }}"', '-shared-key', '"{{ ipsec_secret }}"']
+        <<: *recurrent_ontap_parameters
+
+- hosts: ipsec
+  tasks:
+    - name: install and configure IPSec on all kubernetes nodes
+      include_role:
+        name: ipsec-host-config
