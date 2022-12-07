@@ -15,6 +15,15 @@ We will see here other mechanism to harden the security on the storage backend.
 
 This lab will use some ansible playbooks. Make sure you have installed Ansible & the ONTAP Collection beforehand (cf [Addenda04](../../Addendum/Addenda04)).  
 
+We also need to setup the inventory for this scenario. It will contain the different kubernetes hosts as well as various global variables.  
+You just to copy the hosts file from this scenario into the /etc/ansible folder.
+
+```bash
+mv /etc/ansible/hosts /etc/ansible/hosts.bak
+cp hosts /etc/ansible/ 
+```
+
+
 We will also use a dedicated SVM called **svm_secured**.  
 Before moving to the different chapters, please run the following command to create the SVM alongside different basic elements (aside from networking).
 
