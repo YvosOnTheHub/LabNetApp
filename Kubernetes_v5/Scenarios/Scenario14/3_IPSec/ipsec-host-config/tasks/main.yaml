@@ -5,6 +5,7 @@
     name: "{{ packages }}"
     state: present
     update_cache: yes
+    disable_gpg_check: true
   vars:
     packages:
       - strongswan
@@ -16,9 +17,15 @@
     dest: /etc/strongswan/swanctl/swanctl.conf
   become: true
 
+#- name: "ipsec-config | Reload swanctl config"
+#  shell:
+#    cmd: swanctl --reload-settings
+#  become: true
+
 - name: "ipsec-config | Reload swanctl config"
-  shell:
-    cmd: swanctl --reload-settings
+  systemd:
+    name: strongswan
+    state: started
   become: true
 
 
