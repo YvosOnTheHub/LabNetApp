@@ -21,12 +21,3 @@
 #  shell:
 #    cmd: swanctl --reload-settings
 #  become: true
-
-- name: "ipsec-config | Reload swanctl config"
-  systemd:
-    name: strongswan
-    state: started
-  become: true
-
-
-
