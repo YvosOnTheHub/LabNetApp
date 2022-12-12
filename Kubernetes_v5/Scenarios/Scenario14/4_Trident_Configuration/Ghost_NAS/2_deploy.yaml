@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: blog
-        image: ghost:2.6-alpine
+        image: registry.demo.netapp.com/ghost:2.6-alpine
         ports:
         - containerPort: 2368
         env:
