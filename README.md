@@ -46,7 +46,7 @@ Scenarios
 [19.](Kubernetes_v5/Scenarios/Scenario19) Let's talk about protocols & access modes !  
 [20.](Kubernetes_v5/Scenarios/Scenario20) About Generic Ephemeral Volumes  
 [21.](Kubernetes_v5/Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
-<!--[22.](Kubernetes_v5/Scenarios/Scenario22) Cross Namespace Volume Access :new:  -->
+[22.](Kubernetes_v5/Scenarios/Scenario22) Cross Namespace Volume Access :new:  
 
 Addendum
 --------
