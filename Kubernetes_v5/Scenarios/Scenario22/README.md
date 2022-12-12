@@ -133,7 +133,7 @@ $ tridentctl get volumes -n trident
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+-------------+---------+
 ```
 
-If the PVR was absent at the time of the creation of the PVC, you would see the following message in the PVC:
+If the TVR was absent at the time of the creation of the PVC, you would see the following message in the PVC:
 ```yaml
 Warning  ProvisioningFailed    1s (x4 over 55s)   csi.trident.netapp.io_trident-csi-xyz  failed to provision volume with StorageClass "storage-class-nas": rpc error: code = Unknown desc = volume reference secondary_primary/primary-pvc not found in cache
 ```
