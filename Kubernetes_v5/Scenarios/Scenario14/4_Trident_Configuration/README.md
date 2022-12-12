@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 14.3: Trident configuration
+# SCENARIO 14.4: Trident configuration
 #########################################################################################  
 
 Now that the storage tenant is up & running, we can tell both Trident & Kubernetes to use it!  

@@ -14,11 +14,11 @@
   tasks:
     - name: config IPSec for ONTAP
       na_ontap_command:
-        command: ['security', 'ipsec', 'config', 'config', '-is-enabled', 'true']
+        command: ['security', 'ipsec', 'config', 'modify', '-is-enabled', 'true']
         <<: *ontap_parameters
     - name: config IPSec policy for ONTAP
       na_ontap_command:
-        command: ['security', 'ipsec', 'policy', 'create', '-vserver', 'svm_secured', '-name', 'ipsec_k8s', '-local-ip-Subnets', '"{{ ipsec_target }}"/24', '-remote-ip-subnets', '"{{ ipsec_source_cidr }}"', '-shared-key', '"{{ ipsec_secret }}"']
+        command: ['security', 'ipsec', 'policy', 'create', '-vserver', 'svm_secured', '-name', 'ipsec_k8s', '-local-ip-subnets', '"{{ ipsec_target_cidr }}"', '-remote-ip-subnets', '"{{ ipsec_source_cidr }}"', '-shared-key', '"{{ ipsec_secret }}"']
         <<: *ontap_parameters
 
 - hosts: kubernetes

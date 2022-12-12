@@ -64,6 +64,18 @@ You are not going to be able to access these volumes with the configuration we a
 Once the NAS backend is created (with Dynamic Export Policy), I would **strongly** recommend to modify the export policy assigned to the tenant root volume, with the one dynamically managed by Trident.  
 That way, you add an extra layer of security.  
 
+Before moving on the next steps, let's just check that we can at least ping the NFS & Mgmt interfaces we just created
+```bash
+$ ping 192.168.0.210
+PING 192.168.0.210 (192.168.0.210) 56(84) bytes of data.
+64 bytes from 192.168.0.210: icmp_seq=1 ttl=64 time=0.321 ms
+64 bytes from 192.168.0.210: icmp_seq=2 ttl=64 time=0.306 ms
+
+$ ping 192.168.0.211
+PING 192.168.0.211 (192.168.0.211) 56(84) bytes of data.
+64 bytes from 192.168.0.211: icmp_seq=1 ttl=64 time=0.321 ms
+64 bytes from 192.168.0.211: icmp_seq=2 ttl=64 time=0.306 ms
+```
 
 ## What's next
 
