@@ -11,7 +11,7 @@ This Kubernetes-native solution has the following benefits:
 
 
 This diagram illustrates NFS volume sharing across two Kubernetes namespaces:
-<p align="center"><img src="./Images/scenario22.png"></p>
+<p align="center"><img src="./Images/scenario22_v2.png"></p>
 
 ## A. Set up the environment
 
