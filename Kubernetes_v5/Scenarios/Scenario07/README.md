@@ -9,3 +9,4 @@ Importing a NFS volume has been a Trident feature forever. However, importing a 
 This scenario will guide you through both features  
 [1.](1_NAS_Import) Import a NFS volume (File RWX)  
 [2.](2_SAN_Import) Import a iSCSI volume (Block RWO)
+
