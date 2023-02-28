@@ -30,7 +30,7 @@ ssh -o "StrictHostKeyChecking no" root@rhel2 yum install -y kubeadm-1.16.15-0 --
 ssh -o "StrictHostKeyChecking no" root@rhel2 kubeadm upgrade node 
 ssh -o "StrictHostKeyChecking no" root@rhel2 yum install -y kubelet-1.16.15-0 kubectl-1.16.15-0 --disableexcludes=kubernetes
 ssh -o "StrictHostKeyChecking no" root@rhel2 systemctl restart kubelet
-ssh -o "StrictHostKeyChecking no" root@rhel1 systemctl daemon-reload
+ssh -o "StrictHostKeyChecking no" root@rhel2 systemctl daemon-reload
 sleep 30s
 
 if [ $(kubectl get nodes | wc -l) = 5 ]
@@ -43,7 +43,7 @@ then
   ssh -o "StrictHostKeyChecking no" root@rhel4 kubeadm upgrade node 
   ssh -o "StrictHostKeyChecking no" root@rhel4 yum install -y kubelet-1.16.15-0 kubectl-1.16.15-0 --disableexcludes=kubernetes
   ssh -o "StrictHostKeyChecking no" root@rhel4 systemctl restart kubelet
-  ssh -o "StrictHostKeyChecking no" root@rhel1 systemctl daemon-reload
+  ssh -o "StrictHostKeyChecking no" root@rhel4 systemctl daemon-reload
   sleep 30s
 fi
 
