@@ -43,7 +43,7 @@ You can decide to use all of them, only a subset of them or modify them as you w
 The **default** is to use **all data LIF** IPs from the SVM and to use **iSCSI multipath**.  
 Specifying an IP address for the **dataLIF** for the ontap-san* drivers forces the driver to **disable** multipath and use only the specified address.  
 
-If you take a closer look to both json files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
+If you take a closer look to both yaml files, you will see that the parameter dataLIF has not been set, therefore enabling multipathing.  
 
 ```bash
 $ kubectl create -n trident -f secret_ontap_iscsi-svm_chap.yaml
@@ -96,23 +96,25 @@ If you have configured Grafana, you can go back to your dashboard, to check what
 
 ## D. Validate the CHAP configuration on the storage backend
 
-If you take a closer look at the SAN-secured definition file, you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
+If you take a closer look at the secret manifests you will see a bunch of parameter related to bidirectional CHAP, which will add authenticated iSCSI connections.  
 You can learn more about it on the following link:  
-https://netapp-trident.readthedocs.io/en/stable-v20.10/kubernetes/operations/tasks/backends/ontap/ontap-san/bidir-ontap-chap.html
+https://docs.netapp.com/us-en/trident/trident-use/ontap-san-prep.html#authenticate-connections-with-bidirectional-chap  
+
+CHAP authentication is optional & disabled by default. In this lab, both SAN backends use CHAP.  
 
 You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)
 
 ```bash
 # ssh -l admin 192.168.0.101 iscsi security show
 Password:
-                                    Auth   Auth CHAP Inbound CHAP  Outbound CHAP
-Vserver      Initiator Name         Type   Policy    User Name     User Name
-----------   ---------------------- ------ --------- ------------- -------------
-iscsi_svm    default                CHAP   local     tridentchap   tridenttarget
+                                    Auth   Auth CHAP Inbound CHAP       Outbound CHAP
+Vserver      Initiator Name         Type   Policy    User Name          User Name
+----------   ---------------------- ------ --------- ----------------   -------------
+iscsi_svm    default                CHAP   local     uh2a1io325bFFILn   iJF4sgjrnwOwQ
 ```
 
 You find here both usernames set in the backend parameters.  
-Now, you can only see the CHAP configuraion on the host once a POD has mounted a PVC, which you will do in the Scenario07.
+Now, you can only see the CHAP configuration on the host once a POD has mounted a PVC, which you will do in the Scenario06.
 
 ## E. What's next
 
