@@ -2,6 +2,8 @@ kind: Pod
 apiVersion: v1
 metadata:
   name: busybox-pod5
+  labels:
+    app.kubernetes.io/name: test5
 spec:
   volumes:
     - name: volume

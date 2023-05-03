@@ -24,7 +24,7 @@ alias trident='tridentctl -n trident'
 EOT
 ```
 
-Don't forget to type in _bash_ in order to take the modifications into account
+Don't forget to type in _source ~/.bashrc_ in order to take the modifications into account
 
 ## B. How can I easily list all the PVC of an application
 

@@ -172,4 +172,4 @@ alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
 alias trident='tridentctl -n trident'
 EOT
-bash
+source ~/.bashrc
