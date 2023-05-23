@@ -2,6 +2,15 @@
 # SCENARIO 8: Consumption control: ONTAP parameters
 #########################################################################################
 
+An ONTAP admin can create various tenants (ie SVM) and apply parameters to control:
+- the number of FlexVol the SVM can host
+- the capacity the SVM can use
+
+The first parameter can be demonstrated and tested in this lab.  
+However, the second feature is available with ONTAP 9.13, which would require a few uprades on this lab.  
+
+## A. Control the number of FlexVols
+
 The amount of ONTAP volumes (Flexvols) you can have on a ONTAP cluster depends on several parameters:
 
 - version
@@ -73,7 +82,20 @@ persistentvolumeclaim "ontaplimit-2" deleted
 persistentvolumeclaim "ontaplimit-3" deleted
 ```
 
-## D. What's next
+## B. Limit the capacity
+
+ONTAP 9.13.1 introduced the possibility to set a capacity limit per SVM, as well as a threshold against which alerts will be sent.  
+
+<p align="center"><img src="../Images/scenario08_5.png"></p>
+
+This can be configured in System Manager or through CLI with the following command:  
+```bash
+vserver modify -vserver vserver_name -storage-limit value [GiB|TIB] -storage-limit-threshold-alert percentage
+```
+
+Together, these two features really bring more control to the storage team, especially when multiple environments are in play.  
+
+## C. What's next
 
 You can now move on to the next section of this chapter: [a bit of everything](../4_A_bit_of_everything)
 
