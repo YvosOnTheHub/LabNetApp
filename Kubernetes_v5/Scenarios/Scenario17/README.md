@@ -58,10 +58,10 @@ Now, let's configure a new Trident Backend & a new storage class, so that we can
 If you take a look a the backend json file, you will notice that its management LIF parameter points to **192.168.0.63:8443**, which is the port that HAProxy listens onto, and not **192.168.0.135** which is the SVM IP address.  
 
 ```bash
-$ kubectl create -n trident -f backend_proxy.yaml
+$ kubectl create -n trident -f backend-proxy.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-proxy created
 
-$ kubectl create -f sc_proxy.yaml
+$ kubectl create -f sc-proxy.yaml
 storageclass.storage.k8s.io/sc-proxy created
 ```
 

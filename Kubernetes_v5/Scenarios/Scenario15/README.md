@@ -30,9 +30,9 @@ We are going to create two new backends, each one pointing to a different region
 You can see in the json files that I used a parameter called **supportedTopologies** to specify this.
 
 ```bash
-$ kubectl create -n trident -f backend_west.yaml
+$ kubectl create -n trident -f backend-west.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-west created
-$ kubectl create -n trident -f backend_east.yaml
+$ kubectl create -n trident -f backend-east.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-east created
 ```
 
@@ -40,7 +40,7 @@ We can now create a Kubernetes Storage Class that does not necessarily point to 
 We will use the _sc_topology.yaml_ file which refers to both regions & zones. One could decide to implement separate storage classes (1 for each region), however, letting Trident decide where to create the volume based on one single Storage Class is easier to manage.
 
 ```bash
-$ kubectl create -f sc_topology.yaml
+$ kubectl create -f sc-topology.yaml
 storageclass.storage.k8s.io/sc-topology created
 
 $ kubectl get sc

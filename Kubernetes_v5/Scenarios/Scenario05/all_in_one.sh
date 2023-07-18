@@ -22,9 +22,9 @@ echo "##########################################################################
 echo "Creating SAN Backends with kubectl"
 echo "#######################################################################################################"
 
-kubectl create -n trident -f secret_ontap_iscsi-svm_chap.yaml
-kubectl create -n trident -f backend_san-secured.yaml
-kubectl create -n trident -f backend_san-eco.yaml
+kubectl create -n trident -f secret-ontap-iscsi-svm-chap.yaml
+kubectl create -n trident -f backend-san-secured.yaml
+kubectl create -n trident -f backend-san-eco.yaml
 
 echo "#######################################################################################################"
 echo "Creating SAN Storage Class"

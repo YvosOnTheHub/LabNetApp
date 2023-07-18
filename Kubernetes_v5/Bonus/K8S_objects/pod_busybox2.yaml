@@ -2,7 +2,7 @@ kind: Pod
 apiVersion: v1
 metadata:
   name: busybox-pod2
-    labels:
+  labels:
     app.kubernetes.io/name: test2
 spec:
   volumes:
