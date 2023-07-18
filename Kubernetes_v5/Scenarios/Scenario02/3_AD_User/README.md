@@ -6,7 +6,7 @@ Most Trident administrators configure a backend with a local ONTAP user.
 However, it is also possible to use a user linked to a Domain.  
 This page will guide you through the configuration of such architecture.  
 
-First, we need to register the SVM in the Lab domain, after having configure the DNS server in the SVM.  
+First, we need to register the SVM in the Lab domain (Administrator/Netapp1!), after having configure the DNS server in the SVM.  
 This can be done using the ONTAP CLI. Open a new Putty window & connect to cluster1.demo.netapp.com:  
 ```bash
 cluster1::>vserver services dns create -vserver nfs_svm -domains demo.netapp.com -name-servers 192.168.0.253 
@@ -28,6 +28,9 @@ Here are the commands to run for the second method:
 ```posh
 > Invoke-Command -ComputerName DC1 -Scriptblock { New-ADUser trident -AccountPassword(ConvertTo-SecureString -AsPlainText “Netapp1!” -Force) -ChangePasswordAtLogon $False -Enabled $true -GivenName Astra -Surname Trident -OtherAttributes @{mail="trident@demo.netapp.com"} }
 > Invoke-Command -ComputerName DC1 -Scriptblock { Get-ADUser -Identity trident -Properties * } | select givenname,surname,mail,enabled
+GivenName Surname mail                    Enabled
+--------- ------- ----                    -------
+Astra     Trident trident@demo.netapp.com    True
 ```
 
 Back to ONTAP, this _trident_ user needs to be associates with a specific role (_vsadmin_) and specific applications (_http_, _ontapi_ and _ssh_):

@@ -32,7 +32,20 @@ Managing backends this way is done with 2 different objects:
 
 Note that _secrets_ can be used by multiple _TridentBackendConfigs_.
 
-<p align="center"><img src="Images/scenario2.jpg"></p>
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+The backend files contain the parameter _snapshotDir: 'true'_ which makes the .snapshot folders visible inside the POD.
+This works perfectly well with this Lab on Demand environment (Centos7). However, if you plan on using it on your own infrastructure or in another lab (Centos8+), you may get the following error when creating an app:
+
+```bash
+kubectl logs -n ghost1  blog-bc476b85c-ts9td
+chown: /var/lib/ghost/content/.snapshot: Read-only file system
+```
+
+You can then simply edit the backend file & remove this parameter, which will resolve the situation
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
 
 This chapter will guide you through three different methods to confiture a Trident backend:  
 [1.](1_Local_User) with an ONTAP local user  
