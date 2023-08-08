@@ -5,5 +5,7 @@ metadata:
 spec:
   debug: false
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:23.07.0
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:23.07.0
+  tridentImage: registry.demo.netapp.com/trident:23.04.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:23.04.0
+  imagePullPolicy: IfNotPresent
+  windows: false

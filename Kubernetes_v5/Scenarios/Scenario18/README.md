@@ -244,9 +244,13 @@ Once the update is done, you will the following:
 ### 3. Infrastructure update: new version of Trident
 
 This scenario was built around Trident 23.04.0. With the availability of Trident 23.07.0 we also test its upgrade mechanism.  
-The only differences between both version's manifests are located in the images to be used. Let's proceed with the changes.
-
+Aside from the images versions, there are some other minor changes to apply. Let's go through them:  
 ```bash
+sed -i '/tridentmirrorrelationships\/status/a \ \ \ \ \ \ - tridentactionmirrorupdates/status' bundle.yaml
+sed -i '/tridentmirrorrelationships\/status/a \ \ \ \ \ \ - tridentactionmirrorupdates' bundle.yaml
+sed -i '/tridentsnapshotinfos\/status/a \ \ \ \ \ \ - tridentactionsnapshotrestores/status' bundle.yaml
+sed -i '/tridentsnapshotinfos\/status/a \ \ \ \ \ \ - tridentactionsnapshotrestores' bundle.yaml
+sed -i '463i \ \ \ \ \ \ \ \ \ \ securityContext:\n\ \ \ \ \ \ \ \ \ \ \ \ capabilities:\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ drop:\n\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ - all' bundle.yaml
 sed -i 's/23.04.0/23.07.0/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
 sed -i 's/23.04.0/23.07.0/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
 cd ~/Repository

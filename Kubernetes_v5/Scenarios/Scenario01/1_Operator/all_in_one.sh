@@ -80,8 +80,8 @@ echo "##########################################################################
 echo "Install new Trident Operator (23.07.0)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle.yaml
-kubectl create -f ~/23.07.0/trident-installer/deploy/bundle.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
+kubectl create -f ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
 
 echo "#######################################################################################################"
 echo "Check"

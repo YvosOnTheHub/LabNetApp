@@ -80,6 +80,18 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - resourcequotas
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - update
+      - patch
+  - apiGroups:
+      - ""
+    resources:
       - pods
     verbs:
       - get
@@ -200,6 +212,7 @@ rules:
       - tridentstorageclasses
       - tridentvolumes
       - tridentvolumepublications
+      - tridentvolumereferences
       - tridentnodes
       - tridenttransactions
       - tridentsnapshots
@@ -229,6 +242,9 @@ rules:
       - use
     resourceNames:
       - tridentpods
+      - trident-controller
+      - trident-node-linux
+      - trident-node-windows
   # Now Operator specific permissions
   - apiGroups:
       - ""
@@ -236,6 +252,7 @@ rules:
       - namespaces
     verbs:
       - create
+      - patch
   - apiGroups:
       - apps
     resources:
@@ -251,15 +268,29 @@ rules:
       - apps
     resources:
       - deployments
-      - daemonsets
       - statefulsets
     verbs:
       - delete
       - update
       - patch
     resourceNames:
-      - trident-csi
       - trident
+      - trident-csi
+      - trident-controller
+  - apiGroups:
+      - apps
+    resources:
+      - daemonsets
+    verbs:
+      - delete
+      - update
+      - patch
+    resourceNames:
+      - trident
+      - trident-csi
+      - trident-csi-windows
+      - trident-node-linux
+      - trident-node-windows
   - apiGroups:
       - ""
     resources:
@@ -267,6 +298,7 @@ rules:
       - services
       - serviceaccounts
     verbs:
+      - get
       - list
       - create
   - apiGroups:
@@ -274,7 +306,6 @@ rules:
     resources:
       - pods/exec
       - services
-      - serviceaccounts
     verbs:
       - delete
       - update
@@ -283,9 +314,25 @@ rules:
       - trident-csi
       - trident
   - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+    verbs:
+      - delete
+      - update
+      - patch
+    resourceNames:
+      - trident-controller
+      - trident-node-linux
+      - trident-node-windows
+      - trident-csi
+      - trident
+  - apiGroups:
       - authorization.openshift.io
       - rbac.authorization.k8s.io
     resources:
+      - roles
+      - rolebindings
       - clusterroles
       - clusterrolebindings
     verbs:
@@ -295,6 +342,8 @@ rules:
       - authorization.openshift.io
       - rbac.authorization.k8s.io
     resources:
+      - roles
+      - rolebindings
       - clusterroles
       - clusterrolebindings
     verbs:
@@ -302,6 +351,9 @@ rules:
       - update
       - patch
     resourceNames:
+      - trident-controller
+      - trident-node-linux
+      - trident-node-windows
       - trident-csi
       - trident
   - apiGroups:
@@ -317,6 +369,9 @@ rules:
       - podsecuritypolicies
     resourceNames:
       - tridentpods
+      - trident-controller
+      - trident-node-linux
+      - trident-node-windows
     verbs:
       - delete
       - update
@@ -334,6 +389,9 @@ rules:
     resources:
       - securitycontextconstraints
     resourceNames:
+      - trident-controller
+      - trident-node-linux
+      - trident-node-windows
       - trident
     verbs:
       - delete
@@ -387,7 +445,7 @@ spec:
       containers:
         - command:
             - /trident-operator
-            - --debug
+            - --log-level=debug
           env:
             - name: POD_NAME
               valueFrom:
@@ -395,12 +453,23 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: trident-operator
-          image: registry.demo.netapp.com/trident-operator:23.07.0
+          image: registry.demo.netapp.com/trident-operator:23.04.0
           imagePullPolicy: IfNotPresent
           name: trident-operator
-      nodeSelector:
-        kubernetes.io/arch: amd64
-        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - arm64
+                      - amd64
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
       serviceAccountName: trident-operator
 ---
 apiVersion: policy/v1beta1
@@ -420,4 +489,4 @@ spec:
   supplementalGroups:
     rule: RunAsAny
   volumes:
-    - '*'
+    - projected

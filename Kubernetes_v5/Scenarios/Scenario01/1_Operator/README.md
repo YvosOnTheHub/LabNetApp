@@ -37,13 +37,13 @@ $ kubectl -n netapp patch torc/trident --type=json -p='[
 ]'
 tridentorchestrator.trident.netapp.io/trident patched
 
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
 ```
 
 We can finally deploy the Operator, as well as all the necessary resources that go along with it:
 
 ```bash
-$ kubectl create -f ~/23.07.0/trident-installer/deploy/bundle.yaml
+$ kubectl create -f ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
@@ -85,7 +85,7 @@ replicaset.apps/trident-operator-7748db54f5     1         1         1       9m54
 After a few seconds, you should the status _installed_ in the provisioner CRD.
 
 ```bash
-$ kubectl describe torc -n trident
+$ kubectl describe torc
 Name:         trident
 Namespace:
 Labels:       <none>
@@ -93,29 +93,33 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2023-08-08T12:09:14Z
-  Generation:          1
+  Creation Timestamp:  2021-12-01T02:05:17Z
+  Generation:          2
   Managed Fields:
     API Version:  trident.netapp.io/v1
-    Fields Type:  FieldsV1
     Manager:      kubectl-create
     Operation:    Update
     Time:         2021-12-01T02:05:17Z
     API Version:  trident.netapp.io/v1
     Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        f:autosupportImage:
+        f:tridentImage:
     Manager:      kubectl-patch
     Operation:    Update
-    Time:         2022-11-20T17:59:19Z
+    Time:         2023-08-08T14:23:20Z
     API Version:  trident.netapp.io/v1
+    Fields Type:  FieldsV1
     Manager:         trident-operator
     Operation:       Update
     Subresource:     status
-    Time:            2022-11-20T18:02:02Z
-  Resource Version:  20028639
+    Time:            2023-08-08T14:26:33Z
+  Resource Version:  19982746
   UID:               331ae347-8f9a-4f3d-b195-3939e0c16c6c
 Spec:
   Autosupport Image:  registry.demo.netapp.com/trident-autosupport:23.07.0
-  Debug:              false
+  Debug:              true
   Namespace:          trident
   Trident Image:      registry.demo.netapp.com/trident:23.07.0
 Status:
@@ -125,13 +129,19 @@ Status:
     Autosupport Image:          registry.demo.netapp.com/trident-autosupport:23.07.0
     Autosupport Proxy:
     Autosupport Serial Number:
-    Debug:                      false
+    Debug:                      true
+    Disable Audit Log:          true
+    Enable Force Detach:        false
     Http Request Timeout:       90s
+    Image Pull Policy:          IfNotPresent
     Image Pull Secrets:
     Image Registry:
     k8sTimeout:           30
     Kubelet Dir:          /var/lib/kubelet
     Log Format:           text
+    Log Layers:
+    Log Level:            debug
+    Log Workflows:
     Probe Port:           17546
     Silence Autosupport:  false
     Trident Image:        registry.demo.netapp.com/trident:23.07.0
@@ -164,9 +174,9 @@ https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-deploy-oper
 If you just want to display part of the description, you can use a filter such as:
 
 ```bash
-$ kubectl describe torc trident -n trident | grep Message: -A 3
+$ kubectl describe torc trident | grep Message: -A 3
   Message:    Trident installed
-  Namespace:  trident
+  Namespace:  
   Status:     Installed
   Version:    v23.07.0
 ```
