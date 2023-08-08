@@ -395,7 +395,7 @@ spec:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: trident-operator
-          image: registry.demo.netapp.com/trident-operator:22.04.0
+          image: registry.demo.netapp.com/trident-operator:23.07.0
           imagePullPolicy: IfNotPresent
           name: trident-operator
       nodeSelector:

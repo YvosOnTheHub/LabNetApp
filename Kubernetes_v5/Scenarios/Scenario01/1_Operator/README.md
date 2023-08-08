@@ -4,7 +4,7 @@
 
 **GOAL:**  
 The current environment comes with Trident manually installed as an Operator.  
-Before moving to the upgrade to Trident 22.10.0, we will first clean up the current deployment.  
+Before moving to the upgrade to Trident 23.07.0, we will first clean up the current deployment.  
 
 ## A. Do some optional preparation work
 
@@ -32,18 +32,18 @@ Let's modify the _Trident Orchestator_ to point the new installation to the priv
 
 ```bash
 $ kubectl -n netapp patch torc/trident --type=json -p='[ 
-    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:22.10.0"}, 
-    {"op":"add", "path":"/spec/autosupportImage", "value":"registry.demo.netapp.com/trident-autosupport:22.10.0"}
+    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:23.07.0"}, 
+    {"op":"add", "path":"/spec/autosupportImage", "value":"registry.demo.netapp.com/trident-autosupport:23.07.0"}
 ]'
 tridentorchestrator.trident.netapp.io/trident patched
 
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/22.10.0/trident-installer/deploy/bundle.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle.yaml
 ```
 
 We can finally deploy the Operator, as well as all the necessary resources that go along with it:
 
 ```bash
-$ kubectl create -f ~/22.10.0/trident-installer/deploy/bundle.yaml
+$ kubectl create -f ~/23.07.0/trident-installer/deploy/bundle.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
@@ -58,26 +58,26 @@ Give it 30 seconds, & then let's see the final content of the Trident namespace
 
 ```bash
 $ kubectl get all -n trident
-NAME                                   READY   STATUS    RESTARTS   AGE
-pod/trident-csi-66d96cdcc4-5n5x9       6/6     Running   0          3m15s
-pod/trident-csi-jwvfb                  2/2     Running   0          3m15s
-pod/trident-csi-p929b                  2/2     Running   0          3m15s
-pod/trident-csi-vs4nr                  2/2     Running   0          3m15s
-pod/trident-operator-599794f56-pwzhd   1/1     Running   0          4m50s
+NAME                                      READY   STATUS    RESTARTS   AGE
+pod/trident-controller-86f845bc69-zczfr   6/6     Running   0          9m29s
+pod/trident-node-linux-7kmwp              2/2     Running   0          9m29s
+pod/trident-node-linux-8xtfv              2/2     Running   0          9m29s
+pod/trident-node-linux-djckp              2/2     Running   0          9m29s
+pod/trident-operator-7748db54f5-w2pzg     1/1     Running   0          9m54s
 
-NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)              AGE
-service/trident-csi   ClusterIP   10.109.36.143   <none>        34571/TCP,9220/TCP   3m16s
+NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)              AGE
+service/trident-csi   ClusterIP   10.101.82.30   <none>        34571/TCP,9220/TCP   9m29s
 
-NAME                         DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR                                     AGE
-daemonset.apps/trident-csi   3         3         3       3            3           kubernetes.io/arch=amd64,kubernetes.io/os=linux   3m15s
+NAME                                DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+daemonset.apps/trident-node-linux   3         3         3       3            3           <none>          9m29s
 
-NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/trident-csi        1/1     1            1           3m15s
-deployment.apps/trident-operator   1/1     1            1           4m50s
+NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/trident-controller   1/1     1            1           9m29s
+deployment.apps/trident-operator     1/1     1            1           9m54s
 
-NAME                                         DESIRED   CURRENT   READY   AGE
-replicaset.apps/trident-csi-66d96cdcc4       1         1         1       3m15s
-replicaset.apps/trident-operator-599794f56   1         1         1       4m50s
+NAME                                            DESIRED   CURRENT   READY   AGE
+replicaset.apps/trident-controller-86f845bc69   1         1         1       9m29s
+replicaset.apps/trident-operator-7748db54f5     1         1         1       9m54s
 ```
 
 ## C. Check the status
@@ -93,7 +93,7 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2022-11-20T02:05:17Z
+  Creation Timestamp:  2023-08-08T12:09:14Z
   Generation:          1
   Managed Fields:
     API Version:  trident.netapp.io/v1
@@ -114,15 +114,15 @@ Metadata:
   Resource Version:  20028639
   UID:               331ae347-8f9a-4f3d-b195-3939e0c16c6c
 Spec:
-  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:22.10.0
+  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:23.07.0
   Debug:              false
   Namespace:          trident
-  Trident Image:      registry.demo.netapp.com/trident:22.10.0
+  Trident Image:      registry.demo.netapp.com/trident:23.07.0
 Status:
   Current Installation Params:
     IPv6:                       false
     Autosupport Hostname:
-    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:22.10.0
+    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:23.07.0
     Autosupport Proxy:
     Autosupport Serial Number:
     Debug:                      false
@@ -134,11 +134,11 @@ Status:
     Log Format:           text
     Probe Port:           17546
     Silence Autosupport:  false
-    Trident Image:        registry.demo.netapp.com/trident:22.10.0
+    Trident Image:        registry.demo.netapp.com/trident:23.07.0
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v22.10.0
+  Version:                v23.07.0
 Events:
   Type    Reason     Age   From                        Message
   ----    ------     ----  ----                        -------
@@ -148,12 +148,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 22.10.0        | 22.10.0        |
+| 23.07.0        | 23.07.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   22.10.0
+trident   23.07.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -168,7 +168,7 @@ $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v22.10.0
+  Version:    v23.07.0
 ```
 
 ## D. What's next

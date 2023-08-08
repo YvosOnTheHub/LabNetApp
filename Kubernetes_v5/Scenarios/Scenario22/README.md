@@ -15,14 +15,14 @@ This diagram illustrates NFS volume sharing across two Kubernetes namespaces:
 
 ## A. Set up the environment
 
-#### First things first, ensure you are using version `22.10` of Trident
+#### First things first, ensure you are using version `23.07` of Trident
 
 ```sh
 $ kubectl get tver -n trident
 NAME      VERSION
-trident   22.10.0
+trident   23.07.0
 ```
-If you aren't, follow the steps in [Scenario01](../Scenario01) in order to upgrade to version `22.10`  
+If you aren't, follow the steps in [Scenario01](../Scenario01) in order to upgrade to version `23.07`  
 
 #### Ensure you have configured nas backend `nas-default` and storage-class `storage-class-nas` from [Scenario02](../Scenario02)  
 ```

@@ -24,9 +24,9 @@ $ sh ../scenario01_pull_images.sh
 $ helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 "netapp-trident" has been added to your repositories
 
-$ helm install trident netapp-trident/trident-operator --version 22.10.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:22.10.0,operatorImage=registry.demo.netapp.com/trident-operator:22.10.0,tridentImage=registry.demo.netapp.com/trident:22.10.0
+$ helm install trident netapp-trident/trident-operator --version 23.07.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:23.07.0,operatorImage=registry.demo.netapp.com/trident-operator:23.07.0,tridentImage=registry.demo.netapp.com/trident:23.07.0
 NAME: trident
-LAST DEPLOYED: Mon Oct  20 07:46:38 2022
+LAST DEPLOYED: Tue Aug  8 12:09:12 2023
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -49,7 +49,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         1               2022-10-22 07:46:38.154347422 +0000 UTC deployed        trident-operator-22.10.0        22.10.0
+trident trident         1               2023-08-08 12:09:12.353436649 +0000 UTC deployed        trident-operator-23.07.0        23.07.0
 ```
 
 Also quite easy !  
@@ -60,14 +60,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 22.10.0        | 22.10.0        |
+| 23.07.0        | 23.07.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v22.10.0
+  Version:    v23.07.0
 ```
 
 ## What's next
