@@ -9,3 +9,7 @@ resources:
   requests:
     memory: 256Mi
     cpu: 200m
+
+mariadb:
+  image:
+    tag: 11.0.2-debian-11-r2

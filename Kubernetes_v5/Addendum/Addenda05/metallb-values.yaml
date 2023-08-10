@@ -1,0 +1,9 @@
+  controller:
+    image:
+      tag: v0.13.10
+      
+  speaker:
+    image:
+      tag: v0.13.10
+    frr:
+      enabled: false

@@ -53,7 +53,7 @@ sh /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario01/scenario01_pull_images.sh 
 sh /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario09/scenario09_pull_images.sh tsupd0ck jcgrup5D
 sh /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario21/scenario21_pull_images.sh tsupd0ck jcgrup5D
 sh /root/LabNetApp/Kubernetes_v5/Scenarios/Scenario01/2_Helm/trident_uninstall.sh
-sh /root/LabNetApp/Kubernetes_v5/Addendum/Addenda05/all_in_one.sh tsupd0ck jcgrup5D
+sh /root/LabNetApp/Kubernetes_v5/Addendum/Addenda05/all_in_one.sh
 sh /root/LabNetApp/Kubernetes_v5/Addendum/Addenda01/add_node.sh rhel4
 
 kubectl apply -f https://raw.githubusercontent.com/clastix/capsule/v0.1.1/config/install.yaml

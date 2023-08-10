@@ -39,13 +39,14 @@ if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "instal
     yum install -y jq
 fi
 
-# Install MetalLB, Gitea & ArgoCD
+# Install MetalLB
+sh ../../Addendum/Addenda05/all_in_one.sh
+
+# Install Gitea & ArgoCD
 if [[ $# -eq 2 ]]; then
-  sh ../../Addendum/Addenda05/all_in_one.sh $1 $2
   sh ../../Addendum/Addenda11/all_in_one.sh $1 $2
   sh ../../Addendum/Addenda12/all_in_one.sh $1 $2
 else
-  sh ../../Addendum/Addenda05/all_in_one.sh
   sh ../../Addendum/Addenda11/all_in_one.sh
   sh ../../Addendum/Addenda12/all_in_one.sh
 fi

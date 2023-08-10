@@ -55,9 +55,9 @@ Addendum
 [2.](Kubernetes_v5/Addendum/Addenda02) Specify a default storage class  
 [3.](Kubernetes_v5/Addendum/Addenda03) Allow user PODs on the master node  
 [4.](Kubernetes_v5/Addendum/Addenda04) Install Ansible on RHEL3 (Kubernetes Master)  
-[5.](Kubernetes_v5/Addendum/Addenda05) Install a Load Balancer (MetalLB)  
+[5.](Kubernetes_v5/Addendum/Addenda05) Install a Load Balancer (MetalLB) :arrows_counterclockwise:  
 [6.](Kubernetes_v5/Addendum/Addenda06) Install the Kubernetes dashboard  
-[7.](Kubernetes_v5/Addendum/Addenda07) Install cool tools :arrows_counterclockwise:  
+[7.](Kubernetes_v5/Addendum/Addenda07) Install cool tools  
 [8.](Kubernetes_v5/Addendum/Addenda08) How to run this lab with the Docker hub rate limiting  
 [9.](Kubernetes_v5/Addendum/Addenda09) How to install & prepare HAProxy  
 [10.](Kubernetes_v5/Addendum/Addenda10) How to create a S3 Bucket on ONTAP  
