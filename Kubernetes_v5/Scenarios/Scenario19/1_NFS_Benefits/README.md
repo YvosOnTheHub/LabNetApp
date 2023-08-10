@@ -31,14 +31,13 @@ sh scenario19_pull_images.sh my_login my_password
 I will use Helm to deploy Wordpress. All the variables are gathered in the _wordpress_values_rwx.yaml_:
 
 ```bash
-kubectl create ns wp
-helm install wp bitnami/wordpress --namespace wp -f wordpress_values_rwx.yaml
+helm install wp bitnami/wordpress --namespace wp --create-namespace -f wordpress_values_rwx.yaml
 ```
 
 **OR** if you need local container images
 
 ```bash
-helm install wp bitnami/wordpress --namespace wp -f wordpress_values_rwx.yaml --set global.imageRegistry=registry.demo.netapp.com
+helm install wp bitnami/wordpress --namespace wp --create-namespace -f wordpress_values_rwx.yaml --set global.imageRegistry=registry.demo.netapp.com
 ```
 
 Here is a diagram of the result. As you can see, the frontend is composed of 2 POD mounting the same volume:
@@ -93,7 +92,7 @@ Scaling this deployment was done non-disruptively, and the new pod mounts the ve
 
 ## C. Upgrading Wordpress
 
-A new version of Wordpress has been released, & I want to upgrade my environment non-disruptively. No problemo since we have a RWX NFS PVC!
+A new version of Wordpress has been released, & I want to upgrade my environment non-disruptively. No problemo since we have a RWX NFS PVC!  
 Note that I use an image that I have already uploaded to the local repository. If you can directly pull the image from the docker hub, you can just remove the _registry.demo.netapp.com/_ part from the patch command.
 
 ```bash
@@ -123,15 +122,14 @@ Once again, the process was done seamlessly. Even better, Kubernetes keeps the o
 This time, the Helm variables are gathered in the _wordpress_values_rwo.yaml_:
 
 ```bash
-kubectl create ns wprwo
-helm install wp bitnami/wordpress --namespace wprwo -f wordpress_values_rwo.yaml
+helm install wp bitnami/wordpress --namespace wprwo --create-namespace -f wordpress_values_rwo.yaml
 ```
 
-**OR** if you need local container images
+**OR** if you need to use the local images repository
 
 ```bash
 kubectl create ns wprwo
-helm install wp bitnami/wordpress --namespace wprwo -f wordpress_values_rwo.yaml --set global.imageRegistry=registry.demo.netapp.com
+helm install wp bitnami/wordpress --namespace wprwo --create-namespace -f wordpress_values_rwo.yaml --set global.imageRegistry=registry.demo.netapp.com
 ```
 
 The resulting objects of a successful deployment are the following:
