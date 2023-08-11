@@ -22,8 +22,17 @@ In older versions, the configuration was written in ConfigMaps. There are now lo
 ```bash
 helm repo add metallb https://metallb.github.io/metallb
 helm install metallb metallb/metallb -n metallb-system --create-namespace -f metallb-values.yaml
-kubectl apply -f metallb-ipaddresspool.yaml
-kubectl apply -f metallb-l2advert.yaml
+```
+Once all the PODs are up&running, you can proceed with configuration:
+```bash
+$ kubectl get -n metallb-system deploy
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+metallb-controller   1/1     1            1           2m26s
+
+$ kubectl apply -f metallb-ipaddresspool.yaml
+ipaddresspool.metallb.io/metallb-cidr created
+$ kubectl apply -f metallb-l2advert.yaml
+l2advertisement.metallb.io/l2advertisement created
 ```
 
 ## What's next
