@@ -1,12 +1,12 @@
 #########################################################################################
-# SCENARIO 7#2: Import a Block volume
+# SCENARIO 7-3: Import a Block volume
 #########################################################################################
 
 **GOAL:**  
 Trident 20.07 introduced the possibility to import into Kubernetes a iSCSI LUN that exists in an ONTAP platform.  
 A SAN Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario5](../../Scenario05)
 
-<p align="center"><img src="../Images/scenario7_2.jpg"></p>
+<p align="center"><img src="../Images/scenario7_3.jpg"></p>
 
 ## A. Create a volume & a LUN on the storage backend
 
@@ -20,7 +20,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
       "uuid": "0dd40303-d469-4e83-86c6-2fca7838e067"
     }
   ],
-  "name": "scenario7_2",
+  "name": "scenario7_3",
   "size": "10g",
   "style": "flexvol",
   "svm": {
@@ -30,7 +30,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
 }' "https://cluster1.demo.netapp.com/api/storage/volumes"
 
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
-  "name": "/vol/scenario7_2/lun0",
+  "name": "/vol/scenario7_3/lun0",
   "os_type": "linux",
   "space": {
     "size": 1073741824
@@ -42,7 +42,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
 }' "https://cluster1.demo.netapp.com/api/storage/luns"
 ```
 
-A lun called **lun0** was created in the volume **scenario7_2**.  
+A lun called **lun0** was created in the volume **scenario7_3**.  
 We are now going to import this LUN into Kuberntes.
 
 To know more about ONTAP REST API, please take a look at the following link:
@@ -58,7 +58,7 @@ Please note that:
 - The volume hosting the LUN is going to be renamed once imported in order to follow the CSI specifications
 
 ```bash
-$ tridentctl -n trident import volume san-secured scenario7_2 -f pvc_rwo_import.yaml
+$ tridentctl -n trident import volume san-secured scenario7_3 -f pvc_rwo_import.yaml
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
@@ -81,7 +81,7 @@ Even though the name of the original PV has changed, you can still see it if you
 
 ```bash
 $ kubectl describe pvc lun-import | grep importOriginalName
-               trident.netapp.io/importOriginalName: scenario7_2
+               trident.netapp.io/importOriginalName: scenario7_3
 ```
 
 ## C. Cleanup (optional)

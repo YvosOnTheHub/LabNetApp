@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 7#1: Import a NFS volume
+# SCENARIO 7-1: Import a NFS volume
 #########################################################################################
 
 **GOAL:**  
@@ -30,9 +30,11 @@ Open Putty, connect to "cluster1" and finally enter all the following:
 ```bash
 vol clone create -flexclone to_import -vserver nfs_svm -parent-volume nas1_pvc_e24c99b7_b4e7_4de1_b952_a8d451e7e735
 vol clone split start -flexclone to_import -vserver nfs_svm
+snapshot create -vserver nfs_svm -volume to_import -snapshot snap-to-import
 ```
 
-In this example, the new volume's name is 'to_import'
+In this example, the new volume's name is 'to_import'.  
+A snapshot was also created for the next chapter of this scenario (snapshot import).  
 
 ## B. Import the volume
 
@@ -77,7 +79,7 @@ deployment.apps/blogimport created
 $ kubectl create -n ghost -f Ghost/3_service.yaml
 service/blogimport created
 
-$ kubectl all -n ghost
+$ kubectl get all -n ghost
 NAME                           READY   STATUS    RESTARTS   AGE
 pod/blog-cd5894ddd-d2tqp       1/1     Running   0          20h
 pod/blogimport-66945d9-bsw9b   1/1     Running   0          24m
@@ -105,7 +107,7 @@ If you have configured Grafana, you can go back to your dashboard, to check what
 
 ## E. Cleanup
 
-Instead of deleting each object one by one, you can directly delete the namespace which will then remove all of its objects.
+Only proceed with the cleanup if you are not planning on testing the snapshot import feature, which you can find in the second chapter of this scenario.
 
 ```bash
 $ kubectl delete ns ghost
@@ -116,7 +118,8 @@ namespace "ghost" deleted
 
 You can now move on to:
 
-- [Scenario07_2](../2_SAN_import): Importing a SAN volume  
+- [Scenario07_2](../2_Snapshot_import): Importing a snapshot  
+- [Scenario07_3](../3_SAN_import): Importing a SAN volume  
 - [Scenario08](../../Scenario08): Consumption control  
 - [Scenario10](../../Scenario10): Using Virtual Storage Pools 
 - [Scenario11](../../Scenario11): StatefulSets & Storage consumption  
