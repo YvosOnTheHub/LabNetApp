@@ -118,7 +118,7 @@ namespace "ghost" deleted
 
 You can now move on to:
 
-- [Scenario07_2](../2_Snapshot_import): Importing a snapshot  
+- [Scenario07_2](../2_Snapshot_Import): Importing a snapshot  
 - [Scenario07_3](../3_SAN_import): Importing a SAN volume  
 - [Scenario08](../../Scenario08): Consumption control  
 - [Scenario10](../../Scenario10): Using Virtual Storage Pools 

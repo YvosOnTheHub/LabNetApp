@@ -14,13 +14,13 @@ We are going to import a snapshot belonging to a volume imported with Trident (c
 CSI Snapshots are Kubernetes objects created & managed by the end-user in his own namespace. They will eventually trigger the creation of a ONTAP Snapshot on the storage backend. Until now, you could not create out of the box a CSI snapshot based on an existing ONTAP Snapshot, hence the creation of this feature to help you achieve this.  
 
 Persistent Volumes rely on 2 layers:
-- user space: Persistent Volume Claim (aka PVC)
-- cluster wide resource: Persistent Volume (aka PV)
+- user space: Persistent Volume Claim (aka **PVC**)
+- cluster wide resource: Persistent Volume (aka **PV**)
 If managed dynamically, PVC are also linked to a Storage Class.  
 
 Snapshots follow the same logic:
-- user space: Volume Snapshot (aka VS)
-- cluster wide resource: Volume Snapshot Content (aka VSC)
+- user space: Volume Snapshot (aka **VS**)
+- cluster wide resource: Volume Snapshot Content (aka **VSC**)
 If managed dynamically, VS are also linked to a Snapshot Class.  
 
 Importing a snapshot will use pre-provisioned VSC, created by the cluster admin.  
