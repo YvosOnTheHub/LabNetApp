@@ -9,7 +9,7 @@ Snapshots available in ONTAP can be visible and accessed depending on 3 paramete
 
 Let's see in this chapter how all these paremeters work together & what behavior we will observe.
 
-**TL;DR: BEGINNING**
+**TL;DR: BEGINNING**  
 **this table summarized my findings:**
 
 | Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot accessible | .snapshot visible
