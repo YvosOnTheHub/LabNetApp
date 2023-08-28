@@ -31,7 +31,7 @@ Scenarios
 [4.](Kubernetes_v5/Scenarios/Scenario04) Deploy your first app with File storage  
 [5.](Kubernetes_v5/Scenarios/Scenario05) Configure your first iSCSI backends & storage classes  
 [6.](Kubernetes_v5/Scenarios/Scenario06) Deploy your first app with Block storage  
-[7.](Kubernetes_v5/Scenarios/Scenario07) Use the 'import' feature of Trident :arrows_counterclockwise:  
+[7.](Kubernetes_v5/Scenarios/Scenario07) Importing data with Trident :arrows_counterclockwise:  
 [8.](Kubernetes_v5/Scenarios/Scenario08) Consumption control  
 [9.](Kubernetes_v5/Scenarios/Scenario09) Expanding Persistent Volumes  
 [10.](Kubernetes_v5/Scenarios/Scenario10) Using Virtual Storage Pools  
