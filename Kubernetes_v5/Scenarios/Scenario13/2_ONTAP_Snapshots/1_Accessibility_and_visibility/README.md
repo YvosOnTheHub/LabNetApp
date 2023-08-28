@@ -13,11 +13,11 @@ Let's see in this chapter how all these paremeters work together & what behavior
 
 | Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot visible | .snapshot accessible
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| [Config1](#config1) | NFSv4 | true | N/A | false | true |
+| [Config1](#config1) | NFSv4 | true | N/A | false | **true** |
 | [Config2](#config2) | NFSv4 | false | N/A | false | false |
-| [Config3](#config3) | NFSv3 | true | disabled | true | true |
+| [Config3](#config3) | NFSv3 | true | disabled | **true** | **true** |
 | [Config4](#config4) | NFSv3 | false | disabled | false | false |
-| [Config5](#config5) | NFSv3 | true | enabled | false | true |
+| [Config5](#config5) | NFSv3 | true | enabled | false | **true** |
 | [Config6](#config6) | NFSv3 | false | enabled | false | false |
 
 For each configuration, we will do the following:
