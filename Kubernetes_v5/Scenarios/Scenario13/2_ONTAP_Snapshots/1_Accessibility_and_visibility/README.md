@@ -27,6 +27,7 @@ To complete this summary, some extra comments:
 - Changing the SVM parameter does not affect existing **mounted** volumes  
 - Changing a Trident backend does not affect existing volumes  
 - the NFS version can be set in the Trident backend, in the storage class or for the whole worker node (/etc/nfsmount.conf & _NFSMount_Global_Options_ parameter)  
+
 **TL;DR: END**
 
 For each configuration, we will do the following:
