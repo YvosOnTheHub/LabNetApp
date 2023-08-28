@@ -14,11 +14,11 @@ Let's see in this chapter how all these paremeters work together & what behavior
 | Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot visible | .snapshot accessible
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | [Config1](#config1) | NFSv4 | true | N/A | false | true |
-| Config2 | NFSv4 | false | N/A | false | false |
-| Config3 | NFSv3 | true | disabled | true | true |
-| Config4 | NFSv3 | false | disabled | false | false |
-| Config5 | NFSv3 | true | enabled | false | true |
-| Config6 | NFSv3 | false | enabled | false | false |
+| [Config2](#config2) | NFSv4 | false | N/A | false | false |
+| [Config3](#config3) | NFSv3 | true | disabled | true | true |
+| [Config4](#config4) | NFSv3 | false | disabled | false | false |
+| [Config5](#config5) | NFSv3 | true | enabled | false | true |
+| [Config6](#config6) | NFSv3 | false | enabled | false | false |
 
 For each configuration, we will do the following:
 - create a PVC mounted by a Busybox POD in a dedicated namespace  
@@ -93,6 +93,7 @@ We have verified here that in the context of NFSv4:
 - the .snapshot directory is hidden (because of the protocol version)
 - the .snapshot directory is accessible (because of the _snapshotDir: 'true'_ parameter in the Trident backend)
 
+<a name="config2"></a>
 ## C. Testing Config2
 
 The _config2_ backend does not contain the parameter _snapshotDir_ which default to _false_.  
@@ -134,6 +135,7 @@ command terminated with exit code 1
 
 We have verified here that in the context of NFSv4, the .snapshot directory is not accessible and is hidden, thanks to the snapshotDir:false parameter.
 
+<a name="config3"></a>
 ## D. Testing Config3
 
 We are now going to test various configurations, using NFSv3.  
@@ -183,6 +185,7 @@ We have verified here that in the context of NFSv3:
 - the .snapshot directory is visible (parameter _v3-hide-snapshot_ in the SVM is left to its defaut value: _disabled_)
 - the .snapshot directory is accessible (because of the _snapshotDir: 'true'_ parameter in the Trident backend)
 
+<a name="config4"></a>
 ## E. Testing Config4
 
 The _config4_ backend does not contain the parameter _snapshotDir_ which defaults to _false_.  
@@ -224,6 +227,7 @@ command terminated with exit code 1
 
 We have verified here that in the context of NFSv3, the .snapshot directory is not accessible and is hidden, thanks to the _snapshotDir:false_ parameter.
 
+<a name="config5"></a>
 ## F. Testing Config5
 
 Config5 is a copy of Config3 from a Trident perspective.  
@@ -275,6 +279,7 @@ We have proved here that in the context of NFSv3:
 - the .snapshot directory is hidden (because of the _v3-hide-snapshot:enabled_ parameter set in the SVM)
 - the .snapshot directory is accessible (because of the _snapshotDir: 'true'_ parameter in the Trident backend)
 
+<a name="config6"></a>
 ## G. Testing Config6
 
 The difference with the _config5_ backend relies on the parameter _snapshotDir_ not explicitly set, which defaults to _false_. 
