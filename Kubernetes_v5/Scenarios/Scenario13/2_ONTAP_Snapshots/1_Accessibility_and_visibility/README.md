@@ -3,22 +3,30 @@
 #########################################################################################  
 
 Snapshots available in ONTAP can be visible and accessed depending on 3 parameters:
-- NFS version
+- NFS version: NFSv3 vs NFSv4
 - Trident parameter: snapshotDir
-- ONTAP SVM parameter to hide snapshots
+- ONTAP SVM parameter to hide snapshots: v3-hide-snapshot
 
 Let's see in this chapter how all these paremeters work together & what behavior we will observe.
 
-**TL;DR: this table summarized my findings:**
+**TL;DR: BEGINNING**
+**this table summarized my findings:**
 
-| Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot visible | .snapshot accessible
+| Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot accessible | .snapshot visible
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| [Config1](#config1) | NFSv4 | true | N/A | :ghost: | :white_check_mark: |
+| [Config1](#config1) | NFSv4 | true | N/A | :white_check_mark: | :ghost: |
 | [Config2](#config2) | NFSv4 | false | N/A | :stop_sign: | :stop_sign: |
 | [Config3](#config3) | NFSv3 | true | disabled | :white_check_mark: | :white_check_mark: |
 | [Config4](#config4) | NFSv3 | false | disabled | :stop_sign: | :stop_sign: |
-| [Config5](#config5) | NFSv3 | true | enabled | :ghost: | :white_check_mark: |
+| [Config5](#config5) | NFSv3 | true | enabled | :white_check_mark: | :ghost: |
 | [Config6](#config6) | NFSv3 | false | enabled | :stop_sign: | :stop_sign: |
+.snapshot visible :ghost: = even though the .snapshot directory is accessible, you cannot see it
+
+To complete this summary, some extra comments:
+- Changing the SVM parameter does not affect existing **mounted** volumes  
+- Changing a Trident backend does not affect existing volumes  
+- the NFS version can be set in the Trident backend, in the storage class or for the whole worker node (/etc/nfsmount.conf & _NFSMount_Global_Options_ parameter)
+**TL;DR: END**
 
 For each configuration, we will do the following:
 - create a PVC mounted by a Busybox POD in a dedicated namespace  
