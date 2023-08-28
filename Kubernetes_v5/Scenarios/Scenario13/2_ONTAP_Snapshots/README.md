@@ -16,5 +16,5 @@ In the context of Trident, here are the parameters that can be set in a backend 
 - **snapshotDir** (default: _false_): controls the accessibility of the .snapshot directly
 
 We are going to cover here several topics I often discuss with customers:
-- [1_Accessibility_and_visibility](1_Accessibility_and_visibility): How to configure your infrastructure to access Snapshots  
-- [2_Snapshots_and_NASECO](2_Snapshots_and_NASECO): Snapshots management in the context of the ONTAP-NAS-ECONOMY Trident driver
+- [1- Accessibility and visibility](1_Accessibility_and_visibility): How to configure your infrastructure to access Snapshots  
+- [2- Snapshots and NASECO](2_Snapshots_and_NASECO): Snapshots management in the context of the ONTAP-NAS-ECONOMY Trident driver

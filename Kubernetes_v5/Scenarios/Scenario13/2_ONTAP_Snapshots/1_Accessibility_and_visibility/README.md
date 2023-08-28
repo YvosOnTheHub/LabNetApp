@@ -13,12 +13,12 @@ Let's see in this chapter how all these paremeters work together & what behavior
 
 | Config | NFS Version | Trident SnapshotDir | SVM v3-hide-snapshot | .snapshot visible | .snapshot accessible
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| [Config1](#config1) | NFSv4 | true | N/A | false | :white_check_mark: |
-| [Config2](#config2) | NFSv4 | false | N/A | false | false |
-| [Config3](#config3) | NFSv3 | true | disabled | **true** | **true** |
-| [Config4](#config4) | NFSv3 | false | disabled | false | false |
-| [Config5](#config5) | NFSv3 | true | enabled | false | **true** |
-| [Config6](#config6) | NFSv3 | false | enabled | false | false |
+| [Config1](#config1) | NFSv4 | true | N/A | :ghost: | :white_check_mark: |
+| [Config2](#config2) | NFSv4 | false | N/A | :stop_sign: | :stop_sign: |
+| [Config3](#config3) | NFSv3 | true | disabled | :white_check_mark: | :white_check_mark: |
+| [Config4](#config4) | NFSv3 | false | disabled | :stop_sign: | :stop_sign: |
+| [Config5](#config5) | NFSv3 | true | enabled | :ghost: | :white_check_mark: |
+| [Config6](#config6) | NFSv3 | false | enabled | :stop_sign: | :stop_sign: |
 
 For each configuration, we will do the following:
 - create a PVC mounted by a Busybox POD in a dedicated namespace  
