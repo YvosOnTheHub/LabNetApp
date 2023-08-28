@@ -20,6 +20,7 @@ Let's see in this chapter how all these paremeters work together & what behavior
 | [Config4](#config4) | NFSv3 | false | disabled | :stop_sign: | :stop_sign: |
 | [Config5](#config5) | NFSv3 | true | enabled | :white_check_mark: | :ghost: |
 | [Config6](#config6) | NFSv3 | false | enabled | :stop_sign: | :stop_sign: |
+
 .snapshot visible :ghost: = even though the .snapshot directory is accessible, you cannot see it
 
 To complete this summary, some extra comments:
