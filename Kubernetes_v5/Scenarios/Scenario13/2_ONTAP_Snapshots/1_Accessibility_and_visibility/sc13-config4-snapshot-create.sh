@@ -1,0 +1,3 @@
+FLEXVOLNAME=$(kubectl get pv $( kubectl get pvc pvc4 -n config4 -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}')
+FLEXVOLID=$(curl -s -X GET -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes?name=$FLEXVOLNAME" -H "accept: application/json" | jq -r .records[0].uuid)
+curl -s -o /dev/null -X POST -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$FLEXVOLID/snapshots" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"name\": \"scenario13\"}"

@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: config5
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc5
+  namespace: config5
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: config3
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod5
+  namespace: config5
+spec:
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc5
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+

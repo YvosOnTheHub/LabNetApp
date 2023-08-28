@@ -1,0 +1,109 @@
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-sc13-config1
+  namespace: trident
+spec:
+  version: 1
+  backendName: config1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: cfg1_
+  defaults:
+    snapshotDir: 'true' 
+  credentials:
+    name: ontap-nfs-svm-secret-username
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: config1
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "config1:aggr1"
+allowVolumeExpansion: true
+---
+
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-sc13-config2
+  namespace: trident
+spec:
+  version: 1
+  backendName: config2
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: cfg2_
+  credentials:
+    name: ontap-nfs-svm-secret-username
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: config2
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "config2:aggr1"
+allowVolumeExpansion: true
+---
+
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-sc13-config3
+  namespace: trident
+spec:
+  version: 1
+  backendName: config3
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: cfg3_
+  nfsMountOptions: nfsvers=3
+  defaults:
+    snapshotDir: 'true' 
+  credentials:
+    name: ontap-nfs-svm-secret-username
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: config3
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "config3:aggr1"
+allowVolumeExpansion: true
+---
+
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-sc13-config4
+  namespace: trident
+spec:
+  version: 1
+  backendName: config4
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.135
+  storagePrefix: cfg4_
+  nfsMountOptions: nfsvers=3
+  credentials:
+    name: ontap-nfs-svm-secret-username
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: config4
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: config4:aggr1"
+allowVolumeExpansion: true
