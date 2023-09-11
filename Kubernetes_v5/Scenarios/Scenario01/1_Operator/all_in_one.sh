@@ -11,7 +11,7 @@ if [[ $(yum info jq -y 2> /dev/null | grep Repo | awk '{ print $3 }') != "instal
     yum install -y jq
 fi
 
-if [[  $(docker images | grep registry | grep trident | grep 23.07.0 | wc -l) -eq 0 ]]; then
+if [[  $(docker images | grep registry | grep trident | grep 23.07.1 | wc -l) -eq 0 ]]; then
   if [ $# -eq 2 ]; then
     sh ../scenario01_pull_images.sh $1 $2  
   else
@@ -51,13 +51,13 @@ if [ $(kubectl get nodes | wc -l) = 5 ]; then
 fi
 
 echo "#######################################################################################################"
-echo "Download Trident 23.07"
+echo "Download Trident 23.07.1"
 echo "#######################################################################################################"
 
 cd
-mkdir 23.07.0 && cd 23.07.0
-wget https://github.com/NetApp/trident/releases/download/v23.07.0/trident-installer-23.07.0.tar.gz
-tar -xf trident-installer-23.07.0.tar.gz
+mkdir 23.07.1 && cd 23.07.1
+wget https://github.com/NetApp/trident/releases/download/v23.07.1/trident-installer-23.07.1.tar.gz
+tar -xf trident-installer-23.07.1.tar.gz
 rm -f /usr/bin/tridentctl
 cp trident-installer/tridentctl /usr/bin/
 
@@ -72,16 +72,16 @@ echo "Customize the orchestator to reflect the use of a private repository"
 echo "#######################################################################################################"
 
 kubectl -n netapp patch torc/trident --type=json -p='[ 
-    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:23.07.0"}, 
+    {"op":"add", "path":"/spec/tridentImage", "value":"registry.demo.netapp.com/trident:23.07.1"}, 
     {"op":"add", "path":"/spec/autosupportImage", "value":"registry.demo.netapp.com/trident-autosupport:23.07.0"}
 ]'
 
 echo "#######################################################################################################"
-echo "Install new Trident Operator (23.07.0)"
+echo "Install new Trident Operator (23.07.1)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
-kubectl create -f ~/23.07.0/trident-installer/deploy/bundle_pre_1_25.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/23.07.1/trident-installer/deploy/bundle_pre_1_25.yaml
+kubectl create -f ~/23.07.1/trident-installer/deploy/bundle_pre_1_25.yaml
 
 echo "#######################################################################################################"
 echo "Check"
