@@ -57,6 +57,40 @@ echo "##########################################################################
 sh trident_uninstall.sh
 
 echo "#######################################################################################################"
+echo "Add a second iSCSI Data LIF to the SVM"
+echo "#######################################################################################################"
+
+curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
+  "ip": { "address": "192.168.0.140", "netmask": "24" },
+  "location": {
+    "home_port": {
+      "name": "e0d",
+      "node": { "name": "cluster1-01" }
+    }
+  },
+  "name": "iscsi_svm_iscsi_02",
+  "scope": "svm",
+  "service_policy": { "name": "default-data-blocks" },
+  "svm": { "name": "iscsi_svm" }
+}' "https://cluster1.demo.netapp.com/api/network/ip/interfaces"
+
+echo "#######################################################################################################"
+echo "Hosts Multipathing Configuration"
+echo "#######################################################################################################"
+
+sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf
+mpathconf --enable --with_multipathd y --find_multipaths n
+systemctl enable --now multipathd
+
+ssh -o "StrictHostKeyChecking no" root@rhel1 "sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf"
+ssh -o "StrictHostKeyChecking no" root@rhel1 "mpathconf --enable --with_multipathd y --find_multipaths n"
+ssh -o "StrictHostKeyChecking no" root@rhel1 "systemctl enable --now multipathd"
+
+ssh -o "StrictHostKeyChecking no" root@rhel2 "sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf"
+ssh -o "StrictHostKeyChecking no" root@rhel2 "mpathconf --enable --with_multipathd y --find_multipaths n"
+ssh -o "StrictHostKeyChecking no" root@rhel2 "systemctl enable --now multipathd"
+
+echo "#######################################################################################################"
 echo "Download Trident 23.07.1"
 echo "#######################################################################################################"
 

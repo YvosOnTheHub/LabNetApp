@@ -37,7 +37,6 @@ However, there are 2 requirements for this to work:
 - Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
 
 If you are planning on testing this feature (cf [Scenario15](../Scenario15)), make sure these labels are configured before upgrading Trident.  
-
 ```bash
 $ kubectl get nodes --label-columns topology.kubernetes.io/region,topology.kubernetes.io/zone
 NAME    STATUS   ROLES    AGE     VERSION   REGION    ZONE
@@ -46,8 +45,7 @@ rhel2   Ready    <none>   263d    v1.22.3   trident   east
 rhel3   Ready    master   263d    v1.22.3   trident   admin
 ```
 
-If they are not, you can create them with the following commands:
-
+If they are not, you can create them with the following commands:  
 ```bash
 # LABEL "REGION"
 kubectl label node rhel1 "topology.kubernetes.io/region=west" --overwrite
@@ -58,6 +56,42 @@ kubectl label node rhel3 "topology.kubernetes.io/region=east" --overwrite
 kubectl label node rhel1 "topology.kubernetes.io/zone=west1" --overwrite
 kubectl label node rhel2 "topology.kubernetes.io/zone=west1" --overwrite
 kubectl label node rhel3 "topology.kubernetes.io/zone=east1" --overwrite
+```
+
+Astra Trident now strictly enforces the use of multipathing configuration in SAN environments, with a recommended value of `find_multipaths: no` in _multipath.conf_ file.
+
+Use of non-multipathing configuration or use of `find_multipaths: yes` or `find_multipaths: smart` value in multipath.conf file will result in mount failures. Trident has recommended the use of `find_multipaths: no` since the 21.07 release.  
+
+As multipathing is disabled in this lab, please run the following on each of the Kubernetes nodes to enable it:
+```bash
+sed -i 's/^\(node.session.scan\).*/\1 = manual/' /etc/iscsi/iscsid.conf
+mpathconf --enable --with_multipathd y --find_multipaths n
+systemctl enable --now multipathd
+```
+
+The iSCSI SVM of this lab only comes with one Data LIF. In order to comply with the dual path requirement, let's create another Data LIF: 
+```bash
+curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
+  "ip": { "address": "192.168.0.140", "netmask": "24" },
+  "location": {
+    "home_port": {
+      "name": "e0d",
+      "node": { "name": "cluster1-01" }
+    }
+  },
+  "name": "iscsi_svm_iscsi_02",
+  "scope": "svm",
+  "service_policy": { "name": "default-data-blocks" },
+  "svm": { "name": "iscsi_svm" }
+}' "https://cluster1.demo.netapp.com/api/network/ip/interfaces" 
+```
+
+Let's check that our SVM now has 3 LIFs (2 Data LIF & 1 Mgmgt LIF):  
+```bash
+$ curl -s -X GET -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" "https://cluster1.demo.netapp.com/api/network/ip/interfaces?svm.name=iscsi_svm" | jq -r .records[].name
+iscsi_svm_iscsi_02
+iscsi_svm_iscsi_01
+iscsi_svm_admin_lif1
 ```
 
 Last, if you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  

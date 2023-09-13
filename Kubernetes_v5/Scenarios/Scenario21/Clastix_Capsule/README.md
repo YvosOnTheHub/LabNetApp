@@ -145,7 +145,7 @@ As a tenant admin, I can know list the resources in the newly created namespace:
 ```bash
 $ kubectl --kubeconfig owner1-tenant1.kubeconfig get svc,pod,pvc -n tenant1-ghost
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-service/blog-tenant1   LoadBalancer   10.103.57.71   192.168.0.140   80:30371/TCP   3m7s
+service/blog-tenant1   LoadBalancer   10.103.57.71   192.168.0.141   80:30371/TCP   3m7s
 
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/blog-tenant1-69c8b8bf58-qnvx7   1/1     Running   0          3m7s
@@ -159,7 +159,7 @@ The cluster admin can also list the content of this namespace, & will get the sa
 ```bash
 $ kubectl get svc,pod,pvc -n tenant1-ghost
 NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
-service/blog-tenant1   LoadBalancer   10.103.57.71   192.168.0.140   80:30371/TCP   3m7s
+service/blog-tenant1   LoadBalancer   10.103.57.71   192.168.0.141   80:30371/TCP   3m7s
 
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/blog-tenant1-69c8b8bf58-qnvx7   1/1     Running   0          3m7s

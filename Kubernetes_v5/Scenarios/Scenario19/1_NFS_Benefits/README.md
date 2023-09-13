@@ -57,12 +57,12 @@ pod/wp-wordpress-58b4dfc8d-cwwtc   1/1     Running   0          95m
 pod/wp-wordpress-58b4dfc8d-xzcxd   1/1     Running   0          95m
 ```
 
-Last, you can access this application through the external IP displayed by the following command (in my case 192.168.0.140):
+Last, you can access this application through the external IP displayed by the following command (in my case 192.168.0.141):
 
 ```bash
 $ kubectl get -n wp svc -l app.kubernetes.io/name=wordpress
 NAME           TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
-wp-wordpress   LoadBalancer   10.108.222.74   192.168.0.140   80:32491/TCP,443:32118/TCP   99m
+wp-wordpress   LoadBalancer   10.108.222.74   192.168.0.141   80:32491/TCP,443:32118/TCP   99m
 ```
 
 ## B. Scaling Wordpress

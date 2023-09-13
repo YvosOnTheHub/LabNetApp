@@ -137,12 +137,12 @@ Let's create the kubeconfig files related to each vCluster:
 
 ```bash
 $ vcluster connect vcluster-1 -n vc1 --kube-config ~/kubeconfig_vc1 --update-current=false
-info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.140
+info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.141
 done √ Virtual cluster kube config written to: /root/kubeconfig_vc1
 - Use `kubectl --kubeconfig /root/kubeconfig_vc1 get namespaces` to access the vcluster
 
 $ vcluster connect vcluster-2 -n vc2 --kube-config ~/kubeconfig_vc2 --update-current=false
-info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.141
+info   Using vcluster vcluster-1 load balancer endpoint: 192.168.0.142
 done √ Virtual cluster kube config written to: /root/kubeconfig_vc2
 - Use `kubectl --kubeconfig /root/kubeconfig_vc2 get namespaces` to access the vcluster
 ```
@@ -172,7 +172,7 @@ deployment.apps/blog-vc1 created
 
 $ kubectl --kubeconfig ~/kubeconfig_vc1 -n ghostvc1 get svc,pod,pvc
 NAME               TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-service/blog-vc1   LoadBalancer   10.102.157.98   192.168.0.142   80:31930/TCP   119s
+service/blog-vc1   LoadBalancer   10.102.157.98   192.168.0.143   80:31930/TCP   119s
 
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/blog-vc1-6c78b9fb9d-9pct6   1/1     Running   0          118s
@@ -181,7 +181,7 @@ NAME                                     STATUS   VOLUME                        
 persistentvolumeclaim/blog-content-vc1   Bound    pvc-42c63348-2629-4242-82eb-f0795801ee2e   5Gi        RWX            sc-tenant1       119s
 ```
 
-You can now connect to the IP address provided to the Ghost service by the LoadBalancer in order to use this app (192.168.0.142 in this example).  
+You can now connect to the IP address provided to the Ghost service by the LoadBalancer in order to use this app (192.168.0.143 in this example).  
 Let's see what corresponding resources we have on the underlying cluster:
 
 ```bash
@@ -190,7 +190,7 @@ NAME                                                    READY   STATUS    RESTAR
 pod/blog-vc1-6c78b9fb9d-9pct6-x-ghostvc1-x-vcluster-1   1/1     Running   0          2m36s
 
 NAME                                       TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
-service/blog-vc1-x-ghostvc1-x-vcluster-1   LoadBalancer   10.102.157.98   192.168.0.142   80:31930/TCP   2m37s
+service/blog-vc1-x-ghostvc1-x-vcluster-1   LoadBalancer   10.102.157.98   192.168.0.143   80:31930/TCP   2m37s
 
 NAME                                                             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
 persistentvolumeclaim/blog-content-vc1-x-ghostvc1-x-vcluster-1   Bound    pvc-42c63348-2629-4242-82eb-f0795801ee2e   5Gi        RWX            sc-tenant1       2m37s

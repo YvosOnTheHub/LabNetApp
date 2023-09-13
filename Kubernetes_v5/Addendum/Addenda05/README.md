@@ -11,7 +11,7 @@ Here are 2 examples I use in some configurations:
 Loads balancers are not implemented by defaut in Kubernetes. You need to install the one you want accross what is available.  
 I chose MetalLB for this purpose.  
 
-The range configured for MetalLB is 192.168.0.140 to 192.168.0.149.  
+The range configured for MetalLB is 192.168.0.141 to 192.168.0.149.  
 Obviously, if you need more addresses, feel free to upgrade the configMap.
 
 MetalLB images are located in the Quay repository and do not require any logging.  
