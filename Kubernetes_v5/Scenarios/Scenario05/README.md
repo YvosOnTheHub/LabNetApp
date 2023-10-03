@@ -9,6 +9,19 @@ It is now time to add more backends that can be used for block storage.
 
 <p align="center"><img src="Images/scenario5.jpg"></p>
 
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+```diff
+- Trident 23.07 requires RHEL 8 minimum in order to be functional in an iSCSI environment  
+- This is due to missing parameter in the multipath binary in RHEL7
+- The impact is that deleting a PVC does not clean up the devices on the host that mounted the LUN
+- A script is provided in this chapter to clean up the worker nodes
+- You need to manually run this script each time your delete a SAN PVC
+```
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+
 ## A. Create your first SAN backends
 
 Trident 21.04 introduced the possibility to manage Trident backends directly with _kubectl_, whereas it was previously solely feasible with _tridentctl_.  

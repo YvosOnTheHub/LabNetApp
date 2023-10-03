@@ -9,8 +9,8 @@ This page will guide you through the configuration of such architecture.
 First, we need to register the SVM in the Lab domain (Administrator/Netapp1!), after having configure the DNS server in the SVM.  
 This can be done using the ONTAP CLI. Open a new Putty window & connect to cluster1.demo.netapp.com:  
 ```bash
-cluster1::>vserver services dns create -vserver nfs_svm -domains demo.netapp.com -name-servers 192.168.0.253 
-cluster1::>vserver active-directory create -vserver nfs_svm -account-name nfssvm -domain demo.netapp.com
+cluster1::> vserver services dns create -vserver nfs_svm -domains demo.netapp.com -name-servers 192.168.0.253 
+cluster1::> vserver active-directory create -vserver nfs_svm -account-name nfssvm -domain demo.netapp.com
 
 cluster1::> vserver active-directory show
             Account         Domain/Workgroup
@@ -33,7 +33,7 @@ GivenName Surname mail                    Enabled
 Astra     Trident trident@demo.netapp.com    True
 ```
 
-Back to ONTAP, this _trident_ user needs to be associates with a specific role (_vsadmin_) and specific applications (_http_, _ontapi_ and _ssh_):
+Back to ONTAP, this _trident_ user needs to be associates with a specific role (_vsadmin_) and specific applications (_http_ and _ontapi_). Note that I added _ssh_ which is not required for Trident, but can help to test that this AD user is functional.  
 ```bash
 cluster1::> security login create -user-or-group-name DEMO\trident -application http -authentication-method domain -role vsadmin -vserver nfs_svm   
 cluster1::> security login create -user-or-group-name DEMO\trident -application ontapi -authentication-method domain -role vsadmin -vserver nfs_svm

@@ -28,11 +28,10 @@ License for package "S3" installed.
 
 ## B. Aggregate & SVM Creation
 
-The aggregate creations takes about a minute to complete.
-
+The aggregate creations takes about a minute to complete. You have to wait for this before creating the SVM.  
 ```bash
 set adv -c off
-storage aggregate  create  -aggregate S3 -diskcount 8 -disktype VMDISK
+storage aggregate create  -aggregate S3 -diskcount 8 -disktype VMDISK -disksize 28
 vserver create -vserver svm_S3 -rootvolume s3_name -aggregate S3 -rootvolume-security-style unix -language C.UTF-8 -data-services data-s3-server
 ```
 
@@ -81,7 +80,7 @@ MIIDMjCCAhqgAwIBAgIIFmza4TW2MjEwDQYJKoZIhvcNAQELBQAwITESMBAGA1UE
 ```
 
 Last, we can now install the certificate in the S3-Enabled SVM.  
-You will be asked to enter the _certificate_ & _private key_ retrieved earlier. Also, when asked to enter intermediate certificates, answer _no_. 
+You will be asked to enter the _signed certificate_ & _private key_ retrieved earlier. Also, when asked to enter intermediate certificates, answer _no_. 
 
 ```bash
 $ security certificate install -type server -vserver svm_S3
@@ -141,7 +140,7 @@ A SVM can host one or several bucket. For this exercise, we will only create one
 
 ```bash
 $ vserver object-store-server create -vserver svm_S3 -object-store-server ONTAP-S3.demo.netapp.com -certificate-name svm_s3_ca_166D1BCA584E5CD4_svm_s3_ca
-$ vserver object-store-server bucket create -vserver svm_S3 -bucket s3lod -size 100GB
+$ vserver object-store-server bucket create -vserver svm_S3 -bucket s3lod -size 100GB -storage-service-level value
 $ vserver object-store-server user create -vserver svm_S3 -user S3user
 
 $ vserver object-store-server user show -vserver svm_S3
