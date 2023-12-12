@@ -114,7 +114,7 @@ echo "Check"
 echo "#######################################################################################################"
 
 frames="/ | \\ -"
-while [ $(kubectl get -n trident pod | grep Running | wc -l) -ne 5 ]; do
+while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '6/6' | wc -l) -ne 5 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
