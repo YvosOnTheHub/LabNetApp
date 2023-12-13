@@ -10,6 +10,6 @@ Trident 23.07 introduced a new feature that permits users to import specific sna
 This chapter will also cover this use case.  
 
 This scenario will guide you through both features  
-[1.](1_NAS_Import) Import a NFS volume (File RWX)  
+[1.](1_NAS_Import) Import a NFS volume  
 [2.](2_Snapshot_Import) Import a snapshot  
-[3.](3_SAN_Import) Import a iSCSI volume (Block RWO)
+[3.](3_SAN_Import) Import a iSCSI volume  
