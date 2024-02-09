@@ -12,11 +12,12 @@ It is now time to add more backends that can be used for block storage.
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
 ```diff
-- Trident 23.07 requires RHEL 8 minimum in order to be functional in an iSCSI environment  
-- This is due to missing parameter in the multipath binary in RHEL7
-- The impact is that deleting a PVC does not clean up the devices on the host that mounted the LUN
-- A script is provided in this chapter to clean up the worker nodes
-- You need to manually run this script each time your delete a SAN PVC
+- Trident 23.07 requires RHEL 8 minimum in order to be fully functional in an iSCSI environment (this lab runs Centos7)  
+- This is due to missing features in the multipathing binaries in RHEL7 (or Ubuntu 20.04)  
+- more details here: https://github.com/NetApp/trident/issues/803  
+- The impact is that deleting a PVC does not clean up the devices on the host that mounted the LUN  
+- You would see devices left behind when running _multipath -ll_ & _lsblk_  
+- This folder contains the script _dmm_update.sh_ which will update the required packages in order for iSCSI to be fully functionnal  
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  

@@ -12,12 +12,13 @@ echo "#"
 echo "# 0. DEALING WITH THE DOCKER HUB & THE RATE ON PULL IMAGES"
 echo "# 1. INSTALL TRIDENT OPERATOR 23.07.1 WITH HELM"
 echo "# 2. INSTALL FILE (NAS/RWX) BACKENDS FOR TRIDENT"
-echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
-echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
-echo "# 5. INSTALL & CONFIGURE HARVEST"
-echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE" 
-echo "# 7. REMOVE OLD CONTAINER IMAGES" 
-echo "# 8. UPDATE BASHRC"
+echo "# 3. UPDATE DEVICE MAPPER MULTIPATH PACKAGES"
+echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 6. INSTALL & CONFIGURE HARVEST"
+echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE" 
+echo "# 8. REMOVE OLD CONTAINER IMAGES" 
+echo "# 9. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -97,7 +98,18 @@ sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario02/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 3. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
+echo "# 3. UPDATE DEVICE MAPPER MULTIPATH PACKAGES (cf https://github.com/NetApp/trident/issues/803)"
+echo "#"
+echo "#######################################################################################################"
+echo
+
+sleep 2s
+sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario05/dmm_update.sh
+
+echo
+echo "#######################################################################################################"
+echo "#"
+echo "# 4. INSTALL BLOCK (iSCSI/RWO) BACKENDS FOR TRIDENT"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -108,7 +120,7 @@ sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario05/all_in_one.sh
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 4. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
+echo "# 5. UPDATE & CONFIGURE PROMETHEUS & GRAFANA"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -123,7 +135,7 @@ fi
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 5. INSTALL & CONFIGURE HARVEST"
+echo "# 6. INSTALL & CONFIGURE HARVEST"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -134,7 +146,7 @@ sh ~/LabNetApp/Kubernetes_v5/Scenarios/Scenario03/4_Harvest/scenario03_harvest_i
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 6. ENABLE POD SCHEDULING ON THE MASTER NODE"
+echo "# 7. ENABLE POD SCHEDULING ON THE MASTER NODE"
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -144,7 +156,7 @@ kubectl taint nodes rhel3 node-role.kubernetes.io/master-
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 7. REMOVE OLD CONTAINER IMAGES" 
+echo "# 8. REMOVE OLD CONTAINER IMAGES" 
 echo "#"
 echo "#######################################################################################################"
 echo
@@ -157,7 +169,7 @@ cd ../..
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 8. UPDATE BASHRC"
+echo "# 9. UPDATE BASHRC"
 echo "#"
 echo "#######################################################################################################"
 echo
