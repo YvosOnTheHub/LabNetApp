@@ -16,8 +16,8 @@ It is now time to add more backends that can be used for block storage.
 - This is due to missing features in the multipathing binaries in RHEL7 (or Ubuntu 20.04)  
 - more details here: https://github.com/NetApp/trident/issues/803  
 - The impact is that deleting a PVC does not clean up the devices on the host that mounted the LUN  
-- You would see devices left behind when running _multipath -ll_ & _lsblk_  
-- This folder contains the script _dmm_update.sh_ which will update the required packages in order for iSCSI to be fully functionnal  
+- You would see devices left behind when running "multipath -ll" & "lsblk"  
+- This folder contains the script dmm_update.sh which will update the required packages in order for iSCSI to be fully functionnal  
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
