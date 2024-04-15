@@ -81,10 +81,9 @@ tridentbackendconfig.trident.netapp.io "backend-tbc-ontap-nas-limit-volsize" del
 ## B. Limiting the usage of an aggregate
 
 The second parameter you can set in a Trident backend allows the admin to limit the used space of an aggregate.  
-More details on this link: https://netapp-trident.readthedocs.io/en/stable-v21.04/kubernetes/operations/tasks/backends/ontap/ontap-nas/configuration.html?highlight=limitAggregateUsage#backend-configuration
+More details on this link: https://docs.netapp.com/us-en/trident/trident-use/ontap-nas-examples.html#backend-configuration-options
 
-Please note that:
-
+Please note that:  
 - It does not refer to the space used only by Trident, but really the overall space (example: limit set to 50%, aggregate already filled up to 45% by a virtualized environment: 5% left for Trident)
 - **It requires CLUSTER ADMIN credentials**
 
