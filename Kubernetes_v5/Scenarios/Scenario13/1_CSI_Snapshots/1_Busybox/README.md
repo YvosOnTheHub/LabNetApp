@@ -78,13 +78,9 @@ nfs_svm sr_pvc_24592dc4_1955_4e9e_82eb_843acbf3c69b 16.67GB 10.00GB   40%
 ```
 
 We have set a 40% snapshot reserve in the backend file, space that is not taken from the PVC size.  
-The overall size of the volume in ONTAP will be calculated as follows: PVC_Size / ((100 - Snap_Reserve)/100), hence the 16GB you can see here.  
-
-\frac{PVC_Size}{(100 - Snap_Reserve)/100}
-
+You can use the following formula to find the overall size of the volume in ONTAP (~16GB in our example): $\frac{PVC Size}{(100 - Snap Reserve)/100}$ 
 
 Now, we can proceed with the snapshot creation
-
 ```bash
 $ kubectl create -n busybox -f pvc-snapshot.yaml
 volumesnapshot.snapshot.storage.k8s.io/mydata-snapshot created
