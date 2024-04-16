@@ -16,4 +16,4 @@ echo "##########################################################################
 echo "Install NetApp ONTAP Collection"
 echo "#######################################################################################################"
 
-ansible-galaxy collection install netapp.ontap
+ansible-galaxy collection install netapp.ontap --ignore-certs

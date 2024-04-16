@@ -23,7 +23,7 @@ pip install netapp-lib
 Last, we will install the NetApp ONTAP Collection from the Ansible Galaxy
 
 ```bash
-$ ansible-galaxy collection install netapp.ontap
+$ ansible-galaxy collection install netapp.ontap --ignore-certs
 Process install dependency map
 Starting collection install process
 Installing 'netapp.ontap:21.20.0' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
