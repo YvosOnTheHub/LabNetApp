@@ -1,0 +1,13 @@
+---
+kubernetes:
+  hosts:
+    rhel[1:3]:
+
+all:  
+  vars: 
+    hostname: 192.168.0.101
+    username: admin 
+    password: Netapp1!
+    ipsec_target_cidr: 192.168.0.211/32
+    ipsec_source_cidr: 192.168.0.63/25
+    ipsec_secret: tridenteslamegabomba

@@ -1,0 +1,12 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: mydata-snapshot
+  namespace: busybox
+  labels:
+    app.kubernetes.io/name: scenario13
+    app: busybox
+spec:
+  volumeSnapshotClassName: csi-snap-class
+  source:
+    persistentVolumeClaimName: mydata

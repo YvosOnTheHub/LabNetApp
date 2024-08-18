@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-clone
+  namespace: sc13busybox
+  labels:
+    app.kubernetes.io/name: sc13busybox
+    app: busybox-clone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sc13busybox
+      app: busybox-clone
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sc13busybox
+        app: busybox-clone
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: busybox
+        image: registry.demo.netapp.com/busybox:1.35.0
+        imagePullPolicy: IfNotPresent
+        command: ['sleep', '3600']        
+        volumeMounts:
+        - mountPath: /data
+          name: volume
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: mydata-from-snap-ro

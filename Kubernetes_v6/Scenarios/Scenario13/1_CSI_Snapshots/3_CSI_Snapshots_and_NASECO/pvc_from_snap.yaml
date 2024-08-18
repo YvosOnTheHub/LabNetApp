@@ -1,0 +1,19 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mydata-from-snap
+  namespace: sc13busybox
+  labels:
+    app.kubernetes.io/name: scenario13
+    app: busybox
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nas-economy
+  dataSource:
+    name: mydata-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogsnapimport
+  namespace: ghost
+  labels:
+    app: blogsnapimport
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blogsnapimport
+  template:
+    metadata:
+      labels:
+        app: blogsnapimport
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: blog
+        image: registry.demo.netapp.com/ghost:2.6-alpine
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          value: http://192.168.0.63:30083
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content
+          name: content
+      volumes:
+      - name: content
+        persistentVolumeClaim:
+          claimName: blog-content-from-snap
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blogsnapimport
+  namespace: ghost
+  labels:
+    app: blogsnapimport
+spec:
+  type: NodePort
+  selector:
+    app: blogsnapimport
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 2368
+    nodePort: 30084

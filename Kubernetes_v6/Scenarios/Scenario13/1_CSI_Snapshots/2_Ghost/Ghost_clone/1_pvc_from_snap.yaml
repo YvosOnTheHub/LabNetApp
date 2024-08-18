@@ -1,0 +1,19 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mydata-from-snap
+  namespace: ghost
+  labels:
+    app.kubernetes.io/name: scenario13
+    app: blogclone
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nfs
+  dataSource:
+    name: mydata-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io

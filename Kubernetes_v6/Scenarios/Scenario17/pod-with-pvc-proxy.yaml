@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scproxy
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-proxy
+  namespace: scproxy
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sc-proxy
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-proxy
+  namespace: scproxy
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc-proxy
+  containers:
+    - name: debugger
+      image: registry.demo.netapp.com/busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume

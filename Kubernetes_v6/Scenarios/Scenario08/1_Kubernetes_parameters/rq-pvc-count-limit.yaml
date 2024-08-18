@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: pvc-count-limit
+  namespace: control
+spec:
+  hard:
+    persistentvolumeclaims: "5"
+    storage-class-nfs.storageclass.storage.k8s.io/persistentvolumeclaims: "3"

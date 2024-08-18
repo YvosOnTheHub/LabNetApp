@@ -1,0 +1,9 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "NAS_Vol-default",
+    "managementLIF": "192.168.0.133",
+    "storagePrefix": "nas1_",
+    "username": "vsadmin",
+    "password": "Netapp1!"
+}

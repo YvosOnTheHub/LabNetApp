@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: config4
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc4
+  namespace: config4
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: config4
+---
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod4
+  namespace: config4
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc4
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+

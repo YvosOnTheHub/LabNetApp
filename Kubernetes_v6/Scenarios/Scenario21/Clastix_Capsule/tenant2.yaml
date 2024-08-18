@@ -1,0 +1,16 @@
+apiVersion: capsule.clastix.io/v1beta1
+kind: Tenant
+metadata:
+  name: tenant2
+spec:
+  owners:
+  - name: owner2
+    kind: User
+  namespaceOptions:
+    quota: 1
+  nodeSelector:
+    tenant: tenant2
+    kubernetes.io/os: linux
+  storageClasses:
+    allowed:
+    - sc-tenant2

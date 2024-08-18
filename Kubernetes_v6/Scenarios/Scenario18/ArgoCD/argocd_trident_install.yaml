@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trident-installation
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'http://192.168.0.65:3000/demo/scenario18'
+    path: Infrastructure/Trident-Installer
+    targetRevision: master
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: trident
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

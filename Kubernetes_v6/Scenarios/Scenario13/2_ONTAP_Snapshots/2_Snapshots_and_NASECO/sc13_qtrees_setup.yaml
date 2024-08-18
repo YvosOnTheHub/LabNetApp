@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bbox1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc1
+  namespace: bbox1
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nas-economy
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod1
+  namespace: bbox1
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc1
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bbox2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc2
+  namespace: bbox2
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nas-economy
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod2
+  namespace: bbox2
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc2
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bbox3
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc3
+  namespace: bbox3
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nas-economy
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: pod3
+  namespace: bbox3
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc3
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume

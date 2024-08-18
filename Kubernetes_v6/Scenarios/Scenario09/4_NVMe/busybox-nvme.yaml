@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: resize
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-to-resize-nvme
+  namespace: resize
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nvme
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busyboxnvme
+  namespace: resize
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+    - name: busybox
+      image: registry.demo.netapp.com/busybox:1.35.0
+      command:
+        - /bin/sh
+        - "-c"
+        - "sleep 60m"
+      volumeMounts:
+        - mountPath: "/data"
+          name: blockstorage
+  volumes:
+    - name: blockstorage
+      persistentVolumeClaim:
+       claimName: pvc-to-resize-nvme

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blogclone
+  namespace: ghost
+  labels:
+    app.kubernetes.io/name: scenario13
+    app: blogclone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: scenario13
+      app: blogclone
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: scenario13
+        app: blogclone
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+      - name: blog
+        image: registry.demo.netapp.com/ghost:3.13-alpine
+        ports:
+        - containerPort: 2368
+        env:
+        - name: url
+          value: http://192.168.0.63:30081/
+        volumeMounts:
+        - mountPath: /var/lib/ghost/content
+          name: content
+      volumes:
+      - name: content
+        persistentVolumeClaim:
+          claimName: mydata-from-snap

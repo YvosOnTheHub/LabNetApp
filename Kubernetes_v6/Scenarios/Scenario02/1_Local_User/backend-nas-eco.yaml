@@ -1,0 +1,16 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-nfs-qtrees
+  namespace: trident
+spec:
+  version: 1
+  backendName: BackendForNFSQtrees
+  storageDriverName: ontap-nas-economy
+  managementLIF: 192.168.0.133
+  storagePrefix: nas_eco_
+  defaults:
+    snapshotDir: 'true'
+    snapshotPolicy: default
+  credentials:
+    name: secret-nas-svm-creds

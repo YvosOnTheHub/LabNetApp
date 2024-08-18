@@ -1,0 +1,18 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: blog-content-from-snap
+  namespace: ghost
+  labels:
+    app: blogsnapimport
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nfs
+  dataSource:
+    name: volumesnap
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io

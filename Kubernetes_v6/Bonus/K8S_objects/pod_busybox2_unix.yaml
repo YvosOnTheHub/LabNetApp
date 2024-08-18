@@ -1,0 +1,21 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox-pod2
+  labels:
+    app.kubernetes.io/name: test2
+spec:
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: pvc2
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+  nodeSelector:
+    kubernetes.io/os: linux

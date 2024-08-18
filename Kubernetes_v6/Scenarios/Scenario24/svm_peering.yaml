@@ -1,0 +1,16 @@
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  tasks: 
+  - name: Create vserver peer
+    netapp.ontap.na_ontap_vserver_peer:
+      state: present
+      peer_vserver: svm_secondary
+      vserver: nassvm
+      applications: ['snapmirror']
+      hostname: "cluster1"
+      username: "admin"
+      password: "Netapp1!"
+      https: true
+      validate_certs: false

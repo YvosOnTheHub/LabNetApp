@@ -1,0 +1,12 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "backendName": "nas-west",
+    "managementLIF": "192.168.0.133",
+    "storagePrefix": "west_",
+    "username": "vsadmin",
+    "password": "Netapp1!",
+    "supportedTopologies": [
+   {"topology.kubernetes.io/region": "trident", "topology.kubernetes.io/zone": "west"}
+   ]
+}

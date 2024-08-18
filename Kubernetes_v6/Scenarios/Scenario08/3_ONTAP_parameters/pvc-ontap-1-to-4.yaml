@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ontaplimit-1
+  labels:
+      scenario: ontap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ontaplimit-2
+  labels:
+      scenario: ontap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ontaplimit-3
+  labels:
+      scenario: ontap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ontaplimit-4
+  labels:
+      scenario: ontap
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-nfs

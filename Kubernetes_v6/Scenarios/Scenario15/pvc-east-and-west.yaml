@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-east
+  namespace: topology
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sc-topology
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-west
+  namespace: topology
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: sc-topology

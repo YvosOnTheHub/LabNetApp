@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: snapshot-quota
+spec:
+  hard:
+    count/volumesnapshots.snapshot.storage.k8s.io: "3"

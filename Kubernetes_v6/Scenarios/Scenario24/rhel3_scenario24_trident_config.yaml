@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sc24-credentials
+  namespace: trident
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Netapp1!
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tmr
+  namespace: trident
+spec:
+  version: 1
+  backendName: tmr
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  storagePrefix: tmr_
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  credentials:
+    name: sc24-credentials
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-mirror
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "tmr:aggr1"
+  trident.netapp.io/replication: "true"
+allowVolumeExpansion: true

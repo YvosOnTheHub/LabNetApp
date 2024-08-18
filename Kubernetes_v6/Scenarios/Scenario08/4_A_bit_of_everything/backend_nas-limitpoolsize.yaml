@@ -1,0 +1,14 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-eco-limit-poolsize
+  namespace: trident
+spec:
+  version: 1
+  backendName: nas-eco-limit-poolsize
+  storageDriverName: ontap-nas-economy
+  managementLIF: 192.168.0.133
+  limitVolumePoolSize: 10g
+  storagePrefix: sc08_4_
+  credentials:
+    name: secret-nas-svm-creds

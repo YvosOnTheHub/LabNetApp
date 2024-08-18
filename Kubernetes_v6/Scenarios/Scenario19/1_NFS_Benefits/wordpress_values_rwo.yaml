@@ -1,0 +1,21 @@
+global:
+  defaultStorageClass: storage-class-nfs
+  
+wordpressUsername: admin
+wordpressPassword: demolod
+wordpressBlogName: "demo RWO and NFS"
+
+nodeSelector: 
+  kubernetes.io/os: linux
+
+image:
+  tag: 6.6.1-debian-12-r3
+  
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
+
+mariadb:
+  image:
+    tag: 11.4.2-debian-12-r2

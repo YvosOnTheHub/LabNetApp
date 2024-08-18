@@ -1,0 +1,21 @@
+global:
+  nodeSelector: 
+    kubernetes.io/os: linux
+
+configs:
+  params:
+    server.insecure: true
+    server.disable.auth: true
+
+server:
+  service:
+    type: LoadBalancer
+
+applicationSet:
+  enabled: false
+
+notifications:
+  enabled: false
+
+dex:
+  enabled: false

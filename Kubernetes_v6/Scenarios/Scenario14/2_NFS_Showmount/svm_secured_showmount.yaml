@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+
+  tasks:
+  - name: Disable Showmount
+    netapp.ontap.na_ontap_nfs:
+     state: present
+     showmount : disabled
+     vserver: svm_secured
+     <<: *ontap_parameters

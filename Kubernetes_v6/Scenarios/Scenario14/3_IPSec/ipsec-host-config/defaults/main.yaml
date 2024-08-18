@@ -1,0 +1,5 @@
+---
+# defaults file for ipsec-host-config
+ipsec_target: 0.0.0.0
+ipsec_source: 0.0.0.0
+ipsec_secret: abcd

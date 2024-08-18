@@ -1,0 +1,8 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: blog-content-tenant1-snapshot
+spec:
+  volumeSnapshotClassName: csi-snap-class
+  source:
+    persistentVolumeClaimName: blog-content-tenant1

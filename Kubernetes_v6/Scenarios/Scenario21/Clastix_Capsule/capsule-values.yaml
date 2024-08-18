@@ -1,0 +1,10 @@
+nodeSelector:
+  kubernetes.io/os: linux
+
+jobs:
+  nodeSelector:
+    kubernetes.io/os: linux
+
+manager:
+  options:
+    forceTenantPrefix: true

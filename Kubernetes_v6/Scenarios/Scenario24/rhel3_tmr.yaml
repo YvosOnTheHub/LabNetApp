@@ -1,0 +1,9 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentMirrorRelationship
+metadata:
+  name: busybox-mirror
+  namespace: sc24busybox
+spec:
+  state: promoted
+  volumeMappings:
+  - localPVCName: mydata

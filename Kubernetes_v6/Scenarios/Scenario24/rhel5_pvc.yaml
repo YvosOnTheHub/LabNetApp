@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mydata
+  namespace: sc24busybox
+  annotations:
+    trident.netapp.io/mirrorRelationship: busybox-mirror
+  labels:
+    app.kubernetes.io/name: scenario24
+    app: busybox
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: sc-mirror

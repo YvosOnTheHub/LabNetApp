@@ -1,0 +1,15 @@
+nodeSelector:
+  tenant: tenant1
+  kubernetes.io/os: linux
+
+storage:
+  className: storage-class-nfs
+
+sync:
+  nodes:
+    enabled: true
+    nodeSelector: "tenant=tenant1"
+  storage:
+    className: storage-class-nfs
+  volumesnapshots:
+    enabled: true

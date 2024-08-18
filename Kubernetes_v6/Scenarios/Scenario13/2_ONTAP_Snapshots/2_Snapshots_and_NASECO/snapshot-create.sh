@@ -1,0 +1,4 @@
+PVC1INTERNALID=$(kubectl get pv $( kubectl get pvc pvc1 -n bbox1 -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalID}')
+QTREEPOOL=$(echo $PVC1INTERNALID | awk -F '/' '{print $5}')
+QTREEPOOLID=$(curl -s -X GET -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes?name=$QTREEPOOL" -H "accept: application/json" | jq -r .records[0].uuid)
+curl -s -o /dev/null -X POST -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$QTREEPOOLID/snapshots" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"name\": \"scenario13\"}"

@@ -1,0 +1,11 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas-economy",
+    "backendName": "NAS_ECO_Limit",
+    "managementLIF": "192.168.0.133",
+    "storagePrefix": "sc08_4_",
+    "svm": "nassvm",
+    "username": "vsadmin",
+    "password": "Netapp1!",
+    "limitVolumeSize": "10g"
+}

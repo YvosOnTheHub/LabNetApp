@@ -1,0 +1,28 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+
+  tasks:
+    - name: config IPSec for ONTAP
+      na_ontap_command:
+        command: ['security', 'ipsec', 'config', 'modify', '-is-enabled', 'true']
+        <<: *ontap_parameters
+    - name: config IPSec policy for ONTAP
+      na_ontap_command:
+        command: ['security', 'ipsec', 'policy', 'create', '-vserver', 'svm_secured', '-name', 'ipsec_k8s', '-local-ip-subnets', '"{{ ipsec_target_cidr }}"', '-remote-ip-subnets', '"{{ ipsec_source_cidr }}"', '-shared-key', '"{{ ipsec_secret }}"']
+        <<: *ontap_parameters
+
+- hosts: kubernetes
+  tasks:
+    - name: install and configure IPSec on all kubernetes nodes
+      include_role:
+        name: ipsec-host-config

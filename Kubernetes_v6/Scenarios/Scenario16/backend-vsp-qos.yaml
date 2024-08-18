@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-qos
+  namespace: trident
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Netapp1!
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-ontap-nas-qos
+  namespace: trident
+spec:
+  version: 1
+  backendName: nas-qos
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  storagePrefix: qos_
+  credentials:
+    name: secret-qos
+  storage:
+  - labels:
+      performance: qos500iops
+    defaults:
+      qosPolicy: QoS_500iops
+  - labels:
+      performance: qos100MBps
+    defaults:
+      qosPolicy: QoS_100MBps
+  - labels:
+      performance: aQoS
+    defaults:
+      adaptiveQosPolicy: aQoS

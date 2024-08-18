@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-argocd
+  namespace: trident
+spec:
+  version: 1
+  backendName: argocd-nas
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  storagePrefix: argocd1_
+  defaults:
+    snapshotPolicy: default
+  credentials:
+    name: secret-scenario18

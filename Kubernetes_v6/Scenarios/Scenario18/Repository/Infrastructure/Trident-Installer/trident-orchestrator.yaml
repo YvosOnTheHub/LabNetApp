@@ -1,0 +1,12 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentOrchestrator
+metadata:
+  name: trident
+spec:
+  debug: true
+  namespace: trident
+  tridentImage: registry.demo.netapp.com/trident:24.06.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.06.0
+  imagePullPolicy: IfNotPresent
+  windows: false
+  silenceAutosupport: true

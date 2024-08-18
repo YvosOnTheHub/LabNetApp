@@ -1,0 +1,15 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-iscsi
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-san
+  backendName: BackendForiSCSI
+  managementLIF: 192.168.0.137
+  sanType: iscsi
+  svm: sansvm
+  useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds

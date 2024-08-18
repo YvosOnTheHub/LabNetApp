@@ -1,0 +1,16 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-tbc-iscsi-eco
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-san
+  backendName: BackendForiSCSIEco
+  managementLIF: 192.168.0.137
+  storagePrefix: san_eco_
+  sanType: iscsi
+  svm: sansvm
+  useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds

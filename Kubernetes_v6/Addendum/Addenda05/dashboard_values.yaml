@@ -1,0 +1,12 @@
+app:
+  scheduling:
+    nodeSelector:
+      kubernetes.io/os: linux
+
+kong:
+  nodeSelector:
+    kubernetes.io/os: linux
+  proxy:
+    type: NodePort
+  http:
+    enabled: true

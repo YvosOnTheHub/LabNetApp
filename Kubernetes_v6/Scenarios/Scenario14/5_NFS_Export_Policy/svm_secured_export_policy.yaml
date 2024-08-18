@@ -1,0 +1,32 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+  
+  name: Set Export Policy on Tenant Root
+  tasks:
+  - name: Gather Tenant Export Policy Information
+    na_ontap_info:
+      state: info
+      gather_subset: "export_policy_info"
+      <<: *ontap_parameters
+    register: netapp 
+
+  - name: Modify root Export Policy
+    na_ontap_volume:
+      state: present
+      name: root
+      policy: "{{ netapp.ontap_info.export_policy_info[item].policy_name }}"
+      vserver: svm_secured
+      <<: *ontap_parameters      
+    with_items: "{{ netapp.ontap_info.export_policy_info }}"
+    when: 
+      - netapp.ontap_info.export_policy_info[item].policy_name is search('trident')
