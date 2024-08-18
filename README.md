@@ -63,7 +63,7 @@ Addendum
 [9.](Kubernetes_v6/Addendum/Addenda09) How to create a S3 Bucket on ONTAP (_svm_S3_)  
 [10.](Kubernetes_v6/Addendum/Addenda10) Set up a simple Source Code Repository  
 [11.](Kubernetes_v6/Addendum/Addenda11) Install ArgoCD in this lab  
-[12.](Kubernetes_v6/Addendum/Addenda12) Create a second Kubernetes cluster on RHEL4 & RHEL5  
+[12.](Kubernetes_v6/Addendum/Addenda12) Create a second Kubernetes cluster on the hosts _RHEL4_ & _RHEL5_  
 [13.](Kubernetes_v6/Addendum/Addenda13) Create a new SVM (_svm_secondary_)  
 
 <!-- OLD CONTENT
