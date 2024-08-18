@@ -77,14 +77,14 @@ SnapMirror test!
 
 ## D. Mirroring configuration
 
-This part is done with a new CR called a TridentMirrorRelationship (_TMR_ in short).  
+This part is done with a new CR called a **TridentMirrorRelationship** (_TMR_ in short).  
 A TMR can have 3 states:  
 - _promoted_: the PVC is ReadWrite & mountable  
 - _established_: the local PVC is part of a new SnapMirror relationship  
 - _reestablished_: the local PVC is part of a preexisting SnapMirror  
 
 Let's create a TMR on the first cluster.  
-This object refers to the PVC to protect.  
+This object refers to the PVC to protect (PVC _mydata_ in this exercise).  
 ```bash
 $ kubectl create -f rhel3_tmr.yaml
 tridentmirrorrelationship.trident.netapp.io/busybox-mirror created
@@ -95,7 +95,7 @@ On the secondary cluster, we will now create 2 objects:
 
 This folder contains a script that will retrieve the internal volume name & customize the target TMR:  
 ```bash
-sh rhel5_tmr.sh
+$ sh rhel5_tmr.sh
 namespace/sc24busybox created
 tridentmirrorrelationship.trident.netapp.io/busybox-mirror created
 ```
@@ -139,7 +139,7 @@ namespace "sc24busybox" deleted
 ```
 Holalalalala ! I just deleted my whole stateful app!! Did I lose the data ?? (of course not)  
 
-We first need to  update the state the secondary TMR to promoted.  
+We first need to  update the state the secondary TMR to _promoted_.  
 Once done, we can redeploy the application on top of the volume.  
 ```bash
 $ kubectl --kubeconfig=/root/.kube/config_rhel5 -n sc24busybox patch tmr busybox-mirror  --type=merge -p '{"spec":{"state":"promoted"}}'
@@ -160,4 +160,4 @@ Last thing to verify: what is the content of our PVC:
 $ kubectl --kubeconfig=/root/.kube/config_rhel5 exec -n sc24busybox $(kubectl --kubeconfig=/root/.kube/config_rhel5 get pod -n sc24busybox -o name) -- more /data/test.txt
 SnapMirror test!
 ```
-& voilà !
+& voilà, you managed to test how to protect the data if an application & how to restart it on a different environment !
