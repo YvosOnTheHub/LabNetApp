@@ -60,7 +60,7 @@ Addendum
 [6.](Kubernetes_v6/Addendum/Addenda06) Install cool tools  
 [7.](Kubernetes_v6/Addendum/Addenda07) How to install & prepare HAProxy  
 [8.](Kubernetes_v6/Addendum/Addenda08) How to run this lab with the Docker hub rate limiting  
-[9.](Kubernetes_v6/Addendum/Addenda09) How to create a S3 Bucket on ONTAP 
+[9.](Kubernetes_v6/Addendum/Addenda09) How to create a S3 Bucket on ONTAP   
 [10.](Kubernetes_v6/Addendum/Addenda10) Set up a simple Source Code Repository  
 [11.](Kubernetes_v6/Addendum/Addenda11) Install ArgoCD in this lab  
 [12.](Kubernetes_v6/Addendum/Addenda12) Create a second Kubernetes cluster on RHEL4 & RHEL5  
