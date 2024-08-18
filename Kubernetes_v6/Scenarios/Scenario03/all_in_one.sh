@@ -14,10 +14,11 @@ echo "Install Harvest"
 echo "#######################################################################################################"
 
 wget -q https://github.com/NetApp/harvest/releases/download/v24.05.2/harvest-24.05.2-1_linux_amd64.tar.gz -O ~/harvest-24.05.2-1_linux_amd64.tar.gz
+sleep 5
 tar -xf ~/harvest-24.05.2-1_linux_amd64.tar.gz
 mv ~/harvest*amd64 ~/harvest
 mv ~/harvest/harvest.yml ~/harvest/harvest.bak
-mv harvest.yml ~/harvest/
+mv 3_Harvest/harvest.yml ~/harvest/
 cd ~/harvest
 bin/harvest start
 
