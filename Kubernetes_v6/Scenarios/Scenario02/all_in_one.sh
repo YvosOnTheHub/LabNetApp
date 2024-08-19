@@ -6,7 +6,7 @@ echo "##########################################################################
 echo "Create NAS TBC corresponding to existing Trident backends"
 echo "#######################################################################################################"
 
-kubectl create -f 1_Local_User/secret-ontap-nas-svm-username.yaml
+kubectl create -f 1_Local_User/secret-ontap-nas-svm-creds.yaml
 kubectl create -f 1_Local_User/backend-tbc-nfs.yaml
 kubectl create -f 1_Local_User/backend-tbc-smb.yaml
 
