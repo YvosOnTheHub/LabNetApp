@@ -10,15 +10,13 @@ More information about Harvest can be found here: https://www.github.com/netapp/
 The scenario will guide you through the installation of Harvest on _rhel3_ (port _31000_) and how to connect it to the Prometheur instance running in Kubernetes.  
 The file _harvest.yml_ in this repo can be used to configure Harvest to work on this lab.
 
-Let's start by downloading Harvest & installing it (on _rhel3_):
-
+Let's start by downloading Harvest & installing it (on _rhel3_):  
 ```bash
-$ cd
-$ wget -q https://github.com/NetApp/harvest/releases/download/v24.05.2/harvest-24.05.2-1_linux_amd64.tar.gz
-$ tar -xf harvest-24.05.2-1_linux_amd64.tar.gz
-$ mv harvest*amd64 harvest
+$ wget -q https://github.com/NetApp/harvest/releases/download/v24.05.2/harvest-24.05.2-1_linux_amd64.tar.gz -O ~/harvest-24.05.2-1_linux_amd64.tar.gz
+$ mkdir -p ~/harvest
+$ tar -xf ~/harvest-24.05.2-1_linux_amd64.tar.gz -C ~/harvest --strip-components=1
 $ mv ~/harvest/harvest.yml ~/harvest/harvest.bak
-$ mv harvest.yml ~/harvest/
+$ cp harvest.yml ~/harvest/
 $ cd ~/harvest
 $ bin/harvest start
   Datacenter |  Poller  |  PID   | PromPort | Status
