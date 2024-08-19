@@ -1,5 +1,15 @@
 echo
 echo "#######################################################################################################"
+echo "# Install PASSH"
+echo "#######################################################################################################"
+echo
+git clone https://github.com/clarkwang/passh.git
+cd passh
+cc -o passh passh.c
+cp -v passh /usr/bin/
+
+echo
+echo "#######################################################################################################"
 echo "# Create a K8S cluster on RHEL5"
 echo "#######################################################################################################"
 echo
@@ -32,7 +42,7 @@ echo "# Install & configure Calico"
 echo "#######################################################################################################"
 echo
 
-mkdir calico && cd calico
+mkdir ~/calico && cd ~/calico
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
 kubectl create -f tigera-operator.yaml
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml
@@ -55,7 +65,9 @@ echo "##########################################################################
 echo
 
 KUBEADMJOIN=$(kubeadm token create --print-join-command)
-ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
+# ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
+passh -c 1 -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
+
 
 while [ $(kubectl get nodes | grep NotReady | wc -l) -eq 1 ]
 do
@@ -98,7 +110,15 @@ EOF
 helm repo add metallb https://metallb.github.io/metallb
 helm install metallb metallb/metallb -n metallb-system --create-namespace -f metallb-values.yaml
 
-cat << EOF > metallb-lab-ipaddresspool.yaml
+frames="/ | \\ -"
+while [ $(kubectl get -n metallb-system pod | grep Running | grep -e '1/1' | wc -l) -ne 3 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for MetalLB to be ready $frame" 
+    done
+done
+echo
+
+cat << EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -109,7 +129,7 @@ spec:
   - 192.168.0.220-192.168.0.229
 EOF
 
-cat << EOF > metallb-l2advert.yaml
+cat << EOF | kubectl apply -f -
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
@@ -119,9 +139,6 @@ spec:
   ipAddressPools:
    - first-pool
 EOF
-
-kubectl create -f metallb-lab-ipaddresspool.yaml
-kubectl create -f metallb-l2advert.yaml
 
 echo
 echo "#######################################################################################################"
@@ -137,8 +154,14 @@ helm install trident netapp-trident/trident-operator --version 100.2406.1 -n tri
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"
-while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '24.06.1' ];do
+while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '6/6' | wc -l) -ne 4 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
 done
+
+echo
+echo "#######################################################################################################"
+echo "# Secondary Kubernetes cluster ready to be used"
+echo "#######################################################################################################"
+echo

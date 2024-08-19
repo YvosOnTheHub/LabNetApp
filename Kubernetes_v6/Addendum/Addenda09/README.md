@@ -119,7 +119,7 @@ network int create -vserver svm_S3 -lif endpoint_S3 -service-policy S3-data-poli
 
 A SVM can host one or several bucket. For this exercise, we will only create one called _s3lod_, accessible by a new user called _S3user_.  
 ```bash
-$ vserver object-store-server create -vserver svm_S3 -object-store-server ONTAP-S3.demo.netapp.com -certificate-name LOD_S3 -is-http-enabled true
+$ vserver object-store-server create -vserver svm_S3 -object-store-server s3.demo.netapp.com -certificate-name LOD_S3 -is-http-enabled true
 $ vserver object-store-server bucket create -vserver svm_S3 -bucket s3lod -size 100GB -storage-service-level value
 $ vserver object-store-server user create -vserver svm_S3 -user S3user
 
@@ -143,7 +143,7 @@ $ cluster1::*> vserver object-store-server show
 
 Vserver: svm_S3
 
-           Object Store Server Name: ONTAP-S3.demo.netapp.com
+           Object Store Server Name: s3.demo.netapp.com
                Administrative State: up
                        HTTP Enabled: true
              Listener Port For HTTP: 80
