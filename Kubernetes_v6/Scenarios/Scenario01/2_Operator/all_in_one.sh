@@ -58,7 +58,6 @@ mkdir 24.02.0 && mv trident-installer 24.02.0/
 mkdir 24.06.1 && cd 24.06.1
 wget https://github.com/NetApp/trident/releases/download/v24.06.1/trident-installer-24.06.1.tar.gz
 tar -xf trident-installer-24.06.1.tar.gz
-rm -f /usr/bin/tridentctl
 ln -sf /root/24.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo "#######################################################################################################"
@@ -83,7 +82,7 @@ spec:
 EOF
 
 echo "#######################################################################################################"
-echo "Check"
+echo "Check (it takes about 3 to 4 minutes for the upgrade to proceed)"
 echo "#######################################################################################################"
 
 frames="/ | \\ -"
@@ -93,6 +92,7 @@ while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e 
     done
 done
 
+sleep 10
 echo
 tridentctl -n trident version
 
