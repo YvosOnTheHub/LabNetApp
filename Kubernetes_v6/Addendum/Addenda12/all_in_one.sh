@@ -1,12 +1,9 @@
-echo
-echo "#######################################################################################################"
-echo "# Install PASSH"
-echo "#######################################################################################################"
-echo
-git clone https://github.com/clarkwang/passh.git
-cd passh
-cc -o passh passh.c
-cp -v passh /usr/bin/
+if [[ $(dnf list installed | grep sshpass | wc -l) -eq 0 ]]; then
+  echo "##############################################################"
+  echo "# SSHPASS install"
+  echo "##############################################################"  
+  dnf install -y sshpass
+fi
 
 echo
 echo "#######################################################################################################"
@@ -65,8 +62,7 @@ echo "##########################################################################
 echo
 
 KUBEADMJOIN=$(kubeadm token create --print-join-command)
-# ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
-passh -c 1 -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
 
 
 while [ $(kubectl get nodes | grep NotReady | wc -l) -eq 1 ]

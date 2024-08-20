@@ -3,9 +3,16 @@
 #########################################################################################
 
 Trident 24.06.1 brought you the mirroring feature.  
-A user can now manage the snapmirror relationships directly in Kubernetes.  
+A user can now manage the snapmirror relationships directly in Kubernetes, via a new object called _TridentMirrorRelationship_.  
+This gives you the opportunity to configure a disaster recovery plan between 2 Kubernetes clusters, for the data only.  
 
 The scenario takes you through the setup of such configuration, as well as the activation of secondary volume.  
+Here are the steps you will perform:  
+- creation a new Trident backend for both the source Kubernetes cluster & the target Kubernetes cluster  
+- creation a new storage class for both the source Kubernetes cluster & the target Kubernetes cluster  
+- creation of an application on the source cluster  
+- creation of the mirroring relationship between the 2 clusters  
+- activation of the DR environment following a issue on the first cluster
 
 Some requirements for this:  
 - Ansible is used for part of the configuration: [Addenda04](../../Addendum/Addenda04/)  
@@ -82,6 +89,8 @@ A TMR can have 3 states:
 - _promoted_: the PVC is ReadWrite & mountable  
 - _established_: the local PVC is part of a new SnapMirror relationship  
 - _reestablished_: the local PVC is part of a preexisting SnapMirror  
+
+<p align="center"><img src="./Images/highlevel_arch_mirror.png" width="768"></p>
 
 Let's create a TMR on the first cluster.  
 This object refers to the PVC to protect (PVC _mydata_ in this exercise).  
