@@ -19,6 +19,8 @@ Some requirements for this:
 - A second Kubernetes is of course needed: [Addenda12](../../Addendum/Addenda12/)  
 - A new SVM is also needed to host the secondary volume: [Addenda13](../../Addendum/Addenda13/)  
 
+(to help you go through all those requirements, you can the _setup.sh_ script in this folder).  
+
 ## A. SVM Peering
 
 Trident does not take care of the peering configuration.  
