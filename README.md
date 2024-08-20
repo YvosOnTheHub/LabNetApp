@@ -37,7 +37,7 @@ Scenarios
 [10.](Kubernetes_v6/Scenarios/Scenario10) Using Virtual Storage Pools  
 [11.](Kubernetes_v6/Scenarios/Scenario11) StatefulSets & Storage consumption  
 [12.](Kubernetes_v6/Scenarios/Scenario12) Dynamic export policy management  
-[13.](Kubernetes_v6/Scenarios/Scenario13) Snapshots here & snapshots there, snapshot everywhere  
+[13.](Kubernetes_v6/Scenarios/Scenario13) Snapshots here & snapshots there, snapshots everywhere  
 [14.](Kubernetes_v6/Scenarios/Scenario14) About security  
 [15.](Kubernetes_v6/Scenarios/Scenario15) Caring about location or about CSI Topology  
 [16.](Kubernetes_v6/Scenarios/Scenario16) Performance control  
