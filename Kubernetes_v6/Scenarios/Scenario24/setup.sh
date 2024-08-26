@@ -57,4 +57,4 @@ echo "#####################################################"
 echo "# Launch second cluster setup"
 echo "#####################################################"
 
-sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel5 sh all_in_one.sh
+ssh -o "StrictHostKeyChecking no" root@rhel5 sh all_in_one.sh
