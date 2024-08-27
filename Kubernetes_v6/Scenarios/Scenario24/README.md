@@ -112,10 +112,10 @@ tridentmirrorrelationship.trident.netapp.io/busybox-mirror created
 ```
 Last, we can now create the volume:  
 ```bash
-$ kubectl create -f pvc5.yaml --kubeconfig=/root/.kube/config_rhel5
+$ kubectl create -f rhel5_pvc.yaml --kubeconfig=/root/.kube/config_rhel5
 persistentvolumeclaim/mydata created
 ```
-Now, the SnapMirror relationship should be present. Let's check:  
+After a few seconds, the SnapMirror relationship should be present. Let's check:  
 ```bash
 $ curl -s -X GET -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/snapmirror/relationships" -H "accept: application/json"
 {
