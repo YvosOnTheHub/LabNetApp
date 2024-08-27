@@ -48,7 +48,7 @@ Scenarios
 [21.](Kubernetes_v6/Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
 [22.](Kubernetes_v6/Scenarios/Scenario22) Cross Namespace Volume Access  
 [23.](Kubernetes_v6/Scenarios/Scenario23) Naming conventions  
-[24.](Kubernetes_v6/Scenarios/Scenario24) Protecting volumes (snapmirror integration)  
+[24.](Kubernetes_v6/Scenarios/Scenario24) Migrating volumes (snapmirror integration)  
 
 Addendum
 --------
