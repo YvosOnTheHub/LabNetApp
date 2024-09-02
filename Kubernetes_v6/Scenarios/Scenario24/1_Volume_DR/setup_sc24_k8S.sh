@@ -18,7 +18,7 @@ echo "#####################################################"
 echo "# Copy second K8S cluster creation script to RHEL5"
 echo "#####################################################"
 
-curl -s --insecure --user root:Netapp1! -T ../../Addendum/Addenda12/all_in_one.sh sftp://rhel5/root/
+curl -s --insecure --user root:Netapp1! -T ../../../Addendum/Addenda12/all_in_one.sh sftp://rhel5/root/
 
 echo
 echo "#####################################################"

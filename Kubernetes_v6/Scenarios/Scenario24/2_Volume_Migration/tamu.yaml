@@ -1,0 +1,7 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentActionMirrorUpdate
+metadata:
+  generateName: update-mirror-
+  namespace: sc24busybox
+spec:
+  tridentMirrorRelationshipName: busybox-mirror-dst

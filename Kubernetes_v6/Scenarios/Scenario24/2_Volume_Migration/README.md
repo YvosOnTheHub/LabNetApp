@@ -135,9 +135,19 @@ deployment.apps/busybox scaled
 ```
 
 Let's do one last snapmirror update before the cutover.  
-This can be achieved via API, System Manager or ONTAP CLI:  
+This can be achieved via a different CR, called _TridentActionMirrorUpdate_, which will trigger a snapmirror update.  
+You can notice the following: 
+- you need to specify the secondary TMR, which is where the update will controlled  
+- you could specify a snapshot for this update. If not done, all snapshots will be transfered  
+- the _generateName_ parameter replaces the usual _name_ parameter, in case you would like to run several updates with the same manifest  
+
 ```bash
-$ curl -X POST -ku admin:Netapp1! "https://cluster1.demo.netapp.com/api/snapmirror/relationships/eb8abf20-6484-11ef-9079-005056815f82/transfers" -H "accept: application/json" -d "{}"
+$ kubectl create -f tamu.yaml
+tridentactionmirrorupdate.trident.netapp.io/update-mirror-474g2 created
+
+$ kubectl get -n sc24busybox tamu
+NAME                  NAMESPACE     STATE       COMPLETIONTIME
+update-mirror-474g2   sc24busybox   Succeeded   3s
 ```
 
 We then need to update the state the secondary TMR to _promoted_, so that the volume becomes available & writable.  
