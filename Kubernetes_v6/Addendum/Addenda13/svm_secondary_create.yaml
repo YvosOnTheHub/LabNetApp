@@ -17,9 +17,6 @@
     netapp.ontap.na_ontap_svm:
      state: present
      name: "svm_secondary"
-     root_volume: "root"
-     root_volume_aggregate: "aggr1" 
-     root_volume_security_style: unix
      allowed_protocols: nfs,iscsi
      aggr_list: "aggr1,aggr2"
      <<: *ontap_parameters

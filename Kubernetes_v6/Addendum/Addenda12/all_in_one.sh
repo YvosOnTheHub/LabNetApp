@@ -35,6 +35,49 @@ kubectl taint nodes rhel5 node-role.kubernetes.io/control-plane-
 
 echo
 echo "#######################################################################################################"
+echo "# Calico images management on RHEL5"
+echo "#######################################################################################################"
+echo
+podman login -u registryuser -p Netapp1! registry.demo.netapp.com
+podman pull registry.demo.netapp.com/calico/typha:v3.27.3
+podman pull registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3
+podman pull registry.demo.netapp.com/calico/cni:v3.27.3
+podman pull registry.demo.netapp.com/calico/kube-controllers:v3.27.3
+podman pull registry.demo.netapp.com/calico/node:v3.27.3
+podman pull registry.demo.netapp.com/calico/csi:v3.27.3
+podman pull registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3
+podman tag registry.demo.netapp.com/calico/typha:v3.27.3 docker.io/calico/typha:v3.27.3
+podman tag registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3 docker.io/calico/pod2daemon-flexvol:v3.27.3 
+podman tag registry.demo.netapp.com/calico/cni:v3.27.3 docker.io/calico/cni:v3.27.3
+podman tag registry.demo.netapp.com/calico/kube-controllers:v3.27.3 docker.io/calico/kube-controllers:v3.27.3
+podman tag registry.demo.netapp.com/calico/node:v3.27.3 docker.io/calico/node:v3.27.3
+podman tag registry.demo.netapp.com/calico/csi:v3.27.3 docker.io/calico/csi:v3.27.3
+podman tag registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3 docker.io/calico/node-driver-registrar:v3.27.3
+
+echo
+echo "#######################################################################################################"
+echo "# Calico images management on RHEL4"
+echo "#######################################################################################################"
+echo
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/typha:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/cni:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/kube-controllers:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/node:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/csi:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman pull --creds registryuser:Netapp1! registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3
+
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/typha:v3.27.3 docker.io/calico/typha:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3 docker.io/calico/pod2daemon-flexvol:v3.27.3 
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/cni:v3.27.3 docker.io/calico/cni:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/kube-controllers:v3.27.3 docker.io/calico/kube-controllers:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/node:v3.27.3 docker.io/calico/node:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/csi:v3.27.3 docker.io/calico/csi:v3.27.3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3 docker.io/calico/node-driver-registrar:v3.27.3sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 podman tag --creds registryuser:Netapp1! registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3
+
+
+echo
+echo "#######################################################################################################"
 echo "# Install & configure Calico"
 echo "#######################################################################################################"
 echo

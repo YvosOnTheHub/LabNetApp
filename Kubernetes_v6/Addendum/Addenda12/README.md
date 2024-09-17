@@ -45,6 +45,27 @@ It is not yet _Ready_ as there is no Pod network configured.
 ## B. Pod network configuration  
 
 Calico will be used here for this topic.  
+As this product uses images hosted on the Docker Hub, you may need to download them first.  
+Luckily, they are already in the lab local registry, so just need to pull them on both nodes (_rhel4_ & _rhel5_):  
+```bash
+podman login -u registryuser -p Netapp1! registry.demo.netapp.com
+podman pull registry.demo.netapp.com/calico/typha:v3.27.3
+podman pull registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3
+podman pull registry.demo.netapp.com/calico/cni:v3.27.3
+podman pull registry.demo.netapp.com/calico/kube-controllers:v3.27.3
+podman pull registry.demo.netapp.com/calico/node:v3.27.3
+podman pull registry.demo.netapp.com/calico/csi:v3.27.3
+podman pull registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3
+
+podman tag registry.demo.netapp.com/calico/typha:v3.27.3 docker.io/calico/typha:v3.27.3
+podman tag registry.demo.netapp.com/calico/pod2daemon-flexvol:v3.27.3 docker.io/calico/pod2daemon-flexvol:v3.27.3 
+podman tag registry.demo.netapp.com/calico/cni:v3.27.3 docker.io/calico/cni:v3.27.3
+podman tag registry.demo.netapp.com/calico/kube-controllers:v3.27.3 docker.io/calico/kube-controllers:v3.27.3
+podman tag registry.demo.netapp.com/calico/node:v3.27.3 docker.io/calico/node:v3.27.3
+podman tag registry.demo.netapp.com/calico/csi:v3.27.3 docker.io/calico/csi:v3.27.3
+podman tag registry.demo.netapp.com/calico/node-driver-registrar:v3.27.3 docker.io/calico/node-driver-registrar:v3.27.3
+```
+Once done, you can proceed with Calico's installation:  
 ```bash
 mkdir calico && cd calico
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
