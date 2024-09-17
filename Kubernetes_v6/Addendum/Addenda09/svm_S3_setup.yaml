@@ -27,6 +27,7 @@
       disk_size_with_unit:          28G
       disk_class:                   virtual
       nodes:                        cluster1-01
+      snaplock_type:                non_snaplock
       <<: *ontap_parameters
 
   - name: Create SVM
