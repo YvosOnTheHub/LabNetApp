@@ -18,7 +18,8 @@ This lab will use some ansible playbooks. Make sure you have installed Ansible &
 We also need to setup the inventory for this scenario. It will contain the different kubernetes hosts as well as various global variables.  
 You just need to copy the hosts file from this scenario into the /etc/ansible folder.  
 ```bash
-mv /etc/ansible/hosts /etc/ansible/hosts.bak
+mkdir -p /etc/ansible
+if [ -f /etc/ansible/hosts ]; then mv /etc/ansible/hosts /etc/ansible/hosts.bak; fi;
 cp hosts /etc/ansible/ 
 ```
 

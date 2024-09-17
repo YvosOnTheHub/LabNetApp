@@ -139,7 +139,7 @@ Secret Key: y9d21_p_8eDRd8PK5u_7iWWCccmA_nads4PPBamC
 $ vserver object-store-server group create -vserver svm_S3 -name S3group -users S3user -policies FullAccess
 $ vserver object-store-server bucket policy statement create -vserver svm_S3 -bucket s3lod -effect allow -action * -principal - -resource s3lod,s3lod/* -sid "" -index 1
 
-$ cluster1::*> vserver object-store-server show
+$ vserver object-store-server show
 
 Vserver: svm_S3
 

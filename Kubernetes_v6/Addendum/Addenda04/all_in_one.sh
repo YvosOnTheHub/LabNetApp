@@ -1,19 +1,23 @@
 #!/bin/bash
 
 echo "#######################################################################################################"
-echo "Install Ansible & PIP"
+echo "Install PIP"
 echo "#######################################################################################################"
 
-dnf install -y ansible python-pip
+dnf install -y python-pip
 
 echo "#######################################################################################################"
-echo "Install NetApp Python Library"
+echo "Install Ansible & NetApp Python Library"
 echo "#######################################################################################################"
 
-pip install netapp-lib
+pip install ansible-core==2.15.12 netapp-lib
 
 echo "#######################################################################################################"
 echo "Install NetApp ONTAP Collection"
 echo "#######################################################################################################"
 
 ansible-galaxy collection install netapp.ontap --ignore-certs
+
+
+
+

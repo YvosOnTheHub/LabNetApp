@@ -3,11 +3,12 @@
 #########################################################################################
 
 When playing with Kubernetes or Unix, you can always find new tools that improve your daily job.  
-Here are a few that I found interesting:
-
-- K8SH (Kubernetes shell)
-- K1S (Simple Kubernetes Dashboard)
-- TMUX (Terminal Multiplexer)
+Here are a few that I found interesting:  
+- K8SH (Kubernetes shell)  
+- K1S (Simple Kubernetes Dashboard)  
+- TMUX (Terminal Multiplexer)  
+- KREW (Kubectl plug-ins)
+- K9S (GUI to interact with your Kubernetes cluster)
 
 ## A. K8SH
 
@@ -148,3 +149,29 @@ Here are a few I have tested:
 - **rbac-view**: graphical view of all RBAC configured on the cluster, with a filter feature
 - **tree**: displays a hierarchical view of some objects (ex: deployment => replicaset => pod)
 - **view-secret**: decyphers & displays a secret (faster than running jsonpath + base64)
+
+## E. K9S
+
+Here is the official description of K9S:  
+_K9s is a terminal based UI to interact with your Kubernetes clusters. The aim of this project is to make it easier to navigate, observe and manage your deployed applications in the wild. K9s continually watches Kubernetes for changes and offers subsequent commands to interact with your observed resources._  
+
+Pretty useful to navigate quickly resources on your environment!  
+
+Here are the steps to install it on the host RHEL3:  
+```bash
+dnf install -y snapd
+systemctl enable --now snapd.socket
+systemctl start snapd
+ln -s /var/lib/snapd/snap /snap
+
+snap install k9s
+ln -s /snap/k9s/current/bin/k9s /snap/bin/
+export PATH=$PATH:/snap/bin
+echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
+```
+
+Once done, you can simply type _k9s info_ to check that it works.  
+Next, you can navigate the Triden resources by typing _k9s -n trident_.  
+You can easily read logs, interact with resources, etc...
+
+& more to learn here: https://k9scli.io/ 

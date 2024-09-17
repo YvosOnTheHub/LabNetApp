@@ -1,0 +1,133 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    svm_name:                       "svm_s3"
+    s3_endpoint:                    "192.168.0.230"
+    bucket_name:                    "s3lod"
+    bucket_size:                    107374182400  # Bytes = 100GB 
+    
+    ontap_parameters:               &ontap_parameters
+      hostname:                     "{{ hostname }}" 
+      username:                     "{{ username }}" 
+      password:                     "{{ password }}"
+      https:                        true
+      validate_certs:               false
+
+  name: S3 Environment Creation
+  tasks:
+  - name: Create a new aggregate
+    netapp.ontap.na_ontap_aggregate:
+      state:                        present
+      service_state:                online
+      name:                         S3
+      disk_count:                   8
+      disk_size_with_unit:          28G
+      disk_class:                   virtual
+      nodes:                        cluster1-01
+      <<: *ontap_parameters
+
+  - name: Create SVM
+    netapp.ontap.na_ontap_svm:
+     state:                         present
+     name:                          "{{ svm_name }}"
+     aggr_list:                     S3
+     <<: *ontap_parameters
+
+  - name: Configure SVM Data Services
+    netapp.ontap.na_ontap_service_policy:
+     state:                         present
+     vserver:                       "{{ svm_name }}"
+     name:                          S3-data-policy
+     services:
+       - data_core
+       - data_s3_server
+     <<: *ontap_parameters
+
+  - name: Create S3 Endpoint
+    netapp.ontap.na_ontap_interface:
+      state:                        present
+      interface_name:               endpoint_S3
+      home_port:                    e0e
+      home_node:                    cluster1-01
+      admin_status:                 up
+      service_policy:               S3-data-policy
+      address:                      "{{ s3_endpoint }}"
+      netmask:                      255.255.255.0
+      vserver:                      "{{ svm_name }}"
+      <<: *ontap_parameters
+
+  # Create self-signed cert for SSL - since module can't disable https
+  - name: create SSL certificate for HTTPS
+    netapp.ontap.na_ontap_security_certificates:
+      state:                        present
+      vserver:                      "{{ svm_name }}"
+      common_name:                  svm_s3_ca
+      name:                         lod_bucket
+      type:                         server
+      expiry_time:                  P365DT
+      <<: *ontap_parameters
+
+  - name: create S3 service
+    netapp.ontap.na_ontap_s3_services:
+      state:                        present
+      name:                         s3.demo.netapp.com
+      vserver:                      "{{ svm_name }}"
+      enabled:                      true
+      certificate_name:             lod_bucket
+      <<: *ontap_parameters
+
+  - name: Shut S3 Server down to modify
+    netapp.ontap.na_ontap_command:
+      command: ['vserver', 'object-store-server', 'modify', '-vserver', 'svm_s3', 
+                '-object-store-server ', 's3.demo.netapp.com', '-status-admin', 'down']
+      privilege: 'advanced'
+      <<: *ontap_parameters
+
+  - name: Modify S3 Server to enable http & disable https
+    netapp.ontap.na_ontap_command:
+      command: ['vserver', 'object-store-server', 'modify', '-vserver', 'svm_s3', 
+                '-object-store-server ', 's3.demo.netapp.com', '-status-admin', 'up',
+                '-is-http-enabled', 'true', '-listener-port', '80', '-is-https-enabled', 'false']
+      privilege: 'admin'
+      <<: *ontap_parameters
+
+  - name: Create S3 User 
+    netapp.ontap.na_ontap_s3_users:
+      state:                        present
+      name:                         S3user
+      vserver:                      "{{ svm_name }}"
+      <<: *ontap_parameters
+    register:                       s3_creds
+
+  - name: Print ONTAP Response for S3 User create
+    ansible.builtin.debug:
+      msg:
+        - "SAVE THESE credentials for: S3user"
+        - "user access_key: {{ s3_creds.access_key }} "
+        - "user secret_key: {{ s3_creds.secret_key }} "
+
+  - name: Create S3 bucket with a policy
+    netapp.ontap.na_ontap_s3_buckets:
+      state:                        present
+      vserver:                      "{{ svm_name }}"
+      name:                         "{{ bucket_name }}"
+      size:                         "{{ bucket_size }}"
+      type:                         s3
+      policy: 
+        statements:
+          - sid: FullAccessToS3User
+            resources:
+              - "{{ bucket_name }}"
+              - "{{ bucket_name }}/*"
+            actions:
+              - "*"
+            effect: allow
+            principals:
+              - S3user
+      <<: *ontap_parameters
+
+
+
