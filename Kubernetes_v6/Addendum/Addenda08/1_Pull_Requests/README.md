@@ -8,7 +8,7 @@ Let's check how many _pull_ requests we have left, as an anonymous user.
 This requires the creation of a environment variable called _TOKEN_ that contains a authentication token from the Docker Hub.  
 We then use this token to request data from the Hub.  
 ```bash
-$ TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+$ TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
 $ curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit
 ratelimit-limit: 100;w=21600
 ratelimit-remaining: 0;w=21600
