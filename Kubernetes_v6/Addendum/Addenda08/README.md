@@ -5,8 +5,7 @@
 You may have heard or seen the new rules applied by Docker on the number of images that can be pulled by a user:  
 => https://www.docker.com/increase-rate-limits#:~:text=Anonymous%20and%20Free%20Docker%20Hub,pull%20requests%20per%20six%20hours
 
-In a nutshell:
-
+In a nutshell:  
 - **unauthenticated** users (anonymous) are limited to 100 pull requests per 6 hours (enforced by IP address)
 - **free tier Docker users** are limited to 200 pull requests per 6 hours
 - a **paid subscription** will give you access to much more
@@ -22,15 +21,13 @@ In order to find out how many pull requests you have, you can find the informati
 Also, you need to understand what triggers an image to be pulled from a repository.  
 (cf https://kubernetes.io/docs/concepts/containers/images/).  
 
-In a nutshell, images will be downloaded:
-
-- If it has never been pulled locally from a repository
-- If the _imagePullPolicy_ is set to _Always_ in the app definition
-- if the image tag _latest_ is used
+In a nutshell, images will be downloaded:  
+- If it has never been pulled locally from a repository  
+- If the _imagePullPolicy_ is set to _Always_ in the app definition  
+- If the image tag _latest_ is used  
 
 Otherwise, if the image is already present, Kubernetes will directly use, which also saves a good precious couple of seconds. :laughing:  
-In this case, when looking at the logs of an application, you will see the following:
-
+In this case, when looking at the logs of an application, you will see the following:  
 ```bash
 Events:
   Type     Reason                  Age                From                     Message
@@ -41,10 +38,10 @@ Events:
   Normal   Started                 41s                kubelet, rhel2           Started container blog
 ```
 
-Now, let's see what we can do to manage this situation:
+Now, let's see what we can do to manage this situation:  
+- [be lazy](2_Lazy_Images)  
+- [use secrets](3_Secrets)  
+- [use a private repository](4_Private_repo)  
+- [PREFERRED: use the LoD cache registry](5_LoD_cache)
 
-- [be lazy](2_Lazy_Images)
-- [use secrets](3_Secrets)
-- [use a private repository](4_Private_repo)
-
-Most of the scenarios are built with the private repository in mind. That will also reduce the number of images to download from the hub.Ò
+Most of the scenarios are built with the private repository in mind. That will also reduce the number of images to download from the hub.

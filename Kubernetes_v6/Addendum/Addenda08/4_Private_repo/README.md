@@ -14,7 +14,6 @@ We will log into Docker, pull an image locally (busybox:1.33), tag & push it int
 
 ```bash
 $ podman login -u my_user -p my_password
-WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
 Login Succeeded
 
 $ podman pull docker.io/busybox:1.33.0

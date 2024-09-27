@@ -1,12 +1,23 @@
 #!/bin/bash
 
-# OPTIONAL PARAMETERS: 
-# PARAMETER1: docker hub login
-# PARAMETER2: docker hub password
+TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
-if [[ $(podman images | grep registry | grep trident | grep 24.06.1 | wc -l) -ne 0 ]]; then
-    echo "TRIDENT 24.06.1 images already present. Nothing to do"
-    exit 0
+if [[ $RATEREMAINING -lt 20 ]];then
+  if ! grep -q "dockreg" /etc/containers/registries.conf; then
+    echo
+    echo "##############################################################"
+    echo "# CONFIGURE MIRROR PASS THROUGH FOR IMAGES PULL"
+    echo "##############################################################"
+  cat <<EOT >> /etc/containers/registries.conf
+[[registry]]
+prefix = "docker.io"
+location = "docker.io"
+[[registry.mirror]]
+prefix = "docker.io"
+location = "dockreg.labs.lod.netapp.com"
+EOT
+  fi
 fi
 
 if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
@@ -15,22 +26,28 @@ if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
   echo "##############################################################"
   dnf install -y skopeo
 fi
-
-echo "##############################################################"
-echo "# SKOPEO LOG INTO REGISTRIES"
-echo "##############################################################"
-
-if [ $# -eq 2 ]; then
-   skopeo login docker.io -u $1 -p $2
-fi
-
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
-echo "##############################################################"
-echo "# SKOPEO COPY INTO PRIVATE REPO"
-echo "# Multi-arch required for Trident image"
-echo "##############################################################"
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident 2> /dev/null | grep 24.06.1 | wc -l) -eq 0 ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy Multi-Arch TRIDENT Into Private Repo"
+  echo "##############################################################"
+  skopeo copy --multi-arch all docker://docker.io/netapp/trident:24.06.1 docker://registry.demo.netapp.com/trident:24.06.1
+fi
 
-skopeo copy --multi-arch all docker://docker.io/netapp/trident:24.06.1 docker://registry.demo.netapp.com/trident:24.06.1
-skopeo copy docker://docker.io/netapp/trident-operator:24.06.1 docker://registry.demo.netapp.com/trident-operator:24.06.1
-skopeo copy docker://docker.io/netapp/trident-autosupport:24.06.0 docker://registry.demo.netapp.com/trident-autosupport:24.06.0
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-operator 2> /dev/null | grep 24.06.1 | wc -l) -eq 0 ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy TRIDENT OPERATOR Into Private Repo"
+  echo "##############################################################"
+  skopeo copy docker://docker.io/netapp/trident-operator:24.06.1 docker://registry.demo.netapp.com/trident-operator:24.06.1
+fi
+
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-autosupport 2> /dev/null | grep 24.06.0 | wc -l) -eq 0 ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy TRIDENT AUTOSUPPORT Into Private Repo"
+  echo "##############################################################"
+  skopeo copy docker://docker.io/netapp/trident-autosupport:24.06.0 docker://registry.demo.netapp.com/trident-autosupport:24.06.0
+fi

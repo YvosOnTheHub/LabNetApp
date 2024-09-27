@@ -5,9 +5,9 @@
 This chapter will lead you in the management of snapshots with a blogging application such as Ghost.
 
 If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario13_ghost_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 optional parameters, your Docker Hub login & password:  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario13_ghost_pull_images.sh_ to pull images utilized in this scenario if needed:  
 ```bash
-sh scenario13_ghost_pull_images.sh my_login my_password
+sh scenario13_ghost_pull_images.sh
 ```
 
 ## A. Prepare the environment

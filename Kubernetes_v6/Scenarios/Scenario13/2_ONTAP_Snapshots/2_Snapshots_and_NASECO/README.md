@@ -10,6 +10,12 @@ As Snapshots & Qtrees are not on the same layer, CSI Snapshots are not supported
 However, scheduled ONTAP snapshots are available!  
 Let's see this in action.  
 
+If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario13_busybox_pull_images.sh_ to pull images utilized in this scenario if needed:  
+```bash
+sh scenario13_busybox_pull_images.sh
+```
+
 We will use 3 POD/PVC, each in their own namespace.  
 Note that the _BackendForNFSQtrees_ backend configured in the [Scenario02](../../../Scenario02) contains the parameter _snapshotDir:true_.  
 ```bash

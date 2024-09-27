@@ -32,7 +32,7 @@ spec:
        claimName: pvc1
   containers:
     - name: debugger
-      image: busybox:1.35.0
+      image: registry.demo.netapp.com/busybox:1.35.0
       imagePullPolicy: IfNotPresent
       command: ['sleep', '3600']
       volumeMounts:

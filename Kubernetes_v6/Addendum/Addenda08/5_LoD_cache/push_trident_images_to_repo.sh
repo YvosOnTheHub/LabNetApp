@@ -6,6 +6,22 @@ if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
   echo "##############################################################"
   dnf install -y skopeo
 fi
+
+if ! grep -q "dockreg" /etc/containers/registries.conf; then
+  echo
+  echo "##############################################################"
+  echo "# CONFIGURE MIRROR PASS THROUGH FOR "
+  echo "##############################################################"
+  cat <<EOT >> /etc/containers/registries.conf
+[[registry]]
+prefix = "docker.io"
+location = "docker.io"
+[[registry.mirror]]
+prefix = "docker.io"
+location = "dockreg.labs.lod.netapp.com"
+EOT
+fi
+
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
 if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident 2> /dev/null | grep 24.06.1 | wc -l) -eq 0 ]]; then

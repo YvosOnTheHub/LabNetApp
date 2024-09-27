@@ -10,9 +10,9 @@ Ghost is a light weight web portal. You will a few YAML files in the Ghost direc
 <p align="center"><img src="../Images/scenario4_NFS.png" width="512"></p>
 
 If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario04_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario04_pull_images.sh_ to pull images utilized in this scenario if needed:  
 ```bash
-sh scenario04_pull_images.sh my_login my_password
+sh scenario04_pull_images.sh
 ```
 
 ## A. Create the app

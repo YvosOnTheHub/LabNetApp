@@ -9,9 +9,9 @@ In order for this lab to succeed, you must have first gone through the following
 - [Scenario01](../../../Scenario01) Upgrade Trident to 24.06.1
 - [Scenario02](../../../Scenario02/1_Local_User/) Create the ONTAP-NAS-ECONOMY Trident backend & storage class  
 
-You can find a shell script in this directory _scenario13_busybox_pull_images.sh_ to pull images utilized in this scenario if needed. It uses 2 **optional** parameters, your Docker Hub login & password:  
+You can find a shell script in this directory _scenario13_busybox_pull_images.sh_ to pull images utilized in this scenario if needed:  
 ```bash
-sh scenario13_busybox_pull_images.sh my_login my_password
+sh scenario13_busybox_pull_images.sh
 ```
 
 ## A. Prepare the environment

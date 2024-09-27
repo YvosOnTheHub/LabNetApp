@@ -39,10 +39,15 @@ For each configuration, we will do the following:
 
 ## A. Chapter setup
 
+If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory _scenario13_busybox_pull_images.sh_ to pull images utilized in this scenario if needed:  
+```bash
+sh scenario13_busybox_pull_images.sh
+```
+
 We are going to create 4 new Trident backends, alongside their corresponding storage class.  
 No need to create 2 extra backends for the 2 last configs, as the difference is in the ONTAP configuration.  
-The _sc13_access_visi_setup.yaml_ can be used to create all 8 objects in Kubernetes:
-
+The _sc13_access_visi_setup.yaml_ can be used to create all 8 objects in Kubernetes:  
 ```bash
 $ kubectl create -f sc13_access_visi_setup.yaml
 tridentbackendconfig.trident.netapp.io/backend-sc13-config1 created

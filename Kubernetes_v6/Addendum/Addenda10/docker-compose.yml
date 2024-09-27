@@ -6,7 +6,7 @@ networks:
 
 services:
   server:
-    image: gitea/gitea:1.14.2
+    image: registry.demo.netapp.com/gitea/gitea:1.14.2
     container_name: gitea
     environment:
       - USER_UID=1000
@@ -37,7 +37,7 @@ services:
       - db
 
   db:
-    image: mysql:8.0.0
+    image: registry.demo.netapp.com/mysql:8.0.0
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=gitea
