@@ -1,25 +1,5 @@
 #!/bin/bash
 
-# OPTIONAL PARAMETERS: 
-# PARAMETER1: Docker hub login
-# PARAMETER2: Docker hub password
-
-if [[ $# -ne 2 ]]; then
-  TOKEN=$(curl "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-  RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
-
-  if [[ $RATEREMAINING -lt 20 ]]; then
-      echo "---------------------------------------------------------------------------------------------------------------------------"
-      echo "- Your anonymous login to the Docker Hub does not have many pull requests left ($RATEREMAINING). Consider using your own credentials"
-      echo "---------------------------------------------------------------------------------------------------------------------------"
-      echo
-      echo "Please restart the script with the following parameters:"
-      echo " - Parameter1: Docker hub login"
-      echo " - Parameter2: Docker hub password"
-      exit 0
-  fi
-fi
-
 echo "#######################################################################################################"
 echo " 1. Install Gitea on RHEL5"
 echo " 2. Install ArgoCD on Kubernetes"
@@ -32,21 +12,15 @@ echo " 8. Update .bashrc (if not already done)"
 echo "#######################################################################################################"
 
 # Install Gitea
-if [[ $# -eq 2 ]]; then
-  sh ../../Addendum/Addenda10/all_in_one.sh $1 $2
-else
-  sh ../../Addendum/Addenda10/all_in_one.sh
-fi
+sh ../../Addendum/Addenda10/all_in_one.sh
+
 # Install ArgoCD
 sh ../../Addendum/Addenda11/all_in_one.sh
 
 # Images Mgmt
 cd ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario18
-if [[ $# -eq 2 ]]; then
-  sh push_scenario_images_to_private_repo.sh $1 $2
-else
-  sh push_scenario_images_to_private_repo.sh
-fi
+sh push_scenario_images_to_private_repo.sh
+
 # Trident uninstall
 sh trident_uninstall.sh
 
