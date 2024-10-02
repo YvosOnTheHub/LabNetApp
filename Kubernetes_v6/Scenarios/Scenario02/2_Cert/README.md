@@ -25,16 +25,14 @@ TL;DR
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
-```diff
-IMPORTANT:
+**IMPORTANT**:
 As the _secret_ contains the _key_ & the TBC contains the _cert_, updating credentials cannot be done by simply updating both objects.  
-The method to update a backend certificate goes as follows:
+The method to update a backend certificate goes as follows:  
 - generate a new certificate, add it to ONTAP, encrypt it in base64 as well as the key  
 - create a new secret with the new key  
 - update the TBC with the new certificate, as well as the name of the new secret
 
 If you were to update the existing secret, the TBC would try to validate the configuration & fail, as the existing certificate does not work with the new key.
-```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
