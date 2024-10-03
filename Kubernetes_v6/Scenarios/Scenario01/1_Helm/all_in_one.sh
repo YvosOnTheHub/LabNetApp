@@ -77,8 +77,8 @@ echo "##########################################################################
 echo "#"
 echo "#          TRIDENT 24.06.1 LAB ISSUE:"
 echo "#"
-echo "#" You must run the following command on both Windows nodes for the installation to complete:
+echo "# You must run the following command on both Windows nodes for the installation to complete:"
 echo "#"
-echo "#" crictl pull --creds registryuser:Netapp1! registry.demo.netapp.com/trident:24.06.1
+echo "# crictl pull --creds registryuser:Netapp1! registry.demo.netapp.com/trident:24.06.1"
 echo "#"
 echo "#######################################################################################################"
