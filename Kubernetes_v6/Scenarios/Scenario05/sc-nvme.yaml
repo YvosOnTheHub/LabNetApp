@@ -6,4 +6,5 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-san"
   sanType: "nvme"
+  fsType: "ext4"
 allowVolumeExpansion: true
