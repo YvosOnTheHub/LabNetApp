@@ -13,6 +13,7 @@ sh scenario06_pull_images.sh my_login my_password
 
 As this lab is configured to serve both iSCSI & NVMe workloads, you will see in this chapter both protocols:  
 - [iSCSI](1_iSCSI): Create an application that mounts an iSCSI LUN  
-- [NVMe over TCP](2_NVMe): Create an application that mounts a NVMe namespace  
+- [iSCSI with LUKS](2_iSCSI_LUKS): Create an application that mounts an encrypted iSCSI LUN  
+- [NVMe over TCP](3_NVMe): Create an application that mounts a NVMe namespace  
 
 You can also go back to the [FrontPage](https://github.com/YvosOnTheHub/LabNetApp).

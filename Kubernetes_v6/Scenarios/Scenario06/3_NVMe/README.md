@@ -24,7 +24,7 @@ NAME                             READY   STATUS    RESTARTS   AGE
 pod/blog-nvme-59646cffd7-nxnb6   1/1     Running   0          50m
 
 NAME                TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
-service/blog-nvme   NodePort   10.104.73.166   <none>        80:30182/TCP   50m
+service/blog-nvme   NodePort   10.104.73.166   <none>        80:30183/TCP   50m
 
 NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/blog-nvme   1/1     1            1           50m
@@ -41,7 +41,7 @@ persistentvolumeclaim/blog-content-nvme   Bound    pvc-571eb30e-0e93-4c61-acf7-a
 It takes a few seconds for the POD to be in a *running* state
 The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30182.
 Give it a try !
-=> `http://192.168.0.63:30182`
+=> `http://192.168.0.63:30183`
 
 ## C. Explore the app container
 

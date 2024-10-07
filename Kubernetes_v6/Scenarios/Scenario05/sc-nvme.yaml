@@ -7,4 +7,5 @@ parameters:
   backendType: "ontap-san"
   sanType: "nvme"
   fsType: "ext4"
+  storagePools: 'BackendForNVMe:.*'
 allowVolumeExpansion: true

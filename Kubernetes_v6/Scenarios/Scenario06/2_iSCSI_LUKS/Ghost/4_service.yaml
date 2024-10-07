@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: blog-iscsi
-  namespace: ghost-iscsi
+  namespace: ghost-iscsi-luks
 spec:
   type: NodePort
   selector:
@@ -11,4 +11,4 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 2368
-    nodePort: 30181
+    nodePort: 30182

@@ -1,16 +1,21 @@
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
-  name: backend-tbc-iscsi-eco
+  name: backend-tbc-iscsi-luks
   namespace: trident
 spec:
   version: 1
-  storageDriverName: ontap-san-economy
-  backendName: BackendForiSCSIEco
+  storageDriverName: ontap-san
+  backendName: BackendForiSCSILUKS
   managementLIF: 192.168.0.137
-  storagePrefix: san_eco_
+  storagePrefix: san_luks_
   sanType: iscsi
   svm: sansvm
   useCHAP: true
+  defaults:
+    snapshotReserve: '10'
+    luksEncryption: "true"
+  labels:
+    luks: "true"
   credentials:
     name: secret-iscsi-svm-creds

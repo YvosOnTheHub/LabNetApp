@@ -5,7 +5,7 @@
 **GOAL:**  
 We will deploy the same App as in the scenario 4, but instead of using File Storage, we will use Block Storage with the iSCSI protocol.
 
-<p align="center"><img src="Images/scenario6.jpg"></p>
+<p align="center"><img src="../Images/scenario6_iscsi.jpg"></p>
 
 ## A. Create the app
 

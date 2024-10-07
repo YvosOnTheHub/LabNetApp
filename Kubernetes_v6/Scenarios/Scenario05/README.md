@@ -92,7 +92,7 @@ We also need a new storage class to complete the process.
 $ kubectl create -f backend-san-eco.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-iscsi-eco created
 $ kubectl create -f sc-iscsi-ontap-san-eco.yaml
-storageclass.storage.k8s.io/storage-class-san-economy created
+storageclass.storage.k8s.io/storage-class-iscsi-economy created
 
 $ kubectl get -n trident tbc backend-tbc-iscsi-eco
 NAME                    BACKEND NAME         BACKEND UUID                           PHASE   STATUS
@@ -121,7 +121,49 @@ sansvm       default                CHAP   local     uh2a1io325bFFILn   iJF4sgjr
 You find here both usernames set in the backend parameters.  
 Now, you can only see the CHAP configuration on the host once a POD has mounted a PVC, which you will do in the Scenario06.
 
-## D. What's next
+## D. LUKS
+
+You can use LUKS (Linux Unified Key Setup) to encrypt the data on the ONTAP-SAN & ONTAP-SAN-ECONOMY volumes.  
+
+The main requirement for such configuration is to install Cryptsetup (https://gitlab.com/cryptsetup/cryptsetup) on the worker nodes.  
+The LoD nodes already have this module installed:
+```bash
+$ cryptsetup --version
+cryptsetup 2.6.0 flags: UDEV BLKID KEYRING FIPS KERNEL_CAPI PWQUALITY
+```
+It is also recommended to check if the worker nodes support encryption instructions:  
+```bash
+grep "aes" /proc/cpuinfo
+```
+
+Activating LUKS in a Trident backend is done with one option in the _spec_:
+```yaml
+  defaults:
+    luksEncryption: "true"
+```
+
+The corresponding storage class contains 2 extra parameters:
+```yaml
+csi.storage.k8s.io/node-stage-secret-name: luks-${pvc.name}
+csi.storage.k8s.io/node-stage-secret-namespace: ${pvc.namespace}
+```
+The _node-stage-secret-namespace_ parameter indicates what namespace contains the LUKS secret.  
+In our example, the secret is in the same namespace as the PVC that requires encryption.  
+The _node-stage-secret-name_ parameter defines the secret name format, which in this example uses the PVC name.  
+
+Let's apply that configuration:  
+```bash
+$ kubectl create -f backend-san-luks.yaml
+tridentbackendconfig.trident.netapp.io/backend-tbc-iscsi-luks created
+$ kubectl create -f sc-iscsi-ontap-san-luks.yaml
+storageclass.storage.k8s.io/storage-class-iscsi-luks created
+
+$ kubectl get -n trident tbc backend-tbc-iscsi-luks
+NAME                     BACKEND NAME          BACKEND UUID                           PHASE   STATUS
+backend-tbc-iscsi-luks   BackendForiSCSILUKS   0f908faf-ec2f-4933-b9f7-ef28f8149eeb   Bound   Success
+```
+
+## E. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 - [Scenario06](../Scenario06): Deploy your first app with Block storage  

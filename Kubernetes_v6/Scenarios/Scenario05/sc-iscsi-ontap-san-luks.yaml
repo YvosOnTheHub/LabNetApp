@@ -1,0 +1,17 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-iscsi-luks
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+  fsType: "ext4"
+  storagePools: 'BackendForiSCSILUKS:.*'
+  selector: "luks=true"
+  csi.storage.k8s.io/node-stage-secret-name: luks-${pvc.name}
+  csi.storage.k8s.io/node-stage-secret-namespace: ${pvc.namespace}
+mountOptions:
+   - discard
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true

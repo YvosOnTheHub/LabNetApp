@@ -7,4 +7,5 @@ parameters:
   backendType: "ontap-san"
   sanType: "iscsi"
   fsType: "ext4"
+  storagePools: 'BackendForiSCSI:.*'
 allowVolumeExpansion: true
