@@ -5,12 +5,12 @@
 **GOAL:**  
 We will deploy the same App as in the previous chapter, but this time, LUKS is going to be used to encrypt the content of the LUN.
 
-<p align="center"><img src="Images/scenario6_luks.png"></p>
+<p align="center"><img src="../Images/scenario6_luks.png"></p>
 
 ## A. Create the app
 
 We will create this app in its own namespace (also very useful to clean up everything).  
-We consider that the ONTAP-SAN backend for iSCSI & storage class have already been created. ([cf Scenario05](../Scenario05))
+We consider that the ONTAP-SAN backend for iSCSI & storage class (both compatible with LUKS) have already been created. ([cf Scenario05](../Scenario05))
 
 ```bash
 $ kubectl create -f Ghost/
@@ -37,7 +37,7 @@ secret/luks-blog-content-iscsi   Opaque   2      2m3s
 ## B. Access the app
 
 It takes a few seconds for the POD to be in a *running* state
-The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30181.
+The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30182.
 Give it a try !
 => `http://192.168.0.63:30182`
 

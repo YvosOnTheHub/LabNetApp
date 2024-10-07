@@ -39,7 +39,7 @@ persistentvolumeclaim/blog-content-nvme   Bound    pvc-571eb30e-0e93-4c61-acf7-a
 ## B. Access the app
 
 It takes a few seconds for the POD to be in a *running* state
-The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30182.
+The Ghost service is configured with a NodePort type, which means you can access it from every node of the cluster on port 30183.
 Give it a try !
 => `http://192.168.0.63:30183`
 
