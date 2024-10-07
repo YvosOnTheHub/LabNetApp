@@ -34,6 +34,10 @@ NAME                             TYPE     DATA   AGE
 secret/luks-blog-content-iscsi   Opaque   2      2m3s
 ```
 
+Notice that there is a secret associated to this app.  
+This object contains the passphrase to encrypt/decrypt the data in the PVC.  
+Also, its name follows the template defined in the storage class (ie node-stage-secret-name: luks-${pvc.name}).  
+
 ## B. Access the app
 
 It takes a few seconds for the POD to be in a *running* state
@@ -70,8 +74,12 @@ $ kubectl get -n ghost-iscsi-luks pod -o wide
 NAME                          READY   STATUS    RESTARTS   AGE    IP              NODE    NOMINATED NODE   READINESS GATES
 blog-iscsi-788d56ccc5-gfk9z   1/1     Running   0          5m8s   192.168.28.80   rhel2   <none>           <none>
 ```
-Now that we know that the app runs on RHEL2, let's use the lsblk tool to read the configration of the LUN:  
+Now that we know that the app runs on RHEL2, let's use the **lsblk** & **blkid** tools to read the configration of the LUN:  
 ```bash
+$ ssh rhel2 blkid -t TYPE=crypto_LUKS -o device
+/dev/sdc
+/dev/mapper/3600a0980774f6a34712b572d41767173
+
 ssh rhel2 lsblk /dev/sdb /dev/sdc
 NAME                                                       MAJ:MIN RM SIZE RO TYPE  MOUNTPOINTS
 sdb                                                          8:16   0   5G  0 disk
