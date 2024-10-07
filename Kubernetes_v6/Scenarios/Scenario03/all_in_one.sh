@@ -4,6 +4,12 @@ cd ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario03
 
 echo
 echo "#######################################################################################################"
+echo "Grafana image management (use local registry for Docker image)"
+echo "#######################################################################################################"
+sh scenario03_push_images.sh 
+
+echo
+echo "#######################################################################################################"
 echo "Create ConfigMap for Dashboards"
 echo "#######################################################################################################"
 kubectl create configmap -n monitoring cm-trident-dashboard --from-file=2_Grafana/Dashboards/
