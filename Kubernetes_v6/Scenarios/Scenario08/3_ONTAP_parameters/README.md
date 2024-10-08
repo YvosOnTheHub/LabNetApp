@@ -6,8 +6,7 @@ An ONTAP admin can create various tenants (ie SVM) and apply parameters to contr
 - the number of FlexVol the SVM can host
 - the capacity the SVM can use
 
-The first parameter can be demonstrated and tested in this lab.  
-However, the second feature is available with ONTAP 9.13, which would require a few uprades on this lab.  
+Both features can be tested on this lab.  
 
 ## A. Control the number of FlexVols
 
