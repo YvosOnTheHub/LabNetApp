@@ -141,5 +141,5 @@ echo
 TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
 RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
-echo "# Your anonymous login to the Docker Hub does currently has $RATEREMAINING pulls left."
+echo "# Your anonymous login to the Docker Hub currently has $RATEREMAINING pulls left."
 echo
