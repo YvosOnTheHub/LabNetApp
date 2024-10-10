@@ -5,7 +5,7 @@ if [[ $(dnf list installed | grep ansible-core | wc -l) -eq 0 ]]; then
   
   dnf install -y python-pip
   pip install ansible-core==2.15.12 netapp-lib
-  ansible-galaxy collection install netapp.ontap --ignore-certs
+  ansible-galaxy collection install netapp.ontap:==22.12.0 --ignore-certs
 fi
 
 echo
