@@ -107,8 +107,7 @@ https://docs.netapp.com/us-en/trident/trident-use/ontap-san-prep.html#authentica
 
 CHAP authentication is optional & disabled by default. In this lab, both iSCSI SAN backends use CHAP.  
 
-You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)
-
+You can check that the CHAP configuration has been set correctly with the following command (password: Netapp1!)  
 ```bash
 $ ssh -l admin 192.168.0.101 iscsi security show
 Password:

@@ -110,6 +110,10 @@
         - "user access_key: {{ s3_creds.access_key }} "
         - "user secret_key: {{ s3_creds.secret_key }} "
 
+  - name: Pause for 10 seconds (to avoid bucket creation failure)
+    ansible.builtin.pause:
+      seconds: 10
+
   - name: Create S3 bucket with a policy
     netapp.ontap.na_ontap_s3_buckets:
       state:                        present
