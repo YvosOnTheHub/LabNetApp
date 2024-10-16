@@ -30,7 +30,7 @@ spec:
     kubernetes.io/os: linux
   containers:
   - name: busybox
-    image: busybox:1.35
+    image: registry.demo.netapp.com/busybox:1.35.0
     args:
      - sleep
      - "infinity"

@@ -80,7 +80,7 @@ NAME            AGE
 secondary-pvc   33s
 ```
 
-Create the secondary RWX PVC  
+Create the secondary RWX PVC (**the storage class must be the same one as the primary PVC**):  
 ```bash
 $ kubectl create -f secondary-pvc.yaml
 persistentvolumeclaim/secondary-pvc created
