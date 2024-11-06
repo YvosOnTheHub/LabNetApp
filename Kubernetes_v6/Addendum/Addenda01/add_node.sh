@@ -13,8 +13,11 @@ fi
 KUBEADMJOIN=$(kubeadm token create --print-join-command)
 ssh -o "StrictHostKeyChecking no" root@$1 $KUBEADMJOIN
 
+frames="/ | \\ -"
 while [ $(kubectl get nodes | grep NotReady | wc -l) -eq 1 ]
 do
-  echo "sleeping a bit - waiting for all nodes to be ready ..."
-  sleep 5
+  for frame in $frames; do
+    echo "sleeping a bit - waiting for all nodes to be ready ..."
+    sleep 0.5; printf "\rsleeping a bit - waiting for all nodes to be ready ... $frame" 
+  done
 done
