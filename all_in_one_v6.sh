@@ -6,7 +6,7 @@ echo "#"
 echo "# ALL IN ONE SCRIPT THAT PERFORMS THE FOLLOWING TASKS:"
 echo "#"
 echo "# 1. UPGRADE HELM"
-echo "# 2. UPGRADE TRIDENT OPERATOR TO 24.06.1 WITH HELM"
+echo "# 2. UPGRADE TRIDENT OPERATOR TO 24.10.0 WITH HELM"
 echo "# 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT"
 echo "# 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT"
 echo "# 5. MONITORING CUSTOMIZATION & HARVEST"
@@ -34,7 +34,7 @@ rm -f helm-v3.15.3-linux-amd64.tar.gz
 echo
 echo "#######################################################################################################"
 echo "#"
-echo "# 2. UPGRADE TRIDENT OPERATOR TO 24.06.1 WITH HELM"
+echo "# 2. UPGRADE TRIDENT OPERATOR TO 24.10.0 WITH HELM"
 echo "#"
 echo "#######################################################################################################"
 echo

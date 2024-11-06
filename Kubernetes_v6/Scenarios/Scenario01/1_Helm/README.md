@@ -18,20 +18,26 @@ NAME    NAMESPACE       REVISION        UPDATED                                 
 trident trident         1               2024-04-27 21:03:54.470749763 +0000 UTC deployed        trident-operator-100.2402.0     24.02.0
 ```
 
-Next, the exercise will use the local private repository (cd host _rhel4_). If not done yet, we first need to pull the right Trident images, tag them & finally push them to _registry.demo.netapp.com_ (cf script _scenario01_pull_images.sh_ in the Scenario01 folder).
-
+Next, the exercise will use the local private repository. If not done yet, we first need to pull the right Trident images, tag them & finally push them to _registry.demo.netapp.com_ (cf script _scenario01_pull_images.sh_ in the Scenario01 folder):  
 ```bash
 $ sh ../scenario01_pull_images.sh 
+```
 
+Also, this registry requires credentials to retrieve images. The linux nodes already have them saved locally, however the windows nodes do not have that information. Hence, we will create a secret so that the Trident operator can pull images locally:  
+```bash
+kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident --docker-server=registry.demo.netapp.com
+secret/regcred created
+```
+We are now ready to proceed with the upgrade:  
+```bash
 $ helm repo update netapp-trident
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-
-$ helm upgrade trident netapp-trident/trident-operator --version 100.2406.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.06.0,operatorImage=registry.demo.netapp.com/trident-operator:24.06.1,tridentImage=registry.demo.netapp.com/trident:24.06.1,tridentSilenceAutosupport=true,windows=true
+$ helm upgrade trident netapp-trident/trident-operator --version 100.2410.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.10.0,operatorImage=registry.demo.netapp.com/trident-operator:24.10.1,tridentImage=registry.demo.netapp.com/trident:24.10.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
-LAST DEPLOYED: Mon Jul 29 06:52:24 2024
+LAST DEPLOYED: Mon Nov 4 06:52:24 2024
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 1
@@ -54,40 +60,27 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2024-07-29 06:52:24.715785932 +0000 UTC deployed        trident-operator-100.2406.1     24.06.1
+trident trident         2               2024-11-04 10:05:13.138636676 +0000 UTC deployed        trident-operator-100.2410.0     24.10.0
 ```
 
-Also quite easy !  
-Let's check what we have:
+Quite easy !  
+The upgrade takes less than 5 minutes to complete.  
 
+Once finished, let's check what we have:  
 ```bash
 $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 24.06.1        | 24.06.1        |
+| 24.10.0        | 24.10.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v24.06.1
+  Version:    v24.10.0
 ```
-
-<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>    
-
-There is currently an issue with Trident & the Windows nodes.  
-You can notice that both Trident windows pods are in a _ImagePullBackOff/CrashLoopBAckOff_ status.  
-This is because the nodes cannot authenticate to the private registry.  
-
-In order for the installation to complete you MUST run the following on both windows hosts in order to manually pull the Trident image:  
-```bash
-crictl pull --creds registryuser:Netapp1! registry.demo.netapp.com/trident:24.06.1
-```
-
-<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
-
 
 ## What's next
 

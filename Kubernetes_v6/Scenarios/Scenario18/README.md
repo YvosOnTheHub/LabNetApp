@@ -94,7 +94,7 @@ It takes a few minutes to complete. Let's check that Trident has been indeed ins
 ```bash
 $ kubectl get tver -n trident
 NAME      VERSION
-trident   24.06.0
+trident   24.06.1
 ```
 
 By the way, these ArgoCD apps are actually Kubernetes objects:  
@@ -244,10 +244,10 @@ blog-content   Bound    pvc-b01c941a-4fd8-4a73-959e-846183c867eb   10Gi       RW
 This scenario was built around Trident 24.06.0. With the availability of Trident 24.06.1 we also test its upgrade mechanism.  
 Aside from the images versions, there are some other minor changes to apply. Let's go through them:  
 ```bash
-sed -i 's/24.06.0/24.06.1/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
-sed -i 's/trident:24.06.0/trident:24.06.1/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
+sed -i 's/24.06.1/24.10.0/' ~/Repository/Infrastructure/Trident-Installer/bundle.yaml
+sed -i 's/trident:24.06.1/trident:24.10.0/' ~/Repository/Infrastructure/Trident-Installer/trident-orchestrator.yaml
 cd ~/Repository
-git adcom "trident update to 24.06.1"
+git adcom "trident update to 24.10.0"
 git push
 ```
 
@@ -261,7 +261,7 @@ After a few seconds (wait for the pods to restart), the App will be _Synced_ aga
 ```bash
 kubectl get tver -n trident
 NAME      VERSION
-trident   24.06.1
+trident   24.10.0
 ```
 
 There you go, you just upgraded Trident.

@@ -1,12 +1,11 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 24.06.0
+# SCENARIO 1: Trident upgrade to 24.10.0
 #########################################################################################
 
 **GOAL:**  
 This scenario is intended to see how easy it is to upgrade Trident.
 
-Currently, Trident 24.02.0 is installed in this lab:
-
+Currently, Trident 24.02.0 is installed in this lab:  
 ```bash
 $ kubectl get tver -n trident
 NAME      VERSION
@@ -18,11 +17,11 @@ Technically, if you decide to install Trident with Helm, you would not even need
 ```bash
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 24.06.1 && cd 24.06.1
-wget https://github.com/NetApp/trident/releases/download/v24.06.1/trident-installer-24.06.1.tar.gz
-tar -xf trident-installer-24.06.1.tar.gz
+mkdir 24.10.0 && cd 24.10.0
+wget https://github.com/NetApp/trident/releases/download/v24.10.0/trident-installer-24.10.0.tar.gz
+tar -xf trident-installer-24.10.0.tar.gz
 rm -f /usr/bin/tridentctl
-ln -sf /24.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+ln -sf /root/24.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 ```
 
 :mag:  
@@ -31,8 +30,7 @@ ln -sf /24.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
 :mag_right:  
 
 Trident 20.10 introduced the support of the **CSI Topology** feature which allows the administrator to manage a location aware infrastructure.  
-However, there are 2 requirements for this to work:
-
+However, there are 2 requirements for this to work:  
 - You need at least Kubernetes 1.17 (:heavy_check_mark:!)  
 - Somes labels (region & zone) need to be added to the Kubernetes nodes before Trident is installed.
 
@@ -45,7 +43,6 @@ rhel2   Ready    <none>          73d   v1.29.4   us-east1   us-east1-b
 rhel3   Ready    control-plane   73d   v1.29.4   us-east1   us-east1-a
 win1    Ready    <none>          73d   v1.29.4
 win2    Ready    <none>          73d   v1.29.4
-
 ```
 
 If they are not, you can create them with the following commands:  

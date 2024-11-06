@@ -25,7 +25,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 Scenarios  
 ---------  
 [0.](Kubernetes_v6/Scenarios/Scenario00) Best Practices & Advices  
-[1.](Kubernetes_v6/Scenarios/Scenario01) Upgrade/Install Trident (24.06.1)  
+[1.](Kubernetes_v6/Scenarios/Scenario01) Upgrade/Install Trident (24.10.0)  
 [2.](Kubernetes_v6/Scenarios/Scenario02) NAS backends for Trident & Storage Classes for Kubernetes  
 [3.](Kubernetes_v6/Scenarios/Scenario03) Prometheus, Grafana & Harvest integration  
 [4.](Kubernetes_v6/Scenarios/Scenario04) Create your first NAS Apps  

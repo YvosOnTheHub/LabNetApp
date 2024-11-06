@@ -6,7 +6,7 @@ Trident 24.06.1 introduced the possibility to create CSI Snapshots for Qtree bas
 We will see in this scenario what you can or cannot do with such snapshot.  
 
 In order for this lab to succeed, you must have first gone through the following:  
-- [Scenario01](../../../Scenario01) Upgrade Trident to 24.06.1
+- [Scenario01](../../../Scenario01) Upgrade Trident to 24.10.0
 - [Scenario02](../../../Scenario02/1_Local_User/) Create the ONTAP-NAS-ECONOMY Trident backend & storage class  
 
 You can find a shell script in this directory _scenario13_busybox_pull_images.sh_ to pull images utilized in this scenario if needed:  

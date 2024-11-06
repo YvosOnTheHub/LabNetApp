@@ -10,10 +10,10 @@ The _lazy_ way consists into 2 steps **on each Kubernetes host**:
 - log into Docker Hub with the command _podman login_
 - pull all the images you need for your demos or tests with the command _podman image pull_
 
-Here is list of Docker Hub images used in this lab with Trident 24.06.1:
-- netapp/trident:23.07.1
-- netapp/trident-operator:23.07.1
-- netapp/trident-autosupport:23.07.0
+Here is list of Docker Hub images used in this lab with Trident 24.10.0:
+- netapp/trident:24.10.0
+- netapp/trident-operator:24.10.0
+- netapp/trident-autosupport:24.10.0
 - ghost:2.6-alpine
 - ghost:3.13-alpine
 - mysql:5.7

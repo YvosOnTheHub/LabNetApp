@@ -32,23 +32,29 @@ helm uninstall trident -n trident
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 24.06.1"
+echo "Download Trident 24.10.0"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 24.06.1 && cd 24.06.1
-wget https://github.com/NetApp/trident/releases/download/v24.06.1/trident-installer-24.06.1.tar.gz
-tar -xf trident-installer-24.06.1.tar.gz
-ln -sf /root/24.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 24.10.0 && cd 24.10.0
+wget https://github.com/NetApp/trident/releases/download/v24.10.0/trident-installer-24.10.0.tar.gz
+tar -xf trident-installer-24.10.0.tar.gz
+ln -sf /root/24.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
-echo "Install new Trident Operator (24.06.1)"
+echo "Create a secret for the lab registry"
+echo "#######################################################################################################"
+kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident --docker-server=registry.demo.netapp.com
+
+echo
+echo "#######################################################################################################"
+echo "Install new Trident Operator (24.10.0)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/24.06.1/trident-installer/deploy/bundle_post_1_25.yaml
-kubectl create -f ~/24.06.1/trident-installer/deploy/bundle_post_1_25.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/24.10.0/trident-installer/deploy/bundle_post_1_25.yaml
+kubectl create -f ~/24.10.0/trident-installer/deploy/bundle_post_1_25.yaml
 
 cat << EOF | kubectl apply -f -
 apiVersion: trident.netapp.io/v1
@@ -58,10 +64,12 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:24.06.1
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:24.06.0
+  tridentImage: registry.demo.netapp.com/trident:24.10.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:24.10.0
   silenceAutosupport: true
   windows: true
+  imagePullSecrets:
+  - regcred
 EOF
 
 echo
@@ -70,13 +78,13 @@ echo "Check (it takes about 3 to 4 minutes for the upgrade to proceed)"
 echo "#######################################################################################################"
 
 frames="/ | \\ -"
-while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '24.06.1' ];do
+while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '24.10.0' ];do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
 done
 echo
-while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '6/6' | wc -l) -ne 5 ]; do
+while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '3/3' -e '6/6' | wc -l) -ne 7 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
@@ -84,14 +92,3 @@ done
 
 echo
 tridentctl -n trident version
-
-echo
-echo "#######################################################################################################"
-echo "#"
-echo "#          TRIDENT 24.06.1 LAB ISSUE:"
-echo "#"
-echo "# You must run the following command on both Windows nodes for the installation to complete:"
-echo "#"
-echo "# crictl pull --creds registryuser:Netapp1! registry.demo.netapp.com/trident:24.06.1"
-echo "#"
-echo "#######################################################################################################"

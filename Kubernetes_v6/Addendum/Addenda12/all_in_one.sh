@@ -190,10 +190,10 @@ echo "##########################################################################
 echo
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2406.1 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:24.06.1 \
---set tridentImage=registry.demo.netapp.com/trident:24.06.1 \
+helm install trident netapp-trident/trident-operator --version 100.2410.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.10.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:24.10.0 \
+--set tridentImage=registry.demo.netapp.com/trident:24.10.0 \
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"
