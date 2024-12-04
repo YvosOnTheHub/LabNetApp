@@ -18,6 +18,7 @@ According to Kyverno website (http://kyverno.io):
 >>>Kyverno allows platform engineers to automate security, compliance, and best practices validation and deliver secure self-service to application teams.  
 
 Policies provided by Kyverno can also be applied in Service Providers environments offering Namespace-as-a-Service platforms.  
+That way full control over access is control at the cluster level.  
 
 Let's see this in action and how you can control storage classes access:  
 <p align="center"><img src="Images/Kyverno_High_Level_architecture.png" width="768"></p>
