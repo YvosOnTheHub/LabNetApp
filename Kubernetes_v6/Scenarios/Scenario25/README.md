@@ -2,7 +2,7 @@
 # SCENARIO 25: Storage & Policy Management  
 #########################################################################################
 
-When it comes to storage consumption, a user or an application will most of time create Persistent Volume Claims (PVC) against specific Storage Classes. Each class will have its own set of parameters and configuration.  
+When it comes to storage consumption, a user or an application will most of the time create Persistent Volume Claims (PVC) against specific Storage Classes. Each class will have its own set of parameters and configuration.  
 
 While PVCs are namespace bound resources, Storage Classes are cluster wide ones.  
 Said differently, all users & namespaces can see and access all storage classes by default.  
@@ -13,9 +13,9 @@ Enters Policy Management.
 Let's see how you can use Kyverno to limit storage classes access.
 
 According to Kyverno website (http://kyverno.io):  
-_Kyverno (Greek for “govern”) is a cloud native policy engine. It was originally built for Kubernetes and now can also be used outside of Kubernetes clusters as a unified policy language.
+>>>Kyverno (Greek for “govern”) is a cloud native policy engine. It was originally built for Kubernetes and now can also be used outside of Kubernetes clusters as a unified policy language.
 
-Kyverno allows platform engineers to automate security, compliance, and best practices validation and deliver secure self-service to application teams._  
+>>>Kyverno allows platform engineers to automate security, compliance, and best practices validation and deliver secure self-service to application teams.  
 
 Policies provided by Kyverno can also be applied in Service Providers environments offering Namespace-as-a-Service platforms.  
 
@@ -73,6 +73,7 @@ configmap/storage-classes-test created
 ```
 The _storage-classes-prod_ configMap contains _storage-class-nfs_ & _storage-class-iscsi_.  
 The _storage-classes-test_ configMap contains _storage-class-nas-economy_ & _storage-class-iscsi-economy_.  
+
 In this context, you could apply different SLA per environment.  
 For instance, the _PROD_ volumes can be protected with snapshots or mirroring.  
 The _TEST_ environment, which does not require any protection, will also use up fewer ONTAP FlexVol.  
