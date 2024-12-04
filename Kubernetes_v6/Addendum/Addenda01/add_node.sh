@@ -21,3 +21,7 @@ do
     sleep 0.5; printf "\rsleeping a bit - waiting for all nodes to be ready ... $frame" 
   done
 done
+
+kubectl label node rhel4 "topology.kubernetes.io/region=east"
+kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
+kubectl delete -n trident pod -l app=controller.csi.trident.netapp.io

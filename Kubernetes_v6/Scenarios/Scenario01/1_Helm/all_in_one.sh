@@ -22,8 +22,8 @@ kubectl label node rhel2 "topology.kubernetes.io/zone=west1" --overwrite
 kubectl label node rhel3 "topology.kubernetes.io/zone=east1" --overwrite
 
 if [ $(kubectl get nodes | wc -l) = 7 ]; then
-  kubectl label node rhel4 "topology.kubernetes.io/region=east"
-  kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
+  kubectl label node rhel4 "topology.kubernetes.io/region=east" --overwrite
+  kubectl label node rhel4 "topology.kubernetes.io/zone=east1" --overwrite
 fi      
 
 echo

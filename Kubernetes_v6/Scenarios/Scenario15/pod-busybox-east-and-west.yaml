@@ -4,6 +4,8 @@ metadata:
   name: busybox-east
   namespace: topology
 spec:
+  nodeSelector:
+    kubernetes.io/os: linux
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -34,6 +36,8 @@ metadata:
   name: busybox-west
   namespace: topology
 spec:
+  nodeSelector:
+    kubernetes.io/os: linux
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

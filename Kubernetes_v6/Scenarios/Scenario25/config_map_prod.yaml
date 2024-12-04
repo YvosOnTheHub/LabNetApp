@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-classes-prod
+data:
+  allowed-sc: '["storage-class-nfs", "storage-class-iscsi"]'

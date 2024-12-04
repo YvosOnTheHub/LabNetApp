@@ -24,6 +24,9 @@ Also, if no action has been made with regards to the container images, you can f
 sh scenario15_pull_images.sh
 ```
 
+You may want to add an extra node (_RHEL4_) to the Kubernetes cluster to have 2 nodes on each zone.  
+You can follow the procedure described in the [Addenda01](../../Addendum/Addenda01) to perform that operation.  
+
 Let's first check what labels are set on the nodes:
 ```bash
 $ kubectl get nodes -l kubernetes.io/os=linux -o=custom-columns=NODE:.metadata.name,REGION:".metadata.labels.topology\.kubernetes\.io/region",ZONE:".metadata.labels.topology\.kubernetes\.io/zone"

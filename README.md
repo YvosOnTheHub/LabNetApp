@@ -49,6 +49,7 @@ Scenarios
 [22.](Kubernetes_v6/Scenarios/Scenario22) Cross Namespace Volume Access  
 [23.](Kubernetes_v6/Scenarios/Scenario23) Naming conventions  
 [24.](Kubernetes_v6/Scenarios/Scenario24) Migrating volumes (snapmirror integration)  
+[25.](Kubernetes_v6/Scenarios/Scenario25) Storage & Policy Management  
 
 Addendum
 --------

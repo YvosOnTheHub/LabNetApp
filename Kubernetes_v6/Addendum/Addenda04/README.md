@@ -33,13 +33,6 @@ EOT
 ```
 
 We will now make sure that Ansible works & each node can be used.  
-Ansible will use SSH to test connectivity. We first need to exchange keys between nodes. Enter the following commands and keep the default values
-```bash
-ssh-keygen
-ssh-copy-id root@192.168.0.61
-ssh-copy-id root@192.168.0.62
-```
-We can now test connectivity with no issues.  
 ```bash
 $ ansible -m ping kubernetes
 rhel2 | SUCCESS => {

@@ -1,0 +1,43 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: pvc-validation-against-sc
+  annotations:
+    policies.kyverno.io/title: PVC creation validation against SC
+    policies.kyverno.io/category: Ownership
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/subject: PersistentVolumeClaim
+    policies.kyverno.io/description: >-
+      Rejects a PVC if the storage class is not allowed for a given namespace
+spec:
+  validationFailureAction: Enforce
+  background: false
+  rules:
+  - name: validate-storage-class
+    context:
+      - name: allowedstorageclasses
+        apiCall:
+          urlPath: "/api/v1/namespaces/{{ request.namespace }}"
+          jmesPath: metadata.labels.allowedStorageClasses
+      - name: storageclassesfilter
+        configMap:
+          name: "{{ allowedstorageclasses }}"
+          namespace: default
+    match:
+      all:
+        - resources:
+            kinds:
+            - PersistentVolumeClaim
+            operations:
+            - CREATE
+            - UPDATE
+    validate:
+      message: >
+        Creating PVC in the "{{request.namespace}}" namespace against the "{{request.object.spec.storageClassName}}" storage class is not allowed.
+        Only the following storage classes are allowed {{ storageclassesfilter.data."allowed-sc" }}
+      deny:
+        conditions:
+          any:
+            - key: "{{ request.object.spec.storageClassName }}"
+              operator: AnyNotIn
+              value: "{{ storageclassesfilter.data.\"allowed-sc\" | parse_json(@) }}"
