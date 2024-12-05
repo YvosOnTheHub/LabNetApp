@@ -63,7 +63,9 @@ PVC are namespace bound objects, created against a specific storage class.
 Here is how we will control storage classes access:  
 - ConfigMaps (_storage-classes-prod_ & _storage-classes-test_) are created with a list of allowed storage classes  
 - An annotation _allowedStorageClasses_ is set in namespaces pointing to the configMap listing namespaces that can be used for PVC  
-- A new ClusterPolicy is created that dynamically allows or denies inconming PVC requests  
+- A new ClusterPolicy is created that dynamically allows or denies incoming PVC requests  
+
+Note that since there is already a policy avoiding PVC creation in the default namespace, a pre-condition is added to apply this new policy to all namespaces except the default one.  
 
 Let's start with the configMaps:  
 ```bash

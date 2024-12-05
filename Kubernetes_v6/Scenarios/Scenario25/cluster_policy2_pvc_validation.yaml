@@ -31,6 +31,11 @@ spec:
             operations:
             - CREATE
             - UPDATE
+    preconditions:
+      any:
+      - key: "{{ request.namespace }}"
+        operator: NotEquals
+        value: default
     validate:
       message: >
         Creating PVC in the "{{request.namespace}}" namespace against the "{{request.object.spec.storageClassName}}" storage class is not allowed.
