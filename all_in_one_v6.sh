@@ -123,6 +123,7 @@ ping -c1 -W1 -q rhel4 &>/dev/null
 if [[ $? == 1 ]];then
   echo "#################################################################"
   echo "# You first need to start RHEL4 from the LoD MyLabs page."
+  echo "# Once the host is up&running, restart this script."
   echo "#################################################################"
   exit 0
 fi
@@ -130,6 +131,7 @@ ping -c1 -W1 -q rhel5 &>/dev/null
 if [[ $? == 1 ]];then
   echo "#################################################################"
   echo "# You first need to start RHEL5 from the LoD MyLabs page"
+  echo "# Once the host is up&running, restart this script."
   echo "#################################################################"
   exit 0
 fi
