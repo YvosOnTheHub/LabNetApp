@@ -65,5 +65,5 @@ $ tridentctl protect version
 ```
 
 There are 2 scripts in this folder that can perform the installation automatically:  
-- all_in_one_rhel3.sh: installs Trident Protect on RHEL3  
-- all_in_one_rhel5.sh: installs Trident Protect on RHEL5
+- _all_in_one_rhel3.sh_: installs Trident Protect on RHEL3  
+- _all_in_one_rhel5.sh_: installs Trident Protect on RHEL5

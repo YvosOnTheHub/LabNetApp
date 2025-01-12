@@ -33,7 +33,7 @@ echo "# 2. UPGRADE TRIDENT OPERATOR TO 24.10.0 WITH HELM"
 echo "#######################################################################################################"
 echo
 
-sh ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario01/1_Helm/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
@@ -42,7 +42,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario02/all_in_one.sh 
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario02/all_in_one.sh 
 
 echo
 echo "#######################################################################################################"
@@ -51,7 +51,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario05/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario05/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
@@ -60,7 +60,7 @@ echo "##########################################################################
 echo
 
 sleep 2s
-sh ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario03/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario03/all_in_one.sh
 
 echo
 echo "#######################################################################################################"

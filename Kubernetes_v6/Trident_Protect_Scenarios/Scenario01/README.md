@@ -41,7 +41,7 @@ However, I recommend using Trident 24.10 to get the best of both products.
 The Trident upgrade to 24.10 is already documented [here](../../Trident_Scenarios/Scenario01/).  
 You can follow the scenario for this upgrade, or you can directly run the following script:  
 ```bash
-sh /root/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm/all_in_one.sh
 ```
 
 ## C. Hosts _RHEL4_ & _RHEL5_ start up  
@@ -71,7 +71,7 @@ That chapter will perform the following tasks:
 If don't want to run this configuration manually, you can also use the following (on the host _RHEL3_).  
 Those 2 lines will copy a script to the host RHEL5 & execute it:  
 ```bash
-scp -p /root/LabNetApp/Kubernetes_v6/Addendum/Addenda12/all_in_one.sh rhel5:
+scp -p ~/LabNetApp/Kubernetes_v6/Addendum/Addenda12/all_in_one.sh rhel5:
 ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh all_in_one.sh"
 ```
 
@@ -86,7 +86,7 @@ Creating a secondary SVM is already documented [here](../../Addendum/Addenda13/)
 Note that Ansible must be already installed & configured. 
 If you haven't done it just it, you can also refer to the [Addenda04](../../Addendum/Addenda04/) or simply run:  
 ```bash
-sh /root/LabNetApp/Kubernetes_v6/Addendum/Addenda04/all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda04/all_in_one.sh
 ```
 
 The IP addresses configured for that environment are the following:  
@@ -102,7 +102,7 @@ In order to use the Disaster Recovery feature of Trident Protect, you first need
 In a nutshell, peering 2 clusters simply means they know each other and are ready for mirroring.  
 A playbook is already available to perform such configuration:  
 ```bash
-ansible-playbook /root/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario24/svm_peering.yaml
+ansible-playbook ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario24/svm_peering.yaml
 ```
 
 ## G. SVM creation for S3
@@ -117,7 +117,7 @@ There is an ansible playbook provided in that Addenda to help you achieve your g
 Also you will need the bucket _access key_ & _secret_ when creating Trident Protect appvaults.  
 You can redirect the output of the Ansible playbook to a local file to save those keys for later:  
 ```bash
-ansible-playbook /root/LabNetApp/Kubernetes_v6/Addendum/Addenda09/svm_S3_setup.yaml > /root/ansible_S3_SVM_result.txt
+ansible-playbook ~/LabNetApp/Kubernetes_v6/Addendum/Addenda09/svm_S3_setup.yaml > /root/ansible_S3_SVM_result.txt
 ```
 If you have not done so, no worries, you can also retrieve those keys with the ONTAP CLI.  
 
