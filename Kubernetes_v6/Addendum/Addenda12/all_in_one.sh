@@ -209,6 +209,7 @@ while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e 
     done
 done
 
+echo
 echo "############################################"
 echo "### Snap Class & snapshot controller"
 echo "############################################"
