@@ -68,7 +68,7 @@ I have also used the following arguments:
 - _connect=false_: will not automatically connect to the cluster after the creation is successful
 
 ```bash
-$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario21/Loft_vClusters/vcluster_vc1.yaml --expose --connect=false --distro k0s
+$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario21/Loft_vClusters/vcluster_vc1.yaml --expose --connect=false --distro k0s
 10:05:53 info Creating namespace vc1
 10:05:53 info Create vcluster vcluster-1...
 10:05:53 info execute command: helm upgrade vcluster-1 /tmp/vcluster-k0s-0.19.7.tgz-1109357542 --kubeconfig /tmp/3341718974 --namespace vc1 --install --repository-config='' --values /tmp/524587589 --values vc1.yaml
@@ -76,7 +76,7 @@ $ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v6/Scenarios/Scena
 - Use 'vcluster connect vcluster-1 --namespace vc1' to access the virtual cluster
 - Use `vcluster connect vcluster-1 --namespace vc1 -- kubectl get ns` to run a command directly within the vcluster
 
-$ vcluster create vcluster-2 -n vc2 -f ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario21/Loft_vClusters/vcluster_vc2.yaml --expose --connect=false --distro k0s
+$ vcluster create vcluster-2 -n vc2 -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario21/Loft_vClusters/vcluster_vc2.yaml --expose --connect=false --distro k0s
 10:05:41 info Creating namespace vc2
 10:05:41 info Create vcluster vcluster-2...
 10:05:41 info execute command: helm upgrade vcluster-2 /tmp/vcluster-k0s-0.19.7.tgz-4154764837 --kubeconfig /tmp/468142798 --namespace vc2 --install --repository-config='' --values /tmp/1557733757 --values vc2.yaml
@@ -249,7 +249,7 @@ ensure CRDs are installed first
 This fails, as the feature is disabled for this vCluster.  
 We then first need to upgrade our vcluster to enable that feature:
 ```bash
-$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario21/Loft_vClusters/vcluster_vc1_upgrade.yaml --expose --connect=false --distro k0s --upgrade
+$ vcluster create vcluster-1 -n vc1 -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario21/Loft_vClusters/vcluster_vc1_upgrade.yaml --expose --connect=false --distro k0s --upgrade
 12:45:06 info Upgrade vcluster vcluster-1...
 12:45:06 info execute command: helm upgrade vcluster-1 /tmp/vcluster-k0s-0.19.7.tgz-4122250687 --kubeconfig /tmp/3013372027 --namespace vc1 --install --repository-config='' --values /tmp/3840310634 --values vc1u.yaml
 12:45:07 done Successfully created virtual cluster vcluster-1 in namespace vc1.

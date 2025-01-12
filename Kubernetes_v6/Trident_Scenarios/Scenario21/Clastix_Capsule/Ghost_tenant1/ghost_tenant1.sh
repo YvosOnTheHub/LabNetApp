@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario21/Clastix_Capsule/Ghost_tenant1
+cd ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario21/Clastix_Capsule/Ghost_tenant1
 
 kubectl --kubeconfig ../owner1-tenant1.kubeconfig create ns tenant1-ghost
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario21/Loft_vClusters/Ghost_vc2
+cd ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario21/Loft_vClusters/Ghost_vc2
 
 kubectl --kubeconfig ~/kubeconfig_vc2 create ns ghostvc2
 
