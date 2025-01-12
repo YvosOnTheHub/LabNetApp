@@ -2,7 +2,7 @@ echo
 echo "############################################"
 echo "### Install Kube State Metrics"
 echo "############################################"
-helm install trident-protect prometheus-community/kube-state-metrics --version 5.21.0 -n monitoring -f custom-state-metrics-values.yaml
+helm install trident-protect prometheus-community/kube-state-metrics --version 5.21.0 -n monitoring -f ksm-values.yaml
 
 echo
 echo "############################################"
