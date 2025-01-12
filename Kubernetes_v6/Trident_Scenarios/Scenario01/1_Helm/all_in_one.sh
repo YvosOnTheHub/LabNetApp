@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~/LabNetApp/Kubernetes_v6/Scenarios/Scenario01/1_Helm
+cd ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm
 
 echo
 echo "#######################################################################################################"
