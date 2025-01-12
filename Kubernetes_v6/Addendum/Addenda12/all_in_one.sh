@@ -123,7 +123,7 @@ echo "##########################################################################
 echo "# Install Helm"
 echo "#######################################################################################################"
 echo
-
+cd
 wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
 tar -xvf helm-v3.15.3-linux-amd64.tar.gz
 cp -f linux-amd64/helm /usr/local/bin/
@@ -188,6 +188,12 @@ echo "##########################################################################
 echo "# Install Trident"
 echo "#######################################################################################################"
 echo
+
+cd
+mkdir 24.10.0 && cd 24.10.0
+wget https://github.com/NetApp/trident/releases/download/v24.10.0/trident-installer-24.10.0.tar.gz
+tar -xf trident-installer-24.10.0.tar.gz
+ln -sf /root/24.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 helm install trident netapp-trident/trident-operator --version 100.2410.0 -n trident --create-namespace \
