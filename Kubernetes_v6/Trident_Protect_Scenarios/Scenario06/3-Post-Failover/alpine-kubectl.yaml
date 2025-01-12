@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubectl-ns-admin-sa
+  namespace: sc06bbox2
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubectl-ns-admin-sa
+  namespace: sc06bbox2
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: kubectl-ns-admin-sa
+  namespace: sc06bbox2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: astra-hook-deployment
+  namespace: sc06bbox2
+  labels:
+    app: alpine
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine
+  template:
+    metadata:
+      labels:
+        app: alpine
+    spec:
+      serviceAccountName: kubectl-ns-admin-sa
+      containers:
+      - name: alpine-astra-hook
+        image: alpine:latest
+        env:
+          - name: KUBECTL_VERSION
+            value: "1.23.9"
+        command: ["/bin/sh"]
+        args:
+        - -c
+        - >
+          apk add curl jq &&
+          curl -sLO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl &&
+          mv kubectl /usr/bin/kubectl &&
+          chmod +x /usr/bin/kubectl &&
+          trap : TERM INT; sleep infinity & wait

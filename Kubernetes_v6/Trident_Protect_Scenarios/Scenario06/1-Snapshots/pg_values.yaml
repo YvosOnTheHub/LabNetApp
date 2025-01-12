@@ -1,0 +1,11 @@
+global:
+  imageRegistry: registry.demo.netapp.com
+  defaultStorageClass: storage-class-iscsi
+
+primary:
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  pgHbaConfiguration: |-
+    host     all             all             0.0.0.0/0               trust
+    local    all             all                                     trust

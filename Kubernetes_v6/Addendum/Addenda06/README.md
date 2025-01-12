@@ -7,8 +7,9 @@ Here are a few that I found interesting:
 - K8SH (Kubernetes shell)  
 - K1S (Simple Kubernetes Dashboard)  
 - TMUX (Terminal Multiplexer)  
-- KREW (Kubectl plug-ins)
-- K9S (GUI to interact with your Kubernetes cluster)
+- KREW (Kubectl plug-ins)  
+- K9S (GUI to interact with your Kubernetes cluster)  
+- STERN (useful to TAIL multiple PODS and add some filters)
 
 ## A. K8SH
 
@@ -78,7 +79,7 @@ trident-operator-5c4f8bd896-l5xh4     1/1     Running   0               3h14m
 ## B. K1S
 
 I found K1S useful when you want to follow the state of some resources in a specific namespaces.  
-For instance, in the [scenario11](../../Scenarios/Scenario11), where we use statefulsets, you can follow the creation of each POD & each PVC.  
+For instance, in the [scenario11](../../Trident_Scenarios/Scenario11), where we use statefulsets, you can follow the creation of each POD & each PVC.  
 
 More information here: https://github.com/weibeld/k1s.  
 One of dependencies include JQ.  
@@ -144,11 +145,12 @@ source ~/.bashrc
 
 You can then use the _kubectl krew search_ to list all the available plugins & _kubectl krew install_ command to install a specific one.  
 Here are a few I have tested:  
-- **get-all**: will display all the objects of a namespace (ie many more than with _kubectl get -A_)
-- **view-utilization**: displays CPU/RAM utilization of the cluster
-- **rbac-view**: graphical view of all RBAC configured on the cluster, with a filter feature
-- **tree**: displays a hierarchical view of some objects (ex: deployment => replicaset => pod)
-- **view-secret**: decyphers & displays a secret (faster than running jsonpath + base64)
+- **get-all**: will display all the objects of a namespace (ie many more than with _kubectl get -A_)  
+- **view-utilization**: displays CPU/RAM utilization of the cluster  
+- **rbac-view**: graphical view of all RBAC configured on the cluster, with a filter feature  
+- **tree**: displays a hierarchical view of some objects (ex: deployment => replicaset => pod)  
+- **view-secret**: decyphers & displays a secret (faster than running jsonpath + base64)  
+- **stern**: _tail_ multiple pods with some filters  
 
 ## E. K9S
 

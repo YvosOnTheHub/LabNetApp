@@ -1,0 +1,16 @@
+image:
+  registry: registry.demo.netapp.com
+imagePullSecrets:
+- name: regcred
+controller:
+  image:
+    registry: registry.demo.netapp.com
+rbacProxy:
+  image:
+    registry: registry.demo.netapp.com
+crCleanup:
+  imagePullSecrets:
+  - name: regcred
+webhooksCleanup:
+  imagePullSecrets:
+  - name: regcred

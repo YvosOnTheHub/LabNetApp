@@ -20,7 +20,7 @@ cd Kubernetes_v6/Addendum/Addenda11
 ```
 
 If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory _addenda11_pull_images.sh_ to pull images utilized in this scenario if needed:  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *addenda11_pull_images.sh* to pull images utilized in this scenario if needed:  
 ```bash
 sh addenda11_pull_images.sh
 ```

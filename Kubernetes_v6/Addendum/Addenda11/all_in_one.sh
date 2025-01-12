@@ -9,6 +9,7 @@ until [[ $(kubectl -n argocd get pod -l app.kubernetes.io/name=argocd-server -o=
     done
 done
 
+echo
 ARGOCDIP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 echo "ARGOCDIP: $ARGOCDIP"
 

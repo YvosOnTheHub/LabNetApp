@@ -1,0 +1,87 @@
+extraArgs:
+# collect only our metrics, not the defaults ones (deployments etc.)
+- --custom-resource-state-only=true
+
+customResourceState:
+  enabled: true
+  config:
+    kind: CustomResourceStateMetrics
+    spec:
+      resources:
+      - groupVersionKind:
+          group: protect.trident.netapp.io
+          kind: "Snapshot"
+          version: "v1"
+        labelsFromPath:
+          snapshot_uid: [metadata, uid]
+          snapshot_name: [metadata, name]
+          creation_time: [metadata, creationTimestamp]
+        metrics:
+        - name: snapshot_info
+          help: "Exposes details about the Snapshot state"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                appVaultReference: ["spec", "appVaultRef"]
+                appReference: ["spec", "applicationRef"]
+                status: [status, state]
+      - groupVersionKind:
+          group: protect.trident.netapp.io
+          kind: "Backup"
+          version: "v1"
+        labelsFromPath:
+          backup_uid: [metadata, uid]
+          backup_name: [metadata, name]
+          creation_time: [metadata, creationTimestamp]
+        metrics:
+        - name: backup_info
+          help: "Exposes details about the Backup state"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                appVaultReference: ["spec", "appVaultRef"]
+                appReference: ["spec", "applicationRef"]
+                status: [status, state]
+      - groupVersionKind:
+          group: protect.trident.netapp.io
+          kind: "Exechooksruns"
+          version: "v1"
+        labelsFromPath:
+          ehr_uid: [metadata, uid]
+          ehr_name: [metadata, name]
+          creation_time: [metadata, creationTimestamp]
+        metrics:
+        - name: ehr_info
+          help: "Exposes details about the Exec Hook state"
+          each:
+            type: Info
+            info:
+              labelsFromPath:
+                appVaultReference: ["spec", "appVaultRef"]
+                appReference: ["spec", "applicationRef"]
+                stage: ["spec", stage]
+                action: ["spec", action]
+                status: [status, state]
+rbac:
+  extraRules:
+  - apiGroups: ["protect.trident.netapp.io"]
+    resources: ["snapshots"]
+    verbs: ["list", "watch"]
+  - apiGroups: ["protect.trident.netapp.io"]
+    resources: ["backups"]
+    verbs: ["list", "watch"]
+  - apiGroups: ["protect.trident.netapp.io"]
+    resources: ["exechooksruns"]
+    verbs: ["list", "watch"]
+ 
+# collect metrics from ALL namespaces
+namespaces: ""
+ 
+# deploy a ServiceMonitor so the metrics are collected by Prometheus
+prometheus:
+  monitor:
+    enabled: true
+    additionalLabels: 
+      release: prometheus

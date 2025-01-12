@@ -3,7 +3,7 @@
 #########################################################################################
 
 **GOAL:**  
-Some exercices may benefit from a bigger cluster size (ex: Scenario13: StatefulSets).  
+Some exercices may benefit from a bigger cluster size (ex: Trident [Scenario11 StatefulSets](../../Trident_Scenarios/Scenario11)).  
 The LabOnDemand has a few unix hosts, but only 3 are part of the Kubernetes cluster.  
 This addenda will provide you with all the commands to run to bring a new node into the Kubernetes cluster.  
 

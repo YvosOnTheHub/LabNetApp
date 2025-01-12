@@ -29,7 +29,7 @@ Don't forget to type in _source ~/.bashrc_ in order to take the modifications in
 ## B. How can I easily list all the PVC of an application
 
 If you are dealing with applications with lots of PODs & volumes, you may want to get a matrix which shows all the PVC per POD:
-The following example was used in the Scenario12, which presents StatefulSets.
+The following example was used in the Trident [Scenario11](../../Trident_Scenarios/Scenario11/), which presents StatefulSets.
 
 ```bash
 $ kubectl get pods -n mysql -o=jsonpath='{range .items[*]}{"\n"}{.metadata.name}{":\t"}{range .spec.volumes[*].persistentVolumeClaim}{.claimName}{" "}{end}{end}{"\n"}'

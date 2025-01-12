@@ -191,7 +191,7 @@ l2advertisement.metallb.io/l2advertisement created
 Last, let's install Trident on this cluster.  
 I will not describe here how to configure it, this will be covered in the scenarios that use this addenda.  
 Also, it is here expected that the current Trident installation already runs at least the version 24.06.1 (which introduced snapmirror support).  
-If not done yet, check out the [Scenario01](../../Scenarios/Scenario01/1_Helm/).  
+If not done yet, check out the [Scenario01](../../Trident_Scenarios/Scenario01/1_Helm/).  
 ```bash
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
 helm install trident netapp-trident/trident-operator --version 100.2410.0 -n trident --create-namespace \
@@ -214,7 +214,33 @@ NAMESPACE   NAME      VERSION
 trident     trident   24.10.1
 ```
 
-## G. Copy the KUBECONFIG file on the RHEL3
+## G. Install a CSI Snapshot Controller & create a Volume Snapshot Class
+
+Enabling the CSI Snapshot feature is done by installing a Snapshot Controller, as well as 3 different CRD:  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
+```
+
+Next, you also need a Volume Snapshot class, which is similar to a storage class, but for volume snapshots...  
+```bash
+cat << EOF | kubectl apply -f -
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-snap-class
+  annotations:
+    snapshot.storage.kubernetes.io/is-default-class: "true"
+driver: csi.trident.netapp.io
+deletionPolicy: Delete
+EOF
+```
+
+## H. Copy the KUBECONFIG file on the RHEL3
 
 Easier to manage commands locally (on _rhel3_), so let's copy the new cluster's kubeconfig file:  
 ```bash
