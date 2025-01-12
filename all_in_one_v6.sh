@@ -143,7 +143,7 @@ if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != 
 # S3 SVM & Bucket Creation
 # Secondary K8S cluster Creation
 # Install Trident on KS8#2
-sh ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario01_all_in_one.sh
+sh ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario01/all_in_one.sh
 
 # Trident Protect on K8S#1
 cd ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario02
