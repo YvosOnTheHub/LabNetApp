@@ -257,4 +257,8 @@ RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1
 
 echo "# Your anonymous login to the Docker Hub currently has $RATEREMAINING pulls left."
 echo
+echo "-----------------------"
 echo "____ HAVE FUN !!!!!"
+echo "-----------------------"
+echo
+echo
