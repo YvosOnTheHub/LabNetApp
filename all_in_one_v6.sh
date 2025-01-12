@@ -175,7 +175,7 @@ kubectl --kubeconfig=/root/.kube/config_rhel5 create secret generic -n trident-p
   --from-literal=accessKeyID=$BUCKETKEY \
   --from-literal=secretAccessKey=$BUCKETSECRET
 
-tridentctl protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect --kubeconfig=/root/.kube/config_rhel5
+ssh -o "StrictHostKeyChecking no" root@rhel5 -t "tridentctl protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect"
 
 echo
 echo "############################################"

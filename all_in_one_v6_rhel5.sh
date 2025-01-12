@@ -136,7 +136,7 @@ echo "##########################################################################
 echo "# Install Helm"
 echo "#######################################################################################################"
 echo
-
+cd
 wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
 tar -xvf helm-v3.15.3-linux-amd64.tar.gz
 cp -f linux-amd64/helm /usr/local/bin/
