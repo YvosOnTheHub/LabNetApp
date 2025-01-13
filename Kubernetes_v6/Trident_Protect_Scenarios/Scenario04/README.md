@@ -120,7 +120,7 @@ $ TP_RHEL3=$(kubectl get -n monitoring svc trident-protect-kube-state-metrics -o
 $ curl -s $TP_RHEL3:8080/metrics
 # HELP kube_customresource_snapshot_info Exposes details about the Snapshot state
 # TYPE kube_customresource_snapshot_info info
-kube_customresource_snapshot_info{appReference="bbox",appVaultReference="bbox-vault",creation_time="2024-12-06T14:45:46Z",customresource_group="protect.trident.netapp.io",customresource_kind="Snapshot",customresource_version="v1",snapshot_name="bboxsnap1",snapshot_uid="ca3eab8e-6f0b-4646-8c01-c51d9493f149",status="Completed"} 1
+kube_customresource_snapshot_info{appReference="bbox",appVaultReference="ontap-vault",creation_time="2024-12-06T14:45:46Z",customresource_group="protect.trident.netapp.io",customresource_kind="Snapshot",customresource_version="v1",snapshot_name="bboxsnap1",snapshot_uid="ca3eab8e-6f0b-4646-8c01-c51d9493f149",status="Completed"} 1
 ```
 You can see here the various fields that were setup in the configuration, as well as their value for that particular snapshot.  
 Similar points have been created for backups & exec hooks.  
