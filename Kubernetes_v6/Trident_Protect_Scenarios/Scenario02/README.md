@@ -30,7 +30,7 @@ helm install trident-protect netapp-trident-protect/trident-protect \
   --version 100.2410.0 \
   --namespace trident-protect -f protectValues.yaml
 ```
-After a few seconds (really), you will a pod in the namespace:  
+After a few seconds (really), you will see a pod in the Trident Protect namespace:  
 ```bash
 $ kubectl get -n trident-protect po
 NAME                                                           READY   STATUS    RESTARTS   AGE
@@ -41,7 +41,7 @@ In this case, make sure you set a different value for the _clusterName_ paramete
 
 
 Trident Protect CR can be configured with YAML manifests or CLI.  
-Let's install its CLI which avoids mistakes when creating the YAML files:  
+Let's install its CLI which avoids making mistakes when creating the YAML files:  
 ```bash
 cd
 curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-protect-linux-amd64
