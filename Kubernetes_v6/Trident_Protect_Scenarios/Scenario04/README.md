@@ -7,6 +7,10 @@ However you can put in place external mechanisms to do the job.
 
 ## A. Kube State Metrics
 
+>> kube-state-metrics (KSM) is a simple service that listens to the Kubernetes API server and generates metrics about the state of the objects. It is not focused on the health of the individual Kubernetes components, but rather on the health of the various objects inside, such as deployments, nodes and pods.
+
+>> The metrics are exported on the HTTP endpoint /metrics on the listening port (default 8080). They are served as plaintext. They are designed to be consumed either by Prometheus itself or by a scraper that is compatible with scraping a Prometheus client endpoint. You can also open /metrics in a browser to see the raw metrics. Note that the metrics exposed on the /metrics endpoint reflect the current state of the Kubernetes cluster. When Kubernetes objects are deleted they are no longer visible on the /metrics endpoint.
+
 We will see here how to use Kube State Metrics (ie _KSM_)to monitor the following Trident Protect CR:  
 - snapshots  
 - backups  
@@ -112,7 +116,8 @@ trident-protect-kube-state-metrics   ClusterIP   10.102.211.64   <none>        8
 ```
 By default, metrics are exposed on the port 8080. You can already see the result of the configuration by polling that port:  
 ```bash
-curl -s 10.102.211.64:8080/metrics
+$ TP_RHEL3=$(kubectl get -n monitoring svc trident-protect-kube-state-metrics -o jsonpath='{.spec.clusterIP}')
+$ curl -s $TP_RHEL3:8080/metrics
 # HELP kube_customresource_snapshot_info Exposes details about the Snapshot state
 # TYPE kube_customresource_snapshot_info info
 kube_customresource_snapshot_info{appReference="bbox",appVaultReference="bbox-vault",creation_time="2024-12-06T14:45:46Z",customresource_group="protect.trident.netapp.io",customresource_kind="Snapshot",customresource_version="v1",snapshot_name="bboxsnap1",snapshot_uid="ca3eab8e-6f0b-4646-8c01-c51d9493f149",status="Completed"} 1
@@ -139,7 +144,7 @@ NAME                                 AGE
 trident-protect-kube-state-metrics   8m25s
 ```
 
-Prometheus will take into account those metrics based on a label (which varies depending on the deployment method).
+Prometheus will take into account those metrics based on a label (which varies depending on the Prometheus deployment method).
 In our case, that label is _release: prometheus_.  
 
 To make sure that it is the correct label, you need to look into the Prometheus configuration as follows:  
