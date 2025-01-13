@@ -157,6 +157,9 @@ $ kubectl -n monitoring get prometheus -o=jsonpath='{.items[0].spec.serviceMonit
 }
 ```
 
+Here is an example of what you can see in Prometheus, once an application is managed by Trident Protect:  
+<p align="center"><img src="Images/prometheus.png" width="640"></p>
+
 ## C. Grafana
 
 Our monitoring systems is functional. Time to look into dashboards with Grafana!  
