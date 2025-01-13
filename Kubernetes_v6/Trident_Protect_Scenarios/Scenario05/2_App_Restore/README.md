@@ -12,7 +12,7 @@ When restoring applications with Trident Protect, you can achieve the following:
 -- full or partial  
 
 Let's into all those possibilities:  
-
+<!--
 ## A. In-place partial snapshot restore  
 
 Let's first delete the content of one of the 2 volumes mounted on the pod (_data1_).  
@@ -49,9 +49,9 @@ spec:
     
 EOF
 
+-->
 
-
-## B. Full snapshot restore to a new namespace  
+## A. Full snapshot restore to a new namespace  
 
 Now, let's restore our snapshot to a different namespace.  
 In this context, you need to specify the mapping for the application namespace:  
@@ -83,7 +83,7 @@ $ kubectl exec -n tpsc05busyboxsr $(kubectl get pod -n tpsc05busyboxsr -o name) 
 bbox test1 in folder data2!
 ```
 
-## C. In-place backup restore  
+## B. In-place backup restore  
 
 For this test, let's first delete the POD & the 2 PVC from the namespace:  
 ```bash
@@ -121,7 +121,7 @@ $ kubectl exec -n tpsc05busybox $(kubectl get pod -n tpsc05busybox -o name) -- m
 bbox test1 in folder data2!
 ```
 
-## D. Backup restore to the secondary Kubernetes cluster  
+## C. Backup restore to the secondary Kubernetes cluster  
 
 Last test of this chapter consists into restoring the whole app on the secondary cluster.  
 Make sure an AppVault on the secondary cluster exists, so that you get access to the content of the bucket.  
