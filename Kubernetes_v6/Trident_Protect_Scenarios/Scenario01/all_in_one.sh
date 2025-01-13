@@ -106,3 +106,19 @@ parameters:
   storagePools: "nfs:aggr2"
 allowVolumeExpansion: true
 EOF
+
+echo
+echo "############################################"
+echo "#"
+echo "# Volume Snapshot Class Creation"
+echo "#"
+echo "############################################"
+kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/1_CSI_Snapshots/sc-volumesnapshot.yaml
+
+echo
+echo "####################################################"
+echo "#"
+echo "# Clone Verda ON RHEL3"
+echo "#"
+echo "####################################################"
+git clone https://github.com/NetApp/Verda ~/Verda

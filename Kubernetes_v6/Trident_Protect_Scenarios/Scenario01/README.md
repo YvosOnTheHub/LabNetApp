@@ -123,7 +123,28 @@ If you have not done so, no worries, you can also retrieve those keys with the O
 
 Last, the IP address (endpoint) configured for the bucket is the following: 192.168.0.230  
 
-## H. Trident configuration on the secondary cluster  
+## H. Create a Volume Snapshot Class on the primary cluster  
+
+Creating CSI Snapshots also requires a _Volume Snapshot Class_, which is not installed by default.  
+An example can be found in Trident's [Scenario13](../../Trident_Scenarios/Scenario13/1_CSI_Snapshots/) folder:  
+```bash
+kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/1_CSI_Snapshots/sc-volumesnapshot.yaml
+```
+
+## I. Clone the Verda repository on the primary cluster  
+
+>> Trident protect can execute app-specific custom scripts called execution hooks.
+
+>> An execution hook is a custom action coded as a script that can be executed when snapshots or backups are created for an app managed by Trident protect. Execution hooks can also be used during app restores. For example, if you have a database app, you can use execution hooks to pause all database transactions before a snapshot, and resume transactions after the snapshot is complete. This ensures application-consistent snapshots.
+
+>> The Verda repo provides execution hook examples for popular cloud-native applications to make protecting applications straightforward, robust, and easy to orchestrate.
+
+Let's clone that repository on the primary cluster:  
+```bash
+git clone https://github.com/NetApp/Verda ~/Verda
+```
+
+## J. Trident configuration on the secondary cluster  
 
 The last part of this chapter is the Trident configuration on the secondary cluster.  
 The following will:  
