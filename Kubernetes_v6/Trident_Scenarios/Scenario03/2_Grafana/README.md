@@ -14,7 +14,7 @@ NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)     
 prometheus-grafana   LoadBalancer   10.102.68.158   192.168.0.211   80:30937/TCP   47d
 ```
 
-This service is exposed via a LoadBalancer. You can either use that IP address provided by MetalLB, or go directly to grafana.demo.netapp.com.  
+This service is exposed via a LoadBalancer. You can either use that IP address provided by MetalLB, or go directly to http://grafana.demo.netapp.com.
 The first time you enter Grafana, you are requested to login with a username & a password ...  
 But how to find out what they are ??  
 
