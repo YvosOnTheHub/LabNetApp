@@ -75,7 +75,26 @@ $ lsblk /dev/nvme0n1
 NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
 nvme0n1 259:1    0   5G  0 disk /var/lib/kubelet/pods/aa55a855-69ee-40fc-a245-bbefdd8a28da/volumes/kubernetes.io~csi/pvc-571eb30e-0e93-4c61-acf7-ac96d85d6773/mount
 ```
-There you go, you can see that the NVMe namespace is mounted on host to the PVC of our app.  
+There you go, you can see that the NVMe namespace is mounted on host to the PVC of our app.
+
+You can also see the connection details on the host with the _nvme list-subsys_ command:
+```bash
+$ nvme list-subsys
+nvme-subsys0 - NQN=nqn.1992-08.com.netapp:sn.7c8b4c9af76e11ee8aac005056b0f629:subsystem.rhel2-189e4ded-d389-4ce6-8395-1d4de202321f
+\
+ +- nvme0 tcp traddr=192.168.0.139,trsvcid=4420,src_addr=192.168.0.62 live
+```
+
+We can see the IP addresses used for the connection, and the connection status.
+
+The nice thing about NVMe is that it can supply metadata about the storage backend. For example we can query the
+SVM name and namespace path from the host:
+```bash
+$ nvme netapp ontapdevices
+/dev/nvme0n1, Vserver sansvm, Namespace Path /vol/trident_pvc_3b8fe681_3a2d_4578_b1a3_e464215b8bad/namespace0, NSID 1, UUID 85fc0e10-12de-4051-88c2-7c5aa05f8d1d, 5.37GB
+```
+
+You can also try the _nvme list_  command for additional details like the block alignment and namespace serial number.
 
 ## E. Cleanup
 
