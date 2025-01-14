@@ -3,7 +3,7 @@
 #########################################################################################
 
 **GOAL:**  
-Now that the Prometheus Operator has been upgraded, we can connect to Grafana.  
+Now that we have checked that Prometheus is working, we can connect to Grafana.
 
 ## A. Log in Grafana
 
