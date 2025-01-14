@@ -44,7 +44,7 @@ admin-user:      5 bytes
 ldap-toml:       0 bytes
 ```
 
-OK, so the data is there, and is encrypted... However, the admin can retrieve this information  
+OK, so the data is there, but it is base64-encoded... However, the admin can retrieve this information
 ```bash
 $ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.items[0].data.admin-user}"  | base64 --decode ; echo
 admin
