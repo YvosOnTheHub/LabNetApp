@@ -50,7 +50,7 @@ Name:              trident-csi
 Namespace:         trident
 Labels:            app=controller.csi.trident.netapp.io
                    k8s_version=v1.29.4
-                   trident_version=v24.02.0
+                   trident_version=v24.10.0
 Annotations:       <none>
 Selector:          app=controller.csi.trident.netapp.io
 Type:              ClusterIP
@@ -69,7 +69,8 @@ Events:            <none>
 ```
 
 There you go. Trident only has one service with several ports exposed, one of them called _metrics_.  
-You can verify if you can get access these metrics by the using the _curl_ command:  
+You can verify if you can get access these metrics by the using the _curl_ command, but remember to
+change the IP address to the one shown as `Endpoint` in the above output, as yours might be different:
 ```bash
 $ curl -s 192.168.26.66:8001  | grep trident_backend_count
 # HELP trident_backend_count The total number of backends
