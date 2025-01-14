@@ -53,7 +53,7 @@ $ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath
 prom-operator
 ```
 
-By the way, if you have installed _krew_ & the _view-secret_ plugin (cf[Addenda06](../../../Addendum/Addenda06/)), you could get those secrets decoded in a much simpler way:  
+By the way, if you have installed _krew_ & the _view-secret_ plugin (cf. [Addenda06](../../../Addendum/Addenda06/)), you could get those secrets decoded in a much simpler way:
 ```bash
 $ kubectl view-secret -n monitoring prometheus-grafana admin-user; echo
 admin
