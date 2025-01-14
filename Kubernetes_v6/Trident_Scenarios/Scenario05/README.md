@@ -10,8 +10,8 @@ It is now time to add more backends that can be used for block storage.
 <p align="center"><img src="Images/scenario5.jpg"></p>
 
 This lab already has 2 backends configured to provide NFS & SMB volumes with the ONTAP-NAS driver.  
-As they have been created with the _tridentctl_ tool, there is no TBC (TridentBackendConfig) object associated with them that allow backend management with kubectl. We will then first go through the creation of the 2 TBC.  
-Then, we will also create a ONTAP-NAS-ECONOMY backend which will then create qtrees in ONTAP.  
+As they have been created with the _tridentctl_ tool, there is no TBC (TridentBackendConfig) object associated with them that allow backend management with kubectl. We will then first go through the creation of the two TBCs.
+Then, we will also create an ONTAP-SAN-ECONOMY backend which will store multiple LUNs per FlexVol in ONTAP.
 
 ## A. Create the TBC objects corresponding to the existing SAN backends
 
@@ -29,6 +29,7 @@ $ tridentctl -n trident get backend
 Moving from a tridentctl based backend to a kubectl one requires the creation of 2 objects:  
 - a secret
 - a TBC
+
 When going through that process, make sure that the backend parameters are correctly reported in the TBC.  
 
 As the iSCSI configuration is secured with CHAP authentication, we will create a secret per protocol (NVMe is not compatible with CHAP).  

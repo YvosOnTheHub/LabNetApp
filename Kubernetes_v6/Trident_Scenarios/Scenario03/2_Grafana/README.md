@@ -3,7 +3,7 @@
 #########################################################################################
 
 **GOAL:**  
-Now that the Prometheus Operator has been upgraded, we can connect to Grafana.  
+Now that we have checked that Prometheus is working, we can connect to Grafana.
 
 ## A. Log in Grafana
 
@@ -14,7 +14,7 @@ NAME                 TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)     
 prometheus-grafana   LoadBalancer   10.102.68.158   192.168.0.211   80:30937/TCP   47d
 ```
 
-This service is exposed via a LoadBalancer. You can either use that IP address provided by MetalLB, or go directly to grafana.demo.netapp.com.  
+This service is exposed via a LoadBalancer. You can either use that IP address provided by MetalLB, or go directly to http://grafana.demo.netapp.com.
 The first time you enter Grafana, you are requested to login with a username & a password ...  
 But how to find out what they are ??  
 
@@ -44,7 +44,7 @@ admin-user:      5 bytes
 ldap-toml:       0 bytes
 ```
 
-OK, so the data is there, and is encrypted... However, the admin can retrieve this information  
+OK, so the data is there, but it is base64-encoded... However, the admin can retrieve this information
 ```bash
 $ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.items[0].data.admin-user}"  | base64 --decode ; echo
 admin
@@ -53,7 +53,7 @@ $ kubectl get secret -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath
 prom-operator
 ```
 
-By the way, if you have installed _krew_ & the _view-secret_ plugin (cf[Addenda06](../../../Addendum/Addenda06/)), you could get those secrets decoded in a much simpler way:  
+By the way, if you have installed _krew_ & the _view-secret_ plugin (cf. [Addenda06](../../../Addendum/Addenda06/)), you could get those secrets decoded in a much simpler way:
 ```bash
 $ kubectl view-secret -n monitoring prometheus-grafana admin-user; echo
 admin

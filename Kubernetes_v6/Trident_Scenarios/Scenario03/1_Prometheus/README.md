@@ -50,7 +50,7 @@ Name:              trident-csi
 Namespace:         trident
 Labels:            app=controller.csi.trident.netapp.io
                    k8s_version=v1.29.4
-                   trident_version=v24.02.0
+                   trident_version=v24.10.0
 Annotations:       <none>
 Selector:          app=controller.csi.trident.netapp.io
 Type:              ClusterIP
@@ -69,7 +69,8 @@ Events:            <none>
 ```
 
 There you go. Trident only has one service with several ports exposed, one of them called _metrics_.  
-You can verify if you can get access these metrics by the using the _curl_ command:  
+You can verify if you can get access these metrics by the using the _curl_ command, but remember to
+change the IP address to the one shown as `Endpoint` in the above output, as yours might be different:
 ```bash
 $ curl -s 192.168.26.66:8001  | grep trident_backend_count
 # HELP trident_backend_count The total number of backends
@@ -91,9 +92,9 @@ prometheus-kube-prometheus-prometheus   LoadBalancer   10.97.110.181   192.168.0
 ```
 
 This service is exposed via a LoadBalancer and with 2 ports (9090 is the one you need in this lab to access the GUI).  
-You can either use the IP address provided by MetalLB, or use directly http://prometheus.demo.netapp.com:9009 to access the GUI.  
+You can either use the IP address provided by MetalLB, or use directly http://prometheus.demo.netapp.com:9090 to access the GUI.
 
-You can check that the Trident endpoint is taken into account & in the right state by going to the menu STATUS => TARGETS  
+You can check that the Trident endpoint is taken into account and in the right state by going to the menu STATUS => TARGETS
 <p align="center"><img src="../Images/Prometheus_Trident_status.png" width=768></p>  
 
 In the _Graph_ page, you can start querying different metrics, from all objects monitored by Prometheus.  
