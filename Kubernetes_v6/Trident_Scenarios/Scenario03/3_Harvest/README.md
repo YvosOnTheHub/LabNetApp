@@ -26,7 +26,7 @@ $ bin/harvest start
 
 To make sure your Harvest installation works, you can run the following:  
 ```bash
-$ curl 192.168.0.63:31000/metrics | grep volume_size_total
+$ curl -s 192.168.0.63:31000/metrics | grep volume_size_total
 ...
 volume_size_total{cluster="cluster1",datacenter="lod",aggr="aggr1",node="cluster1-01",style="flexvol",svm="nassvm",volume="nassvm_root"} 19922944
 volume_size_total{cluster="cluster1",datacenter="lod",aggr="aggr1",node="cluster1-01",style="flexvol",svm="nassvm",volume="trident_pvc_1978e262_a8d1_4201_9168_aaa584997d6d"} 1073741824
