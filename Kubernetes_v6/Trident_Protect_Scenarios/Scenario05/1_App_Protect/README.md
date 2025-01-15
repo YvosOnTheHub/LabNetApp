@@ -11,7 +11,16 @@ This chapter will guide you through the creation of:
 
 ## A. Application Creation  
 
-This can be achieved through cli or yaml. Most of the steps in this scenario are going to be done through cli.  
+Before going any further, what is an application?  
+There are various way to define that in Kubernetes. Trident Protect can manage the following configurations:  
+- an application is a **namespace** and everything that is part of the namespace must be protected  
+- an application is a **subset of a namespace** based on labels if you only want to protect part of a namespace (ex: only the PVC)  
+- it can span accross **multiple namespaces**  
+- last an application can also take into account cluster wide resources  
+
+In this scenario, we consider that the application to protect is the whole _bbox_ namespace.  
+
+Creation a Trident Protect application can be achieved through cli or yaml. Most of the steps in this scenario are going to be done through cli.  
 ```bash
 $ tridentctl protect create app bbox --namespaces tpsc05busybox -n tpsc05busybox
 Application "bbox" created.
