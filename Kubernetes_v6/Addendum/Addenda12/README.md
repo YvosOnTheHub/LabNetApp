@@ -21,10 +21,11 @@ All the requirements are already met & the tools download, you can directly proc
 ```bash
 kubeadm init --pod-network-cidr=192.168.20.0/21
 ```
-Once done, you need to specify where to access the Kubeconfig file:
+Once done, you need to specify where to access the Kubeconfig file:    
 ```bash
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sed -i 's/kubernetes-admin/kub2-admin/' $HOME/.kube/config
 echo 'KUBECONFIG=$HOME/.kube/config' >> $HOME/.bashrc
 source ~/.bashrc
 ```
@@ -186,7 +187,16 @@ $ kubectl create -f metallb-l2advert.yaml
 l2advertisement.metallb.io/l2advertisement created
 ```
 
-## F. Install Trident
+## 5. iSCSI Configuration
+
+For iSCSI to be fully functional with Trident & ONTAP, we first need to correct the Initiator name of both nodes.  
+The following command be performed on both nodes:  
+```bash
+sed -i s/rhel./$HOSTNAME/ /etc/iscsi/initiatorname.iscsi
+systemctl restart iscsid
+```
+
+## G. Install Trident
 
 Last, let's install Trident on this cluster.  
 I will not describe here how to configure it, this will be covered in the scenarios that use this addenda.  
@@ -214,7 +224,7 @@ NAMESPACE   NAME      VERSION
 trident     trident   24.10.1
 ```
 
-## G. Install a CSI Snapshot Controller & create a Volume Snapshot Class
+## H. Install a CSI Snapshot Controller & create a Volume Snapshot Class
 
 Enabling the CSI Snapshot feature is done by installing a Snapshot Controller, as well as 3 different CRD:  
 ```bash
@@ -240,7 +250,7 @@ deletionPolicy: Delete
 EOF
 ```
 
-## H. Copy the KUBECONFIG file on the RHEL3
+## I. Copy the KUBECONFIG file on the RHEL3
 
 Easier to manage commands locally (on _rhel3_), so let's copy the new cluster's kubeconfig file:  
 ```bash
@@ -248,4 +258,72 @@ curl -s --insecure --user root:Netapp1! -T /root/.kube/config sftp://rhel3/root/
 ```
 From the host _rhel3_, you will have to use the _--kubeconfig=_ parameter to apply manifests against the second cluster.  
 
+## J. Interacting with Kubernetes with KubeConfig files & Contexts
+
+This chapter will be done from the RHEL3 host.  
+By default, the kubectl cli retrieves the connection information in the ~/.kube/config file (which is a copy of the _/etc/kubernetes/admin.conf_ file).  
+If you want to interact with a remote cluster, you can add the _--kubeconfig_ parameter to the kubectl cli:  
+```bash
+$ kubectl get nodes
+NAME    STATUS   ROLES           AGE    VERSION
+rhel1   Ready    <none>          270d   v1.29.4
+rhel2   Ready    <none>          270d   v1.29.4
+rhel3   Ready    control-plane   270d   v1.29.4
+win1    Ready    <none>          270d   v1.29.4
+win2    Ready    <none>          270d   v1.29.4
+
+$ kubectl get nodes --kubeconfig=config_rhel5
+NAME    STATUS   ROLES           AGE   VERSION
+rhel4   Ready    <none>          15h   v1.29.4
+rhel5   Ready    control-plane   15h   v1.29.4
+```
+The tridentctl cli can also use the _--kubeconfig_ parameter.  
+
+When dealing with multiple clusters, it can be easier to use a single config file, which contains connectivity information for all clusters. Enters the concept of kubernetes _context_.  
+>> A Kubernetes context is a group of access parameters that define which cluster you're interacting with, which user you're using, and which namespace you're working in.  
+
+Contexts are also defined in kubeconfig files, even when you have only one cluster.  
+When merging multiple kubeconfig files into one, there are some points to note.  
+The following parameters'names must be unique in the file:  
+- cluster name (_kubernetes_ & _kub2_)  
+- user name (_kubernetes-admin_ & _kub2-admin_)  
+- context name (_kubernetes-admin@kubernetes_ & _kub2-admin@kub2_)  
+If not well configured, you will not be able to navigate between clusters using contexts.  
+
+The following commands will merge existing kubeconfig files into one file:  
+```bash
+mv ~/.kube/config ~/.kube/config_rhel3
+export KUBECONFIG=~/.kube/config_rhel3:~/.kube/config_rhel5
+kubectl config view --merge --flatten > ~/.kube/config
+export KUBECONFIG=~/.kube/config
+```
+You can now navigate through clusters using contexts:  
+```bash
+$ kubectl config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+          kub2-admin@kub2               kub2         kub2-admin
+*         kubernetes-admin@kubernetes   kubernetes   kubernetes-admin
+
+$ kubectl get nodes
+NAME    STATUS   ROLES           AGE    VERSION
+rhel1   Ready    <none>          270d   v1.29.4
+rhel2   Ready    <none>          270d   v1.29.4
+rhel3   Ready    control-plane   270d   v1.29.4
+win1    Ready    <none>          270d   v1.29.4
+win2    Ready    <none>          270d   v1.29.4
+
+$ kubectl config use-context kub2-admin@kub2
+Switched to context "kub2-admin@kub2".
+
+$ kubectl config get-contexts
+CURRENT   NAME                          CLUSTER      AUTHINFO           NAMESPACE
+*         kub2-admin@kub2               kub2         kub2-admin
+          kubernetes-admin@kubernetes   kubernetes   kubernetes-admin
+
+$ kubectl get nodes
+NAME    STATUS   ROLES           AGE   VERSION
+rhel4   Ready    <none>          15h   v1.29.4
+rhel5   Ready    control-plane   15h   v1.29.4
+```
+Note that Trident Protect uses contexts.
 & voilà !

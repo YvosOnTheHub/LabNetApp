@@ -14,15 +14,15 @@ First, once you are connected to RHEL5, retrieve locally this chapter:
 cd
 git clone --depth 1 --branch master --no-checkout https://github.com/YvosOnTheHub/LabNetApp.git
 cd LabNetApp
-git sparse-checkout set Kubernetes_v6/Addendum/Addenda11
+git sparse-checkout set Kubernetes_v6/Addendum/Addenda10
 git checkout
-cd Kubernetes_v6/Addendum/Addenda11
+cd Kubernetes_v6/Addendum/Addenda10
 ```
 
 If you have not yet read the [Addenda08](../Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory *addenda11_pull_images.sh* to pull images utilized in this scenario if needed:  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *addenda10_pull_images.sh* to pull images utilized in this scenario if needed:  
 ```bash
-sh addenda11_pull_images.sh
+sh addenda10_pull_images.sh
 ```
 
 In order to build our Gitea application, we need to use the _podman-compose_ tool:

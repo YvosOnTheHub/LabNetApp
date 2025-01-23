@@ -55,4 +55,4 @@ The _volume snapshot_ feature is now ready to be tested.
 You can move forward with one of the 2 following chapters:  
 [1.](1_Busybox) Simple snapshot managment with Busybox (all CLI)  
 [2.](2_Ghost) More advanced usage of snapshots with Ghost (some GUI involved)  
-[3.](3_CSI_Snapshots_and_NASECO) CSI Snapshots with ONTAP-NAS-ECONOMY
+<!-- [3.](3_CSI_Snapshots_and_NASECO) CSI Snapshots with ONTAP-NAS-ECONOMY -->

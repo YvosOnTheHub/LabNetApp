@@ -126,15 +126,28 @@
       vserver: svm_secondary
       <<: *ontap_parameters
 
-  - name: Create iSCSI Interface
+  - name: Create iSCSI Interface#1
     netapp.ontap.na_ontap_interface:
       state: present
-      interface_name: secondary_iscsi
-      home_port: e0d
+      interface_name: secondary_iscsi_001
+      home_port: e0c
       home_node: cluster1-01
       admin_status: up
       service_policy: secondary_iscsi
       address: 192.168.0.142
+      netmask: 255.255.255.0
+      vserver: svm_secondary
+      <<: *ontap_parameters
+
+  - name: Create iSCSI Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: secondary_iscsi_002
+      home_port: e0d
+      home_node: cluster1-01
+      admin_status: up
+      service_policy: secondary_iscsi
+      address: 192.168.0.143
       netmask: 255.255.255.0
       vserver: svm_secondary
       <<: *ontap_parameters

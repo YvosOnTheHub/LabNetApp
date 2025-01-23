@@ -90,7 +90,7 @@ EOF
 ```
 Let's now verify that this service account has the necesary rights to proceed:  
 ```bash
-kubectl auth can-i --as=system:serviceaccount:tpsc05busybox:protect-user get applications.protect.trident.netapp.io -n tpsc05busybox
+$ kubectl auth can-i --as=system:serviceaccount:tpsc05busybox:protect-user get applications.protect.trident.netapp.io -n tpsc05busybox
 yes
 ```
 

@@ -105,6 +105,34 @@ parameters:
   backendType: "ontap-nas"
   storagePools: "nfs:aggr2"
 allowVolumeExpansion: true
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-iscsi
+  namespace: trident
+spec:
+  version: 1
+  backendName: iscsi
+  storageDriverName: ontap-san
+  managementLIF: 192.168.0.140
+  sanType: iscsi
+  credentials:
+    name: svm-credentials
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-iscsi
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+  storagePools: "iscsi:aggr2"
+  sanType: "iscsi"
+  fsType: "ext4"
+allowVolumeExpansion: true
+mountOptions:
+   - discard
 EOF
 
 echo

@@ -11,10 +11,19 @@ echo "# Create a K8S cluster on RHEL5"
 echo "#######################################################################################################"
 echo
 
-kubeadm init --pod-network-cidr=192.168.20.0/21
+cat << EOF > ~/kubeadm-values.yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+networking:
+  podSubnet: "192.168.20.0/21"
+clusterName: kub2
+EOF
+
+kubeadm init --config ~/kubeadm-values.yaml
 
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sed -i 's/kubernetes-admin/kub2-admin/' $HOME/.kube/config
 echo 'KUBECONFIG=$HOME/.kube/config' >> $HOME/.bashrc
 source ~/.bashrc
 
@@ -24,6 +33,14 @@ echo "# Copy KUBECONFIG on RHEL3"
 echo "#######################################################################################################"
 echo
 curl -s --insecure --user root:Netapp1! -T /root/.kube/config sftp://rhel3/root/.kube/config_rhel5
+
+echo
+echo "#######################################################################################################"
+echo "# KUBECONFIG Management on RHEL3"
+echo "#######################################################################################################"
+echo
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel3 mv ~/.kube/config ~/.kube/config_rhel3
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel3 "export KUBECONFIG=~/.kube/config_rhel3:~/.kube/config_rhel5 && kubectl config view --merge --flatten > ~/.kube/config && export KUBECONFIG=~/.kube/config"
 
 echo
 echo "#######################################################################################################"
@@ -185,6 +202,17 @@ EOF
 
 echo
 echo "#######################################################################################################"
+echo "# Configure iSCSI on each node"
+echo "#######################################################################################################"
+echo
+
+sed -i s/rhel./rhel5/ /etc/iscsi/initiatorname.iscsi
+systemctl restart iscsid
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 "sed -i s/rhel./rhel4/ /etc/iscsi/initiatorname.iscsi"
+sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 systemctl restart iscsid
+
+echo
+echo "#######################################################################################################"
 echo "# Install Trident"
 echo "#######################################################################################################"
 echo
@@ -237,3 +265,24 @@ echo "##########################################################################
 echo "# Secondary Kubernetes cluster ready to be used"
 echo "#######################################################################################################"
 echo
+
+if [[  $(more ~/.bashrc | grep kedit | wc -l) -eq 0 ]];then
+  echo
+  echo "#######################################################################################################"
+  echo "# UPDATE BASHRC"
+  echo "#######################################################################################################"
+  echo
+
+  cp ~/.bashrc ~/.bashrc.bak
+  cat <<EOT >> ~/.bashrc
+source <(kubectl completion bash)
+complete -F __start_kubectl k
+
+alias kc='kubectl create'
+alias kg='kubectl get'
+alias kdel='kubectl delete'
+alias kdesc='kubectl describe'
+alias kedit='kubectl edit'
+alias trident='tridentctl -n trident'
+EOT
+fi
