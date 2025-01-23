@@ -260,7 +260,8 @@ From the host _rhel3_, you will have to use the _--kubeconfig=_ parameter to app
 
 ## J. Interacting with Kubernetes with KubeConfig files & Contexts
 
-This chapter will be done from the RHEL3 host.  
+This chapter will be done from the **RHEL3** host.  
+
 By default, the kubectl cli retrieves the connection information in the ~/.kube/config file (which is a copy of the _/etc/kubernetes/admin.conf_ file).  
 If you want to interact with a remote cluster, you can add the _--kubeconfig_ parameter to the kubectl cli:  
 ```bash
