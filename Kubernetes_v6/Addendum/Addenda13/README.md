@@ -30,9 +30,10 @@ TASK [Create Service Policy for iSCSI (Core)]
 TASK [Create Service Policy for iSCSI (Data)] 
 TASK [Create Mgmt Interface] 
 TASK [Create NFS Interface] 
-TASK [Create iSCSI Interface] 
+TASK [Create iSCSI Interface#1]
+TASK [Create iSCSI Interface#2] 
 PLAY RECAP 
-localhost                  : ok=15   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+localhost                  : ok=16   changed=15   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
 & just like that, you have a new SVM available.
