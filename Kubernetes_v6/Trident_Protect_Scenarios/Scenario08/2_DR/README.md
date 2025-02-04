@@ -3,6 +3,7 @@
 #########################################################################################  
 
 In this chapter, we will see how to failover your application on a secondary cluster in case of a failure.  
+<p align="center"><img src="Images/Scenario_architecture.png" width="728"></p>
 
 ## A. Wordpress deployment with ArgoCD
 
