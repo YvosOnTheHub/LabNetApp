@@ -1,0 +1,18 @@
+apiVersion: protect.trident.netapp.io/v1
+kind: AppMirrorRelationship
+metadata:
+  name: wordpress
+  namespace: wpargo2dr
+spec:
+  desiredState: Established
+  destinationAppVaultRef: ontap-vault
+  namespaceMapping:
+  - destination: wpargo2dr
+    source: wpargo2
+  recurrenceRule: |-
+    DTSTART:20240901T000202Z
+    RRULE:FREQ=MINUTELY;INTERVAL=10
+  sourceAppVaultRef: ontap-vault
+  sourceApplicationName: wordpress
+  sourceApplicationUID: SRCAPPID
+  storageClassName: sc-nfs

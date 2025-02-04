@@ -1,0 +1,16 @@
+apiVersion: protect.trident.netapp.io/v1
+kind: Schedule
+metadata:
+  name: wordpress
+  namespace: wpargo2
+spec:
+  appVaultRef: ontap-vault
+  applicationRef: wordpress
+  backupRetention: "12"
+  dataMover: Kopia
+  enabled: true
+  granularity: Custom
+  recurrenceRule: |-
+    DTSTART:20250106T000100Z
+    RRULE:FREQ=MINUTELY;INTERVAL=5
+  snapshotRetention: "6"

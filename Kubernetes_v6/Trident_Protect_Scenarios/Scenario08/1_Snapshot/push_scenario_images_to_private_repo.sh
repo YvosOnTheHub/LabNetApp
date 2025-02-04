@@ -29,29 +29,18 @@ fi
 
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/gitea/gitea 2> /dev/null | grep 1.14.2 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/wordpress 2> /dev/null | grep 6.2.1-apache | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy Gitea 1.14.2 Into Private Repo"
+  echo "# Skopeo Copy WORDPRESS 6.2.1 Into Private Repo"
   echo "##############################################################"
-  
-  skopeo copy docker://docker.io/gitea/gitea:1.14.2 docker://registry.demo.netapp.com/gitea/gitea:1.14.2
-else
-  echo
-  echo "##############################################################"
-  echo "# Gitea 1.14.2 already in the Private Repo - nothing to do"
-  echo "##############################################################"
+  skopeo copy docker://docker.io/wordpress:6.2.1-apache docker://registry.demo.netapp.com/wordpress:6.2.1-apache
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mysql 2> /dev/null | grep 8.0.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mysql 2> /dev/null | grep 8.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy MySQL 8.0.0 Into Private Repo"
+  echo "# Skopeo Copy MYSQL 8.0 Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/mysql:8.0.0 docker://registry.demo.netapp.com/mysql:8.0.0
-else
-  echo
-  echo "################################################################################"
-  echo "# MySQL 8.0.0 already in the Private Repo - nothing to do"
-  echo "################################################################################"
+  skopeo copy docker://docker.io/mysql:8.0 docker://registry.demo.netapp.com/mysql:8.0
 fi

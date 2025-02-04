@@ -1,0 +1,14 @@
+apiVersion: protect.trident.netapp.io/v1
+kind: Schedule
+metadata:
+  name: wordpress-fronted
+  namespace: wpargo1
+spec:
+  appVaultRef: ontap-vault
+  applicationRef: wordpress-frontend
+  backupRetention: "2"
+  dataMover: Kopia
+  enabled: true
+  granularity: Hourly
+  minute: "10"
+  snapshotRetention: "2"

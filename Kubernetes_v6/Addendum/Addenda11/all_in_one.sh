@@ -9,7 +9,12 @@ until [[ $(kubectl -n argocd get pod -l app.kubernetes.io/name=argocd-server -o=
     done
 done
 
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm -f argocd-linux-amd64
+
 echo
 ARGOCDIP=$(kubectl -n argocd get svc argocd-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-echo "ARGOCDIP: $ARGOCDIP"
+ARGOCDPWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
+echo "ARGOCDIP: $ARGOCDIP - ARGOCDPWD: $ARGOCDPWD"
 

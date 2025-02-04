@@ -1,0 +1,11 @@
+apiVersion: protect.trident.netapp.io/v1
+kind: Application
+metadata:
+  name: wordpress-frontend
+  namespace: wpargo1
+spec:
+  includedNamespaces:
+    - labelSelector:
+        matchLabels:
+          tier: frontend
+      namespace: wpargo1

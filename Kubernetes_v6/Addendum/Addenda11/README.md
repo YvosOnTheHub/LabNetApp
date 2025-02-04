@@ -25,4 +25,16 @@ In this example, the Load Balancer provided the address 192.168.0.212 to ArgoCD.
 You can use that address in the browser to reach this application.  
 Note that you don't need to log in the GUI as authentication was disabled.  
 
+We also need to install the ArgoCD binary, which can be useful, especially if you need to register a second cluster in the environment:
+```bash
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm -f argocd-linux-amd64
+```
+To interact with the binary, you need to find out the password for the admin user.  
+You can use the following command to retrieve the inital value:  
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
 There you go, ArgoCD is now ready to use!

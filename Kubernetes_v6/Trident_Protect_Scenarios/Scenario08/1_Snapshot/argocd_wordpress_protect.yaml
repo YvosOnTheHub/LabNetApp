@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tp-wordpress-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'http://192.168.0.65:3000/demo/wordpress'
+    path: Wordpress_Snapshot/App_protect
+    targetRevision: master
+    directory:
+      recurse: true
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: wpargo1
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

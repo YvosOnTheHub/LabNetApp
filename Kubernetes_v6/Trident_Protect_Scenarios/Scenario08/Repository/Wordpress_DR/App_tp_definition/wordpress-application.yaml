@@ -1,0 +1,8 @@
+apiVersion: protect.trident.netapp.io/v1
+kind: Application
+metadata:
+  name: wordpress
+  namespace: wpargo2
+spec:
+  includedNamespaces:
+    - namespace: wpargo2
