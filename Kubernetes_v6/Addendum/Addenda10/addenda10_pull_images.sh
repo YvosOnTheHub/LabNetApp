@@ -43,15 +43,15 @@ else
   echo "##############################################################"
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mysql 2> /dev/null | grep 8.0.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mysql 2> /dev/null | grep 8.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy MySQL 8.0.0 Into Private Repo"
+  echo "# Skopeo Copy MySQL 8.0 Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/mysql:8.0.0 docker://registry.demo.netapp.com/mysql:8.0.0
+  skopeo copy docker://docker.io/mysql:8.0 docker://registry.demo.netapp.com/mysql:8.0
 else
   echo
   echo "################################################################################"
-  echo "# MySQL 8.0.0 already in the Private Repo - nothing to do"
+  echo "# MySQL 8.0 already in the Private Repo - nothing to do"
   echo "################################################################################"
 fi

@@ -14,5 +14,5 @@ spec:
     RRULE:FREQ=MINUTELY;INTERVAL=10
   sourceAppVaultRef: ontap-vault
   sourceApplicationName: wordpress
-  sourceApplicationUID: SRCAPPID
+  sourceApplicationUID: CHANGE_ME
   storageClassName: sc-nfs

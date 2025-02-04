@@ -2,29 +2,28 @@
 # SCENARIO 8: Protection policies & GitOps
 #########################################################################################  
 
-In this scenario, we are going see how we can automatically protect an application with Trident Protect & ArgoC:
+In this scenario, we are going see how we can automatically protect an application with Trident Protect & ArgoCD:
+<p align="center"><img src="Images/Scenario_architecture.png" width="728"></p>
 
-
-
-## B. Wordpress deployment with ArgoCD
+## A. Wordpress deployment with ArgoCD
 
 Let's deploy a new application. Instead of creating it with Helm, we are going to use ArgoCD.  
 This could be done with the GUI or via the ArgoCD CRD, method used in the following example:  
 ```bash
-$ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/argocd_wordpress_deploy.yaml
+$ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/1_Snapshot/argocd_wordpress_deploy.yaml
 application.argoproj.io/wordpress created
 ```
-In a nutshell, we defined in the _argocd_wordpress.yaml_ file the following:
+In a nutshell, we defined in the _argocd_wordpress_deploy.yaml_ file the following:
 - the repo where the YAML manifests are stored ("ht<span>tp://</span>192.168.0.203:30000/demo/wordpress")
-- the directory to use in that repo (Wordpress/App_config)
-- the target namespace (wpargo)  
+- the directory to use in that repo (Wordpress_Snapshot/App_config)
+- the target namespace (wpargo1)  
 
 If all went well, you would see the app in the ArgoCD GUI:
-<p align="center"><img src="Images/ArgoCD_wordpress_create.png" width="512"></p>
+<p align="center"><img src="Images/ArgoCD_wordpress_create.png" width="384"></p>
 
 As the CR was defined with an automated sync policy, the application will automatically appear on the Kubernetes cluster:  
 ```bash
-$ kubectl get -n wpargo pod,svc,pvc
+$ kubectl get -n wpargo1 pod,svc,pvc
 NAME                                   READY   STATUS    RESTARTS   AGE
 pod/wordpress-7c945b79c8-zv7sl         1/1     Running   0          3m52s
 pod/wordpress-mysql-7c4d5fc78c-4xpjh   1/1     Running   0          3m52s
@@ -38,11 +37,13 @@ persistentvolumeclaim/mysql-pvc   Bound    pvc-9dc10e4f-54a8-45fe-a7db-4765b53b6
 persistentvolumeclaim/wp-pvc      Bound    pvc-86ec7250-3566-48db-be92-107dd7e5eb88   20Gi       RWO            storage-class-nfs    3m52s
 ```
 In the ArgoCD, once the application is fully deployed, you can the following:  
-<p align="center"><img src="Images/ArgoCD_wordpress_deployed.png" width="512"></p>
+<p align="center"><img src="Images/ArgoCD_wordpress_deployed.png" width="384"></p>
 
 
 Connect to the address assigned by the Load Balancer (_192.168.0.213_ in this example) to check that it works.  
-You can even start your blog if you want.  
+I recommend adding your own blog, so that you can really understand Trident Protect's benefits.  
+
+## B. Wordpress protection with ArgoCD
 
 Time to protect this application!  
 The repo also has a few files in the _App_protect_ folder to create some Trident Protect CR:
@@ -53,7 +54,7 @@ The repo also has a few files in the _App_protect_ folder to create some Trident
 
 We defined in the _argocd_wordpress_protect.yaml_ file the following:
 - the repo where the YAML manifests are stored ("ht<span>tp://</span>192.168.0.203:30000/demo/wordpress")  
-- the directory to use in that repo (Wordpress/App_protect)  
+- the directory to use in that repo (Wordpress_Snapshot/App_protect)  
 
 The protecting schedule is configured this way:  
 - frontend: hourly (10 minutes after the top of the hour) 
@@ -61,23 +62,23 @@ The protecting schedule is configured this way:
 
 You may want to change the frontend schedule if you want to witness quickly the creation of snapshots.  
 ```bash
-$ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/argocd_wordpress_protect.yaml
-application.argoproj.io/wordpress-manage created
+$ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/1_Snapshot/argocd_wordpress_protect.yaml
+application.argoproj.io/tp-wordpress-app created
 ```
 If all went well, you would see the app in the ArgoCD GUI:
-<p align="center"><img src="Images/ArgoCD_wordpress_protected.png" width="512"></p>
+<p align="center"><img src="Images/ArgoCD_wordpress_protected.png" width="384"></p>
 
 Checked in the CLI, you can also see that the Trident Protect configuration is present, which means your application has been automatically set up for protection!  
 ```bash
-$ tridentctl protect get application -n wpargo
+$ tridentctl protect get application -n wpargo1
 +--------------------+------------+-------+-------+
 |        NAME        | NAMESPACES | STATE |  AGE  |
 +--------------------+------------+-------+-------+
-| wordpress-frontend | wpargo     | Ready | 3m14s |
-| wordpress-mysql    | wpargo     | Ready | 3m14s |
+| wordpress-frontend | wpargo1    | Ready | 3m14s |
+| wordpress-mysql    | wpargo1    | Ready | 3m14s |
 +--------------------+------------+-------+-------+
 
-$ tridentctl protect get schedule -n wpargo
+$ tridentctl protect get schedule -n wpargo1
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
 |        NAME        |        APP         |            SCHEDULE            | ENABLED | STATE | AGE | ERROR |
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
@@ -89,7 +90,7 @@ $ tridentctl protect get schedule -n wpargo
 Depending on the schedule set, you should see soon or later snapshots appear.  
 Notice the difference of timing
 ```bash
-# tridentctl protect get snapshot -n wpargo
+$ tridentctl protect get snapshot -n wpargo1
 +-----------------------------+--------------------+-----------+--------+-------+
 |            NAME             |      APP REF       |   STATE   |  AGE   | ERROR |
 +-----------------------------+--------------------+-----------+--------+-------+
@@ -100,12 +101,14 @@ Notice the difference of timing
 +-----------------------------+--------------------+-----------+--------+-------+
 ```
 
+## C. Snapshot Restore
+
 Now what?  
 SEEK & DESTROY !!  
 
 Let's delete the **wordpress** database, just for fun ...  
 ```bash
-$ kubectl exec -n wpargo $(kubectl get pod -n wpargo -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
+$ kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
 Database
 information_schema
 mysql
@@ -113,9 +116,9 @@ performance_schema
 sys
 wordpress
 
-$ kubectl exec -n wpargo $(kubectl get pod -n wpargo -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "DROP DATABASE wordpress;"'
+$ kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "DROP DATABASE wordpress;"'
 
-$ kubectl exec -n wpargo $(kubectl get pod -n wpargo -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
+$ kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
 Database
 information_schema
 mysql
@@ -136,20 +139,20 @@ Trident Protect allows to you to restore:
 
 Let's restore only the PVC & the POD the latest mysql snapshot:  
 ```bash
-$ tridentctl protect create sir mysqlsir1 --snapshot wpargo/custom-cc413-20250126161600 -n wpargo \
+$ tridentctl protect create sir mysqlsir1 --snapshot wpargo1/custom-cc413-20250126161600 -n wpargo1 \
   --resource-filter-exclude='[{"kind":"Secret"},{"kind":"Service"}]'
 SnapshotInplaceRestore "mysqlsir1" created.
 
-$ tridentctl protect get sir -n wpargo
+$ tridentctl protect get sir -n wpargo1
 +-----------+-------------+-----------+------+-------+
 |   NAME    |  APPVAULT   |   STATE   | AGE  | ERROR |
 +-----------+-------------+-----------+------+-------+
 | mysqlsir1 | ontap-vault | Completed | 1m1s |       |
 +-----------+-------------+-----------+------+-------+
 ```
-You can now see from the "AGE" that the _excluded_ objects were indeed not restored from the snapshot:  
+Once done, you can see from the "AGE" fields that the _excluded_ objects were indeed not restored from the snapshot:  
 ```bash
-$ kubectl get -n wpargo pod,pvc,svc,secret
+$ kubectl get -n wpargo1 pod,pvc,svc,secret
 NAME                                   READY   STATUS    RESTARTS   AGE
 pod/wordpress-7c945b79c8-zv7sl         1/1     Running   0          37m
 pod/wordpress-mysql-5d8b966d55-lx8bn   1/1     Running   0          88s
@@ -168,7 +171,7 @@ secret/mysql-pass   Opaque   1      15m
 
 Next, you can also verify that the **mysql** database is back:  
 ```bash
-$ kubectl exec -n wpargo $(kubectl get pod -n wpargo -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
+$ kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW DATABASES;"'
 Database
 information_schema
 mysql
@@ -176,4 +179,4 @@ performance_schema
 sys
 wordpress
 ```
-Last, if you refresh the browser, Wordpress will be back on its feet, with the blog you have created earlier= 
+Last, if you refresh the browser, Wordpress will be back on its feet, with the blog you created earlier. 

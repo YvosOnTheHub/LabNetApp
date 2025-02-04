@@ -37,7 +37,7 @@ services:
       - db
 
   db:
-    image: registry.demo.netapp.com/mysql:8.0.0
+    image: registry.demo.netapp.com/mysql:8.0
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=gitea
