@@ -7,7 +7,7 @@ spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress-mysql
   backupRetention: "12"
-  dataMover: Kopia
+  dataMover: Restic
   enabled: true
   granularity: Custom
   recurrenceRule: |-

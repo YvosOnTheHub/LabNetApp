@@ -7,7 +7,7 @@ spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress-frontend
   backupRetention: "2"
-  dataMover: Kopia
+  dataMover: Restic
   enabled: true
   granularity: Hourly
   minute: "10"
