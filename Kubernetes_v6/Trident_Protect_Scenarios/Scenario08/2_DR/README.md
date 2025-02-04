@@ -99,7 +99,7 @@ It contains the configuration of the Trident Protect AMR (_AppMirrorRelationship
 Configuring an AMR requires knowing the UUID of the source app.  
 As wordpress is now managed by Trident, we can retrieve that information and update the Git repository:  
 ```bash
-$ kubectl get application.protect.trident.netapp.io wordpress -o=jsonpath='{.metadata.uid}' -n wpargo2)
+$ kubectl get application.protect.trident.netapp.io wordpress -o=jsonpath='{.metadata.uid}' -n wpargo2; echo
 a9a1c12c-d4dd-4203-bb89-8691ab37e45c
 
 $ sed -e 's/CHANGE_ME/a9a1c12c-d4dd-4203-bb89-8691ab37e45c/' -i ~/Repository/Wordpress_DR/App_tp_dr/wordpress-dr.yaml
@@ -120,7 +120,7 @@ This can be achieved with the argocd binary, which will retrieve the kub2 contex
 Note that even if ArgoCD is configured without a password, that only applies to the GUI.  
 You then first need to retrieve the initial admin password to interact with that binary:  
 ```bash
-$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d;echo
+$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 qTTj3KFu52EpsGvd
 
 $  argocd login 192.168.0.212 --username admin --password qTTj3KFu52EpsGvd --insecure
@@ -132,6 +132,7 @@ $ argocd cluster add kub2-admin@kub2 -y
 INFO[0000] ServiceAccount "argocd-manager" already exists in namespace "kube-system"
 INFO[0000] ClusterRole "argocd-manager-role" updated
 INFO[0000] ClusterRoleBinding "argocd-manager-role-binding" updated
+INFO[0000] Created bearer token secret for ServiceAccount "argocd-manager"
 Cluster 'https://192.168.0.65:6443' added
 ```
 
@@ -194,7 +195,7 @@ remote: Processed 1 references in total
 To http://192.168.0.65:3000/demo/wordpress.git
    e71098d..54359ab  master -> master
 ```
-As the DR card is the configured with the parameter **ApplyOutOfSyncOnly**, the change will automatically be processed.  
+Note that the change should automatically be detected & processed by ArgoCD.  
 You can see your app failed over almost immediately:  
 ```bash
 $ kubectl --context=kub2-admin@kub2 get -n trident-protect amr -n wpargo2dr
@@ -214,3 +215,6 @@ NAME                              STATUS   VOLUME                               
 persistentvolumeclaim/mysql-pvc   Bound    pvc-f5665b5a-3322-4fab-8b45-d8a7d8cfe0fc   20Gi       RWO            sc-nfs         <unset>                 116m
 persistentvolumeclaim/wp-pvc      Bound    pvc-60e385aa-28c3-44c3-b137-dd8c77ad0683   20Gi       RWO            sc-nfs         <unset>                 116m
 ```
+
+By connecting to the IP address provided by the Load Balancer (192.168.0.220 in this example), you will see your blog!  
+& With that you saw how to manage, protect & failover your application following GitOps methodologies.  

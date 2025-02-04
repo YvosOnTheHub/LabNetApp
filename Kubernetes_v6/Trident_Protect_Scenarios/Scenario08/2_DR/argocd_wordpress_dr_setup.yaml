@@ -18,4 +18,3 @@ spec:
     automated: {}
     syncOptions:
       - CreateNamespace=true
-      - ApplyOutOfSyncOnly=true

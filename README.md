@@ -62,7 +62,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [5.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario05) Tests scenario with Busybox (without hooks)  
 [6.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario06) Hook me up before you go-go!  
 [7.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario07) Be Selective  
-<!--[8.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario08) Protecting Applications with GitOps  -->
+[8.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario08) Protecting Applications with GitOps  
 <!--[.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario07) Pacman to the rescue  -->
 
 ## Addendum  
