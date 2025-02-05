@@ -33,7 +33,7 @@ snapshot create -vserver nassvm -volume to_import -snapshot snap-to-import
 In this example, the new volume's name is 'to_import'.  
 A snapshot was also created for the next chapter of this scenario (snapshot import).  
 
-## B. Import the volume
+## B. Import the volume with tridentctl
 
 In the 'Ghost' directory, you will see some yaml files to build a new 'Ghost' app.
 Open the PVC definition file, & notice the difference with the one used in the scenario5.
@@ -133,7 +133,60 @@ $ kubectl get pv $( kubectl get pvc blog-content-import-nm -n ghost -o=jsonpath=
 to_import_nm
 ```
 
-## F. Cleanup
+## F. Import the volume with kubectl
+
+Until now, you have tested volume import with _tridentctl_, let's how to use _kubectl_ to perform this action.  
+
+Let's start by creating another clone:  
+```bash
+vol clone create -flexclone to_import_kubectl -vserver nassvm -parent-volume trident_pvc_6777dffb_b21d_42b5_be71_d8675c9e7db9
+vol clone split start -flexclone to_import_kubectl -vserver nassvm
+vol mount -vserver nassvm -volume to_import_kubectl -junction-path /to_import_kubectl
+```
+Now that a ONTAP volume, let's see how to import it in Kubernetes (notice the 3 new annotations):  
+```bash
+cat << EOF | kubectl apply -f -
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: blog-content-import-kubectl
+  namespace: ghost
+  annotations:
+    trident.netapp.io/importOriginalName: "to_import_kubectl"
+    trident.netapp.io/importBackendUUID: "11d28fb4-6cf5-4c59-931d-94b8d8a5e061"
+    trident.netapp.io/notManaged: "false"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nfs
+EOF
+persistentvolumeclaim/blog-content-import-kubectl created
+```
+And just like that, you have a new PVC available!  
+```bash
+$ kubectl get pvc -n ghost
+NAME                          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
+blog-content                  Bound    pvc-6777dffb-b21d-42b5-be71-d8675c9e7db9   5Gi        RWX            storage-class-nfs   <unset>                 5m59s
+blog-content-import           Bound    pvc-e193d612-dd46-4e71-b31d-b0f57ca558f6   5Gi        RWX            storage-class-nfs   <unset>                 3m59s
+blog-content-import-kubectl   Bound    pvc-3311fc5c-7014-49c8-8567-94c1fc1ba4bd   5Gi        RWX            storage-class-nfs   <unset>                 4m47s
+```
+Again, notice that the volume full name on the storage backend has changed to respect the CSI specifications:  
+```bash
+$ kubectl get pv $( kubectl get pvc blog-content-import-kubectl -n ghost -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.spec.csi.volumeAttributes.internalName}{"\n"}'
+trident_pvc_3311fc5c_7014_49c8_8567_94c1fc1ba4bd
+```
+
+Even though the name of the original PV has changed, you can still see it if you look into its annotations.  
+```bash
+$ kubectl describe pvc blog-content-import-kubectl -n ghost | grep importOriginalName
+               trident.netapp.io/importOriginalName: to_import_kubectl
+```
+
+
+## G. Cleanup
 
 Only proceed with the cleanup if you are not planning on testing the snapshot import feature, which you can find in the second chapter of this scenario.
 

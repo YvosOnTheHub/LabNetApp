@@ -21,6 +21,7 @@ We will create this app in its own namespace (also very useful to clean up every
 We consider that the ONTAP-NAS backend & storage class have already been created. ([cf Scenario02](../../Scenario02))  
 ```bash
 $ kubectl create -f Ghost/
+namespace/ghost created
 persistentvolumeclaim/blog-content created
 deployment.apps/blog created
 service/blog created
