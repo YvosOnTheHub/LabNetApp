@@ -19,9 +19,11 @@ In a nutshell, we defined in the _argocd_wordpress_deploy.yaml_ file the followi
 - the target namespace (wpargo2)  
 
 If all went well, you would see the app in the ArgoCD GUI:
-<p align="center"><img src="Images/ArgoCD_wordpress_create.png" width="384"></p>
+<p align="center"><img src="Images/ArgoCD_wordpress_create_missing.png" width="384"></p>
 
-As the CR was defined with an automated sync policy, the application will automatically appear on the Kubernetes cluster:  
+This card does not automatically sync its content.  
+In order for ArgoCD to deploy Wordpress, you can press on the **Sync** button on the app tile (leave all options as is).  
+The application will immediately appear on the Kubernetes cluster:  
 ```bash
 $ kubectl get -n wpargo2 pod,svc,pvc
 NAME                                   READY   STATUS    RESTARTS   AGE
@@ -49,6 +51,7 @@ The repo also has a few files in the _App_tp_definition_ folder to create some T
 We defined in the _argocd_wordpress_protect.yaml_ file the following:
 - the repo where the YAML manifests are stored ("ht<span>tp://</span>192.168.0.203:30000/demo/wordpress")  
 - the directory to use in that repo (Wordpress_DR/App_tp_definition)  
+- automated sync policy  
 
 The protecting schedule is configured to take a snapshot every 5 minutes.  
 
