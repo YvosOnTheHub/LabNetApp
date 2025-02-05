@@ -174,7 +174,7 @@ nassvm:trident_pvc_14f39235_f5b0_4e78_8608_9b9a02ac4c35
 ```
 At this point, your application is fully protect with snapshots, backups & mirror.  
 
-## D. Faiing over your application
+## D. Failing over your application
 
 Time to break something!  
 Let's delete the whole primary namespace:  
@@ -199,8 +199,9 @@ remote: Processed 1 references in total
 To http://192.168.0.65:3000/demo/wordpress.git
    e71098d..54359ab  master -> master
 ```
-Note that the change should automatically be detected & processed by ArgoCD.  
-You can see your app failed over almost immediately:  
+Note that the change should automatically be detected & processed by ArgoCD (within a 3 to 4 minutes window).  
+You can see your app failed over when ArgoCD detects the change.  
+To accelerate this, you can also click on "Sync" on the "tp-wordpress2-dr" tile, which will trigger the update:    
 ```bash
 $ kubectl --context=kub2-admin@kub2 get -n trident-protect amr -n wpargo2dr
 NAME        DESIRED STATE   STATE      ERROR   AGE
