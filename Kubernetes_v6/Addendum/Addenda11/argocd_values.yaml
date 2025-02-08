@@ -6,6 +6,8 @@ configs:
   params:
     server.insecure: true
     server.disable.auth: true
+  cm:
+    timeout.reconciliation: 10s
 
 server:
   service:

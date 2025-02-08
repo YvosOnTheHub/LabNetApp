@@ -3,6 +3,8 @@ kind: Schedule
 metadata:
   name: wordpress
   namespace: wpargo2
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress
