@@ -71,7 +71,7 @@ $ kubectl describe pvc lun-import1 | grep importOriginalName
 Importing LUNs with ONTAP-ASN-ECONOMY was introduced in Trident 24.06.  
 We are going to see here how to use that method.  
 
-But first, let's create a new Flexvol that contains 2 LUNs:  
+But first, let's create a new Flexvol (*scenario7_4_2*) that contains 2 LUNs (*lun0* & *lun1*):  
 ```bash
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "aggregates": [{"name": "aggr1"}],
