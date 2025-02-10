@@ -19,9 +19,11 @@ In a nutshell, we defined in the _argocd_wordpress_deploy.yaml_ file the followi
 - the target namespace (wpargo1)  
 
 If all went well, you would see the app in the ArgoCD GUI:
-<p align="center"><img src="Images/ArgoCD_wordpress_create.png" width="384"></p>
+<p align="center"><img src="Images/ArgoCD_wordpress_create_missing.png" width="384"></p>
 
-As the CR was defined with an automated sync policy, the application will automatically appear on the Kubernetes cluster:  
+This card does not automatically sync its content.  
+In order for ArgoCD to deploy Wordpress, you can press on the **Sync** button on the app tile (leave all options as is).  
+The application will immediately appear on the Kubernetes cluster:   
 ```bash
 $ kubectl get -n wpargo1 pod,svc,pvc
 NAME                                   READY   STATUS    RESTARTS   AGE
@@ -51,6 +53,8 @@ The repo also has a few files in the _App_protect_ folder to create some Trident
 - _mysql-application.yaml_ to define the backend as a Trident Protect application  
 - _wordpress-schedule.yaml_ to automatically take snapshots & backups of the frontend  
 - _mysql-schedule.yaml_ to automatically take snapshots & backups of the backend  
+- _mysql-hook-pre-snap.yaml_ to quiesce the database so that the snapshot is consistent  
+- _mysql-hook-post-snap.yaml_ to thaw the database  
 
 We defined in the _argocd_wordpress_protect.yaml_ file the following:
 - the repo where the YAML manifests are stored ("ht<span>tp://</span>192.168.0.203:30000/demo/wordpress")  
@@ -86,6 +90,14 @@ $ tridentctl protect get schedule -n wpargo1
 | wordpress-mysql    | wordpress-mysql    | DTSTART:20250106T000100Z       | true    |       | 15s |       |
 |                    |                    | RRULE:FREQ=MINUTELY;INTERVAL=5 |         |       |     |       |
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
+
+$ tridentctl protect get exechook -n wpargo1
++-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
+|      NAME       |       APP       |        MATCH        |  ACTION  | STAGE | ENABLED | AGE | ERROR |
++-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
+| mysql-snap-post | wordpress-mysql | containerName:mysql | Snapshot | Post  | true    | 44s |       |
+| mysql-snap-pre  | wordpress-mysql | containerName:mysql | Snapshot | Pre   | true    | 42s |       |
++-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
 ```
 Depending on the schedule set, you should see soon or later snapshots appear.  
 Notice the difference of timing

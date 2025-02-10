@@ -199,9 +199,11 @@ remote: Processed 1 references in total
 To http://192.168.0.65:3000/demo/wordpress.git
    e71098d..54359ab  master -> master
 ```
-Note that the change should automatically be detected & processed by ArgoCD (within a 3 to 4 minutes window).  
-You can see your app failed over when ArgoCD detects the change.  
-To accelerate this, you can also click on "Sync" on the "tp-wordpress2-dr" tile, which will trigger the update:    
+Note that the change should automatically be detected & processed by ArgoCD.  
+By default, ArgoCD checks the repo every 180seconds. For this demo, the reconciliation timeout has been changed to 10 seconds.  
+
+Once the reconciliation happens, you will see your application failing over.  
+You could also click on "Sync" on the "tp-wordpress2-dr" tile, which will trigger the update if you are in a hurry:  
 ```bash
 $ kubectl --context=kub2-admin@kub2 get -n trident-protect amr -n wpargo2dr
 NAME        DESIRED STATE   STATE      ERROR   AGE
@@ -223,3 +225,10 @@ persistentvolumeclaim/wp-pvc      Bound    pvc-60e385aa-28c3-44c3-b137-dd8c77ad0
 
 By connecting to the IP address provided by the Load Balancer (192.168.0.220 in this example), you will see your blog!  
 & With that you saw how to manage, protect & failover your application following GitOps methodologies.  
+
+About the reconciliation timeout, you can check the value in one of the ArgoCD config maps:  
+```bash
+$ kubectl get -n argocd cm argocd-cm -o jsonpath={".data.timeout\.reconciliation"}; echo
+10s
+```
+This duration was set during the Argo installation with Helm.  

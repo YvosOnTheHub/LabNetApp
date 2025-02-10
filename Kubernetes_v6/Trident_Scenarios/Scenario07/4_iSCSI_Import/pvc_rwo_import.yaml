@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: lun-import
+  name: lun-import1
   namespace: default
 spec:
   accessModes:
