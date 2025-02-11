@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 2.1: Pacman's installation
+# SCENARIO 9.1: Pacman's installation
 #########################################################################################
 
 Pacman is essentially a NodeJS application that uses a MongoDB database to store its scores.  
