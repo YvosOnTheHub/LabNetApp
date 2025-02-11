@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pacman
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongo-storage
+  namespace: pacman
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: storage-class-nfs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mongo
+  name: mongo
+  namespace: pacman
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: mongo
+  name: mongo
+  namespace: pacman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mongo
+  template:
+    metadata:
+      labels:
+        name: mongo
+    spec:
+      containers:
+      - image: registry.demo.netapp.com/mongo:3.2
+        imagePullPolicy: IfNotPresent
+        name: mongo
+        ports:
+        - name: mongo
+          containerPort: 27017
+        volumeMounts:
+          - name: mongo-db
+            mountPath: /data/db
+      volumes:
+        - name: mongo-db
+          persistentVolumeClaim:
+            claimName: mongo-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pacman
+  namespace: pacman
+  labels:
+    name: pacman
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    name: pacman
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: pacman
+  name: pacman
+  namespace: pacman
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        name: pacman
+  template:
+    metadata:
+      labels:
+        name: pacman
+    spec:
+      containers:
+      - image: quay.io/ifont/pacman-nodejs-app:latest
+        #image: registry.demo.netapp.com/pacman-nodejs-app:latest
+        imagePullPolicy: IfNotPresent
+        name: pacman
+        ports:
+        - containerPort: 8080
+          name: http-server

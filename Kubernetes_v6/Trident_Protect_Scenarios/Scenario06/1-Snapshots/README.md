@@ -76,7 +76,7 @@ $ tridentctl protect get app -n pg
 | pg   | pg         | Ready | 7s  |
 +------+------------+-------+-----+
 ```
-If you have not yet create an AppVault, refer to the [Scenario03](../../Scenario03/) which guides you through the bucket provisioning as well as the AppVault (_ontap-vault_), which is created in the Trident Protect namespace, by the admin.  
+If you have not yet created an AppVault, refer to the [Scenario03](../../Scenario03/) which guides you through the bucket provisioning as well as the AppVault (_ontap-vault_), which is created in the Trident Protect namespace, by the admin.  
 
 Before moving to the application protection, we first need to create the snapshots hooks:  
 ```bash
