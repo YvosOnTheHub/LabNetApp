@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 2.2: Let's enable Pacman's protection 
+# SCENARIO 2.2: Let's give Pacman a hand
 #########################################################################################
 
 We will use Trident Protect to create:  
@@ -13,6 +13,7 @@ We will create a Trident Protect application based on the pacman namespace, as w
 ```bash
 $ tridentctl protect create app pacman --namespaces pacman -n pacman
 Application "pacman" created.
+
 $ tridentctl protect get app -n pacman
 +--------+------------+-------+-----+
 |  NAME  | NAMESPACES | STATE | AGE |

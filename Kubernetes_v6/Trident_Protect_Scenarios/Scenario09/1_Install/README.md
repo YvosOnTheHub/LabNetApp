@@ -80,4 +80,4 @@ connecting to: pacman
 }
 ```
 
-Now that some scores are saved on the database, you can proceed with managing the app with [Trident Prorect](../2_Protect)
+Now that some scores are saved on the database, you can proceed with managing the app with [Trident Protect](../2_Protect)
