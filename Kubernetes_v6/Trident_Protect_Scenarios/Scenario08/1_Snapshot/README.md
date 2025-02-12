@@ -56,9 +56,9 @@ The repo also has a few files in the _App_protect_ folder to create some Trident
 - _mysql-hook-pre-snap.yaml_ to quiesce the database so that the snapshot is consistent  
 - _mysql-hook-post-snap.yaml_ to thaw the database  
 
->> Note that the pre snapshot hook used in this scenario will freeze the database for about a minute.**  
+>> Note that the pre snapshot hook used in this scenario will freeze the database for about a minute.    
 >> The effect is that if you try to update the blog while the snapshot process is running, saving the result will wait for the database to be thawed.  
->> If you do not setup the hooks, the snapshot is almost immediate.  
+>> If you do not setup the hooks, the snapshot is almost immediate, which is fine for a demo, but maybe not for production...  
 
 We defined in the _argocd_wordpress_protect.yaml_ file the following:
 - the repo where the YAML manifests are stored ("ht<span>tp://</span>192.168.0.203:30000/demo/wordpress")  
