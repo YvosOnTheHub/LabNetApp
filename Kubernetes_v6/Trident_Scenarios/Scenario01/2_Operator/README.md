@@ -23,7 +23,7 @@ $ sh ../scenario01_pull_images.sh
 
 Also, this registry requires credentials to retrieve images. The linux nodes already have them saved locally, however the windows nodes do not have that information. Hence, we will create a secret so that the Trident operator can pull images locally:  
 ```bash
-kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident --docker-server=registry.demo.netapp.com
+$ kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident --docker-server=registry.demo.netapp.com
 secret/regcred created
 ```
 
@@ -98,51 +98,63 @@ After a few seconds, you should the status _installed_ in the orchestrator CR.
 $ kubectl describe torc
 Name:         trident
 Namespace:
-Labels:       app.kubernetes.io/managed-by=Helm
-Annotations:  meta.helm.sh/release-name: trident
-              meta.helm.sh/release-namespace: trident
+Labels:       <none>
+Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2024-04-27T21:03:55Z
-  Generation:          2
-  Resource Version:    162114
-  UID:                 8517835e-f6a3-4c24-bfb8-e62a542745f3
+  Creation Timestamp:  2025-02-14T13:12:21Z
+  Generation:          1
+  Resource Version:    292691
+  UID:                 8b97be12-9d04-4172-8fa7-9ae5c7e890dd
 Spec:
-  IPv6:                          false
-  Acp Image:                     <nil>
-  Autosupport Image:             registry.demo.netapp.com/trident-autosupport:24.10.0
-  Autosupport Insecure:          false
-  Autosupport Proxy:             <nil>
-  Cloud Identity:                <nil>
-  Cloud Provider:                <nil>
-  Disable Audit Log:             true
-  Enable ACP:                    false
-  Enable Force Detach:           false
-  Http Request Timeout:          90s
-  Image Pull Policy:             IfNotPresent
-  Iscsi Self Healing Interval:   5m0s
-  Iscsi Self Healing Wait Time:  7m0s
-  k8sTimeout:                    0
-  Kubelet Dir:                   <nil>
-  Log Format:                    text
-  Log Layers:                    <nil>
-  Log Workflows:                 <nil>
-  Namespace:                     trident
-  Probe Port:                    17546
-  Silence Autosupport:           true
-  Trident Image:                 registry.demo.netapp.com/trident:24.10.0
-  Windows:                       true
+  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:24.10.0
+  Debug:              true
+  Image Pull Secrets:
+    regcred
+  Namespace:            trident
+  Silence Autosupport:  true
+  Trident Image:        registry.demo.netapp.com/trident:24.10.0
 Status:
-  ...
+  Acp Version:  v24.10.0
+  Current Installation Params:
+    IPv6:                       false
+    Acp Image:
+    Autosupport Hostname:
+    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:24.10.0
+    Autosupport Insecure:       false
+    Autosupport Proxy:
+    Autosupport Serial Number:
+    Debug:                      true
+    Disable Audit Log:          true
+    Enable ACP:                 false
+    Enable Force Detach:        false
+    Http Request Timeout:       90s
+    Image Pull Policy:          IfNotPresent
+    Image Pull Secrets:
+      regcred
+    Image Registry:
+    Iscsi Self Healing Interval:   5m0s
+    Iscsi Self Healing Wait Time:  7m0s
+    k8sTimeout:                    30
+    Kubelet Dir:                   /var/lib/kubelet
+    Log Format:                    text
+    Log Layers:
+    Log Level:                     debug
+    Log Workflows:
+    Node Prep:                     <nil>
+    Probe Port:                    17546
+    Silence Autosupport:           true
+    Trident Image:                 registry.demo.netapp.com/trident:24.10.0
   Message:                         Trident installed
   Namespace:                       trident
   Status:                          Installed
   Version:                         v24.10.0
 Events:
-  Type    Reason     Age    From                        Message
-  ----    ------     ----   ----                        -------
-  Normal  Installed  9m40s  trident-operator.netapp.io  Trident installed
+  Type    Reason      Age    From                        Message
+  ----    ------      ----   ----                        -------
+  Normal  Installing  2m25s  trident-operator.netapp.io  Installing Trident
+  Normal  Installed   108s   trident-operator.netapp.io  Trident installed
 
 $ tridentctl -n trident version
 +----------------+----------------+
@@ -165,10 +177,10 @@ If you just want to display part of the description, you can use a filter such a
 
 ```bash
 $ kubectl describe torc trident | grep Message: -A 3
-  Message:    Trident installed
-  Namespace:  
-  Status:     Installed
-  Version:    v24.10.0
+  Message:          Trident installed
+  Namespace:        trident
+  Status:           Installed
+  Version:          v24.10.0
 ```
 
 ## E. What's next
