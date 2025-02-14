@@ -56,6 +56,7 @@ spec:
   tridentImage: registry.demo.netapp.com/trident:24.10.0
   autosupportImage: registry.demo.netapp.com/trident-autosupport:24.10.0
   silenceAutosupport: true
+  windows: true
   imagePullSecrets:
   - regcred
 EOF
