@@ -35,7 +35,7 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade trident netapp-trident/trident-operator --version 100.2410.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.10.0,operatorImage=registry.demo.netapp.com/trident-operator:24.10.1,tridentImage=registry.demo.netapp.com/trident:24.10.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade trident netapp-trident/trident-operator --version 100.2410.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:24.10.0,operatorImage=registry.demo.netapp.com/trident-operator:24.10.0,tridentImage=registry.demo.netapp.com/trident:24.10.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
 LAST DEPLOYED: Mon Nov 4 06:52:24 2024
 NAMESPACE: trident
