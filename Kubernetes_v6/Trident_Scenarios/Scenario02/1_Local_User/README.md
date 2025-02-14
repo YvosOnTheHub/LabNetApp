@@ -22,6 +22,7 @@ $ tridentctl -n trident get backend
 Moving from a tridentctl based backend to a kubectl one requires the creation of 2 objects:  
 - a secret
 - a TBC
+
 When going through that process, make sure that the backend parameters are correctly reported in the TBC.  
 
 This folder already contains the necesary files:
