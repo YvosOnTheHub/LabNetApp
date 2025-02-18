@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ping
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+    - name: ping-container
+      image: registry.demo.netapp.com/busybox:1.35.0
+      command: ["ping", "192.168.0.133"]
+      securityContext:
+        capabilities:
+          add:
+            - NET_RAW
+          drop:
+            - ALL
