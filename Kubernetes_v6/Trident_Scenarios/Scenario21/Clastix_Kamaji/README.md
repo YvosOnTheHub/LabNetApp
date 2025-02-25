@@ -11,7 +11,7 @@ This could be achieved by virtualizing Kubernetes Control planes (on top of VMwa
 
 In a nutshell, with Kamaji the Kubernetes admin manages **Tenants**, ie user Kubernetes cluters, which Control planes (**TCP**, Tenant Control Plane) are deployed on a **centralized management cluster** as pods in their own namespaces. A benefit (amongst many) is that the end user has then full access to his Kubernetes cluster, including cluster resources!  
 
-Worker nodes can be easily added to tenants in a declarative way (cf ClusterAPI) or in a more traditional fashion with kubeadm, which is the method we are going to use in this scenario.
+Worker nodes can be easily added to tenants in a declarative way (cf _ClusterAPI_) or in a more traditional fashion with _kubeadm_, which is the method we are going to use in this scenario.
 
 There is a last concept that needs to be introduced: **datastores**.  
 All Kubernetes orchestrators, whatever flavors they are, need to write their _state_ somewhere. Traditionally this is done in an ECTD database, automatically deployed during the initial setup.  
@@ -21,7 +21,7 @@ Those datastores can be configured :
 - automatically during the Kamaji setup, as an ETCD database    
 - separately (External ETCD, MySQL, PostgreSQL)  
 
-In this lab, we will use a shared external ETCD database, also provided by Clastix, which provides more flexibility in its configuration.  
+In this lab, we will use a shared external ETCD database, also provided by Clastix, which allows more flexibility in its configuration.  
 
 For more details, please refer to https://kamaji.clastix.io/concepts/.  
 
