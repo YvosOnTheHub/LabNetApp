@@ -23,7 +23,56 @@ Let's see this in action! We are going to create 2 vClusters in this environment
 
 <p align="center"><img src="Images/1_vclusters_high_level.jpg"></p>
 
-## A. vCluster Requirements
+## A. Environment setup  
+
+Before testing vClusters, we will prepare the Trident configuration that can be used here.  
+Let's create two new Trident backends associated with specific storage classes, so that we can demonstrate how the Kubernetes admin can control the storage consumption of a Tenant:  
+```bash
+$ kubectl create -f ../scenario21_trident_config.yaml
+secret/sc21_credentials created
+tridentbackendconfig.trident.netapp.io/backend-tenant1 created
+tridentbackendconfig.trident.netapp.io/backend-tenant2 created
+
+$ kubectl create -f ../scenario21_storage_classes.yaml
+storageclass.storage.k8s.io/sc-tenant1 created
+storageclass.storage.k8s.io/sc-tenant2 created
+```
+
+If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario21_pull_images.sh* to pull images utilized in this scenario if needed:  
+```bash
+sh ../scenario21_pull_images.sh
+```
+
+In order to best benefit from this experiment, you will also need to:  
+- Allow user applications on the control plane: cf [Addenda03](../../../Addendum/Addenda03/)
+- Add an extra node to the Kubernetes cluster: cf [Addenda01](../../../Addendum/Addenda01)
+
+With 4 linux nodes, your cluster will look the following:
+```bash
+$ kubectl get node -l kubernetes.io/os=linux
+NAME    STATUS   ROLES           AGE     VERSION
+rhel1   Ready    <none>          99d     v1.29.4
+rhel2   Ready    <none>          99d     v1.29.4
+rhel3   Ready    control-plane   99d     v1.29.4
+rhel4   Ready    <none>          2m49s   v1.29.4
+```
+
+Last, as both solutions can benefit from labels positioned on nodes, we will already configure some:  
+```bash
+$ kubectl label node rhel1 "tenant=tenant1"
+node/rhel1 labeled
+$ kubectl label node rhel2 "tenant=tenant1"
+node/rhel2 labeled
+$ kubectl label node rhel3 "tenant=tenant2"
+node/rhel3 labeled
+$ kubectl label node rhel4 "tenant=tenant2"
+node/rhel4 labeled
+```
+
+You are now ready to proceed with the vCluster installation.  
+
+## B. vCluster Requirements
 
 One of the requirements of vCluster is to run a recent version of Helm (v3.10.0+).  
 The lab runs Helm 3.XXXX. Here are the steps to upgrade this tool:  
@@ -39,7 +88,7 @@ $ helm version --short
 v3.15.3+g3bb50bb
 ```
 
-## B. Install vCluster
+## C. Install vCluster
 
 This is really the easiest thing ever... In short, download & use:  
 ```bash
@@ -51,7 +100,7 @@ vcluster version 0.19.7
 
 To get more information, you can refer to https://www.vcluster.com/docs/v0.19/getting-started/setup  
 
-## C. Create vClusters
+## D. Create vClusters
 
 Virtual clusters can be created on one node (default behavior), a subset of Kubernetes nodes (based on labels), or on all of them.  
 We have already set some labels for the purporse of this exercise.  
@@ -166,7 +215,7 @@ NAME            NAMESPACE       REVISION        UPDATED                         
 vcluster-2      vc2             1               2024-08-07 10:05:41.416349277 +0000 UTC deployed        vcluster-k0s-0.19.7
 ```
 
-## D. Use vClusters
+## E. Use vClusters
 
 I would recommend looking into how to connect to a vCluster to see the extent of what it possible: https://www.vcluster.com/docs/getting-started/connect.  
 Let's create the kubeconfig files related to each vCluster:  
@@ -233,7 +282,7 @@ The vCluster2 could also decide to deploy Ghost (with the script ghost_vc2.sh in
 
 <p align="center"><img src="Images/2_vclusters_ghost.jpg"></p>
 
-## E. What about CSI Snapshots
+## F. What about CSI Snapshots
 
 If the current setup does not yet have a volume snapshot class at the cluster level, you can find in the Scenario13 folder:  
 ```bash
@@ -285,7 +334,7 @@ blog-content-vc1-from-snap   Bound    pvc-1d8f7a1b-36b7-4d3a-9cca-945108aba39d  
 
 There you go. We just saw how to easily give access to CSI snapshots to a vCluster user. 
 
-## F. Clean up
+## G. Clean up
 
 Deleting the vClusters is pretty straight forward. Note that all resources created within the vCluster will also be deleted:  
 ```bash

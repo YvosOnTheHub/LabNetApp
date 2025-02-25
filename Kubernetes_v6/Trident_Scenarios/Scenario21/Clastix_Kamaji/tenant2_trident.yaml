@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: svm-credentials
+  namespace: trident
+type: Opaque
+stringData:
+  username: trident
+  password: Netapp1!
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nfs
+  namespace: trident
+spec:
+  version: 1
+  backendName: nfs
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.140
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  storagePrefix: tenant2
+  defaults:
+    nameTemplate: "{{ .config.StoragePrefix }}_{{ .volume.Namespace }}_{{ .volume.RequestName }}"
+  credentials:
+    name: svm-credentials
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-nfs
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "nfs:aggr2"
+allowVolumeExpansion: true

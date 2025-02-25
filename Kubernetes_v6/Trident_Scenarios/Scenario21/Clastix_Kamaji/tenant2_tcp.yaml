@@ -1,0 +1,66 @@
+apiVersion: kamaji.clastix.io/v1alpha1
+kind: TenantControlPlane
+metadata:
+  name: tenant-02
+  namespace: tenant2
+  labels:
+    tenant.clastix.io: tenant-02
+spec:
+  dataStore: kamaji-etcd
+  controlPlane:
+    deployment:
+      replicas: 3
+      additionalMetadata:
+        labels:
+          tenant.clastix.io: tenant-02
+      extraArgs:
+        apiServer: []
+        controllerManager: []
+        scheduler: []
+      resources:
+        apiServer:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits: {}
+        controllerManager:
+          requests:
+            cpu: 125m
+            memory: 256Mi
+          limits: {}
+        scheduler:
+          requests:
+            cpu: 125m
+            memory: 256Mi
+          limits: {}
+    service:
+      additionalMetadata:
+        labels:
+          tenant.clastix.io: tenant-02
+      serviceType: LoadBalancer
+  kubernetes:
+    version: v1.29.0
+    kubelet:
+      cgroupfs: systemd
+    admissionControllers:
+      - ResourceQuota
+      - LimitRanger
+  networkProfile:
+    port: 6443
+    certSANs:
+    - tenant-01.cluster.local
+    serviceCidr: 10.113.0.0/24
+    podCidr: 192.168.33.0/24
+    dnsServiceIPs:
+    - 10.113.0.10
+  addons:
+    coreDNS: {}
+    kubeProxy: {}
+    konnectivity:
+      server:
+        port: 8132
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits: {}

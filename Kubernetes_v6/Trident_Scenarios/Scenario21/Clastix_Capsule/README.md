@@ -21,7 +21,56 @@ In this scenario, we will see how to install & use Capsule, in conjunction with 
 
 <p align="center"><img src="Images/1_Capsule_high_level.png"></p>
 
-## A. Capsule Requirements
+## A. Environment setup  
+
+Before testing Capsule, we will prepare the Trident configuration that can be used here.  
+Let's create two new Trident backends associated with specific storage classes, so that we can demonstrate how the Kubernetes admin can control the storage consumption of a Tenant:  
+```bash
+$ kubectl create -f ../scenario21_trident_config.yaml
+secret/sc21_credentials created
+tridentbackendconfig.trident.netapp.io/backend-tenant1 created
+tridentbackendconfig.trident.netapp.io/backend-tenant2 created
+
+$ kubectl create -f ../scenario21_storage_classes.yaml
+storageclass.storage.k8s.io/sc-tenant1 created
+storageclass.storage.k8s.io/sc-tenant2 created
+```
+
+If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario21_pull_images.sh* to pull images utilized in this scenario if needed:  
+```bash
+sh ../scenario21_pull_images.sh
+```
+
+In order to best benefit from this experiment, you will also need to:  
+- Allow user applications on the control plane: cf [Addenda03](../../../Addendum/Addenda03/)
+- Add an extra node to the Kubernetes cluster: cf [Addenda01](../../../Addendum/Addenda01)
+
+With 4 linux nodes, your cluster will look the following:
+```bash
+$ kubectl get node -l kubernetes.io/os=linux
+NAME    STATUS   ROLES           AGE     VERSION
+rhel1   Ready    <none>          99d     v1.29.4
+rhel2   Ready    <none>          99d     v1.29.4
+rhel3   Ready    control-plane   99d     v1.29.4
+rhel4   Ready    <none>          2m49s   v1.29.4
+```
+
+Last, as both solutions can benefit from labels positioned on nodes, we will already configure some:  
+```bash
+$ kubectl label node rhel1 "tenant=tenant1"
+node/rhel1 labeled
+$ kubectl label node rhel2 "tenant=tenant1"
+node/rhel2 labeled
+$ kubectl label node rhel3 "tenant=tenant2"
+node/rhel3 labeled
+$ kubectl label node rhel4 "tenant=tenant2"
+node/rhel4 labeled
+```
+
+You are now ready to proceed with the Capsule installation.  
+
+## B. Capsule Requirements
 
 Capsule implements Kubernetes multi-tenancy capabilities using a minimum set of standard Admission Controllers.  
 For this lab, we need to enable the _PodNodeSelector_ alpha feature on the API Server.  
@@ -37,7 +86,7 @@ This will trigger the API Server to restart. To check if the change was taken in
 kubectl get -n kube-system po -l component=kube-apiserver -o=jsonpath='{.items[0].spec.containers[0].command}'  | grep enable-admission-plugins
 ```
 
-## B. Install Capsule
+## C. Install Capsule
 
 Capsule can be installed either via Helm chart, or by deploying manually the operator.  
 Let's try using the Helm chart, with a file containing its parameters.  
@@ -57,7 +106,7 @@ tenantresources.capsule.clastix.io                    2024-08-05T16:29:52Z
 tenants.capsule.clastix.io                            2024-08-05T16:29:52Z
 ```
 
-## C. Create tenants
+## D. Create tenants
 
 As Capsule is fully managed with Kubectl, creating & managing tenants is pretty easy.  
 The first Tenant we are going to create contains a few parameters:  
@@ -83,7 +132,7 @@ tenant2   Active   1                 0                 {"kubernetes.io/os":"linu
 
 Nothing easier than creating tenants. As you can see, you also have some basic information available when listing the tenants.
 
-## D. Access tenants
+## E. Access tenants
 
 Each tenant comes with its own admin (respectively _owner1_ & _owner2_) & group of admins.  
 A [script](https://github.com/clastix/capsule/blob/master/hack/create-user.sh) provided by Capsule will create the kubeconfig files for each user. A copy of this script (_create-user.sh_) is available in this folder.
@@ -113,7 +162,7 @@ $ kubectl --kubeconfig owner1-tenant1.kubeconfig get sc
 Error from server (Forbidden): storageclasses.storage.k8s.io is forbidden: User "owner1" cannot list resource "storageclasses" in API group "storage.k8s.io" at the cluster scope
 ```
 
-## E. Use tenants
+## F. Use tenants
 
 Let's install Ghost on _tenant1_. For that, you can use the _ghost_tenant1.sh_ file from the Ghost_tenant1 folder.  
 It will be installed in its own namespace called _tenant1-ghost_.  
@@ -176,7 +225,7 @@ tenant1   Active   3                 1                 {"kubernetes.io/os":"linu
 tenant2   Active   1                 0                 {"kubernetes.io/os":"linux","tenant":"tenant2"}   91m
 ```
 
-## F. What about CSI Snapshots
+## G. What about CSI Snapshots
 
 Before discussing Capsule, you need to create a _VolumeSnapshotClass_ if not done yet.  
 This is covered in the [Scenario13](../../Scenario13/1_CSI_Snapshots/), where you can find the manifest _sc-volumesnapshot.yaml_ which is a requirement for this exercise.  
@@ -238,7 +287,7 @@ volumesnapshot.snapshot.storage.k8s.io/blog-content-tenant1-snapshot   true     
 & voilà. This opens the door to lots of fun !
 
 
-## G. Clean up
+## H. Clean up
 
 By default, the Capsule controller assigns to the tenant owner the possibility to delete his own namespaces:  
 ```bash

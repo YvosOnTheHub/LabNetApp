@@ -12,67 +12,28 @@ Maybe using one Kubernetes cluster to securely host several teams/projects/appli
 
 After all, sharing is caring, right ?
 
-We are going to see in this chapter two products that bring solutions to multi-tenancy in Kubernetes:  
-- Capsule by Clastix.io
-- vClusters by Loft.sh
+We are going to see in this chapter three products that bring solutions to multi-tenancy in Kubernetes:  
+- Capsule by Clastix.io  
+- Kamaji by Clastix.io  
+- vClusters by Loft.sh  
 
-According to **Clastix.io**, _Capsule implements a multi-tenant and policy-based environment in your Kubernetes cluster. It is designed as a micro-services-based ecosystem with the minimalist approach, leveraging only on upstream Kubernetes_  (cf https://capsule.clastix.io/docs/)
+>> According to Clastix.io, Capsule implements a multi-tenant and policy-based environment in your Kubernetes cluster. It is designed as a micro-services-based ecosystem with the minimalist approach, leveraging only on upstream Kubernetes_  (cf https://capsule.clastix.io/docs/)
 
 The starting point of Capsule was to simplify the Kubernetes namespace concept, which somehow can be use to implement a simple multi tenant environment, but can also come with limitations, especially when it comes to sharing resources.  
 Without getting all _inception_ all the way on you, you can see Capsule as a way to better manage resources for tenants made of several namespaces (a tenant of tenants ?!). Or said differently, Tenants can be seen as namespaces on steroids.  
 
-According to **Loft.sh**, _Virtual clusters are fully working Kubernetes clusters that run on top of other Kubernetes clusters. Compared to fully separate "real" clusters, virtual clusters reuse worker nodes and networking of the host cluster. They have their own control plane and schedule all workloads into a single namespace of the host cluster. Like virtual machines, virtual clusters partition a single physical cluster into multiple separate ones_ (cf https://www.vcluster.com/docs/what-are-virtual-clusters)
+Clastix took the concept even further with Kamaji.  
+Here, we are going to mutualize all control planes on one single orcherstrator, again to minimize harware consumption & optimize resources.  
+Workers nodes can then be added & managed the same way as if you were running a traditional environment.  
+
+>> Kamaji turns any Kubernetes cluster into a “Management Cluster” to orchestrate other Kubernetes clusters called “Tenant Clusters”. Kamaji is special because the Control Plane components are running inside pods instead of dedicated machines. This solution makes running multiple Control Planes cheaper and easier to deploy and operate. (cf https://kamaji.clastix.io/)  
 
 The Loft.sh approach is a bit different. vClusters look & taste like real clusters, as you basically have access to everything (admin role, with your own set of APIs), but its construct reside in the namespace of an underlying Kubernetes cluster.  
-And you thought you had your own dedicated Kubernetes cluster? really ? Think again ...
+And you thought you had your own dedicated Kubernetes cluster? really ? Think again ...  
 
-Before testing both solutions, we will prepare the Trident configuration that can be used by both products:
+>> According to Loft.sh, Virtual clusters are fully working Kubernetes clusters that run on top of other Kubernetes clusters. Compared to fully separate "real" clusters, virtual clusters reuse worker nodes and networking of the host cluster. They have their own control plane and schedule all workloads into a single namespace of the host cluster. Like virtual machines, virtual clusters partition a single physical cluster into multiple separate ones (cf https://www.vcluster.com/docs/what-are-virtual-clusters)
 
-Let's create two new Trident backends associated with specific storage classes, so that we can demonstrate how the Kubernetes admin can control the storage consumption of a vCluster
-
-```bash
-$ kubectl create -f scenario21_trident_config.yaml
-secret/sc21_credentials created
-tridentbackendconfig.trident.netapp.io/backend-tenant1 created
-tridentbackendconfig.trident.netapp.io/backend-tenant2 created
-
-$ kubectl create -f scenario21_storage_classes.yaml
-storageclass.storage.k8s.io/sc-tenant1 created
-storageclass.storage.k8s.io/sc-tenant2 created
-```
-
-If you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario21_pull_images.sh* to pull images utilized in this scenario if needed:  
-```bash
-sh scenario21_pull_images.sh
-```
-
-In order to best benefit from this experiment, you will also need to:  
-- Allow user applications on the control plane: cf [Addenda03](../../Addendum/Addenda03)
-- Add an extra node to the Kubernetes cluster: cf [Addenda01](../../Addendum/Addenda01)
-
-With 4 linux nodes, your cluster will look the following:
-```bash
-$ kubectl get node -l kubernetes.io/os=linux
-NAME    STATUS   ROLES           AGE     VERSION
-rhel1   Ready    <none>          99d     v1.29.4
-rhel2   Ready    <none>          99d     v1.29.4
-rhel3   Ready    control-plane   99d     v1.29.4
-rhel4   Ready    <none>          2m49s   v1.29.4
-```
-
-Last, as both solutions can benefit from labels positioned on nodes, we will already configure some:  
-```bash
-$ kubectl label node rhel1 "tenant=tenant1"
-node/rhel1 labeled
-$ kubectl label node rhel2 "tenant=tenant1"
-node/rhel2 labeled
-$ kubectl label node rhel3 "tenant=tenant2"
-node/rhel3 labeled
-$ kubectl label node rhel4 "tenant=tenant2"
-node/rhel4 labeled
-```
-
-We are now ready to test both solutions:  
+Time to jump in all 3 solutions:  
 [1.](Clastix_Capsule) Capsule by Clastix.io  
-[2.](Loft_vClusters) vClusters by Loft.sh  
+[2.](Clastix_Kamaji) Kamaji by Clastix.io  
+[3.](Loft_vClusters) vClusters by Loft.sh  

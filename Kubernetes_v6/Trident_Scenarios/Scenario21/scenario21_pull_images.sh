@@ -40,3 +40,17 @@ else
   echo "# GHOST 2.6 already in the Private Repo - nothing to do"
   echo "##############################################################"
 fi
+
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mongo 2> /dev/null | grep 3.2 | wc -l) -eq 0 ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy Mongo 3.2 Into Private Repo"
+  echo "##############################################################"
+  skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
+  skopeo copy docker://docker.io/mongo:3.2 docker://registry.demo.netapp.com/mongo:3.2
+else
+  echo
+  echo "##############################################################"
+  echo "# Mongo 3.2 already in the Private Repo - nothing to do"
+  echo "##############################################################"
+fi
