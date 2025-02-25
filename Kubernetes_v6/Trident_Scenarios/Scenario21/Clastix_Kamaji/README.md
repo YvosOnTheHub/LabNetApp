@@ -136,8 +136,9 @@ At this point, Kamaji is installed & ready to use!
 ## C. Tenant creation  
 
 You can see in the following table the configuration I am using for the 2 tenants, as well as the management cluster:  
+
 | Configuration | Mgmt cluster | tenant-01 | tenant-02 | 
-| :--- | :---: | :---: | :---: | :---: | :---: |
+| :--- | :---: | :---: | :---: |
 | namespace | - | tenant1 | tenant2 |
 | version | v1.29.0 | v1.29.0 | v1.29.0 |
 | domain | cluster.local | cluster.local | cluster.local |
