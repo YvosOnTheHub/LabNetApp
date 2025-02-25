@@ -354,3 +354,6 @@ svm_secondary
 2 entries were displayed.
 ```
 You can notice even the aggregates are different, hence those two tenants don't share the same physical disks.  
+
+**Conclusion:**  
+With Kamaji & NetApp, you have the possibility to create multiple tenants totally isolated from each other at all levels, while reducing the server footprint (with all Control Planes mutualized by Kamaji on a central management cluster), as well as benefiting from NetApp security features & efficiency (to reduce storage footprint)!  
