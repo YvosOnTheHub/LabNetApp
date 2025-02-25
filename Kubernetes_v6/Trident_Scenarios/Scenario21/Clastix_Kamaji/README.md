@@ -22,6 +22,8 @@ Those datastores can be configured :
 - separately (External ETCD, MySQL, PostgreSQL)  
 
 In this lab, we will use a shared external ETCD database, also provided by Clastix, which allows more flexibility in its configuration.  
+You can easily switch to dedicated datastores by deploying an extra ETCD database.  
+The Tenant Control Plane _dataStore_ is used to specify which one is assigned to a tenant.  
 
 For more details, please refer to https://kamaji.clastix.io/concepts/.  
 
@@ -354,6 +356,40 @@ svm_secondary
 2 entries were displayed.
 ```
 You can notice even the aggregates are different, hence those two tenants don't share the same physical disks.  
+
+Also, the Trident backends are configured with Dynamic export policies enabled.  
+With that feature, only the worker nodes mounting a specific volume will appear in the ONTAP export policy in each SVM.  
+When you add more nodes to a tenant, Trident will automatically update the export policy.  
+Let's retrieve the export policy for each PVC:  
+```bash
+cluster1::> vol show -vserver nassvm -volume tenant1_ghost_blog_content_cd66b -fields policy
+vserver volume                           policy
+------- -------------------------------- --------------------------------------------
+nassvm  tenant1_ghost_blog_content_cd66b trident-1cf49dfc-2545-4d17-89b5-51482839e1f5
+
+cluster1::> vol show -vserver svm_secondary -volume tenant2_pacman_mongo_storage_8fb97 -fields policy
+vserver       volume                             policy
+------------- ---------------------------------- --------------------------------------------
+svm_secondary tenant2_pacman_mongo_storage_8fb97 trident-bad39b47-ab42-4b02-8e8d-4d2817322736
+```
+Now we can easily identify the rules configured by Trident:  
+```bash
+cluster1::> export-policy rule show -vserver nassvm -policyname trident-1cf49dfc-2545-4d17-89b5-51482839e1f5
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+nassvm       trident-1cf49dfc-2545-4d17-89b5-51482839e1f5
+                             1       nfs      192.168.0.64          any
+
+cluster1::> export-policy rule show -vserver svm_secondary -policyname trident-bad39b47-ab42-4b02-8e8d-4d2817322736
+             Policy          Rule    Access   Client                RO
+Vserver      Name            Index   Protocol Match                 Rule
+------------ --------------- ------  -------- --------------------- ---------
+svm_secondary
+             trident-bad39b47-ab42-4b02-8e8d-4d2817322736
+                             1       nfs      192.168.0.65          any
+```
+As expected, you only see the worker node for each tenant.  
 
 >> **Conclusion:**  
 >> With Kamaji & NetApp, you have the possibility to create multiple tenants totally isolated from each other at all levels, while reducing the server footprint (with all Control Planes mutualized by Kamaji on a central management cluster), as well as benefiting from NetApp security features & efficiency (to reduce storage footprint)!  
