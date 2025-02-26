@@ -21,9 +21,8 @@ Those datastores can be configured :
 - automatically during the Kamaji setup, as an ETCD database    
 - separately (External ETCD, MySQL, PostgreSQL)  
 
-In this lab, we will use a shared external ETCD database, also provided by Clastix, which allows more flexibility in its configuration.  
-You can easily switch to dedicated datastores by deploying an extra ETCD database.  
-The Tenant Control Plane _dataStore_ is used to specify which one is assigned to a tenant.  
+**Kamaji can use a dedicated datastore for each tenant. However, as this lab has limited resources, we will configure a shared datastore to host the 2 tenants.**  
+The Tenant Control Plane _dataStore_ field is used to specify which one is assigned to a tenant.  
 
 For more details, please refer to https://kamaji.clastix.io/concepts/.  
 
