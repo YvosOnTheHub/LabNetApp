@@ -104,6 +104,8 @@ namespaces: ""
 
 Let's install KSM and check what's new!  
 ```bash
+$ helm repo update prometheus-community
+
 $ helm install trident-protect prometheus-community/kube-state-metrics --version 5.21.0 -n monitoring -f ksm-values.yaml
 
 $ kubectl get -n monitoring pod -l app.kubernetes.io/instance=trident-protect
