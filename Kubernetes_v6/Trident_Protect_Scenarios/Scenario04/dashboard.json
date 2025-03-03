@@ -705,7 +705,8 @@
     ],
     "schemaVersion": 39,
     "tags": [
-      "24.10"
+      "24.10",
+      "25.02"
     ],
     "templating": {
       "list": []

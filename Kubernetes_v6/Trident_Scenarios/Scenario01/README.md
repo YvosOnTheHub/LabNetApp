@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 24.10.0
+# SCENARIO 1: Trident upgrade to 25.02.0
 #########################################################################################
 
 **GOAL:**  
@@ -17,11 +17,11 @@ Technically, if you decide to install Trident with Helm, you would not even need
 ```bash
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 24.10.0 && cd 24.10.0
-wget https://github.com/NetApp/trident/releases/download/v24.10.0/trident-installer-24.10.0.tar.gz
-tar -xf trident-installer-24.10.0.tar.gz
+mkdir 25.02.0 && cd 25.02.0
+wget https://github.com/NetApp/trident/releases/download/v25.02.0/trident-installer-25.02.0.tar.gz
+tar -xf trident-installer-25.02.0.tar.gz
 rm -f /usr/bin/tridentctl
-ln -sf /root/24.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+ln -sf /root/25.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 ```
 
 :mag:  

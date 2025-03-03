@@ -30,10 +30,10 @@ helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-he
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident-protect --docker-server=registry.demo.netapp.com
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2410.0 --namespace trident-protect
+helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2410.0 \
+  --version 100.2502.0 \
   --namespace trident-protect -f protectValues.yaml
   
 kubectl patch deployments -n trident-protect trident-protect-controller-manager -p '{"spec": {"template": {"spec": {"nodeSelector": {"kubernetes.io/os": "linux"}}}}}'
@@ -43,11 +43,11 @@ echo "############################################"
 echo "### Protectctl install"
 echo "############################################"
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-completion.bash
+curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
 mv tridentctl-completion.bash ~/.bash/completions/
 source ~/.bash/completions/tridentctl-completion.bash

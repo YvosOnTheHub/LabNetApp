@@ -24,10 +24,10 @@ They essentially point the installer to the registry, while specifying the secre
 helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-helm-chart/
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2410.0 --namespace trident-protect
+helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2410.0 \
+  --version 100.2502.0 \
   --namespace trident-protect -f protectValues.yaml
 ```
 After a few seconds (really), you will see a pod in the Trident Protect namespace:  
@@ -44,11 +44,11 @@ Trident Protect CR can be configured with YAML manifests or CLI.
 Let's install its CLI which avoids making mistakes when creating the YAML files:  
 ```bash
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-completion.bash
+curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
 mv tridentctl-completion.bash ~/.bash/completions/
 source ~/.bash/completions/tridentctl-completion.bash
@@ -61,7 +61,7 @@ EOT
 The CLI will appear as a new sub-menu in the _tridentctl_ tool.  
 ```bash
 $ tridentctl protect version
-24.10.0
+25.02.0
 ```
 
 There are 2 scripts in this folder that can perform the installation automatically:  

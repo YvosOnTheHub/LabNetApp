@@ -29,19 +29,19 @@ secret/regcred created
 
 ## C. Install the Trident operator
 
-We first need to modify the image repository in the bundle provided in the 24.10 TGZ package downloaded earlier.  
+We first need to modify the image repository in the bundle provided in the 25.02 TGZ package downloaded earlier.  
 Once done, you can apply this file to your environment.  
 ```bash
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/24.10.0/trident-installer/deploy/bundle_post_1_25.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.02.0/trident-installer/deploy/bundle_post_1_25.yaml
 
-$ kubectl create -f ~/24.10.0/trident-installer/deploy/bundle_post_1_25.yaml
+$ kubectl create -f ~/25.02.0/trident-installer/deploy/bundle_post_1_25.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
 deployment.apps/trident-operator created
 ```
 Then, you need to create a Trident Orchestrator, which is highly customizable.  
-Several examples can be found in the _~/24.10.0/trident-installer/deploy/crds_ folder.  
+Several examples can be found in the _~/25.02.0/trident-installer/deploy/crds_ folder.  
 
 Let's create our own:
 ```bash
@@ -53,8 +53,8 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:24.10.0
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:24.10.0
+  tridentImage: registry.demo.netapp.com/trident:25.02.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:25.02.0
   silenceAutosupport: true
   windows: true
   imagePullSecrets:
@@ -65,7 +65,7 @@ tridentorchestrator.trident.netapp.io/trident created
 
 After a few minutes, you should see the following content of the Trident namespace:
 ```bash
-$ kubectl get all -n trident
+$ kubectl get po,svc -n trident
 NAME                                      READY   STATUS    RESTARTS   AGE
 pod/trident-controller-67dbfc9dfc-hnjcf   6/6     Running   0          2m24s
 pod/trident-node-linux-9s4q5              2/2     Running   0          2m22s
@@ -77,19 +77,6 @@ pod/trident-operator-b577897b8-9tnq8      1/1     Running   0          5m30s
 
 NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)              AGE
 service/trident-csi   ClusterIP   10.96.34.221   <none>        34571/TCP,9220/TCP   2m28s
-
-NAME                                  DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-daemonset.apps/trident-node-linux     3         3         3       3            3           <none>          2m22s
-daemonset.apps/trident-node-windows   2         2         2       2            2           <none>          2m21s
-
-NAME                                 READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/trident-controller   1/1     1            1           2m24s
-deployment.apps/trident-operator     1/1     1            1           189d
-
-NAME                                            DESIRED   CURRENT   READY   AGE
-replicaset.apps/trident-controller-67dbfc9dfc   1         1         1       2m24s
-replicaset.apps/trident-operator-67d6fd899b     0         0         0       189d
-replicaset.apps/trident-operator-b577897b8      1         1         1       5m30s
 ```
 
 ## D. Check the status
@@ -104,25 +91,26 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2025-02-14T13:12:21Z
+  Creation Timestamp:  2025-03-03T09:11:22Z
   Generation:          1
-  Resource Version:    292691
-  UID:                 8b97be12-9d04-4172-8fa7-9ae5c7e890dd
+  Resource Version:    180639
+  UID:                 9f4145d6-6faa-449d-b772-7567892043f1
 Spec:
-  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:24.10.0
+  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:25.02.0
   Debug:              true
   Image Pull Secrets:
     regcred
   Namespace:            trident
   Silence Autosupport:  true
-  Trident Image:        registry.demo.netapp.com/trident:24.10.0
+  Trident Image:        registry.demo.netapp.com/trident:25.02.0
+  Windows:              true
 Status:
-  Acp Version:  v24.10.0
+  Acp Version:  v25.02.0
   Current Installation Params:
     IPv6:                       false
     Acp Image:
     Autosupport Hostname:
-    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:24.10.0
+    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:25.02.0
     Autosupport Insecure:       false
     Autosupport Proxy:
     Autosupport Serial Number:
@@ -146,27 +134,27 @@ Status:
     Node Prep:                     <nil>
     Probe Port:                    17546
     Silence Autosupport:           true
-    Trident Image:                 registry.demo.netapp.com/trident:24.10.0
+    Trident Image:                 registry.demo.netapp.com/trident:25.02.0
   Message:                         Trident installed
   Namespace:                       trident
   Status:                          Installed
-  Version:                         v24.10.0
+  Version:                         v25.02.0
 Events:
-  Type    Reason      Age    From                        Message
-  ----    ------      ----   ----                        -------
-  Normal  Installing  2m25s  trident-operator.netapp.io  Installing Trident
-  Normal  Installed   108s   trident-operator.netapp.io  Trident installed
+  Type    Reason      Age   From                        Message
+  ----    ------      ----  ----                        -------
+  Normal  Installing  73s   trident-operator.netapp.io  Installing Trident
+  Normal  Installed   42s   trident-operator.netapp.io  Trident installed
 
 $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 24.10.0        | 24.10.0        |
+| 25.02.0        | 25.02.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   24.10.0
+trident   25.02.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -181,7 +169,7 @@ $ kubectl describe torc trident | grep Message: -A 3
   Message:          Trident installed
   Namespace:        trident
   Status:           Installed
-  Version:          v24.10.0
+  Version:          v25.02.0
 ```
 
 ## E. What's next

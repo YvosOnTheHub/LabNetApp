@@ -36,9 +36,9 @@ kubectl taint nodes win2 win=true:NoSchedule
 ## B. Trident update  
 
 Trident Protect is compatible with Trident 24.02 (with ACP installed).  
-However, I recommend using Trident 24.10 to get the best of both products.  
+However, I recommend using Trident 25.02 to get the best of both products.  
 
-The Trident upgrade to 24.10 is already documented [here](../../Trident_Scenarios/Scenario01/).  
+The Trident upgrade to 25.02 is already documented [here](../../Trident_Scenarios/Scenario01/).  
 You can follow the scenario for this upgrade, or you can directly run the following script:  
 ```bash
 sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm/all_in_one.sh
@@ -65,7 +65,7 @@ That chapter will perform the following tasks:
 - Create a new 2 nodes Kubernetes cluster  
 - Install Calico (Network management)  
 - Install MetalLB (Load Balancer)  
-- Install Trident 24.10  
+- Install Trident 25.02  
 - Install a Snapshot Controller & a default Volume Snapshot Class  
 
 If don't want to run this configuration manually, you can also use the following (on the host _RHEL3_).  
