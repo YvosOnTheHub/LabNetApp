@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: secondary-pvc
+  namespace: cnva-secondary
+  annotations:
+    trident.netapp.io/shareFromPVC: cnva-primary/primary-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: storage-class-nfs

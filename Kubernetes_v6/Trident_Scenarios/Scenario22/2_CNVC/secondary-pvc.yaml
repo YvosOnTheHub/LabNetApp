@@ -2,9 +2,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: secondary-pvc
-  namespace: secondary
+  namespace: cnvc-secondary
   annotations:
-    trident.netapp.io/shareFromPVC: primary/primary-pvc
+    trident.netapp.io/cloneFromPVC: primary-pvc
+    trident.netapp.io/cloneFromNamespace: cnvc-primary
 spec:
   accessModes:
     - ReadWriteMany

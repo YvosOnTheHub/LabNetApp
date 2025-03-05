@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cnvc-primary
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: primary-pvc
+  namespace: cnvc-primary
+  annotations:
+    trident.netapp.io/cloneToNamespace: cnvc-secondary
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: storage-class-nfs
+---
+
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: busybox-primary
+  namespace: cnvc-primary
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+  - name: busybox
+    image: registry.demo.netapp.com/busybox:1.35.0
+    args:
+     - sleep
+     - "infinity"
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: "/mnt/sharedvolume"
+      name: nas-volume
+  volumes:
+    - name: nas-volume
+      persistentVolumeClaim:
+        claimName: primary-pvc

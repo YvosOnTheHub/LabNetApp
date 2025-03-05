@@ -48,7 +48,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [19.](Kubernetes_v6/Trident_Scenarios/Scenario19) Let's talk about protocols & access modes !  
 [20.](Kubernetes_v6/Trident_Scenarios/Scenario20) About Generic Ephemeral Volumes  
 [21.](Kubernetes_v6/Trident_Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
-[22.](Kubernetes_v6/Trident_Scenarios/Scenario22) Cross Namespace Volume Access  
+[22.](Kubernetes_v6/Trident_Scenarios/Scenario22) Crossing the borders    
 [23.](Kubernetes_v6/Trident_Scenarios/Scenario23) Naming conventions  
 [24.](Kubernetes_v6/Trident_Scenarios/Scenario24) Migrating volumes (snapmirror integration)  
 [25.](Kubernetes_v6/Trident_Scenarios/Scenario25) Storage & Policy Management  

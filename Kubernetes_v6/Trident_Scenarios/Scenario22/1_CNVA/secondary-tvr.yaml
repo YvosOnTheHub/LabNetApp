@@ -2,7 +2,7 @@ apiVersion: trident.netapp.io/v1
 kind: TridentVolumeReference
 metadata:
   name: secondary-pvc
-  namespace: secondary
+  namespace: cnva-secondary
 spec:
   pvcName: primary-pvc
-  pvcNamespace: primary
+  pvcNamespace: cnva-primary

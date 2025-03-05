@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: primary
+  name: cnva-primary
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: primary-pvc
-  namespace: primary
+  namespace: cnva-primary
   annotations:
-    trident.netapp.io/shareToNamespace: secondary
+    trident.netapp.io/shareToNamespace: cnva-secondary
 spec:
   accessModes:
     - ReadWriteMany
@@ -24,7 +24,7 @@ apiVersion: v1
 kind: Pod
 metadata: 
   name: busybox-primary
-  namespace: primary
+  namespace: cnva-primary
 spec:
   nodeSelector:
     kubernetes.io/os: linux
