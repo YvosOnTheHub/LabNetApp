@@ -239,7 +239,7 @@ Now that both our tenants are ready to be used, let's install Trident:
 tenants=( "tenant1" "tenant2" )
 for tenant in "${tenants[@]}"
 do
-  helm install trident netapp-trident/trident-operator --version 100.2502.0 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.02.0 --set operatorImage=registry.demo.netapp.com/trident-operator:25.02.0 --set tridentImage=registry.demo.netapp.com/trident:25.02.0 --set tridentSilenceAutosupport=true --kubeconfig=$tenant.kubeconfig
+  helm install trident netapp-trident/trident-operator --version 100.2502.1 -n trident --create-namespace --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.02.0 --set operatorImage=registry.demo.netapp.com/trident-operator:25.02.1 --set tridentImage=registry.demo.netapp.com/trident:25.02.1 --set tridentSilenceAutosupport=true --kubeconfig=$tenant.kubeconfig
 done
 ```
 After a couple of minutes, Trident should be ready. Let's see what we can expect on the first tenant:  
@@ -252,7 +252,7 @@ trident-operator-b577897b8-fglnw      1/1     Running   0          11m
 
 $ kubectl --kubeconfig=tenant2.kubeconfig -n trident get tver
 NAME      VERSION
-trident   25.02.0
+trident   25.02.1
 ```
 Let's also create a backend for each tenant. Each backend will point to a different SVM:  
 ```bash

@@ -26,15 +26,16 @@ There is a script in this folder to go through those 2 requirements: _setup_sc24
 Know that Trident does not take care of the peering configuration.  
 The storage admin must perform this task beforehand.  
 
-Most of the time, peering & mirroring will happen between 2 ONTAP clusters. In this lab, we will configure mirroring between 2 SVM.  
+Most of the time, peering & mirroring will happen between 2 ONTAP clusters. In this lab, we will configure mirroring between SVMs.  
 This configuration is done via Ansible in this scenario:  
 ```bash
 $ ansible-playbook svm_peering.yaml
 PLAY [Create SVM Peering] 
 TASK [Gathering Facts] 
-TASK [Create vserver peer] 
+TASK [Create vserver peer NASSVM] 
+TASK [Create vserver peer SANSVM] 
 PLAY RECAP 
-localhost                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+localhost                  : ok=3    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 
 Last, if you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  

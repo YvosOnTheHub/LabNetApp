@@ -29,7 +29,7 @@ rm -f helm-v3.15.3-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.02.0 WITH HELM"
+echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.02 WITH HELM"
 echo "#######################################################################################################"
 echo
 
@@ -90,9 +90,11 @@ echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
 kubectl krew install get-all
+kubectl krew install stern
 kubectl krew install view-utilization
 kubectl krew install tree
 kubectl krew install view-secret
+kubectl krew install view-serviceaccount-kubeconfig
 
 }
 

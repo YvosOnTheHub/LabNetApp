@@ -28,20 +28,20 @@ if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
 fi
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident 2> /dev/null | grep 25.02.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident 2> /dev/null | grep 25.02.1 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Multi-Arch TRIDENT Into Private Repo"
   echo "##############################################################"
-  skopeo copy --multi-arch all docker://docker.io/netapp/trident:25.02.0 docker://registry.demo.netapp.com/trident:25.02.0
+  skopeo copy --multi-arch all docker://docker.io/netapp/trident:25.02.1 docker://registry.demo.netapp.com/trident:25.02.1
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-operator 2> /dev/null | grep 25.02.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-operator 2> /dev/null | grep 25.02.1 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy TRIDENT OPERATOR Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/trident-operator:25.02.0 docker://registry.demo.netapp.com/trident-operator:25.02.0
+  skopeo copy docker://docker.io/netapp/trident-operator:25.02.1 docker://registry.demo.netapp.com/trident-operator:25.02.1
 fi
 
 if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-autosupport 2> /dev/null | grep 25.02.0 | wc -l) -eq 0 ]]; then

@@ -34,3 +34,4 @@ kubectl krew install view-utilization
 kubectl krew install tree
 kubectl krew install view-secret
 kubectl krew install stern
+kubectl krew install view-serviceaccount-kubeconfig

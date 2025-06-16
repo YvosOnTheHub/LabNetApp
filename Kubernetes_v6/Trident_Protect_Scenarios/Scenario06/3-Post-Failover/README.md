@@ -79,7 +79,7 @@ Application "sc06bbox2" created.
 $ tridentctl protect create appvault OntapS3 sc06bbox2-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
 AppVault "sc06bbox1-vault" created.
 ```
-Time to configure our 2 _post restore_ hooks:  
+Time to configure our 2 _post failover_ hooks:  
 ```bash
 $ tridentctl protect create exechook bbox-replicas --action Failover --stage post --app sc06bbox2 --source-file hook-failover-replicas.sh --arg busybox --arg 1 -n sc06bbox2
 ExecHook "bbox-replicas" created.

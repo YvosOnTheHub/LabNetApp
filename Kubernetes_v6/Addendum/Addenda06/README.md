@@ -150,6 +150,7 @@ Here are a few I have tested:
 - **rbac-view**: graphical view of all RBAC configured on the cluster, with a filter feature  
 - **tree**: displays a hierarchical view of some objects (ex: deployment => replicaset => pod)  
 - **view-secret**: decyphers & displays a secret (faster than running jsonpath + base64)  
+- **view-serviceaccount-kubeconfig**: useful to generate kubeconfig files for a service account  
 - **stern**: _tail_ multiple pods with some filters  
 
 ## E. K9S
