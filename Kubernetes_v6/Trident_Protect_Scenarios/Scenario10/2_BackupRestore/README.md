@@ -9,9 +9,9 @@ In all previous scenarios, you always restored your applications from the same b
 However, you may be in a situation where the 2 sites are too far apart, latencies high, hence restore from a local bucket may be much faster.  
 
 In this specific case, the infrastructure team would mirror the first bucket to a secondary bucket.  
-You are going to test this configuration here, granted the 2 buckets are on the same ONTAP cluster.  
+You are going to test this configuration here, granted the 2 buckets are on the same ONTAP cluster in this lab.  
 
-<p align="center"><img src="../Images/Archi_BR.png" width="512"></p>
+<p align="center"><img src="../Images/Archi_BR.png" width="640"></p>
 
 ## A. Setup
 
@@ -21,7 +21,7 @@ As we are going to use NetApp SnapMirror to mirror data from one bucket to the n
 - Generate keys for the SVM root users  
 - Create a specific policy for the snapmirror relationship with a RPO of 2 minutes (default is 1hour)
 
-An Ansible playbook (_scenario10_setup.yaml_) is available in this folder to help achieve those tasks:  
+An Ansible playbook (*scenario10_setup.yaml*) is available in this folder to help achieve those tasks:  
 ```bash
 $ ansible-playbook scenario10_setup.yaml
 PLAY [Scenario setup] 
@@ -38,7 +38,7 @@ localhost                  : ok=6    changed=5    unreachable=0    failed=0    s
 ## B. Bucket mirroring
 
 Now that the setup is complete, let's configure the mirror relationship between the 2 buckets.  
-This can be achieved with the _scenario10_snapmirror.yaml_ playbook you can find in this folder.  
+This can be achieved with the *scenario10_snapmirror.yaml* playbook you can find in this folder.  
 ```bash
 $ ansible-playbook scenario10_snapmirror_create.yaml
 PLAY [SnapMirror Management] 
@@ -79,12 +79,13 @@ $ tridentctl protect get backup -n tpsc10busybox
 ```
 Browsing again the source bucket, you will see 2 new folders _backups_ for the app metadata & _kopia_ for the data:  
 ```bash
+$ SRCAPPIDFOLDER=$(echo $SNAPPATH | awk -F '/' '{print $1}')
 $ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod/$SRCAPPIDFOLDER/
                            PRE backups/
                            PRE kopia/
                            PRE snapshots/
 ```
-Not long after (2 minutes max), you will see the backup appearing on the secondary bucket:  
+Not long after (2 minutes max, cf the policy used for the SnapMirror replication), you will see the backup appearing on the secondary bucket:  
 ```bash
 $ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.231 s3://s3lod2/$SRCAPPIDFOLDER/ --profile s3lod2
                            PRE backups/
@@ -97,7 +98,7 @@ $ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.231 s3://s3lod2/$SRC
 The second bucket is currently in Read-Only mode, hence you can browse the content, but not write in it.  
 Restoring an application also requires writing some state in the AppVault.  
 You then first need to break the snapmirror relationship which in turn will modify the bucket to ReadWrite.  
-This can be achieved by the _scenario10_snapmirror_delete.yaml_ file you can see in this folder:  
+This can be achieved by the *scenario10_snapmirror_delete.yaml* file you can see in this folder:  
 ```bash
 $ ansible-playbook scenario10_snapmirror_create.yaml
 PLAY [Cleanup] 
@@ -170,3 +171,5 @@ Let's verify the content of the app:
 kubectl exec -n tpsc10busyboxbr --kubeconfig=/root/.kube/config_rhel5 $(kubectl get pod -n tpsc10busyboxbr -o name --kubeconfig=/root/.kube/config_rhel5) -- more /data/file.txt
 bbox test for Scenario10!
 ```
+
+Tadaa !

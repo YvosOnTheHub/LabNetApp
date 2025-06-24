@@ -21,7 +21,7 @@ sh scenario10_pull_images.sh
 ## A. Second Bucket Creation
 
 The goal here is not show you how to create a S3 Bucket in ONTAP.  
-You can use the Ansible playbook you can find in the [Addend09](../../Addendum/Addenda09/).  
+You can use a Ansible playbook (*svm2_S3_setup.yaml*) you can find in the [Addend09](../../Addendum/Addenda09/).  
 
 Note that you need the access and secret keys in order to configure an AppVault.  
 Those keys are going to be available in the _/root/ansible_S3_SVM2_result.txt_ file.
@@ -31,14 +31,15 @@ ansible-playbook /root/LabNetApp/Kubernetes_v6/Addendum/Addenda09/svm2_S3_setup.
 
 ## B. Secondary AppVault Preparation
 
-Let's start by retrieving the bucket keys and create variables with their values:  
+Let's start by retrieving the bucket keys and create variables with their values from the output of the bucket creation logs:  
 ```bash
 BUCKETKEY=$(grep "access_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
 BUCKETSECRET=$(grep "secret_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
 ```
 
 To create an AppVault, you need to create a secret that will contains those 2 keys.  
-This must be done on the secondary cluster only. Notice the second command uses the _kubeconfig_ parameter:  
+This must be done on the secondary cluster only as the corresponding AppVault is not going to be used on the primary cluster.  
+Notice the second command uses the _kubeconfig_ parameter:  
 ```bash
 kubectl create secret generic -n trident-protect s3-2-creds --from-literal=accessKeyID=$BUCKETKEY --from-literal=secretAccessKey=$BUCKETSECRET --kubeconfig=/root/.kube/config_rhel5
 ```

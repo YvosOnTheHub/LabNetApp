@@ -11,7 +11,7 @@ In this context, when a mirror update is performed, Trident Protect will:
 
 Let's see that in action!
 
-<p align="center"><img src="../Images/Archi_DR.png" width="512"></p>
+<p align="center"><img src="../Images/Archi_DR.png" width="640"></p>
 
 ## A. AppVault Creation
 
@@ -134,7 +134,7 @@ You have now validated that Trident Protect also mirrors the content of the AppV
 
 ## D. Failing over your application
 
-Now that the buckets are synchronized and up to date, when activating the DR, Trident Protect will fetch the app metadata from the local bucket. In an environment where distance is high between both sites, this could really improve the time to bring back up your app:   
+Now that the buckets are synchronized and up to date, when activating the DR, Trident Protect will fetch the app metadata from the local bucket. In an environment where distance is high between both sites, this could really improve the time to bring back up your app (the RTO):   
 
 ```bash
 $ kubectl patch amr bboxamr1 -n tpsc10busyboxdr --type=merge -p '{"spec":{"desiredState":"Promoted"}}' --kubeconfig=/root/.kube/config_rhel5
