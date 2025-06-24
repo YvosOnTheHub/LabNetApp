@@ -11,7 +11,7 @@ However, you may be in a situation where the 2 sites are too far apart, latencie
 In this specific case, the infrastructure team would mirror the first bucket to a secondary bucket.  
 You are going to test this configuration here, granted the 2 buckets are on the same ONTAP cluster in this lab.  
 
-<p align="center"><img src="../Images/Archi_BR.png" width="640"></p>
+<p align="center"><img src="../Images/Archi_BR.png" width="768"></p>
 
 ## A. Setup
 

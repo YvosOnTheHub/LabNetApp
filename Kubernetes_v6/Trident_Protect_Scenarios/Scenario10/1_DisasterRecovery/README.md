@@ -11,7 +11,7 @@ In this context, when a mirror update is performed, Trident Protect will:
 
 Let's see that in action!
 
-<p align="center"><img src="../Images/Archi_DR.png" width="640"></p>
+<p align="center"><img src="../Images/Archi_DR.png" width="768"></p>
 
 ## A. AppVault Creation
 
