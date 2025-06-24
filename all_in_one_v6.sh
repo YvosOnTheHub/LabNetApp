@@ -139,7 +139,7 @@ if [[ $? == 1 ]];then
 fi
 
 # Upgrade Trident to 24.10 if needed
-if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "25.02.0" ]; then K8S1_trident_upgrade; fi
+if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "25.02.1" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation

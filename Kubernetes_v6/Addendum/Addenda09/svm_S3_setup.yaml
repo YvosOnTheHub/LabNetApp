@@ -30,6 +30,10 @@
       snaplock_type:                non_snaplock
       <<: *ontap_parameters
 
+  - name: Pause for 10 seconds
+    ansible.builtin.pause:
+      seconds: 10
+
   - name: Create SVM
     netapp.ontap.na_ontap_svm:
      state:                         present

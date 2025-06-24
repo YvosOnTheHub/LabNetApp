@@ -67,6 +67,7 @@ That chapter will perform the following tasks:
 - Install MetalLB (Load Balancer)  
 - Install Trident 25.02  
 - Install a Snapshot Controller & a default Volume Snapshot Class  
+- Kubeconfig management
 
 If don't want to run this configuration manually, you can also use the following (on the host _RHEL3_).  
 Those 2 lines will copy a script to the host RHEL5 & execute it:  

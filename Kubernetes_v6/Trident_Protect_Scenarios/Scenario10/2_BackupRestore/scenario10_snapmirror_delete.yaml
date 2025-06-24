@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters:               &ontap_parameters
+      hostname:                     "{{ hostname }}" 
+      username:                     "{{ username }}" 
+      password:                     "{{ password }}"
+      https:                        true
+      validate_certs:               false
+
+  name: Cleanup
+  tasks: 
+  - name: Delete SnapMirror relationship between SVM_S3_2 and SVM_S3
+    netapp.ontap.na_ontap_command:
+      command: ['snapmirror', 'delete', '-destination-path', 'svm_s3_2:/bucket/s3lod2']
+      <<: *ontap_parameters
+

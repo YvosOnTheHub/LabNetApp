@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters:               &ontap_parameters
+      hostname:                     "{{ hostname }}" 
+      username:                     "{{ username }}" 
+      password:                     "{{ password }}"
+      https:                        true
+      validate_certs:               false
+
+  name: SnapMirror Management
+  tasks: 
+  - name: Create SnapMirror relationship between SVM_S3 and SVM_S3_2
+    netapp.ontap.na_ontap_snapmirror:
+      state: present
+      source_endpoint:
+          path: svm_s3:/bucket/s3lod
+      destination_endpoint:
+          path: svm_s3_2:/bucket/s3lod2
+      policy: Continuous2min
+      <<: *ontap_parameters

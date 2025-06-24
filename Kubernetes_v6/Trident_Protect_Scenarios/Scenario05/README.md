@@ -17,7 +17,7 @@ Also, let's consider we have 2 different personas in this scenario:
 That way you can see who has the responbility to perform tasks in each steps.  
 
 If you have not yet read the [Addenda08](../../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
-Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario24_pull_images.sh* to pull images utilized in this scenario if needed andl push them to the local private registry:  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario05_pull_images.sh* to pull images utilized in this scenario if needed andl push them to the local private registry:  
 ```bash
 sh scenario05_pull_images.sh
 ```

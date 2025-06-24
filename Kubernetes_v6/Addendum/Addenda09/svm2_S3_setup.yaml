@@ -18,18 +18,6 @@
 
   name: S3 Environment Creation
   tasks:
-  - name: Create a new aggregate
-    netapp.ontap.na_ontap_aggregate:
-      state:                        present
-      service_state:                online
-      name:                         S3
-      disk_count:                   8
-      disk_size_with_unit:          28G
-      disk_class:                   virtual
-      nodes:                        cluster1-01
-      snaplock_type:                non_snaplock
-      <<: *ontap_parameters
-
   - name: Create SVM
     netapp.ontap.na_ontap_svm:
      state:                         present

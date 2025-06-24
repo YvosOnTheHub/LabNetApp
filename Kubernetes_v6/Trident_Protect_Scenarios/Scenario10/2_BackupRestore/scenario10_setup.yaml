@@ -1,0 +1,55 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters:               &ontap_parameters
+      hostname:                     "{{ hostname }}" 
+      username:                     "{{ username }}" 
+      password:                     "{{ password }}"
+      https:                        true
+      validate_certs:               false
+
+  name: Scenario setup
+  tasks: 
+  - name: Create vserver peer SVM_S3
+    netapp.ontap.na_ontap_vserver_peer:
+      state: present
+      peer_vserver: svm_s3_2
+      vserver: svm_s3
+      applications: ['snapmirror']
+      <<: *ontap_parameters
+
+  - name: Create Intercluster LIF
+    netapp.ontap.na_ontap_interface:
+      state: present 
+      interface_name: ic1 
+      home_port: e0e
+      home_node: cluster1-01
+      ipspace: Default
+      service_policy: default-intercluster
+      address: 192.168.0.199
+      netmask: 255.255.255.0
+      <<: *ontap_parameters
+
+  - name: Regenerate keys for root user in SVM_S3
+    netapp.ontap.na_ontap_s3_users:
+      state: present
+      name: root
+      regenerate_keys: true
+      vserver: svm_s3
+      <<: *ontap_parameters
+
+  - name: Regenerate keys for root user in SVM_S3_2
+    netapp.ontap.na_ontap_s3_users:
+      state: present
+      name: root
+      regenerate_keys: true
+      vserver: svm_s3_2
+      <<: *ontap_parameters
+
+  - name: Create SnapMirror policy with RPO 2min
+    netapp.ontap.na_ontap_command:
+      command: ['snapmirror', 'policy', 'create', '-vserver', 'cluster1', '-policy', 'Continuous2min', '-rpo', '120', '-type', 'continuous']
+      <<: *ontap_parameters

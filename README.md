@@ -64,6 +64,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [7.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario07) Be Selective  
 [8.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario08) Protecting Applications with GitOps  
 [9.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario09) Pacman to the rescue  
+[10.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario10) One bucket or two buckets, that is the question  
 
 ## Addendum  
 
