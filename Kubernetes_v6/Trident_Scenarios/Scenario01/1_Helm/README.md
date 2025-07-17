@@ -35,9 +35,9 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade trident netapp-trident/trident-operator --version 100.2502.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.02.0,operatorImage=registry.demo.netapp.com/trident-operator:25.02.1,tridentImage=registry.demo.netapp.com/trident:25.02.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade trident netapp-trident/trident-operator --version 100.2506.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0,operatorImage=registry.demo.netapp.com/trident-operator:25.06.0,tridentImage=registry.demo.netapp.com/trident:25.06.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
-LAST DEPLOYED: Mon Mar  3 08:42:46 2025
+LAST DEPLOYED: Wed Jul 16 14:42:46 2025
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 2
@@ -60,11 +60,11 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2025-03-14 08:42:46.138636676 +0000 UTC deployed        trident-operator-100.2502.1     25.02.1
+trident trident         2               2025-07-16 14:21:46.138636676 +0000 UTC deployed        trident-operator-100.2506.0     25.06.0
 ```
 
 Quite easy !  
-The upgrade takes less than 5 minutes to complete.  
+The upgrade takes about 5 minutes to complete.  
 
 Once finished, let's check what we have:  
 ```bash
@@ -72,14 +72,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 25.02.1        | 25.02.1        |
+| 25.06.0        | 25.06.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v25.02.1
+  Version:    v25.06.0
 ```
 
 ## What's next

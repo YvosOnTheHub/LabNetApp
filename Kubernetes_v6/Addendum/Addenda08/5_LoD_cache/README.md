@@ -22,5 +22,5 @@ With that configuration, each time you try to pull an image on RHEL3 from _docke
 
 You will find in this folder, a shell script (_push_trident_images_to_repo.sh_) that will do the following for you:  
 - modify the registries.conf file on RHEL3  
-- pull the Trident 25.02 images  
+- pull the Trident 25.06 images  
 - push these images to the local registry (registry.demo.netapp.com)  

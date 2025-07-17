@@ -32,15 +32,15 @@ helm uninstall trident -n trident
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 25.02.1"
+echo "Download Trident 25.06.0"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 25.02.1 && cd 25.02.1
-wget https://github.com/NetApp/trident/releases/download/v25.02.1/trident-installer-25.02.1.tar.gz
-tar -xf trident-installer-25.02.1.tar.gz
-ln -sf /root/25.02.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 25.06.0 && cd 25.06.0
+wget https://github.com/NetApp/trident/releases/download/v25.06.0/trident-installer-25.06.0.tar.gz
+tar -xf trident-installer-25.06.0.tar.gz
+ln -sf /root/25.06.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -50,11 +50,11 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Install new Trident Operator (25.02.1)"
+echo "Install new Trident Operator (25.06.0)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.02.1/trident-installer/deploy/bundle_post_1_25.yaml
-kubectl create -f ~/25.02.1/trident-installer/deploy/bundle_post_1_25.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.06.0/trident-installer/deploy/bundle_post_1_25.yaml
+kubectl create -f ~/25.06.0/trident-installer/deploy/bundle_post_1_25.yaml
 
 cat << EOF | kubectl apply -f -
 apiVersion: trident.netapp.io/v1
@@ -64,8 +64,8 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:25.02.1
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:25.02.0
+  tridentImage: registry.demo.netapp.com/trident:25.06.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:25.06.0
   silenceAutosupport: true
   windows: true
   imagePullSecrets:
@@ -78,7 +78,7 @@ echo "Check (it takes about 3 to 4 minutes for the upgrade to proceed)"
 echo "#######################################################################################################"
 
 frames="/ | \\ -"
-while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '25.02.1' ];do
+while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '25.06.0' ];do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done

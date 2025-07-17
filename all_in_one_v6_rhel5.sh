@@ -203,16 +203,16 @@ echo "##########################################################################
 echo
 
 cd
-mkdir 25.02.1 && cd 25.02.1
-wget https://github.com/NetApp/trident/releases/download/v25.02.1/trident-installer-25.02.1.tar.gz
-tar -xf trident-installer-25.02.1.tar.gz
-ln -sf /root/25.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 25.06.0 && cd 25.06.0
+wget https://github.com/NetApp/trident/releases/download/v25.06.0/trident-installer-25.06.0.tar.gz
+tar -xf trident-installer-25.06.0.tar.gz
+ln -sf /root/25.06.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2502.1 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.02.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.02.1 \
---set tridentImage=registry.demo.netapp.com/trident:25.02.1 \
+helm install trident netapp-trident/trident-operator --version 100.2506.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:25.06.0 \
+--set tridentImage=registry.demo.netapp.com/trident:25.06.0 \
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"
@@ -322,17 +322,16 @@ helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-he
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident-protect --docker-server=registry.demo.netapp.com
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod2 \
-  --version 100.2502.0 \
+  --version 100.2506.0 \
   --namespace trident-protect -f protectValues.yaml
 
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/24.10.0/tridentctl-completion.bash
+curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
 mv tridentctl-completion.bash ~/.bash/completions/
 source ~/.bash/completions/tridentctl-completion.bash

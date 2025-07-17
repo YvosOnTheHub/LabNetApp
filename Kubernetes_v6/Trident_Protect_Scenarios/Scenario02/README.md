@@ -18,17 +18,16 @@ kubectl create ns trident-protect
 kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident-protect --docker-server=registry.demo.netapp.com
 ```
 We are now ready to install Trident Protect with Helm.  
-We are going to use parameters gathered in the trident_protect_helm_values.yaml file.  
+We are going to use parameters gathered in the *trident_protect_helm_values.yaml* file.  
 They essentially point the installer to the registry, while specifying the secret to access it.  
 ```bash
 helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-helm-chart/
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2502.0 \
-  --namespace trident-protect -f protectValues.yaml
+  --version 100.2506.0 \
+  --namespace trident-protect -f trident_protect_helm_values.yaml
 ```
 After a few seconds (really), you will see a pod in the Trident Protect namespace:  
 ```bash

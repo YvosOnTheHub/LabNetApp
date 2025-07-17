@@ -86,19 +86,6 @@ $ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod/$SNAP
 
 ## C. Backup Creation  
 
-<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
-
-```diff
-A bug present in Trident 25.02.1 affects volumes export policies.  
-Trident Protect creates a temporary volume & pod to copy data to the AppVault. In this context, the same export policy as the source PVC will be used. 
-As export policies are node based, if the temporary pod runs on a different node, the PVC will never be mounted because the IP addresses do not match.
-If that happens, you simply need to manually edit the export policy and change the IP address with 192.168.0.0/24, which is the subnet of the cluster.  
-
-**This bug is going to be fixed in 25.06**
-```
-
-<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
-
 Creating an app backup consists in several steps:  
 - create an application snapshot if none is specified in the procedure  
 - copy the app metadata to the AppVault  

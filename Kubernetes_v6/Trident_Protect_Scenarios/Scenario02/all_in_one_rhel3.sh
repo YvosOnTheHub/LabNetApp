@@ -23,6 +23,8 @@ crCleanup:
 webhooksCleanup:
   imagePullSecrets:
   - name: regcred
+nodeSelector:
+  kubernetes.io/os: linux
 EOF
 
 kubectl create ns trident-protect
@@ -30,14 +32,11 @@ helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-he
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident-protect --docker-server=registry.demo.netapp.com
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2502.0 \
+  --version 100.2506.0 \
   --namespace trident-protect -f protectValues.yaml
   
-kubectl patch deployments -n trident-protect trident-protect-controller-manager -p '{"spec": {"template": {"spec": {"nodeSelector": {"kubernetes.io/os": "linux"}}}}}'
-
 echo
 echo "############################################"
 echo "### Protectctl install"

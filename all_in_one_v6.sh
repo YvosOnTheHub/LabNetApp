@@ -5,7 +5,7 @@
 #
 # FUNCTION THAT WILL PERFORM THE FOLLOWING TASKS:
 # 1. UPGRADE HELM
-# 2. UPGRADE TRIDENT OPERATOR TO 25.02.1 WITH HELM
+# 2. UPGRADE TRIDENT OPERATOR TO 25.06.0 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
 # 5. MONITORING CUSTOMIZATION & HARVEST
@@ -29,7 +29,7 @@ rm -f helm-v3.15.3-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.02 WITH HELM"
+echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.06 WITH HELM"
 echo "#######################################################################################################"
 echo
 
@@ -107,13 +107,13 @@ kubectl krew install view-serviceaccount-kubeconfig
 # lab_setup_trident_protect()
 #
 # Function that will perform the following tasks:
-# 1. UPGRADE TRIDENT TO 25.02 ON KUBERNETES#1
+# 1. UPGRADE TRIDENT TO 25.06 ON KUBERNETES#1
 # 2. CREATE A SECONDARY SVM
 # 3. CONFIGURE SVM PEERING
 # 4. CREATE A S3 SVM (TARGET FOR BACKUPS)
 # 5. CREATE & CONFIGURE A SECONDARY KUBERNETES CLUSTER
-# 6. INSTALL TRIDENT PROTECT 25.02 ON KUBERNETES#1
-# 7. INSTALL TRIDENT & TRIDENT PROTECT 25.02 ON KUBERNETES#2
+# 6. INSTALL TRIDENT PROTECT 25.06 ON KUBERNETES#1
+# 7. INSTALL TRIDENT & TRIDENT PROTECT 25.06 ON KUBERNETES#2
 # 8. CREATE AN APPVAULT ON BOTH CLUSTERS
 # 9. CONFIGURE KUBE STATE METRICS TO MONITOR TRIDENT PROTECT
 # ------------------------------------------------------------------------------------------
@@ -138,8 +138,8 @@ if [[ $? == 1 ]];then
   exit 0
 fi
 
-# Upgrade Trident to 24.10 if needed
-if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "25.02.1" ]; then K8S1_trident_upgrade; fi
+# Upgrade Trident to 25.06 if needed
+if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "25.06.0" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation
@@ -198,6 +198,10 @@ aws_access_key_id = $BUCKETKEY
 aws_secret_access_key = $BUCKETSECRET
 EOF
 
+echo
+echo "############################################"
+echo "### Kube State Metrics"
+echo "############################################"
 # Kube State Metrics
 cd ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario04
 sh all_in_one.sh

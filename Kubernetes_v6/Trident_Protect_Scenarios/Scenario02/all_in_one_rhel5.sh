@@ -28,10 +28,9 @@ helm repo add netapp-trident-protect https://netapp.github.io/trident-protect-he
 helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 kubectl create secret docker-registry regcred --docker-username=registryuser --docker-password=Netapp1! -n trident-protect --docker-server=registry.demo.netapp.com
 
-helm install trident-protect-crds netapp-trident-protect/trident-protect-crds --version 100.2502.0 --namespace trident-protect
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod2 \
-  --version 100.2502.0 \
+  --version 100.2506.0 \
   --namespace trident-protect -f protectValues.yaml
 
 echo
