@@ -327,11 +327,11 @@ helm install trident-protect netapp-trident-protect/trident-protect \
   --version 100.2506.0 \
   --namespace trident-protect -f protectValues.yaml
 
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.06.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-completion.bash
+curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.06.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
 mv tridentctl-completion.bash ~/.bash/completions/
 source ~/.bash/completions/tridentctl-completion.bash
