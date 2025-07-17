@@ -141,12 +141,12 @@ EOF
 schedule.protect.trident.netapp.io/bbox-sched1 created
 
 $ tridentctl protect get schedule -n tpsc05busybox
-+-------------+------+--------------------------------+---------+-------+-----+-------+
-|    NAME     | APP  |            SCHEDULE            | ENABLED | STATE | AGE | ERROR |
-+-------------+------+--------------------------------+---------+-------+-----+-------+
-| bbox-sched1 | bbox | DTSTART:20241209T000100Z       | true    |       | 28s |       |
-|             |      | RRULE:FREQ=MINUTELY;INTERVAL=5 |         |       |     |       |
-+-------------+------+--------------------------------+---------+-------+-----+-------+
++-------------+------+--------------------------------+---------+-------+-------+-----+
+|    NAME     | APP  |            SCHEDULE            | ENABLED | STATE | ERROR | AGE |
++-------------+------+--------------------------------+---------+-------+-------+-----+
+| bbox-sched1 | bbox | DTSTART:20241209T000100Z       | true    |       |       | 28s |
+|             |      | RRULE:FREQ=MINUTELY;INTERVAL=5 |         |       |       |     |
++-------------+------+--------------------------------+---------+-------+-------+-----+
 ```
 
 Now that your application is protected with scheduled snapshots & backups, let's see how you can [restore data](../2_App_Restore/).  

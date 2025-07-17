@@ -117,11 +117,11 @@ $ tridentctl protect create bir bboxbir1 -n tpsc05busybox \
 backupinplacerestore.protect.trident.netapp.io/bboxbir1 created
 
 $ tridentctl protect get bir -n tpsc05busybox
-+----------+-------------+-----------+------+-------+
-|   NAME   |   APPVAULT  |   STATE   | AGE  | ERROR |
-+----------+-------------+-----------+------+-------+
-| bboxbir1 | ontap-vault | Completed | 1m1s |       |
-+----------+-------------+-----------+------+-------+
++----------+-------------+-----------+-------+------+
+|   NAME   |   APPVAULT  |   STATE   | ERROR | AGE  |
++----------+-------------+-----------+-------+------+
+| bboxbir1 | ontap-vault | Completed |       | 1m1s |
++----------+-------------+-----------+-------+------+
 
 $ kubectl -n tpsc05busybox get po,pvc
 NAME                           READY   STATUS    RESTARTS   AGE
@@ -156,6 +156,12 @@ It must executed on the primary cluster (_RHEL3_ host).
 
 As both contexts are available on RHEL3, you can perform all tasks from this host.  
 
+Let's switch back to App owner impersonation:  
+```bash
+export KUBECONFIG=/root/.kube/tpsc05-config
+kubectl config use-context bbox-context-kub2
+```
+
 First verify that the AppVault is also configured on the second cluster. It points to the same bucket used on the first Kubernetes cluster.
 ```bash
 $ tridentctl protect get appvault ontap-vault -n trident-protect --context bbox-context-kub2
@@ -170,19 +176,18 @@ Tridentctl includes a flag that helps you browse through an AppVault.
 This can be useful when restoring to a cluster different from the source, especially when the source is totally gone...  
 ```bash
 $ tridentctl protect get appvaultcontent ontap-vault --show-resources all --app bbox -n trident-protect --context bbox-context-kub2
-+---------+------+----------+-----------------------------+---------------+---------------------------+
-| CLUSTER | APP  |   TYPE   |            NAME             |   NAMESPACE   |         TIMESTAMP         |
-+---------+------+----------+-----------------------------+---------------+---------------------------+
-| lod1    | bbox | backup   | bkp1                        | tpsc05busybox | 2025-01-05 09:50:20 (UTC) |
-| lod1    | bbox | snapshot | bboxsnap1                   | tpsc05busybox | 2025-01-06 07:23:30 (UTC) |
-| lod1    | bbox | snapshot | custom-64aea-20250106073100 | tpsc05busybox | 2025-01-06 07:31:10 (UTC) |
-| lod1    | bbox | snapshot | custom-64aea-20250106073600 | tpsc05busybox | 2025-01-06 07:36:11 (UTC) |
-| lod1    | bbox | snapshot | custom-64aea-20250106074100 | tpsc05busybox | 2025-01-06 07:41:10 (UTC) |
-| lod1    | bbox | backup   | bboxbkp1                    | tpsc05busybox | 2025-01-06 07:26:23 (UTC) |
-| lod1    | bbox | backup   | custom-64aea-20250106073100 | tpsc05busybox | 2025-01-06 07:32:29 (UTC) |
-| lod1    | bbox | backup   | custom-64aea-20250106073600 | tpsc05busybox | 2025-01-06 07:37:34 (UTC) |
-| lod1    | bbox | backup   | custom-64aea-20250106074100 | tpsc05busybox | 2025-01-06 07:42:32 (UTC) |
-+---------+------+----------+-----------------------------+---------------+---------------------------+
++---------+------+----------+-----------------------------+---------------+-----------+---------------------------+---------------------------+
+| CLUSTER | APP  |   TYPE   |            NAME             |   NAMESPACE   |   STATE   |          CREATED          |         COMPLETED         |
++---------+------+----------+-----------------------------+---------------+-----------+---------------------------+---------------------------+
+|         | bbox | snapshot | bboxsnap1                   | tpsc05busybox | Completed | 2025-07-17 15:43:48 (UTC) | 2025-07-17 15:44:01 (UTC) |
+|         | bbox | snapshot | custom-69a30-20250717160600 | tpsc05busybox | Completed | 2025-07-17 16:05:59 (UTC) | 2025-07-17 16:06:08 (UTC) |
+|         | bbox | snapshot | custom-69a30-20250717161100 | tpsc05busybox | Completed | 2025-07-17 16:10:59 (UTC) | 2025-07-17 16:11:09 (UTC) |
+|         | bbox | snapshot | custom-69a30-20250717161600 | tpsc05busybox | Completed | 2025-07-17 16:15:59 (UTC) | 2025-07-17 16:16:09 (UTC) |
+|         | bbox | backup   | bboxbkp1                    | tpsc05busybox | Completed | 2025-07-17 15:45:26 (UTC) | 2025-07-17 15:46:51 (UTC) |
+|         | bbox | backup   | custom-69a30-20250717160600 | tpsc05busybox | Completed | 2025-07-17 16:05:59 (UTC) | 2025-07-17 16:07:23 (UTC) |
+|         | bbox | backup   | custom-69a30-20250717161100 | tpsc05busybox | Completed | 2025-07-17 16:10:59 (UTC) | 2025-07-17 16:12:29 (UTC) |
+|         | bbox | backup   | custom-69a30-20250717161600 | tpsc05busybox | Completed | 2025-07-17 16:15:59 (UTC) | 2025-07-17 16:17:25 (UTC) |
++---------+------+----------+-----------------------------+---------------+-----------+---------------------------+---------------------------+
 ```
 As expected, you can see in the list:  
 - the manual snapshot and backup
@@ -193,20 +198,19 @@ Note that you could run the same command in both contexts as all backups are in 
 Let's restore from the manual backup. We also need to gather the full path for this step (see the *--show-paths* flag):  
 ```bash
 $ tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2
-+---------+------+--------+-----------------------------+---------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
-| CLUSTER | APP  |  TYPE  |            NAME             |   NAMESPACE   |         TIMESTAMP         |                                                        PATH                                                        |
-+---------+------+--------+-----------------------------+---------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
-| lod1    | bbox | backup | bkp1                        | tpsc05busybox | 2025-01-05 09:50:20 (UTC) | bbox_c622fc58-5bcc-43dd-a139-ccc548551c08/backups/bkp1_6c9a7f14-5b21-46c7-a057-4e9d134c5086                        |
-| lod1    | bbox | backup | bboxbkp1                    | tpsc05busybox | 2025-01-06 07:26:23 (UTC) | bbox_c72389d7-813e-4ec4-ab1b-ebe002c53599/backups/bboxbkp1_b72088d5-65c3-45b3-a690-3dee53daa841                    |
-| lod1    | bbox | backup | custom-64aea-20250106073100 | tpsc05busybox | 2025-01-06 07:32:29 (UTC) | bbox_c72389d7-813e-4ec4-ab1b-ebe002c53599/backups/custom-64aea-20250106073100_3c64a456-60df-4042-aa53-d3b67139467e |
-| lod1    | bbox | backup | custom-64aea-20250106073600 | tpsc05busybox | 2025-01-06 07:37:34 (UTC) | bbox_c72389d7-813e-4ec4-ab1b-ebe002c53599/backups/custom-64aea-20250106073600_d53bfda7-6dd8-4602-8f74-cc97524cb187 |
-| lod1    | bbox | backup | custom-64aea-20250106074100 | tpsc05busybox | 2025-01-06 07:42:32 (UTC) | bbox_c72389d7-813e-4ec4-ab1b-ebe002c53599/backups/custom-64aea-20250106074100_1b9edbc4-d933-436f-871f-24b73dd72dbd |
-+---------+------+--------+-----------------------------+---------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
++---------+------+--------+-----------------------------+---------------+-----------+---------------------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
+| CLUSTER | APP  |  TYPE  |            NAME             |   NAMESPACE   |   STATE   |          CREATED          |         COMPLETED         |                                                        PATH                                                        |
++---------+------+--------+-----------------------------+---------------+-----------+---------------------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
+|         | bbox | backup | bboxbkp1                    | tpsc05busybox | Completed | 2025-07-17 15:45:26 (UTC) | 2025-07-17 15:46:51 (UTC) | bbox_a4f43663-e9ab-4aa8-be92-99a5e068b00c/backups/bboxbkp1_a1ca5204-b3eb-478a-90e5-ef88f40756b7                    |
+|         | bbox | backup | custom-69a30-20250717160600 | tpsc05busybox | Completed | 2025-07-17 16:05:59 (UTC) | 2025-07-17 16:07:23 (UTC) | bbox_a4f43663-e9ab-4aa8-be92-99a5e068b00c/backups/custom-69a30-20250717160600_4e645295-41f8-46b1-86b2-22974aa5ead0 |
+|         | bbox | backup | custom-69a30-20250717161100 | tpsc05busybox | Completed | 2025-07-17 16:10:59 (UTC) | 2025-07-17 16:12:29 (UTC) | bbox_a4f43663-e9ab-4aa8-be92-99a5e068b00c/backups/custom-69a30-20250717161100_e3ca3217-0df6-4413-8a63-6dd3bd654c8a |
+|         | bbox | backup | custom-69a30-20250717161600 | tpsc05busybox | Completed | 2025-07-17 16:15:59 (UTC) | 2025-07-17 16:17:25 (UTC) | bbox_a4f43663-e9ab-4aa8-be92-99a5e068b00c/backups/custom-69a30-20250717161600_3d34fb2d-1c3b-4f33-b778-d6617ee4f12e |
++---------+------+--------+-----------------------------+---------------+-----------+---------------------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
 ```
 
 You can use the following command to retrieve the path of the manual backup:  
 ```bash
-BKPPATH=$(tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $8}')
+BKPPATH=$(tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $10}')
 ```
 Let's proceed with the restore operation and check the result after a few seconds.  
 Notice that you also add a mapping for storage classes.  
