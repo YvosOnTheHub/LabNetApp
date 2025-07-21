@@ -24,7 +24,7 @@ echo
 
 wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
 tar -xvf helm-v3.15.3-linux-amd64.tar.gz
-cp -f linux-amd64/helm /usr/local/bin/
+/bin/cp -f linux-amd64/helm /usr/local/bin/
 rm -f helm-v3.15.3-linux-amd64.tar.gz
 
 echo
