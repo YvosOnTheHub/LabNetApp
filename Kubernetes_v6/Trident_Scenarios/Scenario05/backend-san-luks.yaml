@@ -15,6 +15,7 @@ spec:
   defaults:
     snapshotReserve: '10'
     luksEncryption: "true"
+    formatOptions: -E nodiscard
   labels:
     luks: "true"
   credentials:

@@ -1,0 +1,8 @@
+apiVersion: groupsnapshot.storage.k8s.io/v1beta1
+kind: VolumeGroupSnapshotClass
+metadata:
+  name: csi-group-snap-class
+  annotations:
+    kubernetes.io/description: "Trident group snapshot class"
+driver: csi.trident.netapp.io
+deletionPolicy: Delete

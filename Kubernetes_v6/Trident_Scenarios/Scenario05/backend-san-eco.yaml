@@ -12,5 +12,7 @@ spec:
   sanType: iscsi
   svm: sansvm
   useCHAP: true
+  defaults:
+    formatOptions: -E nodiscard
   credentials:
     name: secret-iscsi-svm-creds
