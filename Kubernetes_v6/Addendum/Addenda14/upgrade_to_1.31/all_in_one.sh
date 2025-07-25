@@ -56,24 +56,6 @@ do
     fi
 done
 
-until [[ $(kubectl -n kube-system get pod kube-controller-manager-rhel3 -o=json | grep Ephemeral | wc -l) -eq 1 ]]; do
-  echo "waiting for controller manager to be ready ..."
-  sleep 5
-  until [[ $(kubectl -n kube-system get pod kube-controller-manager-rhel3 -o=jsonpath='{.status.containerStatuses[0].ready}') == 'true' ]]; do
-    echo "waiting for controller manager to be ready ..."
-    sleep 5
-  done
-done
-
-until [[ $(kubectl -n kube-system get pod kube-scheduler-rhel3 -o=json | grep Ephemeral | wc -l) -eq 1 ]]; do
-  echo "waiting for scheduler to be ready ..."
-  sleep 5
-  until [[ $(kubectl -n kube-system get pod kube-scheduler-rhel3 -o=jsonpath='{.status.containerStatuses[0].ready}') == 'true' ]]; do
-    echo "waiting for scheduler to be ready ..."
-    sleep 5
-  done
-done
-
 echo "#######################################################################################################"
 echo "Upgrade to Kubernetes 1.30 finished"
 echo "#######################################################################################################"
