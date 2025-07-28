@@ -10,10 +10,10 @@ yum install -y kubeadm-1.31.11-150500.1.1 kubelet-1.31.11-150500.1.1 kubectl-1.3
 # kubeadm upgrade plan
 kubeadm upgrade apply v1.31.11 -y
 kubectl drain rhel3 --ignore-daemonsets --delete-emptydir-data
-systemctl daemon-reload
-systemctl restart kubelet
-sleep 60s
+systemctl daemon-reload && systemctl restart kubelet
+sleep 45s
 kubectl uncordon rhel3
+sleep 15s
 
 
 echo "#######################################################################################################"
@@ -24,10 +24,9 @@ ssh -o "StrictHostKeyChecking no" root@rhel1 "sed -i 's/1.30/1.31/' /etc/yum.rep
 ssh -o "StrictHostKeyChecking no" root@rhel1 yum install -y kubeadm-1.31.11-150500.1.1 kubelet-1.31.11-150500.1.1 kubectl-1.31.11-150500.1.1 --disableexcludes=kubernetes
 ssh -o "StrictHostKeyChecking no" root@rhel1 kubeadm upgrade node 
 kubectl drain rhel1 --ignore-daemonsets --delete-emptydir-data
-ssh -o "StrictHostKeyChecking no" root@rhel1 systemctl daemon-reload
-ssh -o "StrictHostKeyChecking no" root@rhel1 systemctl restart kubelet
-sleep 60s
+ssh -o "StrictHostKeyChecking no" root@rhel1 "systemctl daemon-reload && systemctl restart kubelet"
 kubectl uncordon rhel1
+sleep 60s
 
 
 echo "#######################################################################################################"
@@ -38,9 +37,7 @@ ssh -o "StrictHostKeyChecking no" root@rhel2 "sed -i 's/1.30/1.31/' /etc/yum.rep
 ssh -o "StrictHostKeyChecking no" root@rhel2 yum install -y kubeadm-1.31.11-150500.1.1 kubelet-1.31.11-150500.1.1 kubectl-1.31.11-150500.1.1 --disableexcludes=kubernetes
 ssh -o "StrictHostKeyChecking no" root@rhel2 kubeadm upgrade node 
 kubectl drain rhel2 --ignore-daemonsets --delete-emptydir-data
-ssh -o "StrictHostKeyChecking no" root@rhel2 systemctl daemon-reload
-ssh -o "StrictHostKeyChecking no" root@rhel2 systemctl restart kubelet
-sleep 60s
+ssh -o "StrictHostKeyChecking no" root@rhel2 "systemctl daemon-reload && systemctl restart kubelet"
 kubectl uncordon rhel2
 
 
