@@ -13,3 +13,5 @@ spec:
   useCHAP: true
   credentials:
     name: secret-iscsi-svm-creds
+  defaults:
+    formatOptions: -E nodiscard

@@ -12,11 +12,11 @@ spec:
   sanType: iscsi
   svm: sansvm
   useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds
   defaults:
     snapshotReserve: '10'
     luksEncryption: "true"
     formatOptions: -E nodiscard
   labels:
     luks: "true"
-  credentials:
-    name: secret-iscsi-svm-creds
