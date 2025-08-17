@@ -204,10 +204,10 @@ Also, it is here expected that the current Trident installation already runs at 
 If not done yet, check out the [Scenario01](../../Trident_Scenarios/Scenario01/1_Helm/).  
 ```bash
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2506.0 -n trident --create-namespace \
+helm install trident netapp-trident/trident-operator --version 100.2506.1 -n trident --create-namespace \
 --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.06.0 \
---set tridentImage=registry.demo.netapp.com/trident:25.06.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:25.06.1 \
+--set tridentImage=registry.demo.netapp.com/trident:25.06.1 \
 --set tridentSilenceAutosupport=true
 ```
 After a few minutes, Trident should be ready:
@@ -221,7 +221,7 @@ trident-operator-5c4f8bd896-rf8xp    1/1     Running   0          5m20s   192.16
 
 $ kubectl get tver -A
 NAMESPACE   NAME      VERSION
-trident     trident   25.06.0
+trident     trident   25.06.1
 ```
 
 ## H. Install a CSI Snapshot Controller & create a Volume Snapshot Class

@@ -218,16 +218,16 @@ echo "##########################################################################
 echo
 
 cd
-mkdir 25.06.0 && cd 25.06.0
-wget https://github.com/NetApp/trident/releases/download/v25.06.0/trident-installer-25.06.0.tar.gz
-tar -xf trident-installer-25.06.0.tar.gz
-ln -sf /root/25.06.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 25.06.1 && cd 25.06.1
+wget https://github.com/NetApp/trident/releases/download/v25.06.1/trident-installer-25.06.1.tar.gz
+tar -xf trident-installer-25.06.1.tar.gz
+ln -sf /root/25.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2506.0 -n trident --create-namespace \
+helm install trident netapp-trident/trident-operator --version 100.2506.1 -n trident --create-namespace \
 --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.06.0 \
---set tridentImage=registry.demo.netapp.com/trident:25.06.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:25.06.1 \
+--set tridentImage=registry.demo.netapp.com/trident:25.06.1 \
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"

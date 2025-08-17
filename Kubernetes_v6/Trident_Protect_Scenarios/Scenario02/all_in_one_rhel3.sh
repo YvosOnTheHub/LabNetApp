@@ -7,8 +7,6 @@ echo "############################################"
 cd
 
 cat <<EOF >> protectValues.yaml
-image:
-  registry: registry.demo.netapp.com
 imagePullSecrets:
 - name: regcred
 controller:

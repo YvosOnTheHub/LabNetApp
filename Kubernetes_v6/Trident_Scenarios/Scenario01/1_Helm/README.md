@@ -35,7 +35,7 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade trident netapp-trident/trident-operator --version 100.2506.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0,operatorImage=registry.demo.netapp.com/trident-operator:25.06.0,tridentImage=registry.demo.netapp.com/trident:25.06.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade trident netapp-trident/trident-operator --version 100.2506.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0,operatorImage=registry.demo.netapp.com/trident-operator:25.06.1,tridentImage=registry.demo.netapp.com/trident:25.06.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
 LAST DEPLOYED: Wed Jul 16 14:42:46 2025
 NAMESPACE: trident
@@ -60,7 +60,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2025-07-16 14:21:46.138636676 +0000 UTC deployed        trident-operator-100.2506.0     25.06.0
+trident trident         2               2025-08-07 14:21:46.138636676 +0000 UTC deployed        trident-operator-100.2506.1     25.06.1
 ```
 
 Quite easy !  
@@ -72,14 +72,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 25.06.0        | 25.06.0        |
+| 25.06.1        | 25.06.1        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v25.06.0
+  Version:    v25.06.1
 ```
 
 ## What's next
