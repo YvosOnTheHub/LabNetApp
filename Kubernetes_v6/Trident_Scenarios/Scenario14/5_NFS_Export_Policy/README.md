@@ -24,7 +24,7 @@ We can still see the content of the SVM!
 If PVC were present, you would see their name.  
 
 As said in the first part of this scenario, the root volume is exported with a policy that is too open (192.168.0.0/24 in this case).  
-That is simply because at the time of the storage tenant creation, Trident had not yet been configured.  
+That is simply because at the time of the storage tenant creation, Trident is not yet configured.  
 We should definitely assign it the policy created by Trident, which is dynamic & will evolve alongside the Kubernetes cluster.  
 
 Another Ansible playbook will be used to perform this task (assuming the SVM only has one export policy dynamically managed by Trident).  

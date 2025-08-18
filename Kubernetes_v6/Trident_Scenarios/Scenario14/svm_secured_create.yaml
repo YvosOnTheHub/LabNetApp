@@ -22,6 +22,7 @@
      root_volume_security_style: unix
      allowed_protocols: nfs,iscsi
      aggr_list: "aggr1,aggr2"
+     use_rest: never
      <<: *ontap_parameters
 
   - name: Create Specific User

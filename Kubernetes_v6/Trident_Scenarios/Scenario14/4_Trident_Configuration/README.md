@@ -4,16 +4,12 @@
 
 Now that the storage tenant is up & running, we can tell both Trident & Kubernetes to use it!  
 ```bash
-$ kubectl create -n trident -f secret_ontap_nfs-secured.yaml
+$ kubectl create -f secret_ontap_nfs-secured.yaml -f backend-svm-secured-NFS.yaml
 secret/ontap-nfs-secured-secret created
-
-$ kubectl create -n trident -f backend-svm-secured-NFS.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-secured created
 
-$ kubectl create -n trident -f secret_ontap_iscsi-secured.yaml
-secret/ontap-iscsi-secured-secret created
-
-$ kubectl create -n trident -f backend-svm-secured-iSCSI.yaml
+$ kubectl create -f secret_ontap_iscsi-secured.yaml -f backend-svm-secured-iSCSI.yaml
+secret/ontap-iscsi-secured-secret created 
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-san-secured created
 ```
 

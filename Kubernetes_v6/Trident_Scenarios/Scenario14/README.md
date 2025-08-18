@@ -41,7 +41,6 @@ localhost                  : ok=7    changed=6    unreachable=0    failed=0    s
 
 You are now ready to move through the 3 different chapters:  
 [1.](1_Network_Management) How do I restrict network accesses to specific hosts & needs?  
-[2.](2_NFS_Showmount) How do you avoid a malicious listing of available NFS exports  
-[3.](3_NFS_Export_Policy) Restrict the SVM export policy  
-[4.](4_IPSec) How do I secure network my network connections with IPSec?  
-[5.](5_Trident_Configuration) Let's see the end result with Trident and some applications  
+[2.](2_NFS_Showmount) How do you avoid a malicious listing of available NFS exports   
+[3.](3_IPSec) How do I secure network my network connections with IPSec?  
+[4.](3_Trident_Configuration) Let's see the end result with Trident and some applications  

@@ -11,6 +11,7 @@ connections {
                 remote_ts = {{ ipsec_target_cidr }}[any/any]
                 rekey_time = 28800
                 rekey_bytes = 0
+                replay_window = 0
             }
         }
         keyingtries = 3
