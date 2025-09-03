@@ -6,14 +6,14 @@ Trident 25.06 introduces concurrent operations for block protocols (iSCSI and FC
 
 Not all operations can run in parallel, but there are plenty of tasks that Trident can run concurrently.  
 
-The following page explains very well the why and the how: https://community.netapp.com/t5/Tech-ONTAP-Blogs/Trident-Controller-Parallelism/ba-p/461918
+The following page explains very well the why and the how: https://community.netapp.com/t5/Tech-ONTAP-Blogs/Trident-Controller-Parallelism/ba-p/461918.  
 It all also contains metrics observed during benchmarks with hundreds of PVC.  
 
 In the context of this lab, we will see how to enable that feature and also run some tests.  
 We will first run some baseline tests without the feature, and compare them with 2 more tests once the concurrency is enabled.  
 
 **TL;DR: BEGINNING**  
-**this table summarized my findings:**
+**This table summarized my findings:**
 
 | Configuration | Feature enabled | Total time all PVC bound | Average per PVC |
 | :--- | :---: | :---: | :---: |
@@ -23,7 +23,8 @@ We will first run some baseline tests without the feature, and compare them with
 | [200 POD with 2 PVC](#config4) | yes | 391 sec | 0,98 sec | 
 
 In summary, in the specific context of this lab environment, enabling Trident's concurrency feature reduces by a ratio between 40% and 50% the readiness time for the persistent volumes (ie the time it takes for the PVC to reach _Bound_ state).
-Using REST API may even provide better results! However, this will need a more recent version of ONTAP.
+Using REST API may even provide better results! However, this will need a more recent version of ONTAP.  
+
 **TL;DR: END**
 
 ## A. Preparation
@@ -71,6 +72,7 @@ sh scenario26_pull_images.sh
 
 This folder contains a file called *app_template.yaml*, which aims at creating a Busybox app (*busybox-##*) with 2 iSCSI RWO PVC (*pvc-##1* and *pvc-##2*). 
 We will use a loop to create 100 instances of that application, each _##_ field used to create a specific iteration.  
+
 This loop also displays the time at multiple stages:
 - script startup
 - once all the PVC are in a _Bound_ state
