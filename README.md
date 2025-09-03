@@ -52,6 +52,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [23.](Kubernetes_v6/Trident_Scenarios/Scenario23) Naming conventions  
 [24.](Kubernetes_v6/Trident_Scenarios/Scenario24) Migrating volumes (snapmirror integration)  
 [25.](Kubernetes_v6/Trident_Scenarios/Scenario25) Storage & Policy Management  
+[26.](Kubernetes_v6/Trident_Scenarios/Scenario26) Working in parallel   
 
 ## Trident Protect Scenarios (Application data protection)  
 

@@ -130,3 +130,22 @@ Or go back to:
 - the [GitHub FrontPage](https://github.com/YvosOnTheHub/LabNetApp)
 
 
+<!--
+to check the Replay window value, use the following
+
+$ ip xfrm state show
+src 192.168.0.62 dst 192.168.0.231
+        proto esp spi 0xc07e682a reqid 1 mode transport
+        replay-window 0
+        aead rfc4106(gcm(aes)) 0x8a632ee6f75b886c38a465362659e72101edfaf42f64dfc06da61635ddfd27c30e54868a 128
+        lastused 2025-08-18 14:28:37
+        anti-replay context: seq 0x0, oseq 0x15e8, bitmap 0x00000000
+        sel src 192.168.0.62/32 dst 192.168.0.231/32
+src 192.168.0.231 dst 192.168.0.62
+        proto esp spi 0xc7464b34 reqid 1 mode transport
+        replay-window 0
+        aead rfc4106(gcm(aes)) 0xe76f14d7bc3423a9c673da3af711a6c9cf0df90cea1171cb667e8ad29c6393359e371486 128
+        lastused 2025-08-18 14:28:37
+        anti-replay context: seq 0x0, oseq 0x0, bitmap 0x00000000
+        sel src 192.168.0.231/32 dst 192.168.0.62/32
+-->

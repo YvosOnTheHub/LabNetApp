@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-##1
+  namespace: sc26concurrency
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+  storageClassName: storage-class-iscsi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-##2
+  namespace: sc26concurrency
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1G
+  storageClassName: storage-class-iscsi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-##
+  namespace: sc26concurrency
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+  containers:
+  - name: busybox
+    image: registry.demo.netapp.com/busybox:1.35.0
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - mountPath: "/data1"
+      name: vol1
+    - mountPath: "/data2"
+      name: vol2
+  volumes:
+  - name: vol1
+    persistentVolumeClaim:
+      claimName: pvc-##1
+  - name: vol2
+    persistentVolumeClaim:
+      claimName: pvc-##2
