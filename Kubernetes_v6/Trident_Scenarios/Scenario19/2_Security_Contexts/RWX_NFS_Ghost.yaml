@@ -16,7 +16,7 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: storage-class-nas
+  storageClassName: storage-class-nfs
 ---
 apiVersion: apps/v1
 kind: Deployment

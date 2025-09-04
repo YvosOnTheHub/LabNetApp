@@ -47,7 +47,7 @@ volumesnapshot.snapshot.storage.k8s.io/snapshot3 created
 
 $ kubectl get -n snapshotcontrol pvc,volumesnapshot
 NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/pvc-to-snap   Bound    pvc-d72f2181-5321-4b6a-850e-090d02e75f70   5Gi        RWX            storage-class-nas   17s
+persistentvolumeclaim/pvc-to-snap   Bound    pvc-d72f2181-5321-4b6a-850e-090d02e75f70   5Gi        RWX            storage-class-nfs   17s
 
 NAME                                               READYTOUSE   SOURCEPVC     SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
 volumesnapshot.snapshot.storage.k8s.io/snapshot1   true         pvc-to-snap                           268Ki         csi-snap-class   snapcontent-c41d5ff1-19da-4469-b4b0-5b0629c31f0f   8s             8s

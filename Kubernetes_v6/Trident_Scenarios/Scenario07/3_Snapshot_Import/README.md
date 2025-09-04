@@ -68,7 +68,7 @@ NAME                                  READY   STATUS    RESTARTS   AGE
 pod/blogsnapimport-66b4c955f8-qvv7k   1/1     Running   0          5m15s
 
 NAME                                           STATUS   VOLUME                                     CAPACITY    ACCESS MODES   STORAGECLASS        AGE
-persistentvolumeclaim/blog-content-from-snap   Bound    pvc-f7af70d7-56e8-42a5-ac65-7d3a5e70040b   5518824Ki   RWX            storage-class-nas   14m
+persistentvolumeclaim/blog-content-from-snap   Bound    pvc-f7af70d7-56e8-42a5-ac65-7d3a5e70040b   5518824Ki   RWX            storage-class-nfs   14m
 
 NAME                     TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
 service/blogsnapimport   NodePort   10.99.106.183   <none>        80:30084/TCP   26s

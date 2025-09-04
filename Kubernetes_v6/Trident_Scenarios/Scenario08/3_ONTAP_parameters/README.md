@@ -52,7 +52,7 @@ NAME           STATUS    VOLUME                                     CAPACITY   A
 ontaplimit-1   Bound     pvc-6869a783-2b5e-495c-83e6-349b7db2b0ad   1Gi        RWX            storage-class-nfs   <unset>                 31s
 ontaplimit-2   Bound     pvc-9ee890c3-d37e-435f-a1de-fa9a7aadb1a8   1Gi        RWX            storage-class-nfs   <unset>                 31s
 ontaplimit-3   Bound     pvc-7ca08387-d02a-41e5-8d6e-cae08443e7c2   1Gi        RWX            storage-class-nfs   <unset>                 31s
-ontaplimit-4   Pending                                                                         storage-class-nas   4s
+ontaplimit-4   Pending                                                                         storage-class-nfs   4s
 ```
 
 The last PVC will remain in the _Pending_ state. You need to look either in the PVC logs or Trident's 
