@@ -32,9 +32,9 @@ secret/regcred created
 We first need to modify the image repository in the bundle provided in the 25.06 TGZ package downloaded earlier.  
 Once done, you can apply this file to your environment.  
 ```bash
-$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.06.1/trident-installer/deploy/bundle_post_1_25.yaml
+$ sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.06.1/trident-installer/deploy/bundle.yaml
 
-$ kubectl create -f ~/25.06.1/trident-installer/deploy/bundle_post_1_25.yaml
+$ kubectl create -f ~/25.06.1/trident-installer/deploy/bundle.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created

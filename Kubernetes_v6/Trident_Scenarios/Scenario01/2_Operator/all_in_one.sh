@@ -53,8 +53,8 @@ echo "##########################################################################
 echo "Install new Trident Operator (25.06.1)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.06.1/trident-installer/deploy/bundle_post_1_25.yaml
-kubectl create -f ~/25.06.1/trident-installer/deploy/bundle_post_1_25.yaml
+sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.06.1/trident-installer/deploy/bundle.yaml
+kubectl create -f ~/25.06.1/trident-installer/deploy/bundle.yaml
 
 cat << EOF | kubectl apply -f -
 apiVersion: trident.netapp.io/v1
