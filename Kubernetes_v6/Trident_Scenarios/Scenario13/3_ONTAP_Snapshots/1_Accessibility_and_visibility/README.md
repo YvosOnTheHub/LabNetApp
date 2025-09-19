@@ -28,6 +28,22 @@ To complete this summary, some extra comments:
 - Changing a Trident backend does not affect existing volumes  
 - the NFS version can be set in the Trident backend, in the storage class or for the whole worker node (/etc/nfsmount.conf & _NFSMount_Global_Options_ parameter)  
 
+**IMPORTANT**:  
+Some applications apply specific rights recursively to all sub-folders of a PVC, which includes the _.snapshot_ folder...  
+However, being Read-only, changing rights will fail and the pod will not start. When using NFSv3, make sure to take this into account.    
+Here is an example of what to expect with a MySQL pod:  
+```bash
+$ kubectl get -n wp po,pvc                                   
+NAME                                  READY   STATUS             RESTARTS      AGE
+pod/wordpress-mysql-b67bbf64c-5gsx5   0/1     CrashLoopBackOff   3 (38s ago)   106s
+
+NAME                              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/mysql-pvc   Bound    pvc-99c008a1-372b-4a8e-a978-485aa047ef0c   100Gi      RWO            storage-class-nfs   <unset>                 106s
+
+$ kubectl logs -n wp pod/wordpress-mysql-b67bbf64c-5gsx5
+2025-09-18 07:02:21+00:00 [Note] [Entrypoint]: Entrypoint script for MySQL Server 8.0.43-1.el9 started.
+chown: changing ownership of '/var/lib/mysql/.snapshot': Read-only file system
+```
 **TL;DR: END**
 
 For each configuration, we will do the following:
