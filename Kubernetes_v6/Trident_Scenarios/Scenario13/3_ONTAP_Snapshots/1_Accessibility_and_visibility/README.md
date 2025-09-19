@@ -32,7 +32,7 @@ To complete this summary, some extra comments:
 Some applications apply specific rights recursively to all sub-folders of a PVC, which includes the _.snapshot_ folder (when *visible*)...  
 However, being Read-only, changing rights will fail and the pod will not start. When using NFSv3, make sure to take this into account.   
 Hiding this folder avoids that behavior.  
-Here is an example of what to expect with a MySQL pod:  
+Here is an example of what to expect with a MySQL pod when the .snapshot folder is visible:  
 ```bash
 $ kubectl get -n wp po,pvc                                   
 NAME                                  READY   STATUS             RESTARTS      AGE
