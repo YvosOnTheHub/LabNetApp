@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: blog-content-import
-  namespace: ghost
-spec:
-  accessModes:
-  - ReadWriteMany
-  storageClassName: storage-class-nas

@@ -1,4 +1,0 @@
-#!/bin/bash
-for file in $(ls pod_busybox?.yaml) ; do
-  kubectl create -f ${file}
-done

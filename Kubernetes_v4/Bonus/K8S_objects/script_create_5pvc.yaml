@@ -1,4 +1,0 @@
-#!/bin/bash
-for file in $(ls pvc?.yaml) ; do
-  kubectl create -f ${file}
-done

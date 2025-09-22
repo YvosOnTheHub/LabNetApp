@@ -1,7 +1,0 @@
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: storage-class-nas-flexgroup
-provisioner: netapp.io/trident
-parameters:
-  backendType: "ontap-nas-flexgroup"

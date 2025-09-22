@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lun-import
-  namespace: default
-spec:
-  accessModes:
-  - ReadWriteOnce
-  storageClassName: storage-class-san
