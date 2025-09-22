@@ -33,8 +33,8 @@ ansible-playbook /root/LabNetApp/Kubernetes_v6/Addendum/Addenda09/svm2_S3_setup.
 
 Let's start by retrieving the bucket keys and create variables with their values from the output of the bucket creation logs:  
 ```bash
-BUCKETKEY=$(grep "access_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
-BUCKETSECRET=$(grep "secret_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
+BUCKETKEY=$(grep "access_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//') && echo $BUCKETKEY
+BUCKETSECRET=$(grep "secret_key" /root/ansible_S3_SVM2_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//') && echo $BUCKETSECRET
 ```
 
 To create an AppVault, you need to create a secret that will contains those 2 keys.  

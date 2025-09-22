@@ -13,12 +13,13 @@ Let's see that in action!
 
 <p align="center"><img src="../Images/Archi_DR.png" width="768"></p>
 
-## A. AppVault Creation
+## A. AppVault Creation on the secondary cluster
 
 You can now proceed with that task. The secret used to configure this object is already present.  
 Notice the second command uses the _context_ flag:  
 ```bash
-tridentctl protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
+$ tridentctl protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
+AppVault "ontap-vault2" created.
 ```
 
 Let's check that you now can see 2 AppVaults on the secondary environment:  
@@ -46,7 +47,7 @@ The last setup step of this scenario is to initiate the Mirror relationship, aft
 $ kubectl create ns tpsc10busyboxdr --kubeconfig=/root/.kube/config_rhel5
 namespace/tpsc10busyboxdr created
 
-$ SRCAPPID=$(kubectl get application bbox -n tpsc10busybox -o=jsonpath='{.metadata.uid}' -n tpsc10busybox)
+$ SRCAPPID=$(kubectl get application bbox -n tpsc10busybox -o=jsonpath='{.metadata.uid}' -n tpsc10busybox) && echo $SRCAPPID
 
 $ cat << EOF | kubectl apply --kubeconfig=/root/.kube/config_rhel5 -f -
 apiVersion: protect.trident.netapp.io/v1
@@ -160,7 +161,14 @@ $ kubectl exec -n tpsc10busyboxdr --kubeconfig=/root/.kube/config_rhel5 $(kubect
 bbox test for Scenario10!
 ```
 
-## E. Cleanup
+## E. Failing back your application
+
+If you wish to test the fail back of your application on the primary environment, you must also create the second AppVault on the first Kubernetes cluster.  
+In order to synchronize objects between buckets, Trident Protect must have access to both of them.  
+Missing that part will lead to Trident not finding the correct objects when you try to promote the AMR.
+
+
+## F. Cleanup
 
 The next chapter requires the secondary bucket to be empty.  
 Let's delete all the objects created in this chapter and clear the bucket:  
@@ -172,6 +180,6 @@ tridentctl protect delete appvault ontap-vault2 -n trident-protect --context kub
 aws s3 rm --no-verify-ssl --endpoint-url http://192.168.0.231 s3://s3lod2 --recursive  --quiet --profile s3lod2
 ```
 
-## F. What's next
+## G. What's next
 
 Let's see how to use 2 buckets with [Backup&Restore](../2_BackupRestore).
