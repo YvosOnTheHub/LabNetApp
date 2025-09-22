@@ -1,0 +1,26 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-cidr-eco
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas-economy
+  managementLIF: 192.168.0.133
+  backendName: BackendForNFSCIDREco
+  nasType: nfs
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  credentials:
+    name: secret-nas-svm-creds
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cidr-nas-economy
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas-economy"
+  storagePools: "BackendForNFSCIDREco:aggr1"
+allowVolumeExpansion: true

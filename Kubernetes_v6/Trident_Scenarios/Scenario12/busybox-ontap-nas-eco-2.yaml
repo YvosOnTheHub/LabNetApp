@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scenario12-2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mydata
+  namespace: scenario12-2
+  labels:
+    app: busybox
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: cidr-nas-economy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox
+  namespace: scenario12-2
+  labels:
+    app: busybox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: rhel2
+      containers:
+      - name: busybox
+        image: registry.demo.netapp.com/busybox:1.35.0
+        imagePullPolicy: IfNotPresent
+        command: ['sleep', '3600']        
+        volumeMounts:
+        - mountPath: /data
+          name: vol1
+      volumes:
+      - name: vol1
+        persistentVolumeClaim:
+          claimName: mydata

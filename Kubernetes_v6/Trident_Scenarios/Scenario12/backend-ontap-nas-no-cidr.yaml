@@ -1,0 +1,24 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nfs-no-cidr
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  backendName: BackendForNFSNoCIDR
+  nasType: nfs
+  autoExportPolicy: true
+  credentials:
+    name: secret-nas-svm-creds
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-no-cidr
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  storagePools: "BackendForNFSNoCIDR:aggr1"
+allowVolumeExpansion: true
