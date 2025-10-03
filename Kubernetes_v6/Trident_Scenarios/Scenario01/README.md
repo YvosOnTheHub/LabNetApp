@@ -58,6 +58,23 @@ kubectl label node rhel2 "topology.kubernetes.io/zone=west1" --overwrite
 kubectl label node rhel3 "topology.kubernetes.io/zone=east1" --overwrite
 ```
 
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+There is a configuration issue in the lab in its current setup.  
+The hosts _rhel1_ & _rhel3_ have the same NQN. Hence if you are planning on testing NVMe with Trident, you may have some odd side effects. You should then first modify _rhel1_.  
+You just need to update the _/etc/nvme/hostid_ & _/etc/nvme/hostnqn_ files. Changing the last character of their content is enough to have a stable configuration.  
+
+The following should do the trick:  
+```bash
+sed -i -E 's/(e0e73e5d221)0/\11/' /etc/nvme/hostnqn
+sed -i -E 's/(e0e73e5d221)0/\11/' /etc/nvme/hostid
+```
+
+Note that for Trident to take this into account, you would normally need to restart the DaemonSet running on _rhel1_.  
+However, as this chapter focuses on upgrading Trident, the daemonsets are going to be automatically restarted anyway...
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
 Last, if you have not yet read the [Addenda08](../../Addendum/Addenda08) about the Docker Hub management, it would be a good time to do so.  
 Also, if no action has been made with regards to the container images, you can find a shell script in the Scenario01 directory *scenario01_pull_images.sh* to pull images utilized in this scenario if needed:  
 ```bash

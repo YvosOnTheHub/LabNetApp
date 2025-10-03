@@ -8,6 +8,14 @@ sh ../scenario01_pull_images.sh
 
 echo
 echo "#######################################################################################################"
+echo "Host RHEL1 NQN update"
+echo "#######################################################################################################"
+echo
+ssh -o "StrictHostKeyChecking no" root@rhel1 -t "sed -i -E 's/(e0e73e5d221)0/\11/' /etc/nvme/hostnqn"
+ssh -o "StrictHostKeyChecking no" root@rhel1 -t "sed -i -E 's/(e0e73e5d221)0/\11/' /etc/nvme/hostid"
+
+echo
+echo "#######################################################################################################"
 echo "Add Region & Zone labels to Kubernetes nodes"
 echo "#######################################################################################################"
 
