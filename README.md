@@ -66,6 +66,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [8.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario08) Protecting Applications with GitOps  
 [9.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario09) Pacman to the rescue  
 [10.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario10) One bucket or two buckets, that is the question  
+[11.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario11) Protecting Virtual Machines  
 
 ## Addendum  
 
@@ -83,6 +84,8 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [11.](Kubernetes_v6/Addendum/Addenda11) Install ArgoCD in this lab  
 [12.](Kubernetes_v6/Addendum/Addenda12) Create a second Kubernetes cluster on the hosts _RHEL4_ & _RHEL5_  
 [13.](Kubernetes_v6/Addendum/Addenda13) Create a new SVM (_svm_secondary_)  
+[14.](Kubernetes_v6/Addendum/Addenda14) Upgrade Kubernetes  
+[15.](Kubernetes_v6/Addendum/Addenda15) Install and configure KubeVirt  
 
 <!-- OLD CONTENT
 

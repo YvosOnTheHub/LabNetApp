@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-boot-pvc
+  namespace: alpine
+  annotations:
+    cdi.kubevirt.io/storage.upload.target: ""
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-data-pvc
+  namespace: alpine
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
