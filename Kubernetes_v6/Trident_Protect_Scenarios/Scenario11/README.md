@@ -18,5 +18,5 @@ In this scenario, you will perform the following tasks:
 <p align="center"><img src="Images/KV_Architecture.png" width="768"></p>
 
 There are two chapters in this scenario:  
-[1.](./1_Setup/): Virtual Machine creation  
-[2.](./2_Protection/): Virtual Machine protection  
+[1.](./1_Setup/) Virtual Machine creation  
+[2.](./2_Protection/) Virtual Machine protection  
