@@ -2,7 +2,7 @@
 # SCENARIO 11: Protecting Virtual Machines: Protection
 #########################################################################################
 
-This scenarion will guide you through the protection of the Alpine Virtual Machine, through snapshot creation and restore, as well as fail over the secondary cluster.
+This scenario will guide you through the protection of the Alpine Virtual Machine, through snapshot creation and restore, as well as fail over to the secondary cluster.
 
 ## A. Trident Protect Application definition
 
@@ -23,6 +23,8 @@ Application "alpine" created.
 ```
 
 ## B. Trident Protect Application snapshot
+
+Trident Protect requires an AppVault (called _ontap-vault_ in my examples), which refers to a S3 compatible bucket, to write the application metadata. If not done yet, refer to the [Scenario03](../../Scenario03/) to create and configure an AppVault.   
 
 Time to create a snapshot of our application!  
 ```bash
@@ -49,7 +51,7 @@ snapshot-2730899b-df0e-43c9-97f1-4e17633d932c-pvc-c786e1a0-bbd6-4a3d-8e84-43f391
 Your application is running in production, and you would like to test if the restore works.  
 Or maybe you want to create a clone of your VM to perform other tasks...  
 
-Let's create a **Snapshot Restore** operation with Trident to restore the VM in a different namespace called _alpinesr_:  
+Let's create a **Snapshot Restore** operation with Trident Protect to restore the VM in a different namespace called _alpinesr_:  
 ```bash 
 $ tridentctl protect create sr alpinesr1 --namespace-mapping alpine:alpinesr --snapshot alpine/alpinesnap1 -n alpinesr
 SnapshotRestore "alpinesr1" created.

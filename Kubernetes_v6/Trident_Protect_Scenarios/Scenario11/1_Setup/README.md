@@ -3,7 +3,7 @@
 #########################################################################################
 
 Alpine was chosen because it is leightweight, does not need much CPU/RAM, hence is well fitted for the Lab on Demand.  
-There are multiple of Alpine available, we are going to deploy the **nocloud** one, as it can be customized for our needs.  
+There are multiple variations of Alpine available, we are going to deploy the **nocloud** one, as it can be customized for our needs.  
 
 This scenario will run in its own namespace *alpine*. Let's first create it:  
 ```bash
@@ -19,7 +19,7 @@ mkdir -p ~/images && cd ~/images
 wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/cloud/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2
 ```
 
-You can find in this scenario folder the *alpine_disks.yaml* file which contains the definition of the 2 disks you can going to use.  
+You can find in this scenario folder the *alpine_disks.yaml* file which contains the definition of the 2 disks you are going to use.  
 A few things to notice:   
 - *alpine-boot-pvc* is the boot disk on which you are going to upload the Alpine image  
 - *alpine-data-pvc* is an extra disk attached to the Virtual Machine  
@@ -47,7 +47,29 @@ persistentvolumeclaim/alpine-data-pvc           Bound    pvc-58ab7490-c473-4323-
 
 Both objects were created by the CDI component (Containerized Data Importer). The **scratch PVC** is a temporary volume used during the upload process.  
 
-Let's upload the Alpine image on the boot disk:  
+Let's dive a bit into this upload process:  
+- the _virtctl image-upload_ command will first connect to the CDI Upload Proxy  
+- within the target namespace, Kubevirt will use the scratch PVC is a temporary work space, especially to convert the image from QCOW to RAW if required  
+- note that both _boot-pvc_ & _boot-pvc-scratch_ are mounted on the _CDI upload pod_  
+- when the RAW file is ready, the _CDI upload pod_ will write this file to the _boot-pvc_  
+- at this point, the upload process it complete and the temporary resources are deleted.  
+
+<p align="center"><img src="../Images/CDI_upload_process.png" width="768"></p>
+
+About the volume access mode, if you set *ReadWriteOnce* for the PVC, you will find the following message in the VM:  
+```yaml
+    Message:               cannot migrate VMI: PVC alpine-boot-pvc is not shared, live migration requires that all PVCs must be shared (using ReadWriteMany access mode)
+    Reason:                DisksNotLiveMigratable
+```
+And the following status for the VMI (notice the field _LIVE-MIGRATABLE_):  
+```bash
+$ kubectl get vmi -n alpine -o wide
+NAME        AGE   PHASE     IP              NODENAME   READY   LIVE-MIGRATABLE   PAUSED
+alpine-vm   35s   Running   192.168.28.65   rhel2      True    False
+```
+This shows the importance of running **ReadWriteMany** volumes!  
+
+Time to upload the Alpine image on the boot disk:  
 ```bash
 $ virtctl image-upload pvc alpine-boot-pvc \
   --namespace alpine \
@@ -78,7 +100,7 @@ persistentvolumeclaim/alpine-data-pvc   Bound    pvc-58ab7490-c473-4323-a5c1-fd7
 
 ## B. Virtual Machine bootstrap customization
 
-You can put together a set of commands that will customize the setup initial boot.  
+You can put together a set of commands that will customize the initial boot.  
 Alpine images use the *tiny-cloud* process for that matter (more details here: https://gitlab.alpinelinux.org/alpine/cloud/tiny-cloud).  
 
 In this chapter, you are going to:  
@@ -98,7 +120,7 @@ scp /root/.ssh/alpine.pub rhel5:/root/.ssh/alpine.pub
 ```
 
 The Alpine image does not allow direct SSH key injection with the use of the _accessCredentials_ parameter with Tiny Cloud.  
-The alternative would be to write it in clear in the VM manifest in the _cloudInitNoCloud_ parameter, but that is not very **clean**, isn't?  
+The alternative would be to write it in clear in the VM manifest in the _cloudInitNoCloud_ parameter, but that is not very **clean**, is it?  
 We are then going to create a *secret* with all the parameters used during the VM bootstrap:  
 
 ```bash
@@ -141,7 +163,7 @@ Let's start with the disks:
 The VM has 3 disks:  
 - _rootdisk_, labelled **vda** inside the VM, that corresponds to the boot volume  
 - _datadisk_, labelled **vdb**, that corresponds to an extra disk, and comes not formatted  
-- _cloudinitdisk_, labelled **vdc** which refers to the secret containing the init parameters
+- _cloudinitdisk_, labelled **vdc** which refers to the secret containing the init parameters. This is one is not backed by a PVC.  
 
 Let's continue with the network configuration:  
 ```yaml
@@ -164,6 +186,18 @@ pod/virt-launcher-alpine-vm-m6q2r   2/2     Running   0          5h50m   192.168
 NAME                                           AGE     PHASE     IP               NODENAME   READY   LIVE-MIGRATABLE   PAUSED
 virtualmachineinstance.kubevirt.io/alpine-vm   5h50m   Running   192.168.25.117   rhel3      True    True
 ```
+If you do not set the correct network configuration, you will find the following message in the VM:  
+```yaml
+ Message:               cannot migrate VMI which does not use masquerade, bridge with kubevirt.io/allow-pod-bridge-network-live-migration VM annotation or a migratable plugin to connect to the pod network
+    Reason:                InterfaceNotLiveMigratable
+```
+And the following status for the VMI (notice the field _LIVE-MIGRATABLE_):  
+```bash
+$ kubectl get vmi -n alpine -o wide
+NAME        AGE   PHASE     IP               NODENAME   READY   LIVE-MIGRATABLE   PAUSED
+alpine-vm   35s   Running   192.168.28.121   rhel2      True    False
+```
+For this environment, I chose the easiest network configuration (_masquerade_), as there is no access to the underlying configuration.  
 
 ok, let's create our VM!  
 ```bash
@@ -207,7 +241,7 @@ There you go, your Virtual Machine is up and running, and you can connect to it!
 ## D. Virtual Machine data disk management
 
 This paragraph is performed inside the Virtual Machine.  
-Alpine does not use _sudo_ to access toor priviledges, but rather the command **doas**.  
+Alpine does not use _sudo_ to access root privileges, but rather the command **doas**.  
 Let's check the disks connected to our Virtual Machine:  
 ```bash
 $ cat /proc/partitions
@@ -246,7 +280,7 @@ echo "this is my alpine test" > /data/alpine.txt
 ## E. Post setup tasks
 
 The CloudInitVolume is harmless and does not take much space. Most of the time, it is safe to leave it connected, especially when the VM is short lived.  
-However, since we want to create a persistent VM, and potentially recreate it from a snapshot or as part as failover operation, you should remove this disk, as the VM is already configured. Failing to do so will lead to the VM restore to fail, as it may not find the init parameters...  
+However, since we want to create a persistent VM, and potentially recreate it from a snapshot or as part as a failover operation, you should remove this disk, as the VM is already configured. Failing to do so will lead to the VM restore to fail, as it may not find the init parameters...  
 Removing it is also necessary if you want to create a template from this VM.  
 
 First, let's clean up the Virtual Machine definition:  
