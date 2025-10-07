@@ -89,6 +89,26 @@ Uploading /root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 completed
 
 NOTE: if the Proxy address was different for you, the command would need to reflect that...  
 
+If you are interested, you can read the logs of the upload pod (while present), to see the details of what CDI is doing:  
+```bash
+$ kubectl logs cdi-upload-alpine-boot-pvc -f
+I1007 07:20:28.429190       1 uploadserver.go:81] Running server on 0.0.0.0:8443
+...
+I1007 07:20:53.033234       1 file.go:230] copyWithSparseCheck to /scratch/tmpimage
+I1007 07:20:53.958766       1 file.go:195] Read 119865344 bytes, wrote 119208344 bytes to /scratch/tmpimage
+I1007 07:20:53.960826       1 data-processor.go:260] New phase: ValidatePause
+I1007 07:20:53.960886       1 data-processor.go:266] Validating image
+...
+I1007 07:20:53.980291       1 data-processor.go:160] Resuming processing at phase Convert
+I1007 07:20:53.980412       1 data-processor.go:266] Validating image
+I1007 07:20:53.987909       1 qemu.go:119] Running qemu-img with args: [convert -t writeback -p -O raw /scratch/tmpimage /dev/cdi-block-volume]
+I1007 07:20:54.548210       1 data-processor.go:260] New phase: Resize
+I1007 07:20:54.551607       1 data-processor.go:260] New phase: Complete
+I1007 07:20:54.551627       1 uploadserver.go:396] Wrote data to /dev/cdi-block-volume
+I1007 07:20:54.551646       1 uploadserver.go:215] Shutting down http server after successful upload
+I1007 07:20:54.552068       1 uploadserver.go:115] UploadServer successfully exited
+```
+
 When the process is done, the temporary resources will be deleted.  
 You will then only see your 2 PVC in the namespace:  
 ```bash
