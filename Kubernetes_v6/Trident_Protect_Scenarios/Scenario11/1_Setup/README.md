@@ -118,6 +118,10 @@ persistentvolumeclaim/alpine-boot-pvc   Bound    pvc-c786e1a0-bbd6-4a3d-8e84-43f
 persistentvolumeclaim/alpine-data-pvc   Bound    pvc-58ab7490-c473-4323-a5c1-fd7b6ad3191c   1Gi        RWX            storage-class-iscsi   <unset>                 10m
 ```
 
+NB:  
+If you chosoe NFS instead of iSCSI, the ONTAP volume will be exported via NFS on the worker node, while KubeVirt would create in that share a file called _disk.img_, which would in turn be mounted as a device in the Virtual Machine.
+
+
 ## B. Virtual Machine bootstrap customization
 
 You can put together a set of commands that will customize the initial boot.  
