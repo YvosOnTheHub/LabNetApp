@@ -1,0 +1,215 @@
+########################################
+### KV Setup
+########################################
+cd
+[[ ! -d ~/LabNetApp ]] && git clone https://github.com/YvosOnTheHub/LabNetApp.git
+sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
+curl -s --insecure --user root:Netapp1! -T ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel5.sh sftp://rhel5/root/kv_setup.sh
+ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh kv_setup.sh"
+
+######################################################
+### Download the Alpine image
+######################################################
+mkdir -p ~/images && cd ~/images
+#nocloud
+wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/cloud/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2
+cd
+
+###########################################################
+# create an Alpine namespace
+###########################################################
+kubectl create ns alpine
+
+###########################################################
+### Create a PVC for the boot disk & a PVC for a data disk
+###########################################################
+cat << EOF | kubectl apply  -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-boot-pvc
+  namespace: alpine
+  annotations:
+    cdi.kubevirt.io/storage.upload.target: ""
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-data-pvc
+  namespace: alpine
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
+EOF
+
+# make sure both PVC are bound and there is a cdi-upload pod running
+kubectl get all,pvc -n alpine
+
+######################################################
+### Upload the image to the PVC
+######################################################
+virtctl image-upload pvc alpine-boot-pvc \
+  --namespace alpine \
+  --image-path=/root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 \
+  --size=1Gi \
+  --insecure \
+   --uploadproxy-url=https://192.168.0.212:443
+
+######################################################
+### SSH Keys management (to inject a key in the VM)
+######################################################
+ssh-keygen -t rsa -N "" -f /root/.ssh/alpine
+kubectl create secret generic alpinepub -n alpine --from-file=key1=/root/.ssh/alpine.pub
+
+#########################################################################
+### Create a secret with VM cloud init config
+#########################################################################
+kubectl create secret generic alpine-cloudinit-userdata -n alpine --from-literal=userdata="#cloud-config
+users:
+  - name: alpine
+    ssh_authorized_keys:
+      - $(kubectl get secret alpinepub -n alpine -o jsonpath='{.data.key1}' | base64 -d)
+chpasswd:
+  expire: false
+ssh_pwauth: True
+runcmd:
+  - echo "alpine:alpine" | chpasswd
+  - echo '################################################' > /etc/motd
+  - echo 'Welcome to Alpine on KubeVirt in the NetApp LoD!' >> /etc/motd
+  - echo '################################################' >> /etc/motd
+"
+
+#########################################################################
+### Deploy an Alpine VM with 2 PVC & cloud init config via secret    
+#########################################################################
+cat << EOF | kubectl apply  -f -
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: alpine-vm
+  namespace: alpine
+spec:
+  runStrategy: Always
+  template:
+    spec:
+      domain:
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 128Mi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: datadisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: alpine-boot-pvc
+        - name: datadisk
+          persistentVolumeClaim:
+            claimName: alpine-data-pvc
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            secretRef:
+              name: alpine-cloudinit-userdata
+EOF
+
+######################################################
+### Access the VM 
+######################################################
+# with the console (alpine/alpine)
+virtctl console alpine-vm -n alpine
+
+# OR (once the VM is booted)
+ALPINE_IP=$(kubectl get vmi -n alpine alpine-vm -o jsonpath='{.status.interfaces[0].ipAddress}') && echo $ALPINE_IP
+ssh alpine@$ALPINE_IP -i /root/.ssh/alpine
+
+######################################################
+### format the data disk
+######################################################
+
+# check if data disk is vdb
+doas fdisk -l
+
+# partition, format, mount & persitence of the data disk
+echo -e "o\nn\np\n1\n\n\nw" | doas fdisk /dev/vdb
+doas mkfs.ext4 /dev/vdb1
+doas mkdir /data
+doas mount /dev/vdb1 /data
+doas chmod 777 /data
+UUID=$(doas blkid -s UUID -o value /dev/vdb1) && echo "UUID=$UUID   /data   ext4   defaults   0 0" | doas tee -a /etc/fstab
+
+# create file
+echo "Trident Protect can also take care of Virtual Machine!! This is real !" > /data/file.txt
+
+# exit the VM (CTRL+5 is connected with the console)
+
+######################################################
+### label PVC & VM
+######################################################
+kubectl label -n alpine pvc alpine-boot-pvc "protect=yes"
+kubectl label -n alpine pvc alpine-data-pvc "protect=yes"
+kubectl label -n alpine vm alpine-vm "protect=yes"
+
+######################################################
+### TP: Define app
+######################################################
+tridentctl-protect create app alpine --namespaces 'alpine(protect=yes)' -n alpine
+
+######################################################
+### TP: Create snapshot
+######################################################
+tridentctl-protect create snapshot alpinesnap1 --app alpine --appvault ontap-vault -n alpine
+tridentctl-protect get snapshot -n alpine
+
+########################################
+### TP: Create AMR
+########################################
+SRCAPPID=$(kubectl get application alpine -n alpine -o=jsonpath='{.metadata.uid}') && echo $SRCAPPID
+
+tridentctl-protect create amr alpineamr1 --source-app alpine --source-app-id $SRCAPPID \
+  --source-app-vault ontap-vault --destination-app-vault ontap-vault \
+  --namespace-mapping alpine:alpinedr --storage-class sc-iscsi \
+  --recurrence-rule "DTSTART:20220101T000200Z\nRRULE:FREQ=MINUTELY;INTERVAL=5" \
+  -n alpinedr --context kub2-admin@kub2
+
+tridentctl-protect get amr -n alpinedr --context kub2-admin@kub2
+
+kubectl get all,pvc -n alpinedr --kubeconfig=/root/.kube/config_rhel5
+
+
+########################################
+### TP: Fail over VM
+########################################
+kubectl patch amr alpineamr1 -n alpinedr --type=merge -p '{"spec":{"desiredState":"Promoted"}}' --kubeconfig=/root/.kube/config_rhel5
+tridentctl-protect get amr -n alpinedr --context kub2-admin@kub2
+
+kubectl get all,pvc -n alpinedr --kubeconfig=/root/.kube/config_rhel5
+virtctl console alpine-vm -n alpinedr --context kub2-admin@kub2
