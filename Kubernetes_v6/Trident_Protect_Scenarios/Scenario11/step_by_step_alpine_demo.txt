@@ -178,6 +178,9 @@ kubectl label -n alpine pvc alpine-boot-pvc "protect=yes"
 kubectl label -n alpine pvc alpine-data-pvc "protect=yes"
 kubectl label -n alpine vm alpine-vm "protect=yes"
 
+# display all objects with with the desired filter
+kubectl get -n alpine all,pvc -l protect=yes
+
 #############################################################################################################################
 ### Remove cloud init disk & restart VM (required otherwise snapshotrestore&failover will not work in the context of the demo)
 #############################################################################################################################

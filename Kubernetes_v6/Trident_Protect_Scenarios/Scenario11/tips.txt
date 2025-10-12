@@ -1,0 +1,39 @@
+##################################################
+# How to grow the boot volume of the Alpine VM
+##################################################
+
+# Resize the PVC and wait a few seconds for the operation to complete
+kubectl patch -n alpine pvc alpine-boot-pvc -p '{"spec":{"resources":{"requests":{"storage":"2Gi"}}}}'
+
+# Restart the VM
+virtctl restart alpine-vm -n alpine
+
+# Resize the disk size in the VM
+virtcrl console alpine-vm -n alpine
+doas resize2fs /dev/vda
+doas df -h /
+
+
+##################################################
+# How to modify the resources assigned to a VM
+##################################################
+
+# Patch the VM definition (ex: Cores 1=>2 & Memory 128Mi=>512Mi)
+kubectl -n alpine patch vm alpine-vm --type='json' -p='[
+  {"op": "replace", "path": "/spec/template/spec/domain/cpu/cores", "value": 2},
+  {"op": "replace", "path": "/spec/template/spec/domain/resources/requests/memory", "value": "512Mi"}
+]'
+
+# Restart the VM
+virtctl restart alpine-vm -n alpine
+
+# Verify number of proc
+virtcrl console alpine-vm -n alpine
+cat /proc/cpuinfo | grep ^processor | wc -l
+OR
+nproc
+
+# Verify quantity of memory
+cat /proc/meminfo | grep MemTotal
+OR
+free -h
