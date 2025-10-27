@@ -18,13 +18,13 @@ Let's see that in action!
 You can now proceed with that task. The secret used to configure this object is already present.  
 Notice the second command uses the _context_ flag:  
 ```bash
-$ tridentctl protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
 AppVault "ontap-vault2" created.
 ```
 
 Let's check that you now can see 2 AppVaults on the secondary environment:  
 ```bash
-$ tridentctl protect get appvault -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect get appvault -n trident-protect --context kub2-admin@kub2
 +--------------+----------+-----------+-------+---------+--------+
 |     NAME     | PROVIDER |   STATE   | ERROR | MESSAGE |  AGE   |
 +--------------+----------+-----------+-------+---------+--------+
@@ -73,7 +73,7 @@ appmirrorrelationship.protect.trident.netapp.io/bboxamr1 created
 ```
 It takes a few seconds to complete (ie status _Established_):
 ```bash
-$ tridentctl protect get amr -n tpsc10busyboxdr  --context kub2-admin@kub2
+$ tridentctl-protect get amr -n tpsc10busyboxdr  --context kub2-admin@kub2
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-----+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |    STATE    | ERROR | AGE |
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-----+
@@ -141,7 +141,7 @@ Now that the buckets are synchronized and up to date, when activating the DR, Tr
 $ kubectl patch amr bboxamr1 -n tpsc10busyboxdr --type=merge -p '{"spec":{"desiredState":"Promoted"}}' --kubeconfig=/root/.kube/config_rhel5
 appmirrorrelationship.protect.trident.netapp.io/bboxamr1 patched
 
-$ tridentctl protect get amr -n tpsc10busyboxdr  --context kub2-admin@kub2
+$ tridentctl-protect get amr -n tpsc10busyboxdr  --context kub2-admin@kub2
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+--------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |  STATE   | ERROR |  AGE   |
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+--------+
@@ -173,10 +173,10 @@ Missing that part will lead to Trident not finding the correct objects when you 
 The next chapter requires the secondary bucket to be empty.  
 Let's delete all the objects created in this chapter and clear the bucket:  
 ```bash
-tridentctl protect delete amr bboxamr1 -n tpsc10busyboxdr  --context kub2-admin@kub2
-tridentctl protect delete application bbox -n tpsc10busyboxdr  --context kub2-admin@kub2
+tridentctl-protect delete amr bboxamr1 -n tpsc10busyboxdr  --context kub2-admin@kub2
+tridentctl-protect delete application bbox -n tpsc10busyboxdr  --context kub2-admin@kub2
 
-tridentctl protect delete appvault ontap-vault2 -n trident-protect --context kub2-admin@kub2
+tridentctl-protect delete appvault ontap-vault2 -n trident-protect --context kub2-admin@kub2
 aws s3 rm --no-verify-ssl --endpoint-url http://192.168.0.231 s3://s3lod2 --recursive  --quiet --profile s3lod2
 ```
 

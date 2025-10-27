@@ -52,8 +52,8 @@ kubectl create secret generic -n trident-protect s3-creds \
 ```
 You can now proceed with the AppVault creation & validation (_on both Kubernetes clusters_):  
 ```bash
-$ tridentctl protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
-$ tridentctl protect get appvault -n trident-protect
+$ tridentctl-protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
+$ tridentctl-protect get appvault -n trident-protect
 +--------------+----------+-----------+------+-------+
 |     NAME     | PROVIDER |   STATE   | AGE  | ERROR |
 +--------------+----------+-----------+------+-------+

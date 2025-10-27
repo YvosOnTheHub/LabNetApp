@@ -86,10 +86,10 @@ bbox test for Scenario10!
 Next step, you need to define your application in Trident Protect.  
 You have already done it a few times, you know how easy that is:  
 ```bash
-$ tridentctl protect create app bbox --namespaces tpsc10busybox -n tpsc10busybox
+$ tridentctl-protect create app bbox --namespaces tpsc10busybox -n tpsc10busybox
 Application "bbox" created.
 
-$ tridentctl protect get app -n tpsc10busybox
+$ tridentctl-protect get app -n tpsc10busybox
 +------+---------------+-------+-----+
 | NAME |  NAMESPACES   | STATE | AGE |
 +------+---------------+-------+-----+
@@ -101,10 +101,10 @@ $ tridentctl protect get app -n tpsc10busybox
 
 Now, let's also create a snapshot.  
 ```bash
-$ tridentctl protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n tpsc10busybox
+$ tridentctl-protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n tpsc10busybox
 Snapshot "bboxsnap1" created.
 
-$ tridentctl protect get snap -n tpsc10busybox
+$ tridentctl-protect get snap -n tpsc10busybox
 +-----------+------+----------------+-----------+-------+-----+
 |   NAME    | APP  | RECLAIM POLICY |   STATE   | ERROR | AGE |
 +-----------+------+----------------+-----------+-------+-----+

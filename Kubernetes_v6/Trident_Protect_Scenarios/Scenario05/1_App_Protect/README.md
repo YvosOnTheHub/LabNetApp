@@ -28,10 +28,10 @@ export KUBECONFIG=/root/.kube/tpsc05-rhel3
 Creation a Trident Protect application can be achieved through cli or yaml.  
 Most of the steps in this scenario are going to be done through cli.  
 ```bash
-$ tridentctl protect create app bbox --namespaces 'tpsc05busybox(app=busybox)' -n tpsc05busybox
+$ tridentctl-protect create app bbox --namespaces 'tpsc05busybox(app=busybox)' -n tpsc05busybox
 Application "bbox" created.
 
-$ tridentctl protect get app -n tpsc05busybox
+$ tridentctl-protect get app -n tpsc05busybox
 +------+---------------+-------+-----+
 | NAME |  NAMESPACES   | STATE | AGE |
 +------+---------------+-------+-----+
@@ -48,10 +48,10 @@ This is potentially done in conjunction with _hooks_ in order to interact with t
 
 Let's create a snapshot:  
 ```bash
-$ tridentctl protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n tpsc05busybox
+$ tridentctl-protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n tpsc05busybox
 Snapshot "bboxsnap1" created.
 
-$ tridentctl protect get snap -n tpsc05busybox
+$ tridentctl-protect get snap -n tpsc05busybox
 +-----------+------+----------------+-----------+-------+-----+
 |   NAME    | APP  | RECLAIM POLICY |   STATE   | ERROR | AGE |
 +-----------+------+----------------+-----------+-------+-----+
@@ -93,10 +93,10 @@ Creating an app backup consists in several steps:
 This is also potentially done in conjunction with _hooks_ in order to interact with the app. This part is not covered in this chapter.  
 The duration of the backup process takes a bit more time compared to the snapshot, as data is also copied to the bucket.  
 ```bash
-$ tridentctl protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  -n tpsc05busybox
+$ tridentctl-protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  -n tpsc05busybox
 Backup "bboxbkp1" created.
 
-$ tridentctl protect get backup -n tpsc05busybox
+$ tridentctl-protect get backup -n tpsc05busybox
 +----------+------+----------------+-----------+-------+-------+
 |   NAME   | APP  | RECLAIM POLICY |   STATE   | ERROR |  AGE  |
 +----------+------+----------------+-----------+-------+-------+
@@ -140,7 +140,7 @@ spec:
 EOF
 schedule.protect.trident.netapp.io/bbox-sched1 created
 
-$ tridentctl protect get schedule -n tpsc05busybox
+$ tridentctl-protect get schedule -n tpsc05busybox
 +-------------+------+--------------------------------+---------+-------+-------+-----+
 |    NAME     | APP  |            SCHEDULE            | ENABLED | STATE | ERROR | AGE |
 +-------------+------+--------------------------------+---------+-------+-------+-----+

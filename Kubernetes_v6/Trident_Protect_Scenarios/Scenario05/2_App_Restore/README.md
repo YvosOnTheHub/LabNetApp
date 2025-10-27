@@ -21,12 +21,12 @@ kubectl exec -n tpsc05busybox $(kubectl get pod -n tpsc05busybox -o name) -- rm 
 kubectl exec -n tpsc05busybox $(kubectl get pod -n tpsc05busybox -o name) -- ls /data1/
 ```
 
-tridentctl protect create sir bboxsir1 --snapshot tpsc05busybox/bboxsnap1 --='[{"kind":"PersistentVolumeClairesource-filter-includem"},{"names":["mydata1"]}]' -n tpsc05busybox
+tridentctl-protect create sir bboxsir1 --snapshot tpsc05busybox/bboxsnap1 --='[{"kind":"PersistentVolumeClairesource-filter-includem"},{"names":["mydata1"]}]' -n tpsc05busybox
 >
 
-tridentctl protect create sir bboxsir1 --snapshot tpsc05busybox/bboxsnap1 --resource-filter-include='[{"labelSelectors":["volume=mydata1"]}]' -n tpsc05busybox
+tridentctl-protect create sir bboxsir1 --snapshot tpsc05busybox/bboxsnap1 --resource-filter-include='[{"labelSelectors":["volume=mydata1"]}]' -n tpsc05busybox
 
-tridentctl protect get sir -n bbox; kubectl -n bbox get pod,pvc
+tridentctl-protect get sir -n bbox; kubectl -n bbox get pod,pvc
 
 # check result
 kubectl exec -n bbox $(kubectl get pod -n bbox -o name) -- ls /data/
@@ -68,13 +68,13 @@ You then need to apply YAML manifests to restore snapshots and backups.
 You can either build your own from scratch or use the tridenctl-protect tool with the **--dry-run** flag which displays the YAML manifest.
 In order to restore the snapshot, you also need to specify the mapping for the application namespace:  
 ```bash
-$ tridentctl protect create sr bboxsr1 -n tpsc05busyboxsr \
+$ tridentctl-protect create sr bboxsr1 -n tpsc05busyboxsr \
   --namespace-mapping tpsc05busybox:tpsc05busyboxsr \
   --snapshot tpsc05busybox/bboxsnap1 \
   --dry-run  | kubectl apply -f -
 snapshotrestore.protect.trident.netapp.io/bboxsr1 created
 
-$ tridentctl protect get sr -n tpsc05busyboxsr
+$ tridentctl-protect get sr -n tpsc05busyboxsr
 +---------+---------------+-----------+-----+-------+
 |  NAME   |    APPVAULT   |   STATE   | AGE | ERROR |
 +---------+---------------+-----------+-----+-------+
@@ -111,12 +111,12 @@ Easy answer, you restore everything from a backup!
 
 Let's see that in action:  
 ```bash
-$ tridentctl protect create bir bboxbir1 -n tpsc05busybox \
+$ tridentctl-protect create bir bboxbir1 -n tpsc05busybox \
   --backup tpsc05busybox/bboxbkp1 \
   --dry-run  | kubectl apply -f -
 backupinplacerestore.protect.trident.netapp.io/bboxbir1 created
 
-$ tridentctl protect get bir -n tpsc05busybox
+$ tridentctl-protect get bir -n tpsc05busybox
 +----------+-------------+-----------+-------+------+
 |   NAME   |   APPVAULT  |   STATE   | ERROR | AGE  |
 +----------+-------------+-----------+-------+------+
@@ -164,7 +164,7 @@ kubectl config use-context bbox-context-kub2
 
 First verify that the AppVault is also configured on the second cluster. It points to the same bucket used on the first Kubernetes cluster.
 ```bash
-$ tridentctl protect get appvault ontap-vault -n trident-protect --context bbox-context-kub2
+$ tridentctl-protect get appvault ontap-vault -n trident-protect --context bbox-context-kub2
 +-------------+----------+-----------+-------+---------+------+
 |    NAME     | PROVIDER |   STATE   | ERROR | MESSAGE | AGE  |
 +-------------+----------+-----------+-------+---------+------+
@@ -175,7 +175,7 @@ $ tridentctl protect get appvault ontap-vault -n trident-protect --context bbox-
 Tridentctl includes a flag that helps you browse through an AppVault.  
 This can be useful when restoring to a cluster different from the source, especially when the source is totally gone...  
 ```bash
-$ tridentctl protect get appvaultcontent ontap-vault --show-resources all --app bbox -n trident-protect --context bbox-context-kub2
+$ tridentctl-protect get appvaultcontent ontap-vault --show-resources all --app bbox -n trident-protect --context bbox-context-kub2
 +---------+------+----------+-----------------------------+---------------+-----------+---------------------------+---------------------------+
 | CLUSTER | APP  |   TYPE   |            NAME             |   NAMESPACE   |   STATE   |          CREATED          |         COMPLETED         |
 +---------+------+----------+-----------------------------+---------------+-----------+---------------------------+---------------------------+
@@ -197,7 +197,7 @@ Note that you could run the same command in both contexts as all backups are in 
 
 Let's restore from the manual backup. We also need to gather the full path for this step (see the *--show-paths* flag):  
 ```bash
-$ tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2
+$ tridentctl-protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2
 +---------+------+--------+-----------------------------+---------------+-----------+---------------------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
 | CLUSTER | APP  |  TYPE  |            NAME             |   NAMESPACE   |   STATE   |          CREATED          |         COMPLETED         |                                                        PATH                                                        |
 +---------+------+--------+-----------------------------+---------------+-----------+---------------------------+---------------------------+--------------------------------------------------------------------------------------------------------------------+
@@ -210,12 +210,12 @@ $ tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources
 
 You can use the following command to retrieve the path of the manual backup:  
 ```bash
-BKPPATH=$(tridentctl protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $10}')
+BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $10}')
 ```
 Let's proceed with the restore operation and check the result after a few seconds.  
 Notice that you also add a mapping for storage classes.  
 ```bash
-$ tridentctl protect create br bboxbr1 -n tpsc05busyboxbr \
+$ tridentctl-protect create br bboxbr1 -n tpsc05busyboxbr \
   --namespace-mapping tpsc05busybox:tpsc05busyboxbr \
   --appvault ontap-vault \
   --storageclass-mapping storage-class-nfs:sc-nfs \
@@ -223,7 +223,7 @@ $ tridentctl protect create br bboxbr1 -n tpsc05busyboxbr \
   --context bbox-context-kub2 --dry-run  | kubectl apply -f -
 BackupRestore "bboxbr1" created.
 
-$ tridentctl protect get br -n tpsc05busyboxbr --context bbox-context-kub2
+$ tridentctl-protect get br -n tpsc05busyboxbr --context bbox-context-kub2
 +---------+---------------+-----------+-----+-------+
 |  NAME   |    APPVAULT   |   STATE   | AGE | ERROR |
 +---------+---------------+-----------+-----+-------+

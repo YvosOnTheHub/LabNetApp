@@ -67,9 +67,9 @@ rolebinding.rbac.authorization.k8s.io/bbox-tenant-rolebinding created
 
 Time to start configuring a new Trident Protect configuration, including **pre/post snapshots hooks**:  
 ```bash
-$ tridentctl protect create app pg --namespaces pg -n pg
+$ tridentctl-protect create app pg --namespaces pg -n pg
 Application "pg" created.
-$ tridentctl protect get app -n pg
+$ tridentctl-protect get app -n pg
 +------+------------+-------+-----+
 | NAME | NAMESPACES | STATE | AGE |
 +------+------------+-------+-----+
@@ -80,13 +80,13 @@ If you have not yet created an AppVault, refer to the [Scenario03](../../Scenari
 
 Before moving to the application protection, we first need to create the snapshots hooks:  
 ```bash
-$ tridentctl protect create exechook pg-snap-pre --action Snapshot --app pg --stage pre --source-file ~/Verda/PostgreSQL/postgresql.sh --arg pre --match containerName:postgresql -n pg
+$ tridentctl-protect create exechook pg-snap-pre --action Snapshot --app pg --stage pre --source-file ~/Verda/PostgreSQL/postgresql.sh --arg pre --match containerName:postgresql -n pg
 ExecHook "pg-snap-pre" created.
 
-$ tridentctl protect create exechook pg-snap-post --action Snapshot --app pg --stage post --source-file ~/Verda/PostgreSQL/postgresql.sh --arg post --match containerName:postgresql -n pg
+$ tridentctl-protect create exechook pg-snap-post --action Snapshot --app pg --stage post --source-file ~/Verda/PostgreSQL/postgresql.sh --arg post --match containerName:postgresql -n pg
 ExecHook "pg-snap-post" created.
 
-$ tridentctl protect get exechook -n pg
+$ tridentctl-protect get exechook -n pg
 +--------------+-----+--------------------------+----------+-------+---------+-----+-------+
 |     NAME     | APP |          MATCH           |  ACTION  | STAGE | ENABLED | AGE | ERROR |
 +--------------+-----+--------------------------+----------+-------+---------+-----+-------+
@@ -118,11 +118,11 @@ $ kubectl exec -it pg-postgresql-0 -n pg -- psql -h pg-postgresql -U postgres -d
 Everything is now setup to test snapshots!  
 Let's create one of those. Note that display the _date_ before & after requesting the snapshot:  
 ```bash
-$ date; tridentctl protect create snapshot pgsnap1 --app pg --appvault ontap-vault -n pg
+$ date; tridentctl-protect create snapshot pgsnap1 --app pg --appvault ontap-vault -n pg
 Fri Dec 20 08:36:58 AM UTC 2024
 Snapshot "pgsnap1" created.
 
-$ tridentctl protect get snap -n pg
+$ tridentctl-protect get snap -n pg
 +---------+---------+-----------+-----+-------+
 |  NAME   | APP REF |   STATE   | AGE | ERROR |
 +---------+---------+-----------+-----+-------+
@@ -151,10 +151,10 @@ If you switch back to the terminal where the loop is running, you may see the fo
 
 Last, let's restore this snapshot to a new namespace & read the content (it should stop around _data176_, right?):  
 ```bash
-$ tridentctl protect create sr pgsr1 --namespace-mapping pg:pgsr --snapshot pg/pgsnap1 -n pgsr
+$ tridentctl-protect create sr pgsr1 --namespace-mapping pg:pgsr --snapshot pg/pgsnap1 -n pgsr
 SnapshotRestore "pgsr1" created.
 
-$ tridentctl protect get sr -n pgsr
+$ tridentctl-protect get sr -n pgsr
 +-------+-------------+-----------+-----+-------+
 | NAME  |   APPVAULT  |   STATE   | AGE | ERROR |
 +-------+-------------+-----------+-----+-------+

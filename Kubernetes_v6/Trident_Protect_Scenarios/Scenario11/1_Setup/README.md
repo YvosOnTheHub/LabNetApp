@@ -262,6 +262,10 @@ ssh alpine@$ALPINE_IP -i /root/.ssh/alpine
 ```
 There you go, your Virtual Machine is up and running, and you can connect to it!
 
+By the way, if you installed the KubeVirt Manager, you can see you VM in the dashboard:  
+<p align="center"><img src="../Images/Dashboard_Alpine.png" width="768"></p>
+
+
 ## D. Virtual Machine data disk management
 
 This paragraph is performed inside the Virtual Machine.  

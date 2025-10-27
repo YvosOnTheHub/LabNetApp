@@ -29,10 +29,11 @@ kubectl -n kubevirt patch kubevirt kubevirt --type=merge --patch '{"spec":{"conf
 
 echo
 echo "#######################################################################################################"
-echo "Enable HotplugVolumes and DeclarativeHotplugVolumes"
+echo "Enable Feature Gates"
 echo "#######################################################################################################"
+# https://github.com/kubevirt/kubevirt/blob/main/pkg/virt-config/featuregate/active.go
 kubectl -n kubevirt patch kubevirt kubevirt --type=merge \
-  -p '{"spec":{"configuration":{"developerConfiguration":{"featureGates":["HotplugVolumes","DeclarativeHotplugVolumes"]}}}}'
+  -p '{"spec":{"configuration":{"developerConfiguration":{"featureGates":["ExpandDisks","HotplugVolumes","DeclarativeHotplugVolumes","Snapshot"]}}}}'
 
 echo
 echo "#######################################################################################################"
@@ -85,9 +86,39 @@ spec:
 EOF
 
 CDILBDIP=$(kubectl -n cdi get svc cdi-uploadproxy-lb -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
-kubectl -n cdi patch cdi cdi --type merge -p "{\"spec\":{\"config\":{\"uploadProxyURLOverride\":\"https://$CDILBDIP:443\"}}}"
+kubectl patch cdi cdi --type merge -p "{\"spec\":{\"config\":{\"uploadProxyURLOverride\":\"https://$CDILBDIP:443\"}}}"
+
+kubectl patch cdi cdi --type merge -p '{"spec": {"config": {"insecureRegistries": ["registry.demo.netapp.com"]}}}'
 
 echo
 echo "#######################################################################################################"
-echo "the CDI Proxy IP is $CDILBDIP"
+echo "Install Kubevirt Dashboard"
+echo "#######################################################################################################"
+kubectl apply -f https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml
+
+echo
+while [ $(kubectl get -n kubevirt-manager po | grep -e '1/1' | wc -l) -ne 1 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the KubeVirt Dashboard to be ready $frame" 
+    done
+done
+kubectl -n kubevirt-manager patch svc kubevirt-manager --type='merge' -p '{"spec":{"type":"NodePort"}}'                
+
+KVMGR=$(kubectl -n kubevirt-manager get svc kubevirt-manager -o jsonpath="{.spec.ports[0].nodePort}")
+
+echo
+echo "#######################################################################################################"
+echo "Install ORAS"
+echo "#######################################################################################################"
+cd
+wget https://github.com/oras-project/oras/releases/download/v1.3.0/oras_1.3.0_linux_amd64.tar.gz -O /tmp/oras.tar.gz
+tar -C /tmp/ -xzf /tmp/oras.tar.gz
+mv /tmp/oras /usr/local/bin/oras
+chmod +x /usr/local/bin/oras
+rm -rf /tmp/oras
+
+echo
+echo "#######################################################################################################"
+echo "The CDI Proxy IP is $CDILBDIP"
+echo "The KubeVirt dashboard NodePort is $KVMGR"
 echo "#######################################################################################################"

@@ -53,10 +53,10 @@ Or maybe you want to create a clone of your VM to perform other tasks...
 
 Let's create a **Snapshot Restore** operation with Trident Protect to restore the VM in a different namespace called _alpinesr_:  
 ```bash 
-$ tridentctl protect create sr alpinesr1 --namespace-mapping alpine:alpinesr --snapshot alpine/alpinesnap1 -n alpinesr
+$ tridentctl-protect create sr alpinesr1 --namespace-mapping alpine:alpinesr --snapshot alpine/alpinesnap1 -n alpinesr
 SnapshotRestore "alpinesr1" created.
 
-$ tridentctl protect get sr -n alpinesr
+$ tridentctl-protect get sr -n alpinesr
 +-----------+-------------+-----------+-------+-----+
 |   NAME    |  APPVAULT   |   STATE   | ERROR | AGE |
 +-----------+-------------+-----------+-------+-----+

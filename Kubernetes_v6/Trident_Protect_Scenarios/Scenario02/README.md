@@ -2,10 +2,8 @@
 # SCENARIO 2: Trident Protect installation
 #########################################################################################
 
-Trident Protect is installed with 2 separate Helm charts:  
-- a chart for the Trident Protect CRD  
-- a chart for the Trident Protect app  
-
+Trident Protect is simply installed with a Helm chart.  
+It uses multiple containers images to perform various application management tasks. 
 Let's pull all the required images from the docker hub & use the lab private registry when installing Trident Protect.  
 This folder contains a script to perform that task:  
 ```bash

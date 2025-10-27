@@ -11,20 +11,20 @@ If you have not yet created an AppVault, refer to the [Scenario03](../../Scenari
 
 We will create a Trident Protect application based on the pacman namespace, as well as a protection schedule:  
 ```bash
-$ tridentctl protect create app pacman --namespaces pacman -n pacman
+$ tridentctl-protect create app pacman --namespaces pacman -n pacman
 Application "pacman" created.
 
-$ tridentctl protect get app -n pacman
+$ tridentctl-protect get app -n pacman
 +--------+------------+-------+-----+
 |  NAME  | NAMESPACES | STATE | AGE |
 +--------+------------+-------+-----+
 | pacman | pacman     | Ready | 10s |
 +--------+------------+-------+-----+
 
-$ tridentctl protect create schedule --app pacman --granularity hourly --minute 10 --snapshot-retention 3 --backup-retention 3 --appvault ontap-vault -n pacman
+$ tridentctl-protect create schedule --app pacman --granularity hourly --minute 10 --snapshot-retention 3 --backup-retention 3 --appvault ontap-vault -n pacman
 Schedule "pacman-u9gzij" created.
 
-$ tridentctl protect get schedule -n pacman
+$ tridentctl-protect get schedule -n pacman
 +---------------+--------+---------------+---------+-------+-----+-------+
 |     NAME      |  APP   |   SCHEDULE    | ENABLED | STATE | AGE | ERROR |
 +---------------+--------+---------------+---------+-------+-----+-------+
@@ -34,13 +34,13 @@ $ tridentctl protect get schedule -n pacman
 Last, you want to make sure the content of the database is flushed to the disk before taking a snapshot, especially if you have plenty of players!  
 We can achieve that by creating pre/post snapshot hooks applied only on _mongo_ container:  
 ```bash
-$ tridentctl protect create exechook hookpre --app pacman --action snapshot --stage pre --source-file ~/Verda/MongoDB/mongodb-hooks.sh --arg pre --match containerName:mongo -n pacman
+$ tridentctl-protect create exechook hookpre --app pacman --action snapshot --stage pre --source-file ~/Verda/MongoDB/mongodb-hooks.sh --arg pre --match containerName:mongo -n pacman
 ExecHook "hookpre" created.
 
-$ tridentctl protect create exechook hookpost --app pacman --action snapshot --stage post --source-file ~/root~/Verda/MongoDB/mongodb-hooks.sh --arg post --match containerName:mongo -n pacman
+$ tridentctl-protect create exechook hookpost --app pacman --action snapshot --stage post --source-file ~/root~/Verda/MongoDB/mongodb-hooks.sh --arg post --match containerName:mongo -n pacman
 ExecHook "hookpost" created.
 
-$ tridentctl protect get exechook -n pacman
+$ tridentctl-protect get exechook -n pacman
 +----------+--------+-------+----------+-------+---------+-----+-------+
 |   NAME   |  APP   | MATCH |  ACTION  | STAGE | ENABLED | AGE | ERROR |
 +----------+--------+-------+----------+-------+---------+-----+-------+
@@ -53,10 +53,10 @@ There you go, Pacman is fully protected ! What an awesome little yellow ball!
 
 Before messing with him, let's create a manual snapshot & backup:  
 ```bash
-$ tridentctl protect create snapshot pacsnap1 --app pacman --appvault ontap-vault -n pacman
+$ tridentctl-protect create snapshot pacsnap1 --app pacman --appvault ontap-vault -n pacman
 Snapshot "pacsnap1" created.
 
-$ tridentctl protect get snapshot -n pacman
+$ tridentctl-protect get snapshot -n pacman
 +-----------------------------+---------+-----------+-------+-------+
 |            NAME             | APP REF |   STATE   |  AGE  | ERROR |
 +-----------------------------+---------+-----------+-------+-------+
@@ -64,10 +64,10 @@ $ tridentctl protect get snapshot -n pacman
 | pacsnap1                    | pacman  | Completed | 21s   |       |
 +-----------------------------+---------+-----------+-------+-------+
 
-$ tridentctl protect create backup pacbkp1 --app pacman --snapshot pacsnap1 --appvault ontap-vault -n pacman
+$ tridentctl-protect create backup pacbkp1 --app pacman --snapshot pacsnap1 --appvault ontap-vault -n pacman
 Backup "pacbkp1" created.
 
-$ tridentctl protect get backup -n pacman
+$ tridentctl-protect get backup -n pacman
 +-----------------------------+---------+-----------+-------+-------+
 |            NAME             | APP REF |   STATE   |  AGE  | ERROR |
 +-----------------------------+---------+-----------+-------+-------+
@@ -109,7 +109,7 @@ spec:
 EOF
 appmirrorrelationship.protect.trident.netapp.io/pacamr1 created
 
-$ tridentctl protect get amr -n pacmandr --context kub2-admin@kub2
+$ tridentctl-protect get amr -n pacmandr --context kub2-admin@kub2
 +---------+-------------+-----------------+---------------+-------------+-------+-------+
 |  NAME   | SOURCE APP  | DESTINATION APP | DESIRED STATE |    STATE    |  AGE  | ERROR |
 +---------+-------------+-----------------+---------------+-------------+-------+-------+

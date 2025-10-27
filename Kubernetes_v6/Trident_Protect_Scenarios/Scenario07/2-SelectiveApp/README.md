@@ -39,9 +39,9 @@ If you look at this manifest, you will see 2 differences for the PVC:
 The goal of this folder is to only protect the PVC _mydata2_.  
 To do so, we will create a Trident Protect application which carries the label to use:  
 ```bash
-$ tridentctl protect create app bbox --namespaces 'sc07bbox1(category=toprotect)' -n sc07bbox1
+$ tridentctl-protect create app bbox --namespaces 'sc07bbox1(category=toprotect)' -n sc07bbox1
 
-$ tridentctl protect get app -n bbox
+$ tridentctl-protect get app -n bbox
 +------+------------+-------+------+
 | NAME | NAMESPACES | STATE | AGE  |
 +------+------------+-------+------+
@@ -50,20 +50,20 @@ $ tridentctl protect get app -n bbox
 ```
 Let's continue with a snapshot & a backup of this application:  
 ```bash
-$ tridentctl protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n sc07bbox1
+$ tridentctl-protect create snapshot bboxsnap1 --app bbox --appvault ontap-vault -n sc07bbox1
 Snapshot "bboxsnap1" created.
 
-$ tridentctl protect get snap -n sc07bbox1
+$ tridentctl-protect get snap -n sc07bbox1
 +-----------+---------+-----------+-----+-------+
 |   NAME    | APP REF |   STATE   | AGE | ERROR |
 +-----------+---------+-----------+-----+-------+
 | bboxsnap1 | bbox    | Completed | 37s |       |
 +-----------+---------+-----------+-----+-------+
 
-$ tridentctl protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  --data-mover kopia -n sc07bbox1
+$ tridentctl-protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  --data-mover kopia -n sc07bbox1
 Backup "bboxbkp1" created.
 
-$ tridentctl protect get backup -n sc07bbox1
+$ tridentctl-protect get backup -n sc07bbox1
 +----------+---------+-----------+-------+-------+
 |   NAME   | APP REF |   STATE   |  AGE  | ERROR |
 +----------+---------+-----------+-------+-------+
@@ -92,10 +92,10 @@ Notice there is only data related to the _mydata2_ pvc as expected.
 
 Next, let's restore that "application" to a different namespace and check the result:
 ```bash
-$ tridentctl protect create br bboxbr1 --namespace-mapping sc07bbox1:sc07bbox1br --backup sc07bbox1/bboxbkp1 -n sc07bbox1br
+$ tridentctl-protect create br bboxbr1 --namespace-mapping sc07bbox1:sc07bbox1br --backup sc07bbox1/bboxbkp1 -n sc07bbox1br
 BackupRestore "bboxbr1" created.
 
-$ tridentctl protect get br -n sc07bbox1br
+$ tridentctl-protect get br -n sc07bbox1br
 +---------+-------------+-----------+-----+-------+
 |  NAME   |  APPVAULT   |   STATE   | AGE | ERROR |
 +---------+-------------+-----------+-----+-------+

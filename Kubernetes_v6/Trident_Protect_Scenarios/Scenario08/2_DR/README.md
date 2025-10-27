@@ -65,14 +65,14 @@ If all went well, you would see the app in the ArgoCD GUI:
 
 Checked in the CLI, you can also see that the Trident Protect configuration is present, which means your application has been automatically set up for protection!  
 ```bash
-$ tridentctl protect get application -n wpargo2
+$ tridentctl-protect get application -n wpargo2
 +-----------+------------+-------+-------+
 |    NAME   | NAMESPACES | STATE |  AGE  |
 +-----------+------------+-------+-------+
 | wordpress | wpargo2    | Ready | 3m14s |
 +-----------+------------+-------+-------+
 
-$ tridentctl protect get schedule -n wpargo2
+$ tridentctl-protect get schedule -n wpargo2
 +-----------+-----------+--------------------------------+---------+-------+-----+-------+
 |    NAME   |    APP    |            SCHEDULE            | ENABLED | STATE | AGE | ERROR |
 +-----------+-----------+--------------------------------+---------+-------+-----+-------+
@@ -83,7 +83,7 @@ $ tridentctl protect get schedule -n wpargo2
 Depending on the schedule set, you should see soon or later snapshots appear.  
 Notice the difference of timing
 ```bash
-$ tridentctl protect get snapshot -n wpargo2
+$ tridentctl-protect get snapshot -n wpargo2
 +-----------------------------+-----------+-----------+-------+-------+
 |            NAME             |  APP REF  |   STATE   |  AGE  | ERROR |
 +-----------------------------+-----------+-----------+-------+-------+

@@ -73,21 +73,21 @@ rolebinding.rbac.authorization.k8s.io/bbox-tenant-rolebinding created
 Now, let's configure Trident Protect to take into account that application.  
 For this scenario, no need to add a protection schedule as the goal is to showcase the integration with hooks:  
 ```bash
-$ tridentctl protect create app sc06bbox2 --namespaces sc06bbox2 -n sc06bbox2
+$ tridentctl-protect create app sc06bbox2 --namespaces sc06bbox2 -n sc06bbox2
 Application "sc06bbox2" created.
 
-$ tridentctl protect create appvault OntapS3 sc06bbox2-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
+$ tridentctl-protect create appvault OntapS3 sc06bbox2-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
 AppVault "sc06bbox1-vault" created.
 ```
 Time to configure our 2 _post failover_ hooks:  
 ```bash
-$ tridentctl protect create exechook bbox-replicas --action Failover --stage post --app sc06bbox2 --source-file hook-failover-replicas.sh --arg busybox --arg 1 -n sc06bbox2
+$ tridentctl-protect create exechook bbox-replicas --action Failover --stage post --app sc06bbox2 --source-file hook-failover-replicas.sh --arg busybox --arg 1 -n sc06bbox2
 ExecHook "bbox-replicas" created.
 
-$ tridentctl protect create exechook bbox-tags --action Failover --stage post --app sc06bbox2 --source-file hook-failover-tag-rewrite.sh --arg site1 --arg site2 -n sc06bbox2
+$ tridentctl-protect create exechook bbox-tags --action Failover --stage post --app sc06bbox2 --source-file hook-failover-tag-rewrite.sh --arg site1 --arg site2 -n sc06bbox2
 ExecHook "bbox-tags" created.
 
-$ tridentctl protect get eh -n sc06bbox2
+$ tridentctl-protect get eh -n sc06bbox2
 +---------------+-----------+-------+----------+-------+---------+-------+-------+
 |     NAME      |    APP    | MATCH |  ACTION  | STAGE | ENABLED |  AGE  | ERROR |
 +---------------+-----------+-------+----------+-------+---------+-------+-------+
@@ -97,13 +97,13 @@ $ tridentctl protect get eh -n sc06bbox2
 ```
 The setup is almost ready. We also need a snapshot:  
 ```bash
-$ tridentctl protect create snapshot bboxsnap1 --app sc06bbox2 --appvault sc06bbox2-vault -n sc06bbox2
+$ tridentctl-protect create snapshot bboxsnap1 --app sc06bbox2 --appvault sc06bbox2-vault -n sc06bbox2
 Snapshot "bboxsnap1" created.
 ```
  
 We first need to add the appVault on the _secondary cluster_ to retrieve the app metadata during the failover process:  
 ```bash
-tridentctl protect create appvault OntapS3 sc06bbox2-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
+tridentctl-protect create appvault OntapS3 sc06bbox2-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
 ```
 Almost time to create the mirror relationship.  
 This could be done with the _cli_, but for the sake of this scenario, let's use a YAML manifest.  
@@ -167,7 +167,7 @@ The following must be performed on the secondary site (it takes a couple of minu
 $ kubectl patch amr bboxamr1 -n sc06bbox2dr --type=merge -p '{"spec":{"desiredState":"Promoted"}}'
 appmirrorrelationship.protect.trident.netapp.io/bboxamr1 patched
 
-$ tridentctl protect get amr -n sc06bbox2dr
+$ tridentctl-protect get amr -n sc06bbox2dr
 +----------+-----------------+-----------------+---------------+----------+--------+-------+
 |   NAME   |   SOURCE APP    | DESTINATION APP | DESIRED STATE |  STATE   |  AGE   | ERROR |
 +----------+-----------------+-----------------+---------------+----------+--------+-------+

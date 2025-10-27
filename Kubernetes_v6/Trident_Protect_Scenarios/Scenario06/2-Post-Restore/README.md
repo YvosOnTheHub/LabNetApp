@@ -71,20 +71,20 @@ rolebinding.rbac.authorization.k8s.io/bbox-tenant-rolebinding created
 Now, let's configure Trident Protect to take into account that application.  
 For this scenario, no need to add a protection schedule as the goal is to showcase the integration with hooks:  
 ```bash
-$ tridentctl protect create app sc06bbox1 --namespaces sc06bbox1 -n sc06bbox1
+$ tridentctl-protect create app sc06bbox1 --namespaces sc06bbox1 -n sc06bbox1
 Application "sc06bbox1" created.
 ```
 If you have not yet create an AppVault, refer to the [Scenario03](../../Scenario03/) which guides you through the bucket provisioning as well as the AppVault (_ontap-vault_), which is created in the Trident Protect namespace, by the admin.  
 
 Time to configure our 2 _post restore_ hooks:  
 ```bash
-$ tridentctl protect create exechook bbox-replicas --action Restore --stage post --app sc06bbox1 --source-file hook-restore-replicas.sh --arg busybox --arg 1 -n sc06bbox1
+$ tridentctl-protect create exechook bbox-replicas --action Restore --stage post --app sc06bbox1 --source-file hook-restore-replicas.sh --arg busybox --arg 1 -n sc06bbox1
 ExecHook "bbox-replicas" created.
 
-$ tridentctl protect create exechook bbox-tags --action Restore --stage post --app sc06bbox1 --source-file hook-restore-tag-rewrite.sh --arg site1 --arg site2 -n sc06bbox1
+$ tridentctl-protect create exechook bbox-tags --action Restore --stage post --app sc06bbox1 --source-file hook-restore-tag-rewrite.sh --arg site1 --arg site2 -n sc06bbox1
 ExecHook "bbox-tags" created.
 
-$ tridentctl protect get eh -n sc06bbox1
+$ tridentctl-protect get eh -n sc06bbox1
 +---------------+-----------+-------+---------+-------+---------+-------+-------+
 |     NAME      |    APP    | MATCH | ACTION  | STAGE | ENABLED |  AGE  | ERROR |
 +---------------+-----------+-------+---------+-------+---------+-------+-------+
@@ -94,10 +94,10 @@ $ tridentctl protect get eh -n sc06bbox1
 ```
 The setup is almost ready. We first need a snapshot & a backup:  
 ```bash
-$ tridentctl protect create snapshot bboxsnap1 --app sc06bbox1 --appvault ontap-vault -n sc06bbox1
+$ tridentctl-protect create snapshot bboxsnap1 --app sc06bbox1 --appvault ontap-vault -n sc06bbox1
 Snapshot "bboxsnap1" created.
 
-$ tridentctl protect create backup bboxbkp1 --app sc06bbox1 --snapshot bboxsnap1 --appvault ontap-vault  -n sc06bbox1
+$ tridentctl-protect create backup bboxbkp1 --app sc06bbox1 --snapshot bboxsnap1 --appvault ontap-vault  -n sc06bbox1
 Backup "bboxbkp1" created.
 ```
 
@@ -106,17 +106,17 @@ Let's see what happens when you restore that app.
 
 We first need to add the appVault on this cluster to retrieve the backup ID:  
 ```bash
-tridentctl protect create appvault OntapS3 sc06bbox1-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
-BKPPATH=$(tridentctl protect get appvaultcontent sc06bbox1-vault --app sc06bbox1 --show-resources backup --show-paths -n trident-protect | grep bboxbkp1  | awk -F '|' '{print $7}')
+tridentctl-protect create appvault OntapS3 sc06bbox1-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
+BKPPATH=$(tridentctl-protect get appvaultcontent sc06bbox1-vault --app sc06bbox1 --show-resources backup --show-paths -n trident-protect | grep bboxbkp1  | awk -F '|' '{print $7}')
 ```
 We finally can proceed with the restore:  
 ```bash
-$ tridentctl protect create br bboxbr1 --namespace-mapping sc06bbox1:sc06bbox1br --appvault sc06bbox1-vault -n sc06bbox1br \
+$ tridentctl-protect create br bboxbr1 --namespace-mapping sc06bbox1:sc06bbox1br --appvault sc06bbox1-vault -n sc06bbox1br \
   --storageclass-mapping storage-class-nfs:sc-nfs \
   --path $BKPPATH
 BackupRestore "bboxbr1" created.
 
-$ tridentctl protect get backuprestore -n sc06bbox1br
+$ tridentctl-protect get backuprestore -n sc06bbox1br
 +---------+-----------------+-----------+-------+-------+
 |  NAME   |    APPVAULT     |   STATE   |  AGE  | ERROR |
 +---------+-----------------+-----------+-------+-------+

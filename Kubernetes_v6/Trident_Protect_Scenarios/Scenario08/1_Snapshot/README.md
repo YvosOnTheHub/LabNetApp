@@ -78,7 +78,7 @@ If all went well, you would see the app in the ArgoCD GUI:
 
 Checked in the CLI, you can also see that the Trident Protect configuration is present, which means your application has been automatically set up for protection!  
 ```bash
-$ tridentctl protect get application -n wpargo1
+$ tridentctl-protect get application -n wpargo1
 +--------------------+------------+-------+-------+
 |        NAME        | NAMESPACES | STATE |  AGE  |
 +--------------------+------------+-------+-------+
@@ -86,7 +86,7 @@ $ tridentctl protect get application -n wpargo1
 | wordpress-mysql    | wpargo1    | Ready | 3m14s |
 +--------------------+------------+-------+-------+
 
-$ tridentctl protect get schedule -n wpargo1
+$ tridentctl-protect get schedule -n wpargo1
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
 |        NAME        |        APP         |            SCHEDULE            | ENABLED | STATE | AGE | ERROR |
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
@@ -95,7 +95,7 @@ $ tridentctl protect get schedule -n wpargo1
 |                    |                    | RRULE:FREQ=MINUTELY;INTERVAL=5 |         |       |     |       |
 +--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
 
-$ tridentctl protect get exechook -n wpargo1
+$ tridentctl-protect get exechook -n wpargo1
 +-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
 |      NAME       |       APP       |        MATCH        |  ACTION  | STAGE | ENABLED | AGE | ERROR |
 +-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
@@ -106,7 +106,7 @@ $ tridentctl protect get exechook -n wpargo1
 Depending on the schedule set, you should see soon or later snapshots appear.  
 Notice the difference of timing
 ```bash
-$ tridentctl protect get snapshot -n wpargo1
+$ tridentctl-protect get snapshot -n wpargo1
 +-----------------------------+--------------------+-----------+--------+-------+
 |            NAME             |      APP REF       |   STATE   |  AGE   | ERROR |
 +-----------------------------+--------------------+-----------+--------+-------+
@@ -155,11 +155,11 @@ Trident Protect allows to you to restore:
 
 Let's restore only the PVC & the POD the latest mysql snapshot:  
 ```bash
-$ tridentctl protect create sir mysqlsir1 --snapshot wpargo1/custom-cc413-20250126161600 -n wpargo1 \
+$ tridentctl-protect create sir mysqlsir1 --snapshot wpargo1/custom-cc413-20250126161600 -n wpargo1 \
   --resource-filter-exclude='[{"kind":"Secret"},{"kind":"Service"}]'
 SnapshotInplaceRestore "mysqlsir1" created.
 
-$ tridentctl protect get sir -n wpargo1
+$ tridentctl-protect get sir -n wpargo1
 +-----------+-------------+-----------+------+-------+
 |   NAME    |  APPVAULT   |   STATE   | AGE  | ERROR |
 +-----------+-------------+-----------+------+-------+

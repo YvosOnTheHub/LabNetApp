@@ -21,10 +21,10 @@ As a great wise man would say: "oh oh !"
 No worries, you did all the necessary to protect your application.  
 In my case, I can simply perform an _in place restore_ operation from the first manual snapshot we took.  
 ```bash
-$ tridentctl protect create sir pacsir1 --snapshot pacman/pacsnap1 --resource-filter-include='[{"kind":"PersistentVolumeClaim"}]' -n pacman
+$ tridentctl-protect create sir pacsir1 --snapshot pacman/pacsnap1 --resource-filter-include='[{"kind":"PersistentVolumeClaim"}]' -n pacman
 SnapshotInplaceRestore "pacsir1" created.
 
-$ tridentctl protect get sir -n pacman
+$ tridentctl-protect get sir -n pacman
 +---------+-------------+-----------+-----+-------+
 |  NAME   |  APPVAULT   |   STATE   | AGE | ERROR |
 +---------+-------------+-----------+-----+-------+

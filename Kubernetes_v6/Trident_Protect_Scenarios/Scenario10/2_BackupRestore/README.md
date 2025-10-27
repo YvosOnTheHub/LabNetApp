@@ -67,10 +67,10 @@ $ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.231 s3://s3lod2/bbox
 Of course, you cannot restore remotely from a snapshot.  
 You first need to create a backup on the primary site before going ahead:  
 ```bash
-$ tridentctl protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  --data-mover kopia -n tpsc10busybox
+$ tridentctl-protect create backup bboxbkp1 --app bbox --snapshot bboxsnap1 --appvault ontap-vault  --data-mover kopia -n tpsc10busybox
 Backup "bboxbkp1" created.
 
-$ tridentctl protect get backup -n tpsc10busybox
+$ tridentctl-protect get backup -n tpsc10busybox
 +----------+------+----------------+-----------+-------+-------+
 |   NAME   | APP  | RECLAIM POLICY |   STATE   | ERROR |  AGE  |
 +----------+------+----------------+-----------+-------+-------+
@@ -113,10 +113,10 @@ localhost                  : ok=2    changed=1    unreachable=0    failed=0    s
 
 Let's proceed with the AppVault creation on the secondary Kubernetes cluster:  
 ```bash
-$ tridentctl protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect create appvault OntapS3 ontap-vault2 -s s3-2-creds --bucket s3lod2 --endpoint 192.168.0.231 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
 AppVault "ontap-vault2" created.
 
-$ tridentctl protect get appvault ontap-vault2 -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect get appvault ontap-vault2 -n trident-protect --context kub2-admin@kub2
 +--------------+----------+-----------+-------+---------+-------+
 |     NAME     | PROVIDER |   STATE   | ERROR | MESSAGE |  AGE  |
 +--------------+----------+-----------+-------+---------+-------+
@@ -128,14 +128,14 @@ $ tridentctl protect get appvault ontap-vault2 -n trident-protect --context kub2
 
 In order to restore our app, we first need to find the path of the backup we want to restore:  
 ```bash
-$ tridentctl protect get appvaultcontent ontap-vault2 -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect get appvaultcontent ontap-vault2 -n trident-protect --context kub2-admin@kub2
 +---------+------+--------+----------+---------------+---------------------------+
 | CLUSTER | APP  |  TYPE  |   NAME   |   NAMESPACE   |         TIMESTAMP         |
 +---------+------+--------+----------+---------------+---------------------------+
 | lod1    | bbox | backup | bboxbkp1 | tpsc10busybox | 2025-06-24 07:27:14 (UTC) |
 +---------+------+--------+----------+---------------+---------------------------+
 
-$ tridentctl protect get appvaultcontent ontap-vault2 --show-paths -n trident-protect --context kub2-admin@kub2
+$ tridentctl-protect get appvaultcontent ontap-vault2 --show-paths -n trident-protect --context kub2-admin@kub2
 +---------+------+--------+----------+---------------+---------------------------+-------------------------------------------------------------------------------------------------+
 | CLUSTER | APP  |  TYPE  |   NAME   |   NAMESPACE   |         TIMESTAMP         |                                              PATH                                               |
 +---------+------+--------+----------+---------------+---------------------------+-------------------------------------------------------------------------------------------------+
@@ -144,15 +144,15 @@ $ tridentctl protect get appvaultcontent ontap-vault2 --show-paths -n trident-pr
 ```
 We now have all the required information to perform the app restore:
 ```bash
-$ BKPPATH=$(tridentctl protect get appvaultcontent ontap-vault2 --app bbox --show-resources backup --show-paths -n trident-protect --context kub2-admin@kub2 | grep bboxbkp1  | awk -F '|' '{print $8}')
+$ BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault2 --app bbox --show-resources backup --show-paths -n trident-protect --context kub2-admin@kub2 | grep bboxbkp1  | awk -F '|' '{print $8}')
 
-$ tridentctl protect create br bboxbr1 --namespace-mapping tpsc10busybox:tpsc10busyboxbr --appvault ontap-vault2 -n tpsc10busyboxbr \
+$ tridentctl-protect create br bboxbr1 --namespace-mapping tpsc10busybox:tpsc10busyboxbr --appvault ontap-vault2 -n tpsc10busyboxbr \
   --storageclass-mapping storage-class-nfs:sc-nfs \
   --context kub2-admin@kub2 \
   --path $BKPPATH
 BackupRestore "bboxbr1" created.
 
-$ tridentctl protect get br -n tpsc10busyboxbr --context kub2-admin@kub2
+$ tridentctl-protect get br -n tpsc10busyboxbr --context kub2-admin@kub2
 +---------+--------------+-----------+-------+-----+
 |  NAME   |   APPVAULT   |   STATE   | ERROR | AGE |
 +---------+--------------+-----------+-------+-----+

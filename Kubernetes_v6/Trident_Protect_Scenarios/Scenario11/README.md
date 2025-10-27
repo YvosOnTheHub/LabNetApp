@@ -15,6 +15,8 @@ In this scenario, you will perform the following tasks:
 - create an application snapshot  
 - configure Disaster Recovery and fail over the VM on the secondary cluster  
 
+This scenario does not yet cover Virtual Machine backup, which is also fully supported with Trident Protect.  
+
 <p align="center"><img src="Images/KV_Architecture.png" width="768"></p>
 
 There are two chapters in this scenario:  

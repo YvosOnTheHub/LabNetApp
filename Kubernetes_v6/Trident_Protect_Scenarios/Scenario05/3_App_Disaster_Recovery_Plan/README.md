@@ -71,7 +71,7 @@ appmirrorrelationship.protect.trident.netapp.io/bboxamr1 created
 ```
 After a few seconds, you will see the following (the AMR state will switch from _Establishing_ to _Established_):
 ```bash
-$ tridentctl protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |    STATE    | ERROR |  AGE  |
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
@@ -129,7 +129,7 @@ $ kubectl config use-context bbox-context-kub2
 $ kubectl patch amr bboxamr1 -n tpsc05busyboxdr --type=merge -p '{"spec":{"desiredState":"Promoted"}}'
 appmirrorrelationship.protect.trident.netapp.io/bboxamr1 patched
 
-$ tridentctl protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+--------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |  STATE   | ERROR |  AGE   |
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+--------+
@@ -164,7 +164,7 @@ This is done in several steps:
 
 First, we can clean up the AMR created previously on RHEL5, as we do not need it anymore:  
 ```bash
-$ tridentctl protect delete amr bboxamr1 -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect delete amr bboxamr1 -n tpsc05busyboxdr --context bbox-context-kub2
 Successfully sent deletion request for resource bboxamr1
 ```
 We can also add more data to the application volume, to showcase there is new content:  
@@ -174,10 +174,10 @@ kubectl exec -n tpsc05busyboxdr $(kubectl get pod -n tpsc05busyboxdr -o name) --
 ```
 In a real environment, you may want to create local _snapshots_ & maybe a _schedule_ if the application runs for a long period of time on the secondary system. For this scenario, we will only create one snapshot on the **secondary cluster* directly followed by the failback:  
 ```bash
-$ tridentctl protect create snapshot bboxdrsnap1 --app bbox --appvault ontap-vault -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect create snapshot bboxdrsnap1 --app bbox --appvault ontap-vault -n tpsc05busyboxdr --context bbox-context-kub2
 Snapshot "bboxdrsnap1" created.
 
-$ tridentctl protect get snapshot -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect get snapshot -n tpsc05busyboxdr --context bbox-context-kub2
 +-------------+------+----------------+-----------+-------+-----+
 |    NAME     | APP  | RECLAIM POLICY |   STATE   | ERROR | AGE |
 +-------------+------+----------------+-----------+-------+-----+
@@ -219,7 +219,7 @@ appmirrorrelationship.protect.trident.netapp.io/bboxamr2 created
 ```
 After a few seconds, you will see the following (the AMR state will switch from _Establishing_ to _Established_):
 ```bash
-$ tridentctl protect get amr -n tpsc05busybox --context bbox-context-kub1
+$ tridentctl-protect get amr -n tpsc05busybox --context bbox-context-kub1
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |    STATE    | ERROR |  AGE  |
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
@@ -240,10 +240,10 @@ We will also need its path on the AppVault in order to retrieve its content on t
 ```bash
 $ kubectl config use-context bbox-context-kub2
 
-$ tridentctl protect create shutdownsnapshot bboxdrlastsnap --app bbox --appvault ontap-vault -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect create shutdownsnapshot bboxdrlastsnap --app bbox --appvault ontap-vault -n tpsc05busyboxdr --context bbox-context-kub2
 ShutdownSnapshot "bboxdrlastsnap" created.
 
-$ tridentctl protect get shutdownsnapshot  -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect get shutdownsnapshot  -n tpsc05busyboxdr --context bbox-context-kub2
 +----------------+---------+-----------+-----+-------+
 |      NAME      | APP REF |   STATE   | AGE | ERROR |
 +----------------+---------+-----------+-----+-------+
@@ -260,7 +260,7 @@ $ kubectl config use-context bbox-context-kub1
 $ kubectl patch amr bboxamr2 -n tpsc05busybox --type=merge -p="{\"spec\":{\"desiredState\":\"Promoted\",\"promotedSnapshot\":\"$LASTSNAP\"}}"
 appmirrorrelationship.protect.trident.netapp.io/bboxamr2 patched
 
-$ tridentctl protect get amr -n tpsc05busybox --context bbox-context-kub1
+$ tridentctl-protect get amr -n tpsc05busybox --context bbox-context-kub1
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+-------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |  STATE   | ERROR |  AGE  |
 +----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+-------+
@@ -290,13 +290,13 @@ Tadaaa !
 Going back to a full nominal state also means reconfiguring mirroring from the _primary_ to the _secondary_.  
 That means, recreating a snapshot & a schedule on the **primary** site. We will also delete the second AMR:  
 ```bash
-$ tridentctl protect delete amr bboxamr2 -n tpsc05busybox --context bbox-context-kub1
+$ tridentctl-protect delete amr bboxamr2 -n tpsc05busybox --context bbox-context-kub1
 Successfully sent deletion request for resource bboxamr2
 
-$ tridentctl protect create snapshot bboxsnap2 --app bbox --appvault ontap-vault -n tpsc05busybox --context bbox-context-kub1
+$ tridentctl-protect create snapshot bboxsnap2 --app bbox --appvault ontap-vault -n tpsc05busybox --context bbox-context-kub1
 Snapshot "bboxsnap2" created.
 
-$ tridentctl protect create schedule bbox-sched2 --appvault ontap-vault --app bbox --granularity hourly --minute 5 -n tpsc05busybox --context bbox-context-kub1
+$ tridentctl-protect create schedule bbox-sched2 --appvault ontap-vault --app bbox --granularity hourly --minute 5 -n tpsc05busybox --context bbox-context-kub1
 Schedule "bbox-sched2" created.
 ```
 Before moving to the new AMR, we need again to retrieve the app ID on the _primary_ cluster:  
@@ -332,7 +332,7 @@ spec:
 EOF
 appmirrorrelationship.protect.trident.netapp.io/bboxamr3 created
 
-$ tridentctl protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
+$ tridentctl-protect get amr -n tpsc05busyboxdr --context bbox-context-kub2
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
 |   NAME   | SOURCE APP | SOURCE APP VAULT | DESTINATION APP | DESTINATION APP VAULT | DESIRED STATE |    STATE    | ERROR |  AGE  |
 +----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+

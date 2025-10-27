@@ -37,3 +37,25 @@ nproc
 cat /proc/meminfo | grep MemTotal
 OR
 free -h
+
+##################################################
+# How to attach a new RWX PVC/LUN to a VM
+##################################################
+
+# PVC name: alpine-data-pvc
+# "--persist": At next VM restart the volume will be attached like any other volume
+virtctl addvolume alpine-vm --volume-name=alpine-data-pvc --persist --disk-type=lun -n alpine
+=> will start a HP pod (HotPlug)
+
+# Check that the disk is visible in the VM
+doas fdisk -l
+
+# create a partition, mounted in /data & make this persistent
+echo -e "o\nn\np\n1\n\n\nw" | doas fdisk /dev/sda
+doas mkfs.ext4 /dev/sda1
+doas mkdir /data
+doas mount /dev/sda1 /data
+doas chmod 777 /data
+UUID=$(doas blkid -s UUID -o value /dev/sda1) && echo "UUID=$UUID   /data   ext4   defaults   0 0" | doas tee -a /etc/fstab
+
+
