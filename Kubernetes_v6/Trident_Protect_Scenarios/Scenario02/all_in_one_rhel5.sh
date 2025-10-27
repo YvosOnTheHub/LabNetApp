@@ -40,14 +40,10 @@ curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/relea
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
-mv tridentctl-completion.bash ~/.bash/completions/
+tridentctl-protect completion bash > ~/.bash/completions/tridentctl-completion.bash
 source ~/.bash/completions/tridentctl-completion.bash
-
-cat <<EOT >> ~/.bashrc
-source ~/.bash/completions/tridentctl-completion.bash
-EOT
+echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
 
 frames="/ | \\ -"
 while [ $(kubectl get -n trident-protect pod | grep Running | grep -e '2/2' | wc -l) -ne 1 ]; do
