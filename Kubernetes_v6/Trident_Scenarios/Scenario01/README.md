@@ -23,6 +23,13 @@ tar -xf trident-installer-25.06.1.tar.gz
 rm -f /usr/bin/tridentctl
 ln -sf /root/25.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
 ```
+Let's also enable Trident autocompletion:  
+```bash
+mkdir -p ~/.bash/completions
+tridentctl completion bash > ~/.bash/completions/tridentctl-completion.bash
+source ~/.bash/completions/tridentctl-completion.bash
+echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
+```
 
 :mag:  
 *A* **resource** *is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; for example, the built-in pods resource contains a collection of Pod objects.*  

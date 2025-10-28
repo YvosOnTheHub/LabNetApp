@@ -41,9 +41,9 @@ chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
 mkdir -p ~/.bash/completions
-tridentctl-protect completion bash > ~/.bash/completions/tridentctl-completion.bash
-source ~/.bash/completions/tridentctl-completion.bash
-echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
+tridentctl-protect completion bash > ~/.bash/completions/tridentctl-protect-completion.bash
+source ~/.bash/completions/tridentctl-protect-completion.bash
+echo 'source ~/.bash/completions/tridentctl-protect-completion.bash' >> ~/.bashrc
 
 frames="/ | \\ -"
 while [ $(kubectl get -n trident-protect pod | grep Running | grep -e '2/2' | wc -l) -ne 1 ]; do

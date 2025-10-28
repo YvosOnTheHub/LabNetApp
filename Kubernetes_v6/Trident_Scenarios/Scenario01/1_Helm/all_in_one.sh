@@ -85,4 +85,17 @@ while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e 
 done
 
 echo
+echo "#######################################################################################################"
+echo "Enable Trident Autocompletion"
+echo "#######################################################################################################"
+mkdir -p ~/.bash/completions
+tridentctl completion bash > ~/.bash/completions/tridentctl-completion.bash
+source ~/.bash/completions/tridentctl-completion.bash
+echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
+
+echo
+echo "#######################################################################################################"
+echo "Check Trident"
+echo "#######################################################################################################"
+echo
 tridentctl -n trident version
