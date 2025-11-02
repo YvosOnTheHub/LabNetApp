@@ -241,7 +241,6 @@ echo "# UPDATE BASHRC"
 echo "#######################################################################################################"
 echo
 
-cp ~/.bashrc ~/.bashrc.bak
 cat <<EOT >> ~/.bashrc
 alias kc='kubectl create'
 alias kg='kubectl get'

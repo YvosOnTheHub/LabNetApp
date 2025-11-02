@@ -144,7 +144,7 @@ $ tridentctl-protect get appvaultcontent ontap-vault2 --show-paths -n trident-pr
 ```
 We now have all the required information to perform the app restore:
 ```bash
-$ BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault2 --app bbox --show-resources backup --show-paths -n trident-protect --context kub2-admin@kub2 | grep bboxbkp1  | awk -F '|' '{print $8}')
+$ BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault2 --app bbox --show-resources backup --show-paths -n trident-protect --context kub2-admin@kub2 | grep bboxbkp1  | awk -F '|' '{print $11}') && echo $BKPPATH
 
 $ tridentctl-protect create br bboxbr1 --namespace-mapping tpsc10busybox:tpsc10busyboxbr --appvault ontap-vault2 -n tpsc10busyboxbr \
   --storageclass-mapping storage-class-nfs:sc-nfs \

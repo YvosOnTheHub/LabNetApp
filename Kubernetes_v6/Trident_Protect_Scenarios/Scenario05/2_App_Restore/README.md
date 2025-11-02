@@ -210,7 +210,7 @@ $ tridentctl-protect get appvaultcontent ontap-vault --app bbox --show-resources
 
 You can use the following command to retrieve the path of the manual backup:  
 ```bash
-BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $10}')
+BKPPATH=$(tridentctl-protect get appvaultcontent ontap-vault --app bbox --show-resources backup --show-paths -n trident-protect --context bbox-context-kub2 | grep bboxbkp1  | awk -F '|' '{print $11}')
 ```
 Let's proceed with the restore operation and check the result after a few seconds.  
 Notice that you also add a mapping for storage classes.  

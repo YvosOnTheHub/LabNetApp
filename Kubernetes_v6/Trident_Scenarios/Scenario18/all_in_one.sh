@@ -74,7 +74,6 @@ if [[  $(more ~/.bashrc | grep kedit | wc -l) -eq 0 ]];then
   echo "#######################################################################################################"
   echo
 
-  cp ~/.bashrc ~/.bashrc.bak
   cat <<EOT >> ~/.bashrc
 source <(kubectl completion bash)
 complete -F __start_kubectl k
