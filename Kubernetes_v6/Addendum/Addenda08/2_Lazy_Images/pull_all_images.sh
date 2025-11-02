@@ -14,19 +14,19 @@ echo "# PULLING IMAGES FROM DOCKER HUB"
 echo "################################"
 
 echo "####################################"
-echo "# netapp/trident:25.06.1"
+echo "# netapp/trident:25.10.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident:25.06.1
+ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident:25.10.0
 
 echo "####################################"
-echo "# netapp/trident-operator:25.06.1"
+echo "# netapp/trident-operator:25.10.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident-operator:25.06.1
+ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident-operator:25.10.0
 
 echo "####################################"
-echo "# netapp/trident-autosupport:25.06.0"
+echo "# netapp/trident-autosupport:25.10.0"
 echo "####################################"
-ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident-autosupport:25.06.0
+ssh -o "StrictHostKeyChecking no" root@$1 podman pull docker.io/netapp/trident-autosupport:25.10.0
 
 echo "####################################"
 echo "# ghost:2.6-alpine"

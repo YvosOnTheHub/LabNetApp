@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 25.06.1
+# SCENARIO 1: Trident upgrade to 25.10.0
 #########################################################################################
 
 **GOAL:**  
@@ -16,12 +16,11 @@ Let's first download the version you would like to use.
 Technically, if you decide to install Trident with Helm, you would not even need to perform this step, however throughout this lab, we will use the binary _tridentctl_ a few times, so we still to download it.  
 ```bash
 cd
-mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 25.06.1 && cd 25.06.1
-wget https://github.com/NetApp/trident/releases/download/v25.06.1/trident-installer-25.06.1.tar.gz
-tar -xf trident-installer-25.06.1.tar.gz
+mkdir 25.10.0 && cd 25.10.0
+wget https://github.com/NetApp/trident/releases/download/v25.10.0/trident-installer-25.10.0.tar.gz
+tar -xf trident-installer-25.10.0.tar.gz
 rm -f /usr/bin/tridentctl
-ln -sf /root/25.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+ln -sf /root/25.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 ```
 Let's also enable Trident autocompletion:  
 ```bash

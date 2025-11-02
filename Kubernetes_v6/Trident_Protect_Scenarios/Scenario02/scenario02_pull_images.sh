@@ -30,74 +30,74 @@ if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
 fi
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/controller 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/controller 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Trident Protect Controller Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/controller:25.06.0 docker://registry.demo.netapp.com/controller:25.06.0
+  skopeo copy docker://docker.io/netapp/controller:25.10.0 docker://registry.demo.netapp.com/controller:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/exechook 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/exechook 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Trident Protect Exechook Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/exechook:25.06.0 docker://registry.demo.netapp.com/exechook:25.06.0
+  skopeo copy docker://docker.io/netapp/exechook:25.10.0 docker://registry.demo.netapp.com/exechook:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcebackup 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcebackup 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Trident Protect ResourceBackup Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/resourcebackup:25.06.0 docker://registry.demo.netapp.com/resourcebackup:25.06.0
+  skopeo copy docker://docker.io/netapp/resourcebackup:25.10.0 docker://registry.demo.netapp.com/resourcebackup:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcerestore 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcerestore 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Trident Protect ResourceRestore Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/resourcerestore:25.06.0 docker://registry.demo.netapp.com/resourcerestore:25.06.0
+  skopeo copy docker://docker.io/netapp/resourcerestore:25.10.0 docker://registry.demo.netapp.com/resourcerestore:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcedelete 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/resourcedelete 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Trident Protect ResourceDelete Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/resourcedelete:25.06.0 docker://registry.demo.netapp.com/resourcedelete:25.06.0
+  skopeo copy docker://docker.io/netapp/resourcedelete:25.10.0 docker://registry.demo.netapp.com/resourcedelete:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/restic 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/restic 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Restic Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/restic:25.06.0 docker://registry.demo.netapp.com/restic:25.06.0
+  skopeo copy docker://docker.io/netapp/restic:25.10.0 docker://registry.demo.netapp.com/restic:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/kopia 2> /dev/null | grep 25.06.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/kopia 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Kopia Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/netapp/kopia:25.06.0 docker://registry.demo.netapp.com/kopia:25.06.0
+  skopeo copy docker://docker.io/netapp/kopia:25.10.0 docker://registry.demo.netapp.com/kopia:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/kubectl 2> /dev/null | grep 1.30.2 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/kopiablockrestore 2> /dev/null | grep 25.10.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy Kubectl Into Private Repo"
+  echo "# Skopeo Copy Kopia Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/bitnami/kubectl:1.30.2 docker://registry.demo.netapp.com/bitnami/kubectl:1.30.2
+  skopeo copy docker://docker.io/netapp/kopiablockrestore:25.10.0 docker://registry.demo.netapp.com/kopiablockrestore:25.10.0
 fi
 
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/kube-rbac-proxy 2> /dev/null | grep 0.16.0 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/trident-protect-utils 2> /dev/null | grep 1.0.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy Kube RBAC Proxy Into Private Repo"
+  echo "# Skopeo Copy Trident Protect tools Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/kubebuilder/kube-rbac-proxy:v0.16.0 docker://registry.demo.netapp.com/kubebuilder/kube-rbac-proxy:v0.16.0
+  skopeo copy docker://docker.io/netapp/trident-protect-utils:v1.0.0 docker://registry.demo.netapp.com/trident-protect-utils:v1.0.0
 fi

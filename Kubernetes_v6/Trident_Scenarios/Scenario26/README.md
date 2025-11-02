@@ -29,7 +29,7 @@ Using REST API may even provide better results! However, this will need a more r
 
 ## A. Preparation
 
-Make sure you run **Trident 25.06**. , otherwise comparing results will make less sense.  
+Make sure you run **Trident 25.06** minimum , otherwise comparing results will make less sense.  
 
 This feature is currently only available for **iSCSI** and **FCP** protocols with the **ONTAP-SAN** driver. Trident will not allow its activation if it detects existing backends with other protocols or drivers.  
 Let's delete existing backends, except for the iSCSI ONTAP-SAN one.  

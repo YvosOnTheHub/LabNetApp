@@ -36,15 +36,15 @@ fi
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 25.06"
+echo "Download Trident 25.10"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 25.06.1 && cd 25.06.1
-wget https://github.com/NetApp/trident/releases/download/v25.06.1/trident-installer-25.06.1.tar.gz
-tar -xf trident-installer-25.06.1.tar.gz
-ln -sf /root/25.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 25.10.0 && cd 25.10.0
+wget https://github.com/NetApp/trident/releases/download/v25.10.0/trident-installer-25.10.0.tar.gz
+tar -xf trident-installer-25.10.0.tar.gz
+ln -sf /root/25.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -54,14 +54,14 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Upgrade the Trident Operator (25.06.1) with Helm"
+echo "Upgrade the Trident Operator (25.10.0) with Helm"
 echo "#######################################################################################################"
 
 helm repo update
-helm upgrade trident netapp-trident/trident-operator --version 100.2506.1 -n trident \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.06.1 \
---set tridentImage=registry.demo.netapp.com/trident:25.06.1 \
+helm upgrade trident netapp-trident/trident-operator --version 100.2510.0 -n trident \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.10.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:25.10.0 \
+--set tridentImage=registry.demo.netapp.com/trident:25.10.0 \
 --set tridentSilenceAutosupport=true \
 --set windows=true \
 --set imagePullSecrets[0]=regcred
@@ -72,7 +72,7 @@ echo "Check (it takes about 3 to 4 minutes for the upgrade to proceed)"
 echo "#######################################################################################################"
 
 frames="/ | \\ -"
-while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '25.06.1' ];do
+while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '25.10.0' ];do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
