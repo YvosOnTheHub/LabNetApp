@@ -32,7 +32,7 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2506.0 \
+  --version 100.2510.0 \
   --namespace trident-protect -f protectValues.yaml
   
 echo

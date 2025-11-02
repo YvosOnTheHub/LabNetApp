@@ -24,7 +24,7 @@ helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2506.0 \
+  --version 100.2510.0 \
   --namespace trident-protect -f trident_protect_helm_values.yaml
 ```
 After a few seconds (really), you will see a pod in the Trident Protect namespace:  

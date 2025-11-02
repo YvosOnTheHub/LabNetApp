@@ -120,7 +120,7 @@ In this second test, here are the results I got:
 
 This preview feature can be enabled with a specific flag in the Helm chart:  
 ```bash
-helm upgrade trident netapp-trident/trident-operator --version 100.2506.1 -n trident --reuse-values --set enableConcurrency=true
+helm upgrade trident netapp-trident/trident-operator --version 100.2510.0 -n trident --reuse-values --set enableConcurrency=true
 ```
 This will trigger a reconfiguration of the Trident controller, which leads to a pod restart.  
 To verify that this parameter was applied, you can run the following:  
@@ -186,7 +186,7 @@ done)
 
 This can simply be done following the same method used earlier:  
 ```bash
-helm upgrade trident netapp-trident/trident-operator --version 100.2506.1 -n trident --reuse-values --set enableConcurrency=false
+helm upgrade trident netapp-trident/trident-operator --version 100.2510.0 -n trident --reuse-values --set enableConcurrency=false
 ```
 To verify that this change was applied, you can run the following:  
 ```bash
