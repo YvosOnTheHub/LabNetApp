@@ -147,15 +147,15 @@ if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != 
 # Install Trident on KS8#2
 # Install a VSCass on K8S#1
 # Git Clone Verda on RHEL3
-sh ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario01/all_in_one.sh
+bash ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario01/all_in_one.sh
 
 # Trident Protect on K8S#1
 cd ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario02
-sh all_in_one_rhel3.sh
+bash all_in_one_rhel3.sh
 
 # Trident Protect on K8S#2
 scp -p ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario02/all_in_one_rhel5.sh rhel5:all_in_one_tp_setup.sh
-ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh all_in_one_tp_setup.sh"
+ssh -o "StrictHostKeyChecking no" root@rhel5 -t "bash all_in_one_tp_setup.sh"
 
 echo
 echo "############################################"
