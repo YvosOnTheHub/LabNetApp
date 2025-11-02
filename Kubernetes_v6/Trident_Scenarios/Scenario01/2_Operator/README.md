@@ -91,10 +91,10 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2025-03-14T09:11:22Z
+  Creation Timestamp:  2025-11-02T15:43:58Z
   Generation:          1
-  Resource Version:    180639
-  UID:                 9f4145d6-6faa-449d-b772-7567892043f1
+  Resource Version:    181674
+  UID:                 d23f764f-9595-4c98-aaa6-915f895458aa
 Spec:
   Autosupport Image:  registry.demo.netapp.com/trident-autosupport:25.10.0
   Debug:              true
@@ -105,7 +105,7 @@ Spec:
   Trident Image:        registry.demo.netapp.com/trident:25.10.0
   Windows:              true
 Status:
-  Acp Version:  v25.06.1
+  Acp Version:  v25.10.0
   Current Installation Params:
     IPv6:                       false
     Acp Image:
@@ -117,15 +117,18 @@ Status:
     Debug:                      true
     Disable Audit Log:          true
     Enable ACP:                 false
+    Enable Concurrency:         false
     Enable Force Detach:        false
+    Host Network:               false
     Http Request Timeout:       90s
+    Https Metrics:              false
     Image Pull Policy:          IfNotPresent
     Image Pull Secrets:
       regcred
     Image Registry:
     Iscsi Self Healing Interval:   5m0s
     Iscsi Self Healing Wait Time:  7m0s
-    k8sTimeout:                    30
+    k8sTimeout:                    180
     Kubelet Dir:                   /var/lib/kubelet
     Log Format:                    text
     Log Layers:
@@ -133,17 +136,66 @@ Status:
     Log Workflows:
     Node Prep:                     <nil>
     Probe Port:                    17546
-    Silence Autosupport:           true
-    Trident Image:                 registry.demo.netapp.com/trident:25.10.0
-  Message:                         Trident installed
-  Namespace:                       trident
-  Status:                          Installed
-  Version:                         v25.10.0
+    Resources:
+      Controller:
+        Csi - Attacher:
+          Requests:
+            Cpu:     2m
+            Memory:  20Mi
+        Csi - Provisioner:
+          Requests:
+            Cpu:     2m
+            Memory:  20Mi
+        Csi - Resizer:
+          Requests:
+            Cpu:     3m
+            Memory:  20Mi
+        Csi - Snapshotter:
+          Requests:
+            Cpu:     2m
+            Memory:  20Mi
+        Trident - Autosupport:
+          Requests:
+            Cpu:     1m
+            Memory:  30Mi
+        Trident - Main:
+          Requests:
+            Cpu:     10m
+            Memory:  80Mi
+      Node:
+        Linux:
+          Node - Driver - Registrar:
+            Requests:
+              Cpu:     1m
+              Memory:  10Mi
+          Trident - Main:
+            Requests:
+              Cpu:     10m
+              Memory:  60Mi
+        Windows:
+          Liveness - Probe:
+            Requests:
+              Cpu:     2m
+              Memory:  40Mi
+          Node - Driver - Registrar:
+            Requests:
+              Cpu:     6m
+              Memory:  40Mi
+          Trident - Main:
+            Requests:
+              Cpu:        10m
+              Memory:     60Mi
+    Silence Autosupport:  true
+    Trident Image:        registry.demo.netapp.com/trident:25.10.0
+  Message:                Trident installed
+  Namespace:              trident
+  Status:                 Installed
+  Version:                v25.10.0
 Events:
-  Type    Reason      Age   From                        Message
-  ----    ------      ----  ----                        -------
-  Normal  Installing  73s   trident-operator.netapp.io  Installing Trident
-  Normal  Installed   42s   trident-operator.netapp.io  Trident installed
+  Type    Reason      Age               From                        Message
+  ----    ------      ----              ----                        -------
+  Normal  Installing  56s               trident-operator.netapp.io  Installing Trident
+  Normal  Installed   7s (x2 over 33s)  trident-operator.netapp.io  Trident installed
 
 $ tridentctl -n trident version
 +----------------+----------------+

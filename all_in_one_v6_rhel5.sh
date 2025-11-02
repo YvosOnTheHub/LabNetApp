@@ -222,6 +222,11 @@ while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e 
     done
 done
 
+mkdir -p ~/.bash/completions
+tridentctl completion bash > ~/.bash/completions/tridentctl-completion.bash
+source ~/.bash/completions/tridentctl-completion.bash
+echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
+
 echo
 echo "#######################################################################################################"
 echo "# Secondary Kubernetes cluster ready to be used"
