@@ -5,7 +5,7 @@
 #
 # FUNCTION THAT WILL PERFORM THE FOLLOWING TASKS:
 # 1. UPGRADE HELM
-# 2. UPGRADE TRIDENT OPERATOR TO 25.06.1 WITH HELM
+# 2. UPGRADE TRIDENT OPERATOR TO 25.10.0 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
 # 5. MONITORING CUSTOMIZATION & HARVEST
@@ -29,7 +29,7 @@ rm -f helm-v3.15.3-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.06.1 WITH HELM"
+echo "# 2. UPGRADE TRIDENT OPERATOR TO 25.10.0 WITH HELM"
 echo "#######################################################################################################"
 echo
 

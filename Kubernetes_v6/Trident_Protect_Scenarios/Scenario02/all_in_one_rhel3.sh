@@ -40,7 +40,7 @@ echo "############################################"
 echo "### Protectctl install"
 echo "############################################"
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/v25.10.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
@@ -50,7 +50,7 @@ source ~/.bash/completions/tridentctl-protect-completion.bash
 echo 'source ~/.bash/completions/tridentctl-protect-completion.bash' >> ~/.bashrc
 
 frames="/ | \\ -"
-while [ $(kubectl get -n trident-protect pod | grep Running | grep -e '2/2' | wc -l) -ne 1 ]; do
+while [ $(kubectl get -n trident-protect pod | grep Running | grep -e '1/1' | wc -l) -ne 1 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident Protect to be ready $frame" 
     done
