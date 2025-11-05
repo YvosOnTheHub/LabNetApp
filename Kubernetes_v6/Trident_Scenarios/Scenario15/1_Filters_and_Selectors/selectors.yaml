@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sc15-selector
+  namespace: trident
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Netapp1!
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: sc15-sel-tbc1
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  backendName: Sc15SelTBC1
+  nasType: nfs
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  labels:
+    scenario: sc15
+  credentials:
+    name: sc15-selector
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: sc15-sel-tbc2
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  backendName: Sc15SelTBC2
+  nasType: nfs
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  credentials:
+    name: sc15-selector
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc15-selector
+provisioner: csi.trident.netapp.io
+parameters:
+  selector: "scenario=sc15"
+allowVolumeExpansion: true

@@ -133,7 +133,36 @@ $ kubectl get pv $( kubectl get pvc blog-content-import-nm -n ghost -o=jsonpath=
 to_import_nm
 ```
 
-## F. Import the volume with kubectl
+## F. Importing a volume without renaming it  
+
+If you wish to keep the original name of the volume in this storage platform, you could pass the flas _--no-rename_.  
+This parameter was introduced in Trident 25.10.  
+
+To try this, let's create yet another clone:  
+```bash
+vol clone create -flexclone to_import_norename -vserver nassvm -parent-volume trident_pvc_6777dffb_b21d_42b5_be71_d8675c9e7db9
+vol clone split start -flexclone to_import_rename -vserver nassvm
+```
+Now, let's use Trident to import that volume:  
+```bash
+$ tridentctl -n trident import volume BackendForNFS to_import_norename -f Ghost/1_pvc_nr.yaml --no-rename
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+|                   NAME                   |  SIZE   |   STORAGE CLASS   | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+| pvc-a4b0aa8f-6712-4aff-9201-28e1a2e9d3f5 | 5.0 GiB | storage-class-nfs | file     | 11d28fb4-6cf5-4c59-931d-94b8d8a5e061 | online | true    |
++------------------------------------------+---------+-------------------+----------+--------------------------------------+--------+---------+
+```
+
+To verify that the name was not changed, you would look either in the PV or the corresponding TVOL:  
+```bash
+$ kubectl get tvol -n trident pvc-a4b0aa8f-6712-4aff-9201-28e1a2e9d3f5 -o yaml | grep importNoRename -A 2
+  importNoRename: true
+  importOriginalName: to_import_norename
+  internalName: to_import_norename
+```
+Connecting to the ONTAP platform, you would also see that the name has not been modified.
+
+## G. Import the volume with kubectl
 
 Until now, you have tested volume import with _tridentctl_, let's how to use _kubectl_ to perform this action.  
 
@@ -185,8 +214,29 @@ $ kubectl describe pvc blog-content-import-kubectl -n ghost | grep importOrigina
                trident.netapp.io/importOriginalName: to_import_kubectl
 ```
 
+If you wanted to keep the original name, you would another annotation: _importNoRename: "true"_.  
+The yaml manifest would then look like this:  
+```yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: blog-content-import-kubectl
+  namespace: ghost
+  annotations:
+    trident.netapp.io/importBackendUUID: "11d28fb4-6cf5-4c59-931d-94b8d8a5e061"
+    trident.netapp.io/importNoRename: "true"
+    trident.netapp.io/importOriginalName: "to_import_kubectl"
+    trident.netapp.io/notManaged: "false"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: storage-class-nfs
+```
 
-## G. Cleanup
+## H. Cleanup
 
 Only proceed with the cleanup if you are not planning on testing the snapshot import feature, which you can find in the second chapter of this scenario.
 

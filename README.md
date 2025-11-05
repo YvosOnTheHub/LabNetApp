@@ -41,7 +41,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [12.](Kubernetes_v6/Trident_Scenarios/Scenario12) Dynamic export policy management  
 [13.](Kubernetes_v6/Trident_Scenarios/Scenario13) Snapshots here & snapshots there, snapshots everywhere  
 [14.](Kubernetes_v6/Trident_Scenarios/Scenario14) About security  
-[15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Caring about location or about CSI Topology  
+[15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Dude, where is my PVC?  
 [16.](Kubernetes_v6/Trident_Scenarios/Scenario16) Performance control  
 [17.](Kubernetes_v6/Trident_Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
 [18.](Kubernetes_v6/Trident_Scenarios/Scenario18) Kubernetes, Trident & GitOps  
