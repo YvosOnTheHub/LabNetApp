@@ -28,4 +28,4 @@ Managing 10 datastores (with 100 disks each) is very different from managing 100
 
 And now, let the fun start:  
 [1.](./1_VMCreation) Creating a Virtual Machine  
-[2.](./2_SecondaryDisk/) Secondary disks management
+[2.](./2_SecondaryDisks/) Secondary disks management
