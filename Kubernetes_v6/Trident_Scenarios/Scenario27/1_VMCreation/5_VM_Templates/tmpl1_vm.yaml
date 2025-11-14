@@ -1,0 +1,44 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: alpine-tmpl1
+  namespace: vm-templates
+  labels:
+    kubevirt.io/template: "true"
+    kubevirt.io/os: "linux"
+    template: alpine-tmpl1
+spec:
+  runStrategy: Always
+  template:
+    spec:
+      domain:
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 128Mi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: alpine-tmpl1
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              runcmd:
+                - echo "alpine:alpine" | chpasswd
+                - echo 'This is the first template' > /etc/motd

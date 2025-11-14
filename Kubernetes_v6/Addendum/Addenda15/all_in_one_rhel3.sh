@@ -55,7 +55,7 @@ while [ $(kubectl get -n cdi po | grep -e '1/1' | wc -l) -ne 1 ]; do
         sleep 0.5; printf "\rWaiting for the CDI Operator to be ready $frame" 
     done
 done
-
+echo
 kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/v1.63.1/cdi-cr.yaml
 echo
 while [ $(kubectl get -n cdi po | grep -e '1/1' | wc -l) -ne 4 ]; do
@@ -94,15 +94,18 @@ echo
 echo "#######################################################################################################"
 echo "Install Kubevirt Dashboard"
 echo "#######################################################################################################"
-kubectl apply -f https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml
+wget https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml -O kubevirt-manager.yaml
+sed -i '/^[[:space:]]*image:/ s/$/-nginx-1-29-2/' kubevirt-manager.yaml
+sed -i '/^[[:space:]]*containers:/i\      nodeSelector:\n          kubernetes.io\/os: linux' kubevirt-manager.yaml
+sed -i 's/ClusterIP/NodePort/' kubevirt-manager.yaml
+kubectl create -f kubevirt-manager.yaml
 
 echo
 while [ $(kubectl get -n kubevirt-manager po | grep -e '1/1' | wc -l) -ne 1 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for the KubeVirt Dashboard to be ready $frame" 
     done
-done
-kubectl -n kubevirt-manager patch svc kubevirt-manager --type='merge' -p '{"spec":{"type":"NodePort"}}'                
+done               
 
 KVMGR=$(kubectl -n kubevirt-manager get svc kubevirt-manager -o jsonpath="{.spec.ports[0].nodePort}")
 

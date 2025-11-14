@@ -1,0 +1,23 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: alpine-tmpl2
+  namespace: vm-templates
+  labels:
+    kubevirt.io/template: "true"
+    kubevirt.io/os: "linux"
+    template: alpine-tmpl2
+spec:
+  pvc:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 1Gi
+    volumeMode: Block
+    storageClassName: storage-class-iscsi
+  contentType: kubevirt
+  source:
+    registry:
+      url: "docker://registry.demo.netapp.com/kubevirt/alpine:qcow"
+      secretRef: endpoint-secret

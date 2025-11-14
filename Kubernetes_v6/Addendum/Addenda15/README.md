@@ -149,16 +149,17 @@ There you go, KubeVirt and CDI are both installed and ready to be used !
 You can manage the whole Virtual Machine lifecycle with cli.  
 However, a GUI could be quite useful to improve your KubeVirt experience!  
 
-Let's install the KubeVirt dashboard on the primary cluster:  
+Let's install the KubeVirt dashboard on the primary cluster.  
+You are going to retrieve the bundle file, modify some parameters (especially the service type) and launch the installation:  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml
+wget https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml -O kubevirt-manager.yaml
+sed -i '/^[[:space:]]*image:/ s/$/-nginx-1-29-2/' kubevirt-manager.yaml
+sed -i '/^[[:space:]]*containers:/i\      nodeSelector:\n          kubernetes.io\/os: linux' kubevirt-manager.yaml
+sed -i 's/ClusterIP/NodePort/' kubevirt-manager.yaml
+kubectl create -f kubevirt-manager.yaml
 ```
 After a couple of seconds, this dashboard will be available.  
-However, by default its service is configured with a ClusterIP. In order to easily access it, we will change the service type to NodePort:  
-```bash
-kubectl -n kubevirt-manager patch svc kubevirt-manager --type='merge' -p '{"spec":{"type":"NodePort"}}'
-```
-You can now easily retrieve this port:  
+You can now easily retrieve this port number you need to use to connect to the dashboard:  
 ```bash
 $ kubectl get -n kubevirt-manager svc
 NAME               TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE

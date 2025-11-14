@@ -1,0 +1,45 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: alpine-boot
+  namespace: disks
+spec:
+  pvc:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 1Gi
+    volumeMode: Block
+    storageClassName: storage-class-iscsi
+  contentType: kubevirt
+  source:
+    upload: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-data1
+  namespace: disks
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-data2
+  namespace: disks
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block

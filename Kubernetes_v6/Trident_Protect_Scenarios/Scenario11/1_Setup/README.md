@@ -56,7 +56,7 @@ Let's dive a bit into this upload process:
 
 <p align="center"><img src="../Images/CDI_upload_process.png" width="768"></p>
 
-About the volume access mode, if you set *ReadWriteOnce* for the PVC, you will find the following message in the VM:  
+About the volume access mode, if you set *ReadWriteOnce* for the PVC, you will find later on the following message in the VM:  
 ```yaml
     Message:               cannot migrate VMI: PVC alpine-boot-pvc is not shared, live migration requires that all PVCs must be shared (using ReadWriteMany access mode)
     Reason:                DisksNotLiveMigratable
@@ -76,7 +76,7 @@ $ virtctl image-upload pvc alpine-boot-pvc \
   --image-path=/root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 \
   --size=1Gi \
   --insecure \
-   --uploadproxy-url=https://192.168.0.212:443
+  --uploadproxy-url=https://192.168.0.212:443
 Using existing PVC alpine/alpine-boot-pvc
 Uploading data to https://192.168.0.212:443
 
@@ -91,7 +91,7 @@ NOTE: if the Proxy address was different for you, the command would need to refl
 
 If you are interested, you can read the logs of the upload pod (while present), to see the details of what CDI is doing:  
 ```bash
-$ kubectl logs cdi-upload-alpine-boot-pvc -f
+$ kubectl logs cdi-upload-alpine-boot-pvc -n alpine -f
 I1007 07:20:28.429190       1 uploadserver.go:81] Running server on 0.0.0.0:8443
 ...
 I1007 07:20:53.033234       1 file.go:230] copyWithSparseCheck to /scratch/tmpimage
@@ -119,7 +119,7 @@ persistentvolumeclaim/alpine-data-pvc   Bound    pvc-58ab7490-c473-4323-a5c1-fd7
 ```
 
 NB:  
-If you chosoe NFS instead of iSCSI, the ONTAP volume will be exported via NFS on the worker node, while KubeVirt would create in that share a file called _disk.img_, which would in turn be mounted as a device in the Virtual Machine.
+If you chose NFS instead of iSCSI, the ONTAP volume will be exported via NFS on the worker node, while KubeVirt would create in that share a file called _disk.img_, which would in turn be mounted as a device in the Virtual Machine.
 
 
 ## B. Virtual Machine bootstrap customization
