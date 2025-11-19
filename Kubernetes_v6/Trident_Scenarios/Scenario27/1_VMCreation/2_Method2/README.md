@@ -13,7 +13,7 @@ We already have an Alpine image, but only in a Qcow format.
 For this exercise, we need to embed it in a container. Let's create a quick Dockerfile:  
 ```bash
 $ cat <<EOF > ~/images/Dockerfile
-FROM quay.io/kubevirt/container-disk-v1alpha
+FROM alpine:3.19
 ADD nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 /disk/
 EOF
 ```

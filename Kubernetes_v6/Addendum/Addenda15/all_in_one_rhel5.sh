@@ -42,3 +42,26 @@ mkdir -p ~/kubevirt && cd ~/kubevirt
 wget https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/virtctl-v1.6.2-linux-amd64
 chmod +x virtctl-v1.6.2-linux-amd64
 mv virtctl-v1.6.2-linux-amd64 /usr/local/bin/virtctl
+
+echo
+echo "#######################################################################################################"
+echo "Install Kubevirt Dashboard"
+echo "#######################################################################################################"
+wget https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml -O kubevirt-manager.yaml
+sed -i '/^[[:space:]]*image:/ s/$/-nginx-1-29-2/' kubevirt-manager.yaml
+sed -i 's/ClusterIP/NodePort/' kubevirt-manager.yaml
+kubectl create -f kubevirt-manager.yaml
+
+echo
+while [ $(kubectl get -n kubevirt-manager po | grep -e '1/1' | wc -l) -ne 1 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the KubeVirt Dashboard to be ready $frame" 
+    done
+done               
+
+KVMGR=$(kubectl -n kubevirt-manager get svc kubevirt-manager -o jsonpath="{.spec.ports[0].nodePort}")
+
+echo
+echo "#######################################################################################################"
+echo "The KubeVirt dashboard NodePort is $KVMGR"
+echo "#######################################################################################################"

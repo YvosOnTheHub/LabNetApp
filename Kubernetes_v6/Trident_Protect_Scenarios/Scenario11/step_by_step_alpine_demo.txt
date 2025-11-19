@@ -90,6 +90,7 @@ runcmd:
   - echo '################################################' > /etc/motd
   - echo 'Welcome to Alpine on KubeVirt in the NetApp LoD!' >> /etc/motd
   - echo '################################################' >> /etc/motd
+  - apk add --no-cache lsblk parted
 "
 
 #########################################################################

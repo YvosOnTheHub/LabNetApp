@@ -54,7 +54,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [25.](Kubernetes_v6/Trident_Scenarios/Scenario25) Storage & Policy Management  
 [26.](Kubernetes_v6/Trident_Scenarios/Scenario26) Working in parallel  
 [27.](Kubernetes_v6/Trident_Scenarios/Scenario27) Demystifying Virtual Machines  
-<!--[28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover   -->
+[28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover   
 
 ## Trident Protect Scenarios (Application data protection)  
 

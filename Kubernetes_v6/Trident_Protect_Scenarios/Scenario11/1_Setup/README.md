@@ -129,7 +129,7 @@ Alpine images use the *tiny-cloud* process for that matter (more details here: h
 
 In this chapter, you are going to:  
 - create a SSH key pair that will be injected in the VM to allow passwordless connectivity. 
-- create a cloud config that will set the password for the *alpine* user, the login message and pass the SSH key  
+- create a cloud config that will set the password for the *alpine* user, the login message, pass the SSH key and install some additional packages  
 
 Let's start by creating a set of keys that will be used to connect to the Alpine VM.  
 The _public_ key will be added to a Kubernetes _secret_ in the Alpine namespace.  
@@ -161,6 +161,7 @@ runcmd:
   - echo '################################################' > /etc/motd
   - echo 'Welcome to Alpine on KubeVirt in the NetApp LoD!' >> /etc/motd
   - echo '################################################' >> /etc/motd
+  - apk add --no-cache lsblk parted
 "
 secret/alpine-cloudinit-userdata created
 ```
