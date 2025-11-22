@@ -1,5 +1,14 @@
 # LabNetApp
 
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+```diff
+- There is currently a problem in Lab on Demand with the repo mirror.  
+- Direct impact: DNF cannot be used to install packages. Automation script will fail until a workaround is implemented
+```
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
 This repo was created to help you better understand the benefits you can get from Trident, for both the end-user & the admin teams. 
 You will find several exercises, described in a step-by-step fashion, that you can use on the NetApp Lab-on-Demand  or on your own environment.  
 
