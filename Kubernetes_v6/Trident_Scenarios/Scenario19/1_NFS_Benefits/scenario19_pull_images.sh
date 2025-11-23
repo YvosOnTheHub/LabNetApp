@@ -1,12 +1,5 @@
 #!/bin/bash
 
-if [[ $(dnf list installed  | grep skopeo | wc -l) -eq 0 ]]; then
-  echo "##############################################################"
-  echo "# INSTALL SKOPEO"
-  echo "##############################################################"
-  dnf install -y skopeo
-fi
-
 TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
 RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
@@ -26,6 +19,67 @@ location = "dockreg.labs.lod.netapp.com"
 EOT
   fi
 fi
+
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/mariadb/tags/list' | jq -r '.tags[]? | select(.=="11.4.2-debian-12-r2")')" ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy MariaDB 11.4 Into Private Repo"
+  echo "##############################################################"
+  podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
+    docker://quay.io/yvosonthehub/bitnami/mariadb:11.4.2-debian-12-r2 docker://registry.demo.netapp.com/bitnami/mariadb:11.4.2-debian-12-r2 \
+    --src-tls-verify=false --dest-tls-verify=false 
+else
+  echo
+  echo "##############################################################"
+  echo "# MariaDB 11.4 already in the Private Repo - nothing to do"
+  echo "##############################################################"
+fi
+
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/wordpress/tags/list' | jq -r '.tags[]? | select(.=="6.6.1-debian-12-r1")')" ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy WordPress 6.6.1-debian-12-r1 Into Private Repo"
+  echo "##############################################################"
+  podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
+    docker://quay.io/yvosonthehub/bitnami/wordpress:6.6.1-debian-12-r1 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r1 \
+    --src-tls-verify=false --dest-tls-verify=false 
+else
+  echo
+  echo "##############################################################"
+  echo "# WordPress 6.6.1-debian-12-r1 already in the Private Repo - nothing to do"
+  echo "##############################################################"
+fi
+
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/wordpress/tags/list' | jq -r '.tags[]? | select(.=="6.6.1-debian-12-r3")')" ]]; then
+  echo
+  echo "##############################################################"
+  echo "# Skopeo Copy WordPress 6.6.1-debian-12-r3 Into Private Repo"
+  echo "##############################################################"
+  podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
+    docker://quay.io/yvosonthehub/bitnami/wordpress:6.6.1-debian-12-r3 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r3 \
+    --src-tls-verify=false --dest-tls-verify=false 
+else
+  echo
+  echo "##############################################################"
+  echo "# WordPress 6.6.1-debian-12-r3 already in the Private Repo - nothing to do"
+  echo "##############################################################"
+fi
+
+: <<'ARCHIVE_COMMENT'
+# test if Skopeo is installed
+if ! dnf -q list installed skopeo >/dev/null 2>&1; then
+  # test repo availability 
+  REPO_URL='http://repomirror-rtp.eng.netapp.com/rhel/9server-x86_64//rhel-9-for-x86_64-appstream-rpms/repodata/repomd.xml'
+
+  if curl -sSfI "$REPO_URL" >/dev/null 2>&1; then
+    echo "##############################################################"
+    echo "# INSTALL SKOPEO"
+    echo "##############################################################"
+    dnf install -y skopeo
+  fi
+fi
+
+
 
 skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
 
@@ -68,3 +122,4 @@ else
   echo "# WORDPRESS 6.6.1 (Debian 12-r3) already in the Private Repo - nothing to do"
   echo "################################################################################"
 fi
+ARCHIVE_COMMENT

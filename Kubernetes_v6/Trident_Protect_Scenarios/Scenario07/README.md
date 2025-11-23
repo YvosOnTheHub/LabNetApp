@@ -13,3 +13,9 @@ This can be achieved by setting labels on the groups of resources to protect.
 That method is also useful when you only want to protect the data (the persistent volume claim).  
 
 Selecting resources when creating a Trident Protect applicaiton is covered in the second part: [Selective Application](./2-SelectiveApp/).  
+
+Last, if you have not yet read the [Addenda08](../../Addendum/Addenda08/) about the Docker Hub management, it would be a good time to do so.  
+Also, if no action has been made with regards to the container images, you can find a shell script in this directory *scenario07_pull_images.sh* to pull images utilized in this scenario if needed andl push them to the local private registry:  
+```bash
+sh scenario07_pull_images.sh
+```

@@ -3,7 +3,16 @@ if [[ $(dnf list installed | grep ansible-core | wc -l) -eq 0 ]]; then
   echo "# Ansible install"
   echo "##############################################################"
   
-  dnf install -y python-pip
+  # test repo availability 
+  REPO_URL='http://repomirror-rtp.eng.netapp.com/rhel/9server-x86_64//rhel-9-for-x86_64-appstream-rpms/repodata/repomd.xml'
+
+  if curl -sSfI "$REPO_URL" >/dev/null 2>&1; then
+    dnf install -y python-pip
+  else
+    wget -O /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py
+    python3 /tmp/get-pip.py
+  fi
+
   pip install ansible-core==2.15.12 netapp-lib
   ansible-galaxy collection install netapp.ontap:==22.12.0 --ignore-certs
 fi
