@@ -5,11 +5,25 @@ if [[ $# -ne 2 ]];then
       exit 0
 fi
 
-if [[ $(dnf list installed | grep sshpass | wc -l) -eq 0 ]]; then
+if ! dnf -q list installed sshpass >/dev/null 2>&1; then
   echo "##############################################################"
   echo "# SSHPASS install"
   echo "##############################################################"  
-  dnf install -y sshpass
+
+  # test repo availability 
+  REPO_URL='http://repomirror-rtp.eng.netapp.com/rhel/9server-x86_64//rhel-9-for-x86_64-appstream-rpms/repodata/repomd.xml'
+
+  if curl -sSfI "$REPO_URL" >/dev/null 2>&1; then
+    dnf install -y sshpass
+  else
+    cd /tmp
+    curl -LO https://downloads.sourceforge.net/project/sshpass/sshpass/1.09/sshpass-1.09.tar.gz
+    tar xzf sshpass-1.09.tar.gz
+    cd sshpass-1.09
+    ./configure
+    make
+    make install
+  fi
 fi
 
 echo
