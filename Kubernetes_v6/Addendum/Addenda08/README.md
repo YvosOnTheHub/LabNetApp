@@ -10,13 +10,16 @@ In a nutshell:
 - **free tier Docker users** are limited to 200 pull requests per 6 hours
 - a **paid subscription** will give you access to much more
 
-The impact for Lab on Demand users is that they are potentially not going to be able to pull images, ie upgrade Trident or create an application.  
+The impact for Lab on Demand users is that they are potentially not going to be able to pull images, ie upgrade Trident (to a version under 25.10) or create an application.  
 This chapter will guide you through different steps to manage this situation...  
 
-First, you are going to create your own Docker Hub user directly on the following link [https://hub.docker.com/].  
-Obviously, you dont need to create a new user each time you use this lab on demand. This is done once & for all.  
+**Note that Trident 25.10 images are also now available on the Quay repository (https://quay.io/organization/netapp), which does not have the same requirements or limits.** Quay is a repository managed by RedHat.  
 
-In order to find out how many pull requests you have, you can find the information [here](1_Pull_Requests).  
+After reading this chapter, you will decide if you need to create your own Docker Hub user, which can be done directly on the following link [https://hub.docker.com/]. Obviously, you dont need to create a new user each time you use this lab on demand. This is done once & for all.  
+
+If you only use images that are stored on different repositories, this may not be necesary (for now).  
+
+In order to find out how many Docker Hub pull requests you have, you can find the information [here](1_Pull_Requests).  
 
 Also, you need to understand what triggers an image to be pulled from a repository.  
 (cf https://kubernetes.io/docs/concepts/containers/images/).  
@@ -44,4 +47,4 @@ Now, let's see what we can do to manage this situation:
 - [use a private repository](4_Private_repo)  
 - [PREFERRED: use the LoD cache registry](5_LoD_cache)
 
-Most of the scenarios are built with the private repository in mind. That will also reduce the number of images to download from the hub.
+Most of the scenarios are built with the private repository in mind. That will also reduce the number of images to download from Internet.  

@@ -5,7 +5,7 @@
 Organizations may not necessarily give direct access to public repositories, mainly for security reasons.  
 Instead, they may pull images on a specific host, audit them & potentially push them in a private repository.  
 
-The LabOnDemand has a private repository: registry.demo.netapp.com.  
+The LabOnDemand has a private repository: **registry.demo.netapp.com**.  
 
 Then, you may want to pull public images, populate the local repository & modify your applications YAML files to point to it!  
 Let's see how to do this.  

@@ -18,9 +18,10 @@ location = "docker.io"
 prefix = "docker.io"
 location = "dockreg.labs.lod.netapp.com"
 ```
-With that configuration, each time you try to pull an image on RHEL3 from _docker.io_, you will pass through the mirror.  
+With that configuration, each time you try to pull an image on RHEL3 from _docker.io_, you will pass through the mirror, hence not requiring your Docker Hub user and password.  
 
-You will find in this folder, a shell script (_push_trident_images_to_repo.sh_) that will do the following for you:  
+You will find in this folder, a shell script (*push_trident_images_to_repo.sh*) that will do the following for you:  
 - modify the registries.conf file on RHEL3  
-- pull the Trident 25.10 images  
-- push these images to the local registry (registry.demo.netapp.com)  
+- pull the Trident images from Quay instead of the Docker Hub and push them to the local repo.  
+
+**Note:** As Trident 25.10 images are now available on Quay.io, the configuration of that registry mirror is really only useful for other DockerHub images, or for older versions of Trident (which are not on Quay.io).
