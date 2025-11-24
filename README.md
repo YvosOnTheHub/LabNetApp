@@ -3,8 +3,9 @@
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
 ```diff
+WARNING:  
 - There is currently a problem in Lab on Demand with the repo mirror.  
-- Direct impact: DNF cannot be used to install packages. Automation script will fail until a workaround is implemented
+- Direct impact: DNF cannot be used to install packages. Most automation scripts have been modified to take this into account
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
