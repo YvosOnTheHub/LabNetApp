@@ -13,5 +13,5 @@ This scenario will guide you through both features
 [1.](1_NFS_Import) Import a NFS volume  
 2. Import a SMB volume (WORK IN PROGRESS)  
 [3.](3_Snapshot_Import) Import a snapshot  
-[4.](2_iSCSI_Import) Import a iSCSI volume  
+[4.](4_iSCSI_Import) Import a iSCSI volume  
 [5.](5_NVMe_Import) Import a NVMe volume  
