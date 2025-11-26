@@ -20,7 +20,7 @@ Mounting a storage resource creates a tight connectivity between a worker node a
 You also know that the access mode configured in a PVC defines how many pods can mount a volume.  
 But a side effect can also be observed in case of a node failure:  
 - RWO: Kubernetes will restart a new pod, but as the PV mount point is not deleted, the POD will never reach 'running' status. 
-- RWX: by definition, multiple pods can mount a volume. Even if an existing connectivity is not cleaned up, a new pod will ne able to mount a PVC
+- RWX: by definition, multiple pods can mount a volume. Even if an existing connectivity is not cleaned up, a new pod will be able to mount a PVC
 
 Let's see that in action.
 We will create 3 applications in a given namespace _scenario28_:  
@@ -161,7 +161,7 @@ Time to clean up!
 
 ## B. Automated workload failover: requirements
 
-Trident introduced the support for automated workloads failover (_AWF_) with force volume detach in 25.10. This is compatible with all Trident drivers except for ONTAP-NAS-FLEXGROUP.  
+Trident introduced the support for automated workloads failover (_AWF_) with force volume detach in 25.10. This is compatible with all Trident drivers except for ONTAP-NAS-FLEXGROUP. It really aims at offering business continuity for RWO Stateful applications, in the context of a node failure.   
 
 AWF relies on the Node Health Check (_NHC_) operator to work. When a node fails, the NHC will trigger a new Trident CR called **Trident Node Remediation** (_TNR_) which will "force detach" all existing storage connections on the failed node.  
 
@@ -320,33 +320,8 @@ kubectl exec -n scenario28 $(kubectl get pod -n scenario28 -l app=bbox-nfs-rwo -
 kubectl exec -n scenario28 $(kubectl get pod -n scenario28 -l app=bbox-nfs-rwx -o name) -- ls /data/
 ```
 
-
-
-
-
-
-<!--
-
- grep -nE 'GracefulNodeShutdown|shutdownGracePeriod' /var/lib/kubelet/config.yaml || true
-40:shutdownGracePeriod: 0s
-41:shutdownGracePeriodCriticalPods: 0s
-
-If shutdownGracePeriod* are set to "0s" (or absent and feature disabled) the kubelet will not perform graceful node shutdown.
-
-Note that by default, both configuration options described below, shutdownGracePeriod and shutdownGracePeriodCriticalPods, are set to zero, thus not activating the graceful node shutdown functionality. To activate the feature, both options should be configured appropriately and set to non-zero values.
-
-Reasoning: shutdownGracePeriod must be long enough to let your pods stop cleanly. If your pods use terminationGracePeriodSeconds=120s, set shutdownGracePeriod to >= 2m (e.g. 3m–5m) to give a buffer.
-
-
-
-The graceful node shutdown feature is configured with two KubeletConfiguration options:
-
-shutdownGracePeriod:
-
-Specifies the total duration that the node should delay the shutdown by. This is the total grace period for pod termination for both regular and critical pods.
-
-shutdownGracePeriodCriticalPods:
-
-Specifies the duration used to terminate critical pods during a node shutdown. This value should be less than shutdownGracePeriod.
-
--->
+Let's tidy up before moving on. Remove the namespace, as well as the NHC CR:  
+```bash
+kubectl delete ns scenrio28
+kubectl delete nodehealthcheck nhc-trident -n trident
+```
