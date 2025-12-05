@@ -12,9 +12,10 @@ The file _harvest.yml_ in this repo can be used to configure Harvest to work on 
 
 Let's start by downloading Harvest and installing it (on _rhel3_):
 ```bash
-$ wget -q https://github.com/NetApp/harvest/releases/download/v24.05.2/harvest-24.05.2-1_linux_amd64.tar.gz -O ~/harvest-24.05.2-1_linux_amd64.tar.gz
+$ VERSION=25.11.0
+$ wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1_linux_amd64.tar.gz -O ~/harvest-${VERSION}.tar.gz
 $ mkdir -p ~/harvest
-$ tar -xf ~/harvest-24.05.2-1_linux_amd64.tar.gz -C ~/harvest --strip-components=1
+$ tar -xf ~/harvest-${VERSION}.tar.gz -C ~/harvest --strip-components=1
 $ mv ~/harvest/harvest.yml ~/harvest/harvest.bak
 $ cp harvest.yml ~/harvest/
 $ cd ~/harvest

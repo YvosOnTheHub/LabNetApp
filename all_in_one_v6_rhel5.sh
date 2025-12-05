@@ -367,7 +367,7 @@ while [ $(kubectl get -n trident-protect pod | grep Running | grep -e '2/2' | wc
 done
 echo
 
-tridentctl protect create appvault OntapS3 ontap-s3-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
+tridentctl protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect
 
 cp ~/.bashrc ~/.bashrc.bak
 cat <<EOT >> ~/.bashrc

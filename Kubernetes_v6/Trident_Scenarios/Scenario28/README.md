@@ -194,11 +194,10 @@ subscription.operators.coreos.com/my-node-healthcheck-operator created
 ```
 After a few seconds, you will get a few new pods, alongside other objects:  
 ```bash
-$ kubectl get -n operators pod
+$ kubectl get -n operators pod -l app.kubernetes.io/name=node-healthcheck-operator
 NAME                                                        READY   STATUS    RESTARTS        AGE
 node-healthcheck-controller-manager-597fb55f9f-6bdq5        2/2     Running   0               3m49s
 node-healthcheck-controller-manager-597fb55f9f-82t9l        2/2     Running   0               3m49s
-self-node-remediation-controller-manager-55576b44c8-dtcpp   2/2     Running   1 (3m29s ago)   3m49s
 ```
 We can now configure the NHC to work with Trident, through a CR:  
 ```bash

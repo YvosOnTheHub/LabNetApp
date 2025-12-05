@@ -120,6 +120,25 @@ mv /tmp/oras /usr/local/bin/oras
 chmod +x /usr/local/bin/oras
 rm -rf /tmp/oras
 
+
+
+if [[ -z "$(kubectl get volumesnapshotclass  2>/dev/null | grep -i 'trident')" ]]; then
+echo "############################################"
+echo "### Volume Snapshot Class Creation"
+echo "############################################"
+cat << EOF | kubectl apply -f -
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-snap-class
+  annotations:
+    snapshot.storage.kubernetes.io/is-default-class: "true"
+driver: csi.trident.netapp.io
+deletionPolicy: Delete
+EOF
+
+fi
+
 echo
 echo "#######################################################################################################"
 echo "The CDI Proxy IP is $CDILBDIP"
