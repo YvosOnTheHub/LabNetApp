@@ -22,8 +22,8 @@ spec:
   credentials:
     name: secret-topo
   supportedTopologies:
-    - topology.kubernetes.io/region: east
-    - topology.kubernetes.io/zone: east1
+    - topology.kubernetes.io/region: dc
+      topology.kubernetes.io/zone: east
 ---
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
@@ -39,5 +39,5 @@ spec:
   credentials:
     name: secret-topo
   supportedTopologies:
-    - topology.kubernetes.io/region: west
-    - topology.kubernetes.io/zone: west1
+    - topology.kubernetes.io/region: dc
+      topology.kubernetes.io/zone: west

@@ -19,17 +19,17 @@ echo "##########################################################################
 echo "Add Region & Zone labels to Kubernetes nodes"
 echo "#######################################################################################################"
 
-kubectl label node rhel1 "topology.kubernetes.io/region=west" --overwrite
-kubectl label node rhel2 "topology.kubernetes.io/region=west" --overwrite
-kubectl label node rhel3 "topology.kubernetes.io/region=east" --overwrite
+kubectl label node rhel1 "topology.kubernetes.io/region=dc" --overwrite
+kubectl label node rhel2 "topology.kubernetes.io/region=dc" --overwrite
+kubectl label node rhel3 "topology.kubernetes.io/region=dc" --overwrite
 
-kubectl label node rhel1 "topology.kubernetes.io/zone=west1" --overwrite
-kubectl label node rhel2 "topology.kubernetes.io/zone=west1" --overwrite
-kubectl label node rhel3 "topology.kubernetes.io/zone=east1" --overwrite
+kubectl label node rhel1 "topology.kubernetes.io/zone=west" --overwrite
+kubectl label node rhel2 "topology.kubernetes.io/zone=west" --overwrite
+kubectl label node rhel3 "topology.kubernetes.io/zone=east" --overwrite
 
 if [ $(kubectl get nodes | wc -l) = 5 ]; then
-  kubectl label node rhel4 "topology.kubernetes.io/region=east" 
-  kubectl label node rhel4 "topology.kubernetes.io/zone=east1" 
+  kubectl label node rhel4 "topology.kubernetes.io/region=dc" 
+  kubectl label node rhel4 "topology.kubernetes.io/zone=east" 
 fi
 
 echo

@@ -22,6 +22,6 @@ do
   done
 done
 
-kubectl label node rhel4 "topology.kubernetes.io/region=east"
-kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
-kubectl delete -n trident pod -l app=controller.csi.trident.netapp.io
+kubectl label node rhel4 "topology.kubernetes.io/region=dc"
+kubectl label node rhel4 "topology.kubernetes.io/zone=east"
+kubectl delete -n trident po -l app=node.csi.trident.netapp.io  --field-selector spec.nodeName=rhel4

@@ -95,7 +95,8 @@ echo "##########################################################################
 echo "Install Kubevirt Dashboard"
 echo "#######################################################################################################"
 wget https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.3/kubernetes/bundled.yaml -O kubevirt-manager.yaml
-sed -i '/^[[:space:]]*image:/ s/$/-nginx-1-29-2/' kubevirt-manager.yaml
+#sed -i '/^[[:space:]]*image:/ s/$/-nginx-1-29-2/' kubevirt-manager.yaml
+sed -i '/^[[:space:]]*image:/ s/nightly/5f5a05978b0f88c8e1cb9b74b7c31609c3c2782b/' kubevirt-manager.yaml
 sed -i '/^[[:space:]]*containers:/i\      nodeSelector:\n          kubernetes.io\/os: linux' kubevirt-manager.yaml
 sed -i 's/ClusterIP/NodePort/' kubevirt-manager.yaml
 kubectl create -f kubevirt-manager.yaml

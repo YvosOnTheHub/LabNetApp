@@ -61,12 +61,12 @@ Tadaaaa!!
 
 If you are planning on testing the CSI Topology feature, you also need to create the labels on this new node.  
 As Trident contains a DaemonSet, it will create one of these objects on RHEL4 before you can take care of the topology labels.  
-In order to take them into account, you must restart the Trident Controller (of kind Deployment) by simply deleting the current pod.
+In order to take them into account, you must restart the Trident DaemonSet by simply deleting the current pod.
 
 ```bash
-kubectl label node rhel4 "topology.kubernetes.io/region=east"
-kubectl label node rhel4 "topology.kubernetes.io/zone=east1"
-kubectl delete -n trident pod -l app=controller.csi.trident.netapp.io
+kubectl label node rhel4 "topology.kubernetes.io/region=dc"
+kubectl label node rhel4 "topology.kubernetes.io/zone=east"
+kubectl delete -n trident po -l app=node.csi.trident.netapp.io  --field-selector spec.nodeName=rhel4
 ```
 
 Back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?

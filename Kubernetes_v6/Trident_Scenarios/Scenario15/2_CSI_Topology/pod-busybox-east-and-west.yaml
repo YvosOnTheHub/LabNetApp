@@ -14,7 +14,7 @@ spec:
           - key: topology.kubernetes.io/zone
             operator: In
             values:
-             - east1
+             - east
   volumes:
     - name: nfsstorage
       persistentVolumeClaim:
@@ -46,7 +46,7 @@ spec:
           - key: topology.kubernetes.io/zone
             operator: In
             values:
-             - west1
+             - west
   volumes:
     - name: nfsstorage
       persistentVolumeClaim:

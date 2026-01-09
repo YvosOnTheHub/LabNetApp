@@ -47,6 +47,8 @@ Also, if no action has been made with regards to the container images, you can f
 sh scenario28_pull_images.sh
 ```
 
+Once tested with Stateful applications, you will also see how to deal with Virtual Machines.  
+
 ## A. Standard behavior
 
 In order to make sure the 3 apps start on the same node, let's _cordon_ one of them.  
@@ -321,6 +323,51 @@ kubectl exec -n scenario28 $(kubectl get pod -n scenario28 -l app=bbox-nfs-rwx -
 
 Let's tidy up before moving on. Remove the namespace, as well as the NHC CR:  
 ```bash
-kubectl delete ns scenrio28
+kubectl delete ns scenario28
 kubectl delete nodehealthcheck nhc-trident -n trident
 ```
+<!-- TMP
+## D. What about Virtual Machines?  
+
+VM **should** have volumes mounted with RWX access mode, especially if you want to activate live migration.  
+However, contrary to stateful apps, if a node fails, the Virtual Machine does not automatically move to another host.  
+Let's see in this chapter how we can remediate to that behavior.
+
+We will recreate the _scenario28_ namespace, and then create an Alpine VM there:
+```bash
+$ kubectl create ns scenario28
+namespace/scenario28 created
+
+$ kubectl create -f alpine.yaml
+datavolume.cdi.kubevirt.io/alpine-boot created
+virtualmachine.kubevirt.io/alpine-vm created
+```
+It takes about 30 seconds for the VM to be ready and configured (via the _cloud init_ process):
+```bash
+$ kubectl get -n scenario28 all,pvc
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/virt-launcher-alpine-vm-nmhth   2/2     Running   0          28s
+
+NAME                                     PHASE       PROGRESS   RESTARTS   AGE
+datavolume.cdi.kubevirt.io/alpine-boot   Succeeded   100.0%                53s
+
+NAME                                           AGE   PHASE     IP              NODENAME   READY
+virtualmachineinstance.kubevirt.io/alpine-vm   53s   Running   192.168.28.84   rhel2      True
+
+NAME                                   AGE   STATUS    READY
+virtualmachine.kubevirt.io/alpine-vm   53s   Running   True
+
+NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/alpine-boot   Bound    pvc-69e6dea7-c5cb-44db-a134-f26beef9873e   1Gi        RWX            storage-class-iscsi   <unset>                 53s
+```
+More, you can see that the VM support live migration:  
+```bash
+$ kubectl get -n scenario28 vmi -o wide
+NAME        AGE   PHASE     IP              NODENAME   READY   LIVE-MIGRATABLE   PAUSED
+alpine-vm   95s   Running   192.168.28.84   rhel2      True    True
+```
+Before breaking stuff, let's remove the init disk and add a simple file that we can find again once the VM has moved:
+```bash
+
+```
+-->

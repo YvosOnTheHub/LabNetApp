@@ -158,6 +158,7 @@ ssh alpine@$ALPINE_IP -i /root/.ssh/alpine
 
 # check if data disk is vdb
 doas fdisk -l
+lsblk
 
 # partition, format, mount & persitence of the data disk
 echo -e "o\nn\np\n1\n\n\nw" | doas fdisk /dev/vdb

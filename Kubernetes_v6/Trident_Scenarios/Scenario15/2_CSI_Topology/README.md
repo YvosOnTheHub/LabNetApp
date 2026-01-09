@@ -16,7 +16,7 @@ This feature allows you to segment nodes of a Kubernetes cluster into sub-groups
 
 In a real environment, you will probably use a different storage platform in each zone. To simplify the configuration of this scenario, we will use the same storage backend to host volumes from both zones, while using different prefixes, in order to simulate having two different zones or datacenters.
 
-<p align="center"><img src="Images/scenario15.jpg"></p>
+<p align="center"><img src="Images/scenario15.png"></p>
 
 You may want to add an extra node (_RHEL4_) to the Kubernetes cluster to have 2 nodes on each zone.  
 You can follow the procedure described in the [Addenda01](../../../Addendum/Addenda01) to perform that operation.  
@@ -25,13 +25,17 @@ Let's first check what labels are set on the nodes:
 ```bash
 $ kubectl get nodes -l kubernetes.io/os=linux -o=custom-columns=NODE:.metadata.name,REGION:".metadata.labels.topology\.kubernetes\.io/region",ZONE:".metadata.labels.topology\.kubernetes\.io/zone"
 NODE    REGION   ZONE
-rhel1   west     west1
-rhel2   west     west1
-rhel3   east     east1
-rhel4   east     east1
+rhel1   dc       west
+rhel2   dc       west
+rhel3   dc       east
+rhel4   dc       east
 ```
 
 **Note that if you added the topology labels after Trident was deployed, you must restart the daemonsets in order to take into account those values.**  
+
+Those labels were set during the [Trident upgrade scenario](../../Scenario01/).  
+If you did not go through that update, existing labels will not be compatible with this chapter.  
+You can use the script *set_labels.sh* in this folder to set the correct values, as well as restart the Trident daemon sets if needed.  
 
 We are going to create two new backends, each one pointing to a different region.  
 You can see in the json files that I used a parameter called **supportedTopologies** to specify this.  
@@ -53,6 +57,26 @@ sc-topology          csi.trident.netapp.io   Delete          WaitForFirstConsume
 ```
 
 You will also notice that these is a specific optional parameter in this storage class: **volumeBindingMode** set to _WaitForFirstConsumer_ (default value: _Immediate_).  This means that the PVC will not be created until referenced in a POD.  
+
+Let's quickly check that this storage class is pointed to our 2 backends:  
+```bash
+$ tridentctl -n trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
+[
+  {
+    "storageClass": "sc-topology",
+    "backends": [
+      {
+        "nas-east": [
+          "aggr1"
+        ],
+        "nas-west": [
+          "aggr1"
+        ]
+      }
+    ]
+  }
+]
+```
 
 Let's use a specific namespace for this scenario:  
 ```bash
@@ -132,6 +156,22 @@ $ curl -X GET -ku vsadmin:Netapp1! "https://192.168.0.133/api/storage/volumes?na
 ```
 
 => Tadaaaa!
+
+**IMPORTANT:**  
+Make sure you configure the backends properly, especially when you have one region with multiple zones.  
+Example:  
+```yaml
+    - topology.kubernetes.io/region: dc
+      topology.kubernetes.io/zone: east
+```
+is not the same as
+```yaml
+    - topology.kubernetes.io/region: dc
+    - topology.kubernetes.io/zone: east
+```
+In the first case, you filter on _region=dc_ **AND** _zone=east_.  
+In the second case, you filter on _region=dc_ **OR** _zone=east_.
+You can imagine the side effects of using the second methods... It would be like flipping a coin, random results.  
 
 ## Cleanup the environment
 

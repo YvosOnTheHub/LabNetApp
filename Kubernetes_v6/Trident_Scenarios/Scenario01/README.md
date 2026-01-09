@@ -54,14 +54,14 @@ win2    Ready    <none>          73d   v1.29.4
 If they are not, you can create them with the following commands:  
 ```bash
 # LABEL "REGION"
-kubectl label node rhel1 "topology.kubernetes.io/region=west" --overwrite
-kubectl label node rhel2 "topology.kubernetes.io/region=west" --overwrite
-kubectl label node rhel3 "topology.kubernetes.io/region=east" --overwrite
+kubectl label node rhel1 "topology.kubernetes.io/region=dc" --overwrite
+kubectl label node rhel2 "topology.kubernetes.io/region=dc" --overwrite
+kubectl label node rhel3 "topology.kubernetes.io/region=dc" --overwrite
 
 # LABEL "ZONE"
-kubectl label node rhel1 "topology.kubernetes.io/zone=west1" --overwrite
-kubectl label node rhel2 "topology.kubernetes.io/zone=west1" --overwrite
-kubectl label node rhel3 "topology.kubernetes.io/zone=east1" --overwrite
+kubectl label node rhel1 "topology.kubernetes.io/zone=west" --overwrite
+kubectl label node rhel2 "topology.kubernetes.io/zone=west" --overwrite
+kubectl label node rhel3 "topology.kubernetes.io/zone=east" --overwrite
 ```
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  

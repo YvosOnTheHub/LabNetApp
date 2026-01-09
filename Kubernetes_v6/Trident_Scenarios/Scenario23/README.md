@@ -17,7 +17,7 @@ Let's see them in action.
 
 This is done with the _nameTemplate_ backend parameter. Here is an example:  
 ```yaml
-nameTemplate: {{ .config.StoragePrefix }}_{{ .volume.Name }}_{{ .volume.BackendName }}
+nameTemplate: {{ .config.StoragePrefix }}_{{ .volume.Namespace }}_{{ .volume.RequestName }}
 ```
 
 Let's create a backend, a PVC and see the result.  
