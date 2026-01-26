@@ -13,7 +13,7 @@ if ! dnf -q list installed sshpass >/dev/null 2>&1; then
   # test repo availability 
   REPO_URL='http://repomirror-rtp.eng.netapp.com/rhel/9server-x86_64//rhel-9-for-x86_64-appstream-rpms/repodata/repomd.xml'
 
-  if curl -sSfI "$REPO_URL" >/dev/null 2>&1; then
+  if curl --connect-timeout 5 --max-time 10 -sSfI "$REPO_URL" >/dev/null 2>&1; then
     dnf install -y sshpass
   else
     cd /tmp
