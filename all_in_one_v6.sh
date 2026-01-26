@@ -161,8 +161,8 @@ echo
 echo "############################################"
 echo "### AppVault Creation on RHEL3"
 echo "############################################"
-BUCKETKEY=$(grep "access_key" /root/ansible_S3_SVM_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
-BUCKETSECRET=$(grep "secret_key" /root/ansible_S3_SVM_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//')
+BUCKETKEY=$(grep "access_key" /root/ansible_S3_SVM_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//') && echo $BUCKETKEY
+BUCKETSECRET=$(grep "secret_key" /root/ansible_S3_SVM_result.txt | cut -d ":" -f 2 | cut -b 2- | sed 's/..$//') && echo $BUCKETSECRET
 
 kubectl create secret generic -n trident-protect s3-creds \
   --from-literal=accessKeyID=$BUCKETKEY \
@@ -179,7 +179,7 @@ kubectl --kubeconfig=/root/.kube/config_rhel5 create secret generic -n trident-p
   --from-literal=accessKeyID=$BUCKETKEY \
   --from-literal=secretAccessKey=$BUCKETSECRET
 
-ssh -o "StrictHostKeyChecking no" root@rhel5 -t "tridentctl-protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect"
+tridentctl-protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lod --endpoint 192.168.0.230 --skip-cert-validation --no-tls -n trident-protect --context kub2-admin@kub2
 
 echo
 echo "############################################"

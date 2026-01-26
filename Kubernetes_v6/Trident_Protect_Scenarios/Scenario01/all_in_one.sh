@@ -37,9 +37,8 @@ else
   python3 /tmp/get-pip.py
 fi
 
-pip install ansible-core==2.15.12 netapp-lib
-ansible-galaxy collection install netapp.ontap --ignore-certs
-
+pip install ansible-core==2.15.13 netapp-lib
+ansible-galaxy collection install git+https://github.com/ansible-collections/netapp.ontap.git --ignore-certs
 
 echo "#################################################################"
 echo "#"
