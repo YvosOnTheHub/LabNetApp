@@ -30,7 +30,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 1. Skopeo Copy Trident Protect Controller Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-    docker://docker.io/netapp/controller:25.10.0 docker://registry.demo.netapp.com/controller:25.10.0 \
+    docker://quay.io/yvosonthehub/netapp/controller:25.10.0 docker://registry.demo.netapp.com/controller:25.10.0 \
     --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -40,7 +40,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 2. Skopeo Copy Trident Protect Exechook Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/exechook:25.10.0 docker://registry.demo.netapp.com/exechook:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/exechook:25.10.0 docker://registry.demo.netapp.com/exechook:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -50,7 +50,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 3.Skopeo Copy Trident Protect ResourceBackup Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/resourcebackup:25.10.0 docker://registry.demo.netapp.com/resourcebackup:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/resourcebackup:25.10.0 docker://registry.demo.netapp.com/resourcebackup:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -60,7 +60,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 4. Skopeo Copy Trident Protect ResourceRestore Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/resourcerestore:25.10.0 docker://registry.demo.netapp.com/resourcerestore:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/resourcerestore:25.10.0 docker://registry.demo.netapp.com/resourcerestore:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -70,7 +70,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 5. Skopeo Copy Trident Protect ResourceDelete Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/resourcedelete:25.10.0 docker://registry.demo.netapp.com/resourcedelete:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/resourcedelete:25.10.0 docker://registry.demo.netapp.com/resourcedelete:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -80,7 +80,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 6. Skopeo Copy Trident Protect Restic Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/restic:25.10.0 docker://registry.demo.netapp.com/restic:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/restic:25.10.0 docker://registry.demo.netapp.com/restic:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -90,7 +90,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 7. Skopeo Copy Trident Protect Kopia Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/kopia:25.10.0 docker://registry.demo.netapp.com/kopia:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/kopia:25.10.0 docker://registry.demo.netapp.com/kopia:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -100,7 +100,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 8. Skopeo Copy Trident Protect Kopia Block Restore Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/kopiablockrestore:25.10.0 docker://registry.demo.netapp.com/kopiablockrestore:25.10.0 \
+  docker://quay.io/yvosonthehub/netapp/kopiablockrestore:25.10.0 docker://registry.demo.netapp.com/kopiablockrestore:25.10.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
@@ -110,7 +110,7 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
   echo "# 9. Skopeo Copy Trident Protect Trident Protect Utils Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://docker.io/netapp/trident-protect-utils:v1.0.0 docker://registry.demo.netapp.com/trident-protect-utils:v1.0.0 \
+  docker://quay.io/yvosonthehub/netapp/trident-protect-utils:v1.0.0 docker://registry.demo.netapp.com/trident-protect-utils:v1.0.0 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 

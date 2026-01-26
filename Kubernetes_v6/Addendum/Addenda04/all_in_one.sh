@@ -18,13 +18,13 @@ echo "##########################################################################
 echo "Install Ansible & NetApp Python Library"
 echo "#######################################################################################################"
 
-pip install ansible-core==2.15.12 netapp-lib
+pip install ansible-core==2.15.13 netapp-lib
 
 echo "#######################################################################################################"
 echo "Install NetApp ONTAP Collection"
 echo "#######################################################################################################"
 
-ansible-galaxy collection install netapp.ontap --ignore-certs
+ansible-galaxy collection install git+https://github.com/ansible-collections/netapp.ontap.git --ignore-certs
 
 
 

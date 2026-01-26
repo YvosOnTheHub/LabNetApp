@@ -8,16 +8,17 @@ Ansible can be useful in some cases. Let's see how to install it on the control 
 We first need to install the Python package manager, followed by Ansible and the NetApp python library.  
 ```bash
 dnf install -y python-pip
-pip install ansible-core==2.15.12 netapp-lib
+pip install ansible-core==2.15.13 netapp-lib
 ```
 
 Last, we will install the NetApp ONTAP Collection from the Ansible Galaxy.  
 ```bash
-$ ansible-galaxy collection install netapp.ontap:==22.12.0 --ignore-certs
+$ ansible-galaxy collection install git+https://github.com/ansible-collections/netapp.ontap.git --ignore-certs
 Process install dependency map
 Starting collection install process
-Installing 'netapp.ontap:22.12.0' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
-netapp.ontap:22.12.0 was installed successfully
+Installing 'netapp.ontap:23.4.0' to '/root/.ansible/collections/ansible_collections/netapp/ontap'
+Created collection for netapp.ontap:23.4.0 at /root/.ansible/collections/ansible_collections/netapp/ontap
+netapp.ontap:23.4.0 was installed successfully
 ```
 
 Now that Ansible is installed, let's configure the host file  
