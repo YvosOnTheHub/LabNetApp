@@ -2,7 +2,7 @@
 # SCENARIO 23: Naming conventions
 #########################################################################################
 
-Until recently, when a volume was created by Trident, it would look like _trident_pvc_e018e7ab_a95b_4cb7_a366_85953d8fdec5_ on the storage backend.  
+Until recently, when a volume was created by Trident, it would look like *trident_pvc_e018e7ab_a95b_4cb7_a366_85953d8fdec5* on the storage backend.  
 Not necesarily an issue, unless you would like to know which application mounts what volume when looking at the storage.  
 For that, 2 solutions:  
 - maintain a database  
@@ -12,6 +12,14 @@ Obviously, not very user friendly.
 
 Trident 24.06 introduced volume naming customization, as well as label customization.  
 Let's see them in action.  
+
+For the time being, here are the fields that can be used to tailor names or labels:  
+- .volume.Name: Persistent Volume name (pvc-UID)
+- .volume.NameSpace: Persistent Polume namespace (i.e. PVC namespace)
+- .volume.RequestName: Persistent Volume Claim request name (i.e. PVC name).
+- .labels.Cluster: K8s cluster name/labels
+- .config.backendName: the trident backend name from the backend definition
+- .config.StoragePrefix: storage prefix from backend definition
 
 ## A. Volume Name Customization
 

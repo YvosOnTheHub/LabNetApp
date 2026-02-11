@@ -1,0 +1,36 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nas-eco-dnvp
+  namespace: trident
+spec:
+  version: 1
+  backendName: nas-eco-dnvp
+  storageDriverName: ontap-nas-economy
+  managementLIF: 192.168.0.133
+  storagePrefix: dnvp_
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  debugTraceFlags: 
+        api: true
+        method: true
+  denyNewVolumePools: "false"
+  limitVolumeSize: 15Gi
+  limitVolumePoolSize: 20Gi
+  qtreesPerFlexvol: '50'
+  useREST: true
+  defaults:
+    nameTemplate: "{{ .config.StoragePrefix }}_{{ .volume.Namespace }}_{{ .volume.RequestName }}"
+  credentials:
+    name: secret-nas-svm-creds
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc-eco-dnvp
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas-economy"
+  storagePools: "nas-eco-dnvp:aggr2"
+allowVolumeExpansion: true
