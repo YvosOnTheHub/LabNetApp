@@ -327,11 +327,11 @@ check_appvault_available() {
         return 2
       fi
     else
-      if echo "$phase" | grep -iq "avail"; then
-        print_ok "$title: AppVault '$name' status='$phase'"
+      if echo "$state" | grep -iq "avail"; then
+        print_ok "$title: AppVault '$name' status='$state'"
         return 0
       else
-        print_fail "$title: AppVault '$name' status='$phase'"
+        print_fail "$title: AppVault '$name' status='$state'"
         return 3
       fi
     fi
@@ -379,25 +379,25 @@ check_tbc_status() {
 }
 
 echo "Checking primary cluster (default kubeconfig)..."
-check_pods_running "" trident "Primary: trident namespace"
+check_pods_running "" trident "Trident"
 check_tbc_status ""
-check_pods_running "" kubevirt "Primary: kubevirt namespace"
-check_pods_running "" cdi "Primary: cdi namespace"
-check_pods_running "" kubevirt-manager "Primary: kubevirt-manager namespace"
+check_pods_running "" kubevirt "KubeVirt"
+check_pods_running "" cdi "CDI"
+check_pods_running "" kubevirt-manager "KubeVirt Manager"
 if [ "$ans" = "2" ]; then
-  check_pods_running "" trident-protect "Primary: trident-protect namespace"
-  check_appvault_available "" "ontap-vault" "Primary: AppVault"
+  check_pods_running "" trident-protect "Trident Protect"
+  check_appvault_available "" "ontap-vault" "AppVault"
 
 echo
-local SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
+SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
 echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
-check_pods_running "$SECONDARY_KUBECONFIG" trident "Secondary: trident namespace"
+check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
 check_tbc_status "$SECONDARY_KUBECONFIG"
-check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "Secondary: kubevirt namespace"
-check_pods_running "$SECONDARY_KUBECONFIG" cdi "Secondary: cdi namespace"
-check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "Secondary: kubevirt-manager namespace"
-check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Secondary: trident-protect namespace"
-check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "Secondary: AppVault"
+check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
+check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
+check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"
+check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Trident Protect"
+check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
 fi
 
 echo
