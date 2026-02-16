@@ -11,6 +11,7 @@
 # 5. MONITORING CUSTOMIZATION & HARVEST
 # 6. ENABLE POD SCHEDULING ON THE CONTROL PLANE"
 # 7. ADD TOOLS
+# 8. INSTALL KUBEVIRT
 # ------------------------------------------------------------------------------------------
 
 
@@ -96,6 +97,13 @@ kubectl krew install tree
 kubectl krew install view-secret
 kubectl krew install view-serviceaccount-kubeconfig
 
+echo
+echo "#######################################################################################################"
+echo "# 8. INSTALL KUBEVIRT"
+echo "#######################################################################################################"
+echo
+sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
+
 }
 
 
@@ -116,6 +124,7 @@ kubectl krew install view-serviceaccount-kubeconfig
 # 7. INSTALL TRIDENT & TRIDENT PROTECT 25.10.0 ON KUBERNETES#2
 # 8. CREATE AN APPVAULT ON BOTH CLUSTERS
 # 9. CONFIGURE KUBE STATE METRICS TO MONITOR TRIDENT PROTECT
+# 10. INSTALL KUBEVIRT ON KUBERNETES#2
 # ------------------------------------------------------------------------------------------
 
 
@@ -172,7 +181,7 @@ tridentctl-protect create appvault OntapS3 ontap-vault -s s3-creds --bucket s3lo
 
 echo
 echo "############################################"
-echo "### AppVault Creation on RHL5"
+echo "### AppVault Creation on RHEL5"
 echo "############################################"
 
 kubectl --kubeconfig=/root/.kube/config_rhel5 create secret generic -n trident-protect s3-creds \
@@ -206,6 +215,13 @@ echo "############################################"
 cd ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario04
 sh all_in_one.sh
 
+echo
+echo "############################################"
+echo "### Install KubeVirt on RHEL5"
+echo "############################################"
+curl -s --insecure --user root:Netapp1! -T ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel5.sh sftp://rhel5/root/kv_setup.sh
+ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh kv_setup.sh"
+
 }
 
 
@@ -216,7 +232,7 @@ sh all_in_one.sh
 # ------------------------------------------------------------------------------------------
 
 read -n 1 -p "Which task would you like to perform?
-1. Upgrade Trident, Configure Monitoring & install some tools on the existing Kubernetes cluster
+1. Upgrade Trident, Configure Monitoring & install KubeVirt
 2. Setup the lab for Trident Protect 
 0. Exit the script
 " ans;
@@ -235,12 +251,6 @@ esac
 
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
-echo
-echo "#######################################################################################################"
-echo "# UPDATE BASHRC"
-echo "#######################################################################################################"
-echo
-
 cat <<EOT >> ~/.bashrc
 alias kc='kubectl create'
 alias kg='kubectl get'
@@ -250,7 +260,6 @@ alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
 alias trident='tridentctl -n trident'
 EOT
-source ~/.bashrc
 fi
 
 echo
@@ -263,9 +272,136 @@ TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=r
 RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
 
 echo "# Your anonymous login to the Docker Hub currently has $RATEREMAINING pulls left."
+
+echo
+echo "#######################################################################################################"
+echo "# SETUP CHECKS"
+echo "#######################################################################################################"
+echo
+print_ok() { printf "\e[32m✓\e[0m %s\n" "$1"; }
+print_fail() { printf "\e[31m✗\e[0m %s\n" "$1"; }
+
+_kc_arg() {
+  [ -n "$1" ] && printf '%s' "--kubeconfig=$1"
+}
+
+check_pods_running() {
+  local kubeconfig=$1; local ns=$2; local title=$3
+  local kc; kc=$(_kc_arg "$kubeconfig")
+  local notok
+  if ! kubectl $kc -n "$ns" get pods --no-headers >/dev/null 2>&1; then
+    print_fail "$title: namespace/$ns not found or cluster unreachable"
+    return 1
+  fi
+  # find pods whose STATUS is not Running or Completed
+  notok=$(kubectl $kc -n "$ns" get pods --no-headers 2>/dev/null | awk '$3!="Running" {print $0}')
+  if [ -z "$notok" ]; then
+    print_ok "$title: all pods Running in namespace '$ns'"
+    return 0
+  else
+    print_fail "$title: some pods NOT Running in namespace '$ns':"
+    printf "%s\n" "$notok"
+    return 2
+  fi
+}
+
+check_appvault_available() {
+  local kubeconfig=$1; local name=$2; local title=$3
+  local kc; kc=$(_kc_arg "$kubeconfig")
+  # verify namespace exists
+  if ! kubectl $kc -n trident-protect get appvault >/dev/null 2>&1; then
+    print_fail "$title: no AppVault resources found or trident-protect namespace unreachable"
+    return 1
+  fi
+  if [ -n "$name" ]; then
+    # check specific appvault
+    local state
+    state=$(kubectl $kc -n trident-protect get appvault "$name" -o jsonpath='{.status.state}' 2>/dev/null || true)
+    if [ -z "$state" ]; then
+      # existence check
+      if kubectl $kc -n trident-protect get appvault "$name" >/dev/null 2>&1; then
+        print_ok "$title: AppVault '$name' exists (no state reported)"
+        return 0
+      else
+        print_fail "$title: AppVault '$name' NOT found"
+        return 2
+      fi
+    else
+      if echo "$phase" | grep -iq "avail"; then
+        print_ok "$title: AppVault '$name' status='$phase'"
+        return 0
+      else
+        print_fail "$title: AppVault '$name' status='$phase'"
+        return 3
+      fi
+    fi
+  else
+    # check any appvault with Available phase
+    local states
+    states=$(kubectl $kc -n trident-protect get appvault -o jsonpath='{range .items[*]}{.metadata.name}: {.status.state}  ' 2>/dev/null || true)
+    if echo "$states" | grep -iq "avail"; then
+      print_ok "$title: at least one AppVault is Available"
+      return 0
+    else
+      print_fail "$title: no AppVault in Available state; found: $states"
+      return 4
+    fi
+  fi
+}
+
+check_tbc_status() {
+  local kubeconfig=${1:-}
+  local kc; kc=$(_kc_arg "$kubeconfig")
+
+  if ! kubectl $kc -n trident get tridentbackendconfig >/dev/null 2>&1; then
+    print_fail "TBC check: no TridentBackendConfig resources found or 'trident' namespace unreachable"
+    return 1
+  fi
+
+  local lines total bound success both
+  lines=$(kubectl $kc -n trident get tridentbackendconfig -o jsonpath='{range .items[*]}{.metadata.name} {.status.phase} {.status.lastOperationStatus}{"\n"}{end}' 2>/dev/null || true)
+  total=$(printf "%s" "$lines" | awk 'NF{count++}END{print count+0}')
+  if [ "$total" -eq 0 ]; then
+    print_fail "TBC check: no TridentBackendConfig objects found"
+    return 2
+  fi
+
+  bound=$(printf "%s" "$lines" | awk '{if(tolower($2)=="bound") c++}END{print c+0}')
+  success=$(printf "%s" "$lines" | awk '{if(tolower($3)=="success") c++}END{print c+0}')
+  both=$(printf "%s" "$lines" | awk '{if(tolower($2)=="bound" && tolower($3)=="success") c++}END{print c+0}')
+
+  if [ "$both" -eq "$total" ]; then
+    print_ok "TridentBackendConfig: $both/$total are phase=Bound and status=Success"
+  else
+    print_fail "TridentBackendConfig: $both/$total are phase=Bound and status=Success"
+  fi
+  return 0
+}
+
+echo "Checking primary cluster (default kubeconfig)..."
+check_pods_running "" trident "Primary: trident namespace"
+check_tbc_status ""
+check_pods_running "" kubevirt "Primary: kubevirt namespace"
+check_pods_running "" cdi "Primary: cdi namespace"
+check_pods_running "" kubevirt-manager "Primary: kubevirt-manager namespace"
+if [ "$ans" = "2" ]; then
+  check_pods_running "" trident-protect "Primary: trident-protect namespace"
+  check_appvault_available "" "ontap-vault" "Primary: AppVault"
+
+echo
+local SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
+echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
+check_pods_running "$SECONDARY_KUBECONFIG" trident "Secondary: trident namespace"
+check_tbc_status "$SECONDARY_KUBECONFIG"
+check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "Secondary: kubevirt namespace"
+check_pods_running "$SECONDARY_KUBECONFIG" cdi "Secondary: cdi namespace"
+check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "Secondary: kubevirt-manager namespace"
+check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Secondary: trident-protect namespace"
+check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "Secondary: AppVault"
+fi
+
 echo
 echo "-----------------------"
 echo "____ HAVE FUN !!!!!"
 echo "-----------------------"
-echo
 echo
