@@ -20,7 +20,6 @@ I specifically chose a high snapshot reserve value of 40%, so that we can really
 $ kubectl create -f backend-nas-snap-reserve.yaml
 secret/secret-snap-reserve created
 tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-snap-reserve created
-$ kubectl create -f sc-csi-ontap-nas_snap-reserve.yaml
 storageclass.storage.k8s.io/storage-class-nas-snap-reserve created
 
 $ kubectl create -f busybox.yaml

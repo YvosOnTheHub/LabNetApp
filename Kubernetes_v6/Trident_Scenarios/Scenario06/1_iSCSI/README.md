@@ -63,11 +63,10 @@ settings
 themes
 ```  
 
-## D. About CHAP & multipathing
+## D. About iSCSI, multipathing & CHAP
 
 This application was deployed using secured authentication with the storage backend. We can now see the configuration on the host.  
-Let's first look at what server hosts the POD:
-
+Let's first look at what server hosts the POD:  
 ```bash
 $ kubectl get -n ghost-iscsi pod -o wide
 NAME                          READY   STATUS    RESTARTS   AGE    IP               NODE    NOMINATED NODE   READINESS GATES
@@ -118,6 +117,22 @@ sdc                              8:32   0   5G  0 disk
 
 You can see how both disk references point to the same LUN (_multipath -ll_) & the same PVC (_lsbk_).  
 
+Also, Trident dynamically manages initiator groups in ONTAP.  
+You will find one iGroup per worker node, containing only the IQN of that node, in opposition to a global iGroup which contain all IQNs.    
+The PVC/LUN created by Trident will then be mapped to that iGroup. You can see that directly in ONTAP:  
+```bash
+cluster1::*> lun mapping show -vserver sansvm -path /vol/trident_pvc_d1d39be5-073d-4bac-926c-9d5647cb1a73/lun0
+Vserver    Path                                      Igroup   LUN ID  Protocol
+---------- ----------------------------------------  -------  ------  --------
+sansvm     /vol/trident_pvc_d1d39be5-073d-4bac-926c-9d5647cb1a73/lun0
+                                                     rhel2-189e4ded-d389-4ce6-8395-1d4de202321f
+                                                                   2  iscsi
+
+cluster1::*> igroup show -vserver sansvm -igroup rhel2-189e4ded-d389-4ce6-8395-1d4de202321f -fields initiator
+vserver igroup                                     initiator
+------- ------------------------------------------ --------------------------------------------
+sansvm  rhel2-189e4ded-d389-4ce6-8395-1d4de202321f iqn.1994-05.com.redhat:rhel2.demo.netapp.com
+```
 
 ## E. Cleanup
 
