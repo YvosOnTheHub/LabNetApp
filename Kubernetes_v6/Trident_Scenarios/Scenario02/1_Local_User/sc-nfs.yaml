@@ -6,4 +6,5 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas"
   nasType: "nfs"
+  storagePools: "BackendForNFS:.*"
 allowVolumeExpansion: true

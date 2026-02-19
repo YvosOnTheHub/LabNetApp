@@ -11,6 +11,14 @@ kubectl create -f 1_Local_User/backend-tbc-nfs.yaml
 kubectl create -f 1_Local_User/backend-tbc-smb.yaml
 
 echo "#######################################################################################################"
+echo "Updating StorageClasses to use the new NAS TBC"
+echo "#######################################################################################################"
+
+kubectl delete sc storage-class-nfs storage-class-smb
+kubectl create -f 1_Local_User/sc-nfs.yaml
+kubectl create -f 1_Local_User/sc-smb.yaml
+
+echo "#######################################################################################################"
 echo "Create NAS-ECO backend for NFS"
 echo "#######################################################################################################"
 

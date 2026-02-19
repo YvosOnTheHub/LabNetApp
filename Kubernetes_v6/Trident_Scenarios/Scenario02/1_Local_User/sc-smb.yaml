@@ -6,6 +6,7 @@ provisioner: csi.trident.netapp.io
 parameters:
   backendType: "ontap-nas"
   nasType: "smb"
+  storagePools: "BackendForSMB:.*"
   csi.storage.k8s.io/node-stage-secret-name: "smbcreds"
   csi.storage.k8s.io/node-stage-secret-namespace: ${pvc.namespace}
 allowVolumeExpansion: true
