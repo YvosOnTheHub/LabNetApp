@@ -155,9 +155,10 @@ echo "# Install Helm"
 echo "#######################################################################################################"
 echo
 cd
-wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
-tar -xvf helm-v3.15.3-linux-amd64.tar.gz
+wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+tar -xvf helm-v4.0.5-linux-amd64.tar.gz
 /bin/cp -f linux-amd64/helm /usr/local/bin/
+rm -f helm-v4.0.5-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
@@ -232,16 +233,16 @@ echo "##########################################################################
 echo
 
 cd
-mkdir 25.10.0 && cd 25.10.0
-wget https://github.com/NetApp/trident/releases/download/v25.10.0/trident-installer-25.10.0.tar.gz
-tar -xf trident-installer-25.10.0.tar.gz
-ln -sf /root/25.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.02.0 && cd 26.02.0
+wget https://github.com/NetApp/trident/releases/download/v26.02.0/trident-installer-26.02.0.tar.gz
+tar -xf trident-installer-26.02.0.tar.gz
+ln -sf /root/26.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2510.0 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.10.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.10.0 \
---set tridentImage=registry.demo.netapp.com/trident:25.10.0 \
+helm install trident netapp-trident/trident-operator --version 100.2602.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.02.0 \
+--set tridentImage=registry.demo.netapp.com/trident:26.02.0 \
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"

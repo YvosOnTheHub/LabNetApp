@@ -11,14 +11,14 @@ So you can directly create the secret, TBC & storage class in order to test such
 $ kubectl create -f secret-ontap-nas-svm-cert.yaml
 secret/secret-nas-svm-cert created
 
-$ kubectl create -f backend-nas-cert.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-nfs-cert created
+$ kubectl create -f backend-nfs-ontap-nas-cert.yaml
+tridentbackendconfig.trident.netapp.io/backend-nfs-cert created
 
-$ kubetl get tbc -n trident backend-tbc-nfs-cert
-NAME                   BACKEND NAME        BACKEND UUID                           PHASE   STATUS
-backend-tbc-nfs-cert   BackendForNFSCert   46d816a0-5c77-4a40-aa0e-b6550620a3aa   Bound   Success
+$ kubetl get tbc -n trident backend-nfs-cert
+NAME               BACKEND NAME        BACKEND UUID                           PHASE   STATUS
+backend-nfs-cert   BackendForNFSCert   46d816a0-5c77-4a40-aa0e-b6550620a3aa   Bound   Success
 
-$ kubectl create -f sc-csi-ontap-nas-cert.yaml
+$ kubectl create -f sc-nfs-ontap-nas-cert.yaml
 storageclass.storage.k8s.io/storage-class-nas-cert created
 ```
 TL;DR  
@@ -35,7 +35,6 @@ The method to update a backend certificate goes as follows:
 If you were to update the existing secret, the TBC would try to validate the configuration & fail, as the existing certificate does not work with the new key.
 
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
-
 
 
 If you wanted to go through the whole process, here are the steps to follow.  
@@ -86,22 +85,22 @@ base64 -w 0 k8senv.key >> key_base64
 ```
 
 You now need to edit the two _cert_ yaml files in this folder:  
-- _backend-nas-cert.yaml_ replace the parameter _clientCertificate_
+- _backend-nfs-ontap-nas-cert.yaml_ replace the parameter _clientCertificate_
 - _secret-ontap-nas-svm-cert.yaml_ replace the parameter _clientPrivateKey_.  
 
 ```bash
 $ kubectl create -f secret-ontap-nas-svm-cert.yaml
 secret/secret-nas-svm-cert created
 
-$ kubectl create -f backend-nas-cert.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-nfs-cert created
+$ kubectl create -f backend-nfs-ontap-nas-cert.yaml
+tridentbackendconfig.trident.netapp.io/backend-nfs-cert created
 
-$ kubetl get tbc -n trident backend-tbc-nfs-cert
-NAME                   BACKEND NAME        BACKEND UUID                           PHASE   STATUS
-backend-tbc-nfs-cert   BackendForNFSCert   46d816a0-5c77-4a40-aa0e-b6550620a3aa   Bound   Success
+$ kubetl get tbc -n trident backend-nfs-cert
+NAME               BACKEND NAME        BACKEND UUID                           PHASE   STATUS
+backend-nfs-cert   BackendForNFSCert   46d816a0-5c77-4a40-aa0e-b6550620a3aa   Bound   Success
 
-$ kubectl create -f sc-csi-ontap-nas-cert.yaml
-storageclass.storage.k8s.io/storage-class-nas-cert created
+$ kubectl create -f sc-nfs-ontap-nas-cert.yaml
+storageclass.storage.k8s.io/storage-class-nfs-cert created
 ```
 
 There you go, you can now create volumes with this backend, or check the other ways to create Trident backends:  

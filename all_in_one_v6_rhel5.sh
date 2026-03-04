@@ -151,9 +151,10 @@ echo "# Install Helm"
 echo "#######################################################################################################"
 echo
 cd
-wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
-tar -xvf helm-v3.15.3-linux-amd64.tar.gz
+wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+tar -xvf helm-v4.0.5-linux-amd64.tar.gz
 /bin/cp -f linux-amd64/helm /usr/local/bin/
+rm -f helm-v4.0.5-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
@@ -217,16 +218,16 @@ echo "##########################################################################
 echo
 
 cd
-mkdir 25.06.1 && cd 25.06.1
-wget https://github.com/NetApp/trident/releases/download/v25.06.1/trident-installer-25.06.1.tar.gz
-tar -xf trident-installer-25.06.1.tar.gz
-ln -sf /root/25.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.02.0 && cd 26.02.0
+wget https://github.com/NetApp/trident/releases/download/v26.02.0/trident-installer-26.02.0.tar.gz
+tar -xf trident-installer-26.02.0.tar.gz
+ln -sf /root/26.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2506.1 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.06.1 \
---set tridentImage=registry.demo.netapp.com/trident:25.06.1 \
+helm install trident netapp-trident/trident-operator --version 100.2602.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.02.0 \
+--set tridentImage=registry.demo.netapp.com/trident:26.02.0 \
 --set tridentSilenceAutosupport=true
 
 frames="/ | \\ -"
@@ -318,20 +319,11 @@ echo "############################################"
 cd
 
 cat <<EOF >> protectValues.yaml
+imageRegistry: registry.demo.netapp.com
 imagePullSecrets:
 - name: regcred
-controller:
-  image:
-    registry: registry.demo.netapp.com
-rbacProxy:
-  image:
-    registry: registry.demo.netapp.com
-crCleanup:
-  imagePullSecrets:
-  - name: regcred
-webhooksCleanup:
-  imagePullSecrets:
-  - name: regcred
+nodeSelector:
+  kubernetes.io/os: linux
 EOF
 
 kubectl create ns trident-protect
@@ -341,14 +333,14 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod2 \
-  --version 100.2506.0 \
+  --version 100.2602.0 \
   --namespace trident-protect -f protectValues.yaml
 
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.06.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/25.06.0/tridentctl-completion.bash
+curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
 mv tridentctl-completion.bash ~/.bash/completions/
 source ~/.bash/completions/tridentctl-completion.bash

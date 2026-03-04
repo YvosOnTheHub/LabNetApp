@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 1: Trident upgrade to 25.10.0
+# SCENARIO 1: Trident upgrade to 26.02.0
 #########################################################################################
 
 **GOAL:**  
@@ -12,15 +12,27 @@ NAME      VERSION
 trident   24.02.0
 ```
 
-Let's first download the version you would like to use.  
+**Very important**: You can perform a direct upgrade to any target release that is within a **four-release window** of your installed version. So technically you *should* first upgrade to 25.02.0 before jumping to 26.02.0. In this lab, it would be much faster (3x) to first fully uninstall Trident and then reinstall it with the new version. 
+
+The file *trident_uninstall.sh* can help you achieve this.  
+If you would like to uninstall it manually, here are the steps to run:  
+```bash
+tridentctl -n trident delete backends --all
+kubectl delete sc --all
+kubectl patch torc trident --type=merge -p '{"spec":{"wipeout":["crds"],"uninstall":true}}'
+helm delete trident -n trident
+kubectl delete ns trident
+```
+
+Now we can proceed with the installation. Let's first download the version you would like to use.  
 Technically, if you decide to install Trident with Helm, you would not even need to perform this step, however throughout this lab, we will use the binary _tridentctl_ a few times, so we still to download it.  
 ```bash
 cd
-mkdir 25.10.0 && cd 25.10.0
-wget https://github.com/NetApp/trident/releases/download/v25.10.0/trident-installer-25.10.0.tar.gz
-tar -xf trident-installer-25.10.0.tar.gz
+mkdir 26.02.0 && cd 26.02.0
+wget https://github.com/NetApp/trident/releases/download/v26.02.0/trident-installer-26.02.0.tar.gz
+tar -xf trident-installer-26.02.0.tar.gz
 rm -f /usr/bin/tridentctl
-ln -sf /root/25.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+ln -sf /root/26.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 ```
 Let's also enable Trident autocompletion:  
 ```bash

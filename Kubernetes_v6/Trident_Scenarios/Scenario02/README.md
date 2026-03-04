@@ -4,22 +4,19 @@
 
 **GOAL:**  
 Trident needs to know where to create volumes.  
-This information sits in objects called backends. It basically contains:
-
+This information sits in objects called backends. It basically contains:  
 - the driver type (there currently are 9 different drivers available)
 - how to connect to the driver (IP, login, password ...)
 - some default parameters
 
-For additional information, please refer to:
-
+For additional information, please refer to:  
 - https://docs.netapp.com/us-en/trident/trident-get-started/kubernetes-postdeployment.html#step-1-create-a-backend
 - https://docs.netapp.com/us-en/trident/trident-use/backends.html  
 
 Once you have configured backend, the end user will create PVC against Storage Classes.  
 A storage class contains the definition of what an app can expect in terms of storage, defined by some properties (access, media, driver ...)
 
-For additional information, please refer to:
-
+For additional information, please refer to:  
 - https://docs.netapp.com/us-en/trident/trident-use/manage-stor-class.html#design-a-storage-class 
 
 Also, installing & configuring Trident + creating Kubernetes Storage Classe is what is expected to be done by the Admin.  

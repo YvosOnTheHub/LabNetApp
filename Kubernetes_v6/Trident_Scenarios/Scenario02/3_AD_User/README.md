@@ -66,15 +66,15 @@ If this worked, you can proceed with the the final steps, which are to just conf
 $ kubectl create -n trident -f secret-ontap-nfs-svm-domain.yaml
 secret/ontap-nfs-svm-secret-domain created
 
-$ kubectl create -n trident -f backend-nas-domain.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nas-domain created
+$ kubectl create -n trident -f backend-nfs-ontap-nas-domain.yaml
+tridentbackendconfig.trident.netapp.io/backend-ontap-nas-domain created
 
-$ kubectl get tbc -n trident backend-tbc-ontap-nas-domain
-NAME                           BACKEND NAME   BACKEND UUID                           PHASE   STATUS
-backend-tbc-ontap-nas-domain   nas-domain     d63f4f46-587b-4cac-9319-55d5b543abf6   Bound   Success
+$ kubectl get tbc -n trident backend-nfs-domain
+NAME                 BACKEND NAME   BACKEND UUID                           PHASE   STATUS
+backend-nfs-domain   nas-domain     d63f4f46-587b-4cac-9319-55d5b543abf6   Bound   Success
 
-$ kubectl create -f sc-csi-ontap-nas-domain.yaml
-storageclass.storage.k8s.io/storage-class-nas-domain created
+$ kubectl create -f sc-nfs-ontap-nas-domain.yaml
+storageclass.storage.k8s.io/storage-class-nfs-domain created
 ```
 
 There you go, you can now create volumes with this backend, or check other scenarios:  

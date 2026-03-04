@@ -2,45 +2,31 @@
 # SCENARIO 2: Backend configured with a local ONTAP user
 ###############################################################
 
-This lab already has 2 backends configured to provide NFS & SMB volumes with the ONTAP-NAS driver.  
-As they have been created with the _tridentctl_ tool, there is no TBC (TridentBackendConfig) object associated with them that allow backend management with kubectl. We will then first go through the creation of the 2 TBC.  
-Then, we will also create a ONTAP-NAS-ECONOMY backend which will then create qtrees in ONTAP.  
+This chapter will guide you through the creation of 3 Trident backends, as well as the corresponding storage classes.   
+A **backend** is a Kubernetes CRD that defines what Trident needs to create on the storage layer as well as the corresponding parameters (ex: snapshot folder visibility, snapshot reserve etc...).
+You will create 3 backends:  
+- _backend-nfs_: Trident driver ONTAP-NAS: creates an ONTAP FlexVol used as an NFS export.  
+- _backend-smb_: Trident driver ONTAP-NAS: creates an ONTAP FlexVol used as an SMB share. 
+- _backend-nfs-qtrees_: Trident driver ONTAP-NAS-ECONOMY: creates an ONTAP Qtree used as an NFS export.  
 
-## A. Create the TBC objects corresponding to the existing NAS backends
-
-```bash
-$ tridentctl -n trident get backend
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | USER-STATE | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
-| BackendForNFS   | ontap-nas      | 11d28fb4-6cf5-4c59-931d-94b8d8a5e061 | online | normal     |       0 |
-| BackendForSMB   | ontap-nas      | 7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3 | online | normal     |       0 |
-| BackendForNVMe  | ontap-san      | 493fef7f-8328-41d4-99f2-dea4281324a1 | online | normal     |       0 |
-| BackendForiSCSI | ontap-san      | 17c482e4-6aa7-4a0a-b4f8-26c75eae8a59 | online | normal     |       0 |
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
-```
-Moving from a tridentctl based backend to a kubectl one requires the creation of 2 objects:  
-- a secret
-- a TBC
-
-When going through that process, make sure that the backend parameters are correctly reported in the TBC.  
-
-This folder already contains the necesary files:
+## A. Create NAS backends
+ 
+This folder already contains the necessary files:
 ```bash
 $ kubectl create -f secret-ontap-nas-svm-creds.yaml
 secret/secret-nas-svm-creds created
-$ kubectl create -f backend-tbc-nfs.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-nfs created
-$ kubectl create -f backend-tbc-smb.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-smb created
+$ kubectl create -f backend-nfs-ontap-nas.yaml
+tridentbackendconfig.trident.netapp.io/backend-nfs created
+$ kubectl create -f backend-smb-ontap-nas.yaml
+tridentbackendconfig.trident.netapp.io/backend-smb created
 ```
 
-Let's check that it all went fine. Backends should be displayed as "status=success" & no new entry should be visible when listing the backends with tridentctl.  
+Let's check that it all went fine. Backends should be displayed as "status=success".  
 ```bash
 $ kubectl get tbc -A
-NAMESPACE   NAME              BACKEND NAME    BACKEND UUID                           PHASE   STATUS
-trident     backend-tbc-nfs   BackendForNFS   11d28fb4-6cf5-4c59-931d-94b8d8a5e061   Bound   Success
-trident     backend-tbc-smb   BackendForSMB   7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3   Bound   Success
+NAMESPACE   NAM           BACKEND NAME    BACKEND UUID                           PHASE   STATUS
+trident     backend-nfs   BackendForNFS   11d28fb4-6cf5-4c59-931d-94b8d8a5e061   Bound   Success
+trident     backend-smb   BackendForSMB   7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3   Bound   Success
 
 $ tridentctl -n trident get backend
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
@@ -48,22 +34,19 @@ $ tridentctl -n trident get backend
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
 | BackendForNFS   | ontap-nas      | 11d28fb4-6cf5-4c59-931d-94b8d8a5e061 | online | normal     |       0 |
 | BackendForSMB   | ontap-nas      | 7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3 | online | normal     |       0 |
-| BackendForNVMe  | ontap-san      | 493fef7f-8328-41d4-99f2-dea4281324a1 | online | normal     |       0 |
-| BackendForiSCSI | ontap-san      | 17c482e4-6aa7-4a0a-b4f8-26c75eae8a59 | online | normal     |       0 |
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
 ```
-All good !
+All good! Note that _tridentctl_ fetches the information from the Trident CR.  
 
-Note that all backend modifications must be applied to the _trident backend config_ objects, not the _trident backend_ ones.  
-
-The storage classes are already present, so no need to recreate or modify them.  
+Let's take care of the corresponding storage classes now:  
 ```bash
+$ kubectl create -f sc-nfs-ontap-nas.yaml -f sc-smb-ontap-nas.yaml
+storageclass.storage.k8s.io/storage-class-nfs created
+storageclass.storage.k8s.io/storage-class-smb created
 $ kubectl get sc
 NAME                  PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-storage-class-iscsi   csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-nfs     csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-nvme    csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-smb     csi.trident.netapp.io   Delete          Immediate           true                   75d
+storage-class-nfs     csi.trident.netapp.io   Delete          Immediate           true                   5s
+storage-class-smb     csi.trident.netapp.io   Delete          Immediate           true                   5s
 ```
 
 ## B. SMB Storage class specificities  
@@ -87,19 +70,19 @@ If that limit is too low, one alternative is to move to the ONTAP-NAS-ECONOMY Tr
 
 Important to note that:  
 - **CSI snapshots are not supported with ONTAP-NAS-ECONOMY**  
-- Import is not supported with ONTAP-NAS-ECONOMY  
+- Volume Import and SnapMirror are not supported with ONTAP-NAS-ECONOMY  
 
 The TBC we are going to create uses the same _secret_ created in the first part of this chapter.  
 We also need a new storage class to complete the process.  
 ```bash
-$ kubectl create -f backend-nas-eco.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-ontap-nfs-qtrees created
+$ kubectl create -f backend-nfs-ontap-nas-eco.yaml
+tridentbackendconfig.trident.netapp.io/backend-nfs-qtrees created
 $ kubectl create -f sc-nfs-ontap-nas-eco.yaml
 storageclass.storage.k8s.io/storage-class-nas-economy created
 
 $ kubectl get -n trident tbc backend-tbc-nfs-qtrees
-NAME                     BACKEND NAME          BACKEND UUID                           PHASE   STATUS
-backend-tbc-nfs-qtrees   BackendForNFSQtrees   bd3b79ae-c929-4151-9bc2-c636c9289da6   Bound   Success
+NAME                 BACKEND NAME          BACKEND UUID                           PHASE   STATUS
+backend-nfs-qtrees   BackendForNFSQtrees   bd3b79ae-c929-4151-9bc2-c636c9289da6   Bound   Success
 ```
 
 At this point, end-users can now create PVC against one of those storage classes.  

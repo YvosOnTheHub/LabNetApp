@@ -24,7 +24,7 @@ helm registry login registry.demo.netapp.com -u registryuser -p Netapp1!
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2510.0 \
+  --version 100.2602.0 \
   --namespace trident-protect -f trident_protect_helm_values.yaml
 ```
 After a few seconds (really), you will see a pod in the Trident Protect namespace:  
@@ -41,7 +41,7 @@ Trident Protect CR can be configured with YAML manifests or CLI.
 Let's install its CLI which avoids making mistakes when creating the YAML files:  
 ```bash
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
@@ -54,7 +54,7 @@ echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
 The CLI will appear as a new sub-menu in the _tridentctl_ tool.  
 ```bash
 $ tridentctl-protect version
-25.10.0
+26.02.0
 ```
 
 There are 2 scripts in this folder that can perform the installation automatically:  

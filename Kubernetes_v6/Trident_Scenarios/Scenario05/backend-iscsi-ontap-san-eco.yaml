@@ -1,7 +1,7 @@
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
-  name: backend-tbc-iscsi-eco
+  name: backend-iscsi-eco
   namespace: trident
 spec:
   version: 1

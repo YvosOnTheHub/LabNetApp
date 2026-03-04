@@ -1,5 +1,14 @@
 #!/bin/bash
 
+value=$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null || true)
+if [ "$value" = "24.02.0" ]; then
+  echo
+  echo "#######################################################################################################"
+  echo "Removing Trident 24.02"
+  echo "#######################################################################################################"
+  sh ../trident_uninstall.sh
+fi
+
 echo
 echo "#######################################################################################################"
 echo "Dealing with Trident images"
@@ -40,15 +49,15 @@ helm uninstall trident -n trident
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 25.10.0"
+echo "Download Trident 26.02"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 25.10.0 && cd 25.10.0
-wget https://github.com/NetApp/trident/releases/download/v25.10.0/trident-installer-25.10.0.tar.gz
-tar -xf trident-installer-25.10.0.tar.gz
-ln -sf /root/25.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.02.0 && cd 26.02.0
+wget https://github.com/NetApp/trident/releases/download/v26.02.0/trident-installer-26.02.0.tar.gz
+tar -xf trident-installer-26.02.0.tar.gz
+ln -sf /root/26.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -58,11 +67,11 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Install new Trident Operator (25.10.0)"
+echo "Install new Trident Operator (26.02.0)"
 echo "#######################################################################################################"
 
-sed -i s,netapp\/,registry.demo.netapp.com\/, ~/25.10.0/trident-installer/deploy/bundle.yaml
-kubectl create -f ~/25.10.0/trident-installer/deploy/bundle.yaml
+sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.02.0/trident-installer/deploy/bundle.yaml
+kubectl create -f ~/26.02.0/trident-installer/deploy/bundle.yaml
 
 cat << EOF | kubectl apply -f -
 apiVersion: trident.netapp.io/v1
@@ -72,8 +81,8 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:25.10.0
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:25.10.0
+  tridentImage: registry.demo.netapp.com/trident:26.02.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.02.0
   silenceAutosupport: true
   windows: true
   imagePullSecrets:
@@ -84,15 +93,21 @@ echo
 echo "#######################################################################################################"
 echo "Check (it takes about 3 to 4 minutes for the upgrade to proceed)"
 echo "#######################################################################################################"
-
+echo
 frames="/ | \\ -"
-while [ $(kubectl get tver -A | grep trident | awk '{print $3}') != '25.10.0' ];do
+until kubectl get crd tridentversions.trident.netapp.io >/dev/null 2>&1; do
     for frame in $frames; do
-        sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
+        sleep 0.5; printf "\rWaiting for CRD tridentversions.trident.netapp.io $frame"
     done
 done
 echo
-while [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '3/3' -e '6/6' | wc -l) -ne 7 ]; do
+until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.02.0" ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for Trident to be ready $frame"
+    done
+done
+echo
+until [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '3/3' -e '6/6' | wc -l) -eq 7 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done

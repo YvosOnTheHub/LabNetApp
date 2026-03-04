@@ -13,7 +13,7 @@ In a nutshell:
 The impact for Lab on Demand users is that they are potentially not going to be able to pull images, ie upgrade Trident (to a version under 25.10) or create an application.  
 This chapter will guide you through different steps to manage this situation...  
 
-**Note that Trident 25.10 images are also now available on the Quay repository (https://quay.io/organization/netapp), which does not have the same requirements or limits.** Quay is a repository managed by RedHat.  
+**Note starting with v25.10, Trident images are also available on the Quay repository (https://quay.io/organization/netapp), which does not have the same requirements or limits.** Quay is a repository managed by RedHat.  
 
 After reading this chapter, you will decide if you need to create your own Docker Hub user, which can be done directly on the following link [https://hub.docker.com/]. Obviously, you dont need to create a new user each time you use this lab on demand. This is done once & for all.  
 

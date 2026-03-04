@@ -120,11 +120,11 @@ Now let's continue with extra stuff.
 ## D. Install Helm
 
 ```bash
-$ wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
-$ tar -xvf helm-v3.15.3-linux-amd64.tar.gz
+$ wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+$ tar -xvf helm-v4.0.5-linux-amd64.tar.gz
 $ /bin/cp -f linux-amd64/helm /usr/local/bin/
 $ helm version --short
-v3.15.3+g3bb50bb
+v4.0.5+g1b6053d
 ```
 
 ## E. Install and configure MetalLB  
@@ -204,10 +204,10 @@ Also, it is here expected that the current Trident installation already runs at 
 If not done yet, check out the [Scenario01](../../Trident_Scenarios/Scenario01/1_Helm/).  
 ```bash
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2510.0 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:25.10.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:25.10.0 \
---set tridentImage=registry.demo.netapp.com/trident:25.10.0 \
+helm install trident netapp-trident/trident-operator --version 100.2602.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.02.0 \
+--set tridentImage=registry.demo.netapp.com/trident:26.02.0 \
 --set tridentSilenceAutosupport=true
 ```
 After a few minutes, Trident should be ready:
@@ -221,7 +221,7 @@ trident-operator-5c4f8bd896-rf8xp    1/1     Running   0          5m20s   192.16
 
 $ kubectl get tver -A
 NAMESPACE   NAME      VERSION
-trident     trident   25.10.0
+trident     trident   26.02.0
 ```
 
 ## H. Install a CSI Snapshot Controller & create a Volume Snapshot Class

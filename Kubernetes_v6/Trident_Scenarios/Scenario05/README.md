@@ -5,33 +5,30 @@
 **GOAL:**  
 You understood how to create backends and what they are for.  
 You probably have also created a few ones with the NAS drivers (cf [Scenario02](../Scenario02/)).  
-It is now time to add more backends that can be used for block storage.  
+It is now time to add more backends that can be used for block storage:  
+- [_backend-iscsi_](#iscsi): Trident driver ONTAP-SAN: creates an iSCSI LUN in an ONTAP FlexVol (one LUN per FlexVol).  
+- [_backend-iscsi-luks_](#luks): Trident driver ONTAP-SAN: same as _backend-iscsi_ but with LUKS enabled.   
+- [_backend-iscsi-eco_](#iscsi-eco): Trident driver ONTAP-SAN-ECONOMY: creates up to 200 iSCSI LUN in one ONTAP FlexVol. 
+- [_backend-nvme_](#nvme): Trident driver ONTAP-SAN: creates an NVMe namespace in an ONTAP FlexVol (one namespace per FlexVol).  
 
 <p align="center"><img src="Images/scenario5.jpg"></p>
 
-This lab already has 2 backends configured to provide NFS & SMB volumes with the ONTAP-NAS driver.  
-As they have been created with the _tridentctl_ tool, there is no TBC (TridentBackendConfig) object associated with them that allow backend management with kubectl. We will then first go through the creation of the two TBCs.
-Then, we will also create an ONTAP-SAN-ECONOMY backend which will store multiple LUNs per FlexVol in ONTAP.
+Note that Trident also supports FCP, but as the lab is not equipped for such infrastructure, it will not be covered in this repo.  
 
-## A. Create the TBC objects corresponding to the existing SAN backends
+## A. Create an iSCSI backend
+<a name="iscsi"></a>
 
+The SVM _sansvm_ is already configured to provide CHAP authentication.  
+Reflecting that in the Trident backend is done with the _useCHAP: true_ parameter.  
+The CHAP keys can also be found in the corresponding _secret_ (_chapInitiatorSecret_, _chapTargetInitiatorSecret_, _chapTargetUsername_ and _chapUsername_).  
+
+This folder already contains the necessary files to start the setup:
 ```bash
-$ tridentctl -n trident get backend
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
-|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | USER-STATE | VOLUMES |
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
-| BackendForNFS   | ontap-nas      | 11d28fb4-6cf5-4c59-931d-94b8d8a5e061 | online | normal     |       0 |
-| BackendForSMB   | ontap-nas      | 7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3 | online | normal     |       0 |
-| BackendForNVMe  | ontap-san      | 493fef7f-8328-41d4-99f2-dea4281324a1 | online | normal     |       0 |
-| BackendForiSCSI | ontap-san      | 17c482e4-6aa7-4a0a-b4f8-26c75eae8a59 | online | normal     |       0 |
-+-----------------+----------------+--------------------------------------+--------+------------+---------+
+$ kubectl create -f secret-ontap-iscsi-svm-creds.yaml
+secret/secret-iscsi-svm-creds created
+$ kubectl create -f backend-iscsi-ontap-san.yaml
+tridentbackendconfig.trident.netapp.io/backend-iscsi created
 ```
-Moving from a tridentctl based backend to a kubectl one requires the creation of 2 objects:  
-- a secret
-- a TBC
-
-When going through that process, make sure that the backend parameters are correctly reported in the TBC.  
-
 As the iSCSI configuration is secured with CHAP authentication, we will create a secret per protocol (NVMe is not compatible with CHAP).  
 
 This folder already contains the necesary files:
@@ -40,64 +37,41 @@ $ kubectl create -f secret-ontap-iscsi-svm-creds.yaml
 secret/secret-iscsi-svm-creds created
 $ kubectl create -f backend-tbc-iscsi.yaml
 tridentbackendconfig.trident.netapp.io/backend-tbc-iscsi created
-
-$ kubectl create -f secret-ontap-nvme-svm-creds.yaml
-secret/secret-nvme-svm-creds created
-$ kubectl create -f backend-tbc-nvme.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-nvme created
 ```
-
-Let's check that it all went fine. Backends should be displayed as "status=success" & no new entry should be visible when listing the backends with tridentctl.  
+Let's check that it all went fine. The new backend should be displayed as "status=success".  
 ```bash
-$ kubectl get tbc -A
-NAMESPACE   NAME                BACKEND NAME      BACKEND UUID                           PHASE   STATUS
-trident     backend-tbc-iscsi   BackendForiSCSI   17c482e4-6aa7-4a0a-b4f8-26c75eae8a59   Bound   Success
-trident     backend-tbc-nvme    BackendForNVMe    493fef7f-8328-41d4-99f2-dea4281324a1   Bound   Success
+$ kubectl get tbc backend-tbc-iscsi -n trident
+NAME                BACKEND NAME      BACKEND UUID                           PHASE   STATUS
+backend-tbc-iscsi   BackendForiSCSI   17c482e4-6aa7-4a0a-b4f8-26c75eae8a59   Bound   Success
 
-$ tridentctl -n trident get backend
+$ tridentctl -n trident get backend BackendForiSCSI
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
 |      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | USER-STATE | VOLUMES |
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
-| BackendForNFS   | ontap-nas      | 11d28fb4-6cf5-4c59-931d-94b8d8a5e061 | online | normal     |       0 |
-| BackendForSMB   | ontap-nas      | 7f9d71c8-b6a9-4f1f-ac20-4b594dbf37e3 | online | normal     |       0 |
-| BackendForNVMe  | ontap-san      | 493fef7f-8328-41d4-99f2-dea4281324a1 | online | normal     |       0 |
 | BackendForiSCSI | ontap-san      | 17c482e4-6aa7-4a0a-b4f8-26c75eae8a59 | online | normal     |       0 |
 +-----------------+----------------+--------------------------------------+--------+------------+---------+
 ```
 All good !
 
-Note that all backend modifications must be applied to the _trident backend config_ objects, not the _trident backend_ ones.  
-
-The storage classes are already present, so no need to recreate or modify them.  
-```bash
-$ kubectl get sc
-NAME                  PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
-storage-class-iscsi   csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-nfs     csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-nvme    csi.trident.netapp.io   Delete          Immediate           true                   75d
-storage-class-smb     csi.trident.netapp.io   Delete          Immediate           true                   75d
-```
-
 ## B. Create a ONTAP-SAN-ECONOMY environment with iSCSI  
+<a name="iscsi-eco"></a>
 
 When using ONTAP-SAN with the iSCSI protocol, one PVC corresponds to one LUN, which will be created in one ONTAP FlexVol.
 Everything has limits, and specifically with ONTAP you can host up to 2500 FlexVol per controller (that depends on various parameters, such as version or architecture. Check hwu.netapp.com for correct values). There is also a limit for number of LUN per controller.    
 
-If those limits are too low, one alternative is to move to the ONTAP-SAN-ECONOMY Trident driver, which will then host several LUN per ONTAP FlexVol. Trident allow you to create up to 50 LUN for FlexVol.  
-
-Important to note that volume import is not supported with ONTAP-SAN-ECONOMY  
+If those limits are too low, one alternative is to move to the ONTAP-SAN-ECONOMY Trident driver, which will then host several LUN per ONTAP FlexVol. Trident allow you to create up to 200 LUN for FlexVol (minimum: 50, default: 100).  
 
 The TBC we are going to create uses the same iSCSI _secret_ created in the first part of this chapter.  
 We also need a new storage class to complete the process.  
 ```bash
-$ kubectl create -f backend-san-eco.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-iscsi-eco created
+$ kubectl create -f backend-iscsi-ontap-san-eco.yaml
+tridentbackendconfig.trident.netapp.io/backend-iscsi-eco created
 $ kubectl create -f sc-iscsi-ontap-san-eco.yaml
 storageclass.storage.k8s.io/storage-class-iscsi-economy created
 
 $ kubectl get -n trident tbc backend-tbc-iscsi-eco
-NAME                    BACKEND NAME         BACKEND UUID                           PHASE   STATUS
-backend-tbc-iscsi-eco   BackendForiSCSIEco   9591fe15-9dac-42a4-b4c3-bdddfdfdbec5   Bound   Success
+NAME                BACKEND NAME         BACKEND UUID                           PHASE   STATUS
+backend-iscsi-eco   BackendForiSCSIEco   9591fe15-9dac-42a4-b4c3-bdddfdfdbec5   Bound   Success
 ```
 
 ## C. Validate the CHAP configuration on the storage backend
@@ -122,6 +96,7 @@ You find here both usernames set in the backend parameters.
 Now, you can only see the CHAP configuration on the host once a POD has mounted a PVC, which you will do in the Scenario06.
 
 ## D. LUKS
+<a name="luks"></a>
 
 You can use LUKS (Linux Unified Key Setup) to encrypt the data on the ONTAP-SAN & ONTAP-SAN-ECONOMY volumes.  
 
@@ -153,17 +128,48 @@ The _node-stage-secret-name_ parameter defines the secret name format, which in 
 
 Let's apply that configuration:  
 ```bash
-$ kubectl create -f backend-san-luks.yaml
-tridentbackendconfig.trident.netapp.io/backend-tbc-iscsi-luks created
+$ kubectl create -f backend-iscsi-ontap-san-luks.yaml
+tridentbackendconfig.trident.netapp.io/backend-iscsi-luks created
 $ kubectl create -f sc-iscsi-ontap-san-luks.yaml
 storageclass.storage.k8s.io/storage-class-iscsi-luks created
 
-$ kubectl get -n trident tbc backend-tbc-iscsi-luks
+$ kubectl get -n trident tbc backend-iscsi-luks
 NAME                     BACKEND NAME          BACKEND UUID                           PHASE   STATUS
-backend-tbc-iscsi-luks   BackendForiSCSILUKS   0f908faf-ec2f-4933-b9f7-ef28f8149eeb   Bound   Success
+backend-iscsi-luks   BackendForiSCSILUKS   0f908faf-ec2f-4933-b9f7-ef28f8149eeb   Bound   Success
 ```
 
-## E. What's next
+## E. Create a NVMe backend
+<a name="nvme"></a>
+
+As NVMe does not support CHAP, the backend will have its own secret:  
+```bash
+$ kubectl create -f secret-ontap-nvme-svm-creds.yaml
+secret/secret-nvme-svm-creds created
+$ kubectl create -f backend-nvme-ontap-san.yaml
+tridentbackendconfig.trident.netapp.io/backend-nvme created
+```
+
+Let's check that it all went fine. Backends should be displayed as "status=success" & no new entry should be visible when listing the backends with tridentctl.  
+```bash
+$ kubectl get tbc backend-nvme -n trident
+NAME            BACKEND NAME      BACKEND UUID                           PHASE   STATUS
+backend-nvme    BackendForNVMe    493fef7f-8328-41d4-99f2-dea4281324a1   Bound   Success
+
+$ tridentctl -n trident get backend BackendForNVMe
++-----------------+----------------+--------------------------------------+--------+------------+---------+
+|      NAME       | STORAGE DRIVER |                 UUID                 | STATE  | USER-STATE | VOLUMES |
++-----------------+----------------+--------------------------------------+--------+------------+---------+
+| BackendForNVMe  | ontap-san      | 493fef7f-8328-41d4-99f2-dea4281324a1 | online | normal     |       0 |
++-----------------+----------------+--------------------------------------+--------+------------+---------+
+```
+and voilà.
+
+Some information about this NVMe backend:  
+- not supported with the Trident driver ONTAP-SAN-ECONOMY. 
+- contrary to iSCSI where you have an iGroup per worker node, Trident uses a "shared super-susbsystem" which can be linked to a maximum of 64 nodes. 
+
+
+## F. What's next
 
 Now, you have some SAN Backends & some storage classes configured. You can proceed to the creation of a stateful application:  
 - [Scenario06](../Scenario06): Deploy your first app with Block storage  

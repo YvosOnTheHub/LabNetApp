@@ -5,20 +5,11 @@ echo "############################################"
 cd
 
 cat <<EOF >> protectValues.yaml
+imageRegistry: registry.demo.netapp.com
 imagePullSecrets:
 - name: regcred
-controller:
-  image:
-    registry: registry.demo.netapp.com
-rbacProxy:
-  image:
-    registry: registry.demo.netapp.com
-crCleanup:
-  imagePullSecrets:
-  - name: regcred
-webhooksCleanup:
-  imagePullSecrets:
-  - name: regcred
+nodeSelector:
+  kubernetes.io/os: linux
 EOF
 
 kubectl create ns trident-protect
@@ -28,7 +19,7 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod2 \
-  --version 100.2510.0 \
+  --version 100.2602.0 \
   --namespace trident-protect -f protectValues.yaml
 
 echo
@@ -36,7 +27,7 @@ echo "############################################"
 echo "### Protectctl install"
 echo "############################################"
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/25.10.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 

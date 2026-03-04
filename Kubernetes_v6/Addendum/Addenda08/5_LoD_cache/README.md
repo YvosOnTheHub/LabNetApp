@@ -24,4 +24,4 @@ You will find in this folder, a shell script (*push_trident_images_to_repo.sh*) 
 - modify the registries.conf file on RHEL3  
 - pull the Trident images from Quay instead of the Docker Hub and push them to the local repo.  
 
-**Note:** As Trident 25.10 images are now available on Quay.io, the configuration of that registry mirror is really only useful for other DockerHub images, or for older versions of Trident (which are not on Quay.io).
+**Note:** Starting with 25.10, Trident images are available on Quay.io, the configuration of that registry mirror is really only useful for other DockerHub images, or for older versions of Trident (which are not on Quay.io).

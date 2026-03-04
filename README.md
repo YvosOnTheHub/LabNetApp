@@ -37,7 +37,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 ## Trident Scenarios (Dynamic Storage Provisionning)  
 
 [0.](Kubernetes_v6/Trident_Scenarios/Scenario00) Best Practices & Advices  
-[1.](Kubernetes_v6/Trident_Scenarios/Scenario01) Upgrade/Install Trident (25.10.0)  
+[1.](Kubernetes_v6/Trident_Scenarios/Scenario01) Install Trident (26.02.0)  
 [2.](Kubernetes_v6/Trident_Scenarios/Scenario02) NAS backends for Trident & Storage Classes for Kubernetes  
 [3.](Kubernetes_v6/Trident_Scenarios/Scenario03) Prometheus, Grafana & Harvest integration  
 [4.](Kubernetes_v6/Trident_Scenarios/Scenario04) Create your first NAS Apps  
@@ -65,6 +65,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [26.](Kubernetes_v6/Trident_Scenarios/Scenario26) Working in parallel  
 [27.](Kubernetes_v6/Trident_Scenarios/Scenario27) Demystifying Virtual Machines  
 [28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover   
+[29.](Kubernetes_v6/Trident_Scenarios/Scenario29) Space Management   
 
 ## Trident Protect Scenarios (Application data protection)  
 

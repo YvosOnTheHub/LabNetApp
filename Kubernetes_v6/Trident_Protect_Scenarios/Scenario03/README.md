@@ -85,8 +85,78 @@ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod --summa
 aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod --recursive --summarize
 ```
 
+Trident Protect can also browse the bucket and provide (with the _getappvaultcontent_ flag) the list and path of all the snapshots & backups if finds there.  
+Note that access must be available between the host where the tridentctl-protect is and the bucket.  
 
+<a name="debug"></a>
+For debugging purposes, you may want to parse the bucket from within your Kubernetes cluster.  
+The following procedure will:  
+- extract the keys from the AWS credentials file. 
+- create a secret with each keys. 
+- create a pod that list the content of the bucket
 
+```bash
+AWS_ACCESS_KEY_ID=$(awk -F= '/aws_access_key_id/ {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2; exit}' ~/.aws/credentials) && echo $AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=$(awk -F= '/aws_secret_access_key/ {gsub(/^[ \t]+|[ \t]+$/,"",$2); print $2; exit}' ~/.aws/credentials) && echo $AWS_SECRET_ACCESS_KEY
 
+kubectl create secret generic aws-credentials-env \
+  --from-literal=AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+  --from-literal=AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
 
+kubectl label secret aws-credentials-env debug=awscli
 
+cat << EOF | kubectl apply  -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: awscli-pod
+  labels:
+    debug: awscli
+spec:
+  restartPolicy: Never
+  containers:
+  - name: awscli
+    image: quay.io/yvosonthehub/aws-cli:2.33.29
+    command: ["aws","s3","ls","--no-verify-ssl","--endpoint-url","http://192.168.0.230","s3://s3lod","--recursive","--summarize","--human-readable"]
+    env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-credentials-env
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-credentials-env
+          key: AWS_SECRET_ACCESS_KEY
+EOF
+```
+You can adapt the _command_ parameters with your own setup to have the right result.  
+Once applied, you should see the following:
+```bash
+$ kubectl get pod -w
+NAME         READY   STATUS    RESTARTS   AGE
+awscli-pod   1/1     Running   0          4s
+awscli-pod   0/1     Completed   0          4s
+```
+The results of the command are available in the pod logs:
+```bash
+$ kubectl logs awscli-pod
+2026-02-23 06:38:11         39 appVault.json
+
+Total Objects: 1
+   Total Size: 39
+```
+The pod and secret can then be deleted.
+```bash
+$ kubectl delete po,secret -l debug=awscli
+pod "awscli-pod" deleted
+secret "aws-credentials-env" deleted
+```
+
+If you only want to create a container outside of Kubernetes, this is also pretty easy using the following method:  
+```bash
+$ alias awspod='podman run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws quay.io/yvosonthehub/aws-cli:2.33.29'
+$ awspod s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod
+2026-02-23 07:51:24         39 appVault.json
+```

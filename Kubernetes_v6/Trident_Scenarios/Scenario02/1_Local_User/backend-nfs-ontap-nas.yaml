@@ -1,17 +1,18 @@
 apiVersion: trident.netapp.io/v1
 kind: TridentBackendConfig
 metadata:
-  name: backend-tbc-smb
+  name: backend-nfs
   namespace: trident
 spec:
   version: 1
   storageDriverName: ontap-nas
   managementLIF: 192.168.0.133
-  dataLIF: 192.168.0.131
-  backendName: BackendForSMB
-  nasType: smb
-  svm: nassvm
-  securityStyle: ntfs
-  unixPermissions: ""
+  backendName: BackendForNFS
+  nasType: nfs
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  defaults:
+    snapshotDir: 'true'
   credentials:
     name: secret-nas-svm-creds

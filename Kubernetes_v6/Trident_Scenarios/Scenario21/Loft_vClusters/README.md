@@ -80,12 +80,12 @@ The lab runs Helm 3.XXXX. Here are the steps to upgrade this tool:
 $ helm version --short
 v3.9.4+gdbc6d8e
 
-$ wget https://get.helm.sh/helm-v3.15.3-linux-amd64.tar.gz
-$ tar -xvf helm-v3.15.3-linux-amd64.tar.gz
+$ wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+$ tar -xvf helm-v4.0.5-linux-amd64.tar.gz
 $ /bin/cp -f linux-amd64/helm /usr/local/bin/
 
 $ helm version --short
-v3.15.3+g3bb50bb
+v4.0.5+g1b6053d
 ```
 
 ## C. Install vCluster
