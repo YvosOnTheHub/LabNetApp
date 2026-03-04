@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tridentctl-protect
+  namespace: trident-protect
+spec:
+  restartPolicy: Never
+  containers:
+    - name: tridentctl-protect
+      image: quay.io/yvosonthehub/tridentctl-protect:26.02.0
+      command: ["/bin/sh","-c"]
+      args: ["sleep 3600"]
+  serviceAccountName: trident-protect-controller-manager

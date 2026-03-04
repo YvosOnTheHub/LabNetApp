@@ -87,6 +87,23 @@ aws s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod --recur
 
 Trident Protect can also browse the bucket and provide (with the _getappvaultcontent_ flag) the list and path of all the snapshots & backups if finds there.  
 Note that access must be available between the host where the tridentctl-protect is and the bucket.  
+If your session does not have access to the bucket, how would you run this command?  
+The answer is there: https://github.com/YvosOnTheHub/tridentctl-protect !  
+You can run a pod in the trident-protect namespace that contains the tridentctl-binary:  
+```bash
+$ kubectl create -f tridentctl-protect.yaml
+pod/tridentctl-protect created
+```
+With that pod, you can now easily run your commands without the need for S3 connectivity on your laptop:  
+```bash
+$ kubectl exec -n trident-protect tridentctl-protect -- /tridentctl-protect get appvaultcontent ontap-vault --show-resources all -n trident-protect
+---------+------+----------+-----------+-----------+-----------+-------+---------------------------+---------------------------+
+| CLUSTER | APP  |   TYPE   |   NAME    | NAMESPACE |   STATE   | ERROR |          CREATED          |         COMPLETED         |
++---------+------+----------+-----------+-----------+-----------+-------+---------------------------+---------------------------+
+|         | bbox | snapshot | bboxsnap1 | bbox      | Completed |       | 2026-03-03 14:42:11 (UTC) | 2026-03-03 14:42:24 (UTC) |
+|         | bbox | backup   | bboxbkp1  | bbox      | Completed |       | 2026-03-03 14:42:27 (UTC) | 2026-03-03 14:43:48 (UTC) |
++---------+------+----------+-----------+-----------+-----------+-------+---------------------------+---------------------------+
+```
 
 <a name="debug"></a>
 For debugging purposes, you may want to parse the bucket from within your Kubernetes cluster.  
@@ -160,3 +177,10 @@ $ alias awspod='podman run --rm -ti -v ~/.aws:/root/.aws -v $(pwd):/aws quay.io/
 $ awspod s3 ls --no-verify-ssl --endpoint-url http://192.168.0.230 s3://s3lod
 2026-02-23 07:51:24         39 appVault.json
 ```
+
+Last, if you experience difficulties to create an AppVault, maybe because of network issues or permissions, here is something useful: https://github.com/YvosOnTheHub/s3-checker. This project will run the following checks against a S3 bucket directly from Kubernetes:  
+- DNS resolution  
+- TCP Connectivity test
+- PING
+- Bucket Permissions check
+- S3 type check 
