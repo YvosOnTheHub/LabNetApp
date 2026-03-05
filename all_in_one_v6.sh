@@ -258,6 +258,7 @@ alias kdel='kubectl delete'
 alias kx='kubectl exec -it'
 alias kdesc='kubectl describe'
 alias kedit='kubectl edit'
+alias kl='kubectl logs'
 alias trident='tridentctl -n trident'
 EOT
 fi

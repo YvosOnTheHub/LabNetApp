@@ -15,7 +15,7 @@ If you want to know all the details, the following link contains a lot of inform
 A TridentAutogrowPolicy (_TAG_) is a new Trident CRD, which contains 3 configurable parameters:  
 - usedThreshold (%): percentage of used capacity that trigger the volume expansion.  
 - growthAmount (% or size): growth amount (optional, defaults to 10%).  
-- maxSize: maximum size a volume can reach (optinal). 
+- maxSize: maximum size a volume can reach (optional). 
 
 Let's create one for our scenario:  
 ```bash
@@ -89,7 +89,7 @@ demo-autogrow
 ```
 You can also check how many volumes are assigned to such policies:  
 ```bash
-$ trident get agp
+$ tridentctl -n trident get agp
 +---------------+----------------+---------------+----------+---------+
 |     NAME      | USED THRESHOLD | GROWTH AMOUNT | MAX SIZE | VOLUMES |
 +---------------+----------------+---------------+----------+---------+

@@ -9,6 +9,8 @@ Not all operations can run in parallel, but there are plenty of tasks that Tride
 The following page explains very well the why and the how: https://community.netapp.com/t5/Tech-ONTAP-Blogs/Trident-Controller-Parallelism/ba-p/461918.  
 It all also contains metrics observed during benchmarks with hundreds of PVC.  
 
+With Trident 26.02, the following configurations are now GA for concurrency: ONTAP-NAS (NFS only), ONTAP-SAN (iSCSI, FCP, NVMe), and Google Cloud NetApp Volumes (GCNV) drivers.  
+
 In the context of this lab, we will see how to enable that feature and also run some tests.  
 We will first run some baseline tests without the feature, and compare them with 2 more tests once the concurrency is enabled.  
 
