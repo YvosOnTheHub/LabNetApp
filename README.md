@@ -55,7 +55,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [16.](Kubernetes_v6/Trident_Scenarios/Scenario16) Performance control  
 [17.](Kubernetes_v6/Trident_Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
 [18.](Kubernetes_v6/Trident_Scenarios/Scenario18) Kubernetes, Trident & GitOps  
-[19.](Kubernetes_v6/Trident_Scenarios/Scenario19) Let's talk about protocols & access modes! (**MAINTENANCE**)  
+[19.](Kubernetes_v6/Trident_Scenarios/Scenario19) Let's talk about protocols & access modes!  
 [20.](Kubernetes_v6/Trident_Scenarios/Scenario20) About Generic Ephemeral Volumes  
 [21.](Kubernetes_v6/Trident_Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
 [22.](Kubernetes_v6/Trident_Scenarios/Scenario22) Crossing the borders    

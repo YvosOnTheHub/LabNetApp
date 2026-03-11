@@ -135,6 +135,11 @@ $ tridentctl -n trident get storageclass sc-topology -o json | jq  '[.items[] | 
 ...
 ```
 
+If you don't have access to tridentctl, you could go through the Trident Controller:  
+```bash
+kubectl exec -n trident $(kubectl get -n trident po -l app=controller.csi.trident.netapp.io -o name) -- tridentctl -n trident get storageclass sc-topology -o json | jq  '[.items[] | {storageClass: .Config.name, backends: [.storage]|unique}]'
+```
+
 In this very case, when provisioning a volume against the _sc-topology_ storage class, Trident will choose between 2 different available backends.
 
 ## G. How can I enable debug mode with the Trident operator

@@ -20,48 +20,33 @@ EOT
   fi
 fi
 
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/mariadb/tags/list' | jq -r '.tags[]? | select(.=="11.4.2-debian-12-r2")')" ]]; then
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/busybox/tags/list' | jq -r '.tags[]? | select(.=="1.33.0")')" ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy MariaDB 11.4 Into Private Repo"
+  echo "# Skopeo Copy Busybox 1.33.0 Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-    docker://quay.io/yvosonthehub/bitnami/mariadb:11.4.2-debian-12-r2 docker://registry.demo.netapp.com/bitnami/mariadb:11.4.2-debian-12-r2 \
+    docker://quay.io/yvosonthehub/busybox:1.33.0 docker://registry.demo.netapp.com/busybox:1.33.0 \
     --src-tls-verify=false --dest-tls-verify=false 
 else
   echo
   echo "##############################################################"
-  echo "# MariaDB 11.4 already in the Private Repo - nothing to do"
+  echo "# Busybox 1.33.0 already in the Private Repo - nothing to do"
   echo "##############################################################"
 fi
 
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/wordpress/tags/list' | jq -r '.tags[]? | select(.=="6.6.1-debian-12-r1")')" ]]; then
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/busybox/tags/list' | jq -r '.tags[]? | select(.=="1.35.0")')" ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy WordPress 6.6.1-debian-12-r1 Into Private Repo"
+  echo "# Skopeo Copy Busybox 1.35.0 Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-    docker://quay.io/yvosonthehub/bitnami/wordpress:6.6.1-debian-12-r1 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r1 \
+    docker://quay.io/yvosonthehub/busybox:1.35.0 docker://registry.demo.netapp.com/busybox:1.35.0 \
     --src-tls-verify=false --dest-tls-verify=false 
 else
   echo
   echo "##############################################################"
-  echo "# WordPress 6.6.1-debian-12-r1 already in the Private Repo - nothing to do"
-  echo "##############################################################"
-fi
-
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/bitnami/wordpress/tags/list' | jq -r '.tags[]? | select(.=="6.6.1-debian-12-r3")')" ]]; then
-  echo
-  echo "##############################################################"
-  echo "# Skopeo Copy WordPress 6.6.1-debian-12-r3 Into Private Repo"
-  echo "##############################################################"
-  podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-    docker://quay.io/yvosonthehub/bitnami/wordpress:6.6.1-debian-12-r3 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r3 \
-    --src-tls-verify=false --dest-tls-verify=false 
-else
-  echo
-  echo "##############################################################"
-  echo "# WordPress 6.6.1-debian-12-r3 already in the Private Repo - nothing to do"
+  echo "# Busybox 1.35.0 already in the Private Repo - nothing to do"
   echo "##############################################################"
 fi
 
@@ -79,47 +64,17 @@ if ! dnf -q list installed skopeo >/dev/null 2>&1; then
   fi
 fi
 
-
-
-skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
-
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/bitnami/mariadb 2> /dev/null | grep 11.4.2-debian-12-r2 | wc -l) -eq 0 ]]; then
+if [[ $(skopeo list-tags docker://registry.demo.netapp.com/busybox 2> /dev/null | grep 1.35.0 | wc -l) -eq 0 ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy MariaDB 11.4 Into Private Repo"
+  echo "# Skopeo Copy Busybox 1.35.0 Into Private Repo"
   echo "##############################################################"
-  
-  skopeo copy docker://docker.io/bitnami/mariadb:11.4.2-debian-12-r2 docker://registry.demo.netapp.com/bitnami/mariadb:11.4.2-debian-12-r2
+  skopeo login registry.demo.netapp.com  -u registryuser -p Netapp1!
+  skopeo copy docker://docker.io/busybox:1.35.0 docker://registry.demo.netapp.com/busybox:1.35.0
 else
   echo
   echo "##############################################################"
-  echo "# MariaDB 11.4 already in the Private Repo - nothing to do"
+  echo "# Busybox 1.35.0 already in the Private Repo - nothing to do"
   echo "##############################################################"
-fi
-
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/bitnami/wordpress 2> /dev/null | grep 6.6.1-debian-12-r1 | wc -l) -eq 0 ]]; then
-  echo
-  echo "##############################################################"
-  echo "# Skopeo Copy WORDPRESS 6.6.1 (Debian 12-r1) Into Private Repo"
-  echo "##############################################################"
-  skopeo copy docker://docker.io/bitnami/wordpress:6.6.1-debian-12-r1 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r1
-else
-  echo
-  echo "################################################################################"
-  echo "# WORDPRESS 6.6.1 (Debian 12-r1) already in the Private Repo - nothing to do"
-  echo "################################################################################"
-fi
-
-if [[ $(skopeo list-tags docker://registry.demo.netapp.com/bitnami/wordpress 2> /dev/null | grep 6.6.1-debian-12-r3 | wc -l) -eq 0 ]]; then
-  echo
-  echo "##############################################################"
-  echo "# Skopeo Copy WORDPRESS 6.6.1 (Debian 12-r3) Into Private Repo"
-  echo "##############################################################"
-  skopeo copy docker://docker.io/bitnami/wordpress:6.6.1-debian-12-r3 docker://registry.demo.netapp.com/bitnami/wordpress:6.6.1-debian-12-r3
-else
-  echo
-  echo "################################################################################"
-  echo "# WORDPRESS 6.6.1 (Debian 12-r3) already in the Private Repo - nothing to do"
-  echo "################################################################################"
 fi
 ARCHIVE_COMMENT
