@@ -127,7 +127,7 @@ You then first need to retrieve the initial admin password to interact with that
 $ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 qTTj3KFu52EpsGvd
 
-$  argocd login 192.168.0.212 --username admin --password qTTj3KFu52EpsGvd --insecure
+$ argocd login 192.168.0.212 --username admin --password qTTj3KFu52EpsGvd --insecure
 WARNING: server is not configured with TLS. Proceed (y/n)? y
 'admin:login' logged in successfully
 Context '192.168.0.212' updated

@@ -108,10 +108,10 @@ Let's immediately check the used space in the volume with the ONTAP API:
 ```bash
 $ VOLNAME=$(kubectl get -n trident tvol $(kubectl get pvc -n busybox-tap mydata -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.config.internalName}')
 $ VOLUUID=$(curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes?name=$VOLNAME" -H "accept: application/json" | jq -r .records[0].uuid)
-$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024'
-8.827392578125
+$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024*100|round/100'
+8.83
 ```
-=> 8.8GB is above the threshold, you can then expect a volume size change shortly.  
+=> 8.83GB is above the threshold, you can then expect a volume size change shortly.  
 
 Trident regularly check the size of volumes (every minute).  
 If a threshold is passed, Trident will create a CR called **TridentAutoGrowRequestInternal** (_TAGRI_) that will request the PVC resize.  
@@ -144,10 +144,10 @@ Time to quickly check again the used space in the volume:
 ```bash
 $ VOLNAME=$(kubectl get -n trident tvol $(kubectl get pvc -n busybox-tap mydata -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.config.internalName}')
 $ VOLUUID=$(curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes?name=$VOLNAME" -H "accept: application/json" | jq -r .records[0].uuid)
-$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024'
-10.788978576660156
+$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024*100|round/100'
+10.79
 ```
-Once again, 10,78GB is above the 80% used space threshold.  
+Once again, 10,79GB is above the 80% used space threshold.  
 And just a few seconds later, the volume is resized with 2 extra Gi:  
 ```bash
 $ kubectl get -n busybox-tap pvc
@@ -166,8 +166,8 @@ Last size verification:
 ```bash
 $ VOLNAME=$(kubectl get -n trident tvol $(kubectl get pvc -n busybox-tap mydata -o=jsonpath='{.spec.volumeName}') -o=jsonpath='{.config.internalName}')
 $ VOLUUID=$(curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes?name=$VOLNAME" -H "accept: application/json" | jq -r .records[0].uuid)
-$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024'
-13.240985870361328
+$ curl -X GET -sku admin:Netapp1! "https://cluster1.demo.netapp.com/api/storage/volumes/$VOLUUID" -H "accept: application/json" | jq -r '.space.used/1024/1024/1024*100|round/100'
+13.24
 ```
 This will trigger another volume expansion, but instead of adding 2GB, it will take us to the ceiling of 15Gi:  
 ```bash

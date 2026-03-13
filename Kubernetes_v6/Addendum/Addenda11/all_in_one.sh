@@ -1,3 +1,5 @@
+cd ~/LabNetApp/Kubernetes_v6/Addendum/Addenda11
+
 helm repo add argo https://argoproj.github.io/argo-helm
 helm install argocd argo/argo-cd --version 6.7.3 -n argocd --create-namespace -f argocd_values.yaml
 

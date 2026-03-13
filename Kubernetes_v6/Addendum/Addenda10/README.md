@@ -27,7 +27,7 @@ sh addenda10_pull_images.sh
 
 In order to build our Gitea application, we need to use the _podman-compose_ tool:
 ```bash
-dnf install -y podman-compose
+dnf install -y podman-compose podman-plugins
 ```
 
 Podman compose will start 2 containers, one for the MySQL Database used by Gitea, one for the frontend.  
@@ -38,7 +38,7 @@ $ podman-compose up -d
 
 $ podman ps
 CONTAINER ID  IMAGE                          COMMAND               CREATED         STATUS         PORTS                                        NAMES
-473214e43a74  docker.io/library/mysql:8.0    mysqld                32 seconds ago  Up 32 seconds                                               addenda11_db_1
+473214e43a74  docker.io/library/mysql:8.0    mysqld                32 seconds ago  Up 32 seconds                                               db
 d1ba524ea54b  docker.io/gitea/gitea:1.14.2   /bin/s6-svscan /e...  30 seconds ago  Up 30 seconds  0.0.0.0:222->22/tcp, 0.0.0.0:3000->3000/tcp  gitea
 ```
 

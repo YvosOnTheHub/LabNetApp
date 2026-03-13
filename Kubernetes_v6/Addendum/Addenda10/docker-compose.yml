@@ -8,6 +8,10 @@ services:
   server:
     image: registry.demo.netapp.com/gitea/gitea:1.14.2
     container_name: gitea
+    # If podman-plugins are not installed, activate DNS when Kubernetes is also installed on the same host and you want to use the Kubernetes DNS server for name resolution. 
+    # Otherwise, the container will not be able to resolve the database hostname "db".
+    # dns:
+    #  - 10.89.0.1
     environment:
       - USER_UID=1000
       - USER_GID=1000
@@ -38,6 +42,7 @@ services:
 
   db:
     image: registry.demo.netapp.com/mysql:8.0
+    container_name: db
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=gitea
