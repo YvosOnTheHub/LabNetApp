@@ -11,6 +11,19 @@ Helm is already present in the LabOnDemand:
 $ helm version
 version.BuildInfo{Version:"v3.9.4", GitCommit:"dbc6d8e20fe1d58d50e6ed30f09a04a77e4c68db", GitTreeState:"clean", GoVersion:"go1.17.13"}
 ```
+It is however recommened to upgrade Helm to a more recent version in order to avoid issues later in the lab:  
+```bash
+wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+tar -xvf helm-v4.0.5-linux-amd64.tar.gz
+/bin/cp -f linux-amd64/helm /usr/local/bin/
+rm -f helm-v4.0.5-linux-amd64.tar.gz
+```
+You should now see the following:  
+```bash
+$ helm version --short
+v4.0.5+g1b6053d
+```
+
 As Trident was uninstalled, the following should not return any result:    
 ```bash
 $ helm ls -n trident

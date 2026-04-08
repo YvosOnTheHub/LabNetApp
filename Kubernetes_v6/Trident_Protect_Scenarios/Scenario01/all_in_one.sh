@@ -21,7 +21,21 @@ echo "############################################"
 kubectl taint nodes win1 win=true:NoSchedule
 kubectl taint nodes win2 win=true:NoSchedule
 
+helm_version=$(helm version --template='{{.Version}}' 2>/dev/null || true)
+if [ "$helm_version" != "v4.0.5" ]; then
+  echo
+  echo "#######################################################################################################"
+  echo "#"
+  echo "# Upgrade Helm"
+  echo "#"
+  echo "#######################################################################################################"
+  wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+  tar -xvf helm-v4.0.5-linux-amd64.tar.gz
+  /bin/cp -f linux-amd64/helm /usr/local/bin/
+  rm -f helm-v4.0.5-linux-amd64.tar.gz
+fi
 
+echo
 echo "#################################################################"
 echo "#"
 echo "# Ansible installation"

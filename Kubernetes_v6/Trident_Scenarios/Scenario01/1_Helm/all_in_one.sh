@@ -2,13 +2,25 @@
 
 cd ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm
 
-value=$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null || true)
-if [ "$value" = "24.02.0" ]; then
+trident_version=$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null || true)
+if [ "$trident_version" = "24.02.0" ]; then
   echo
   echo "#######################################################################################################"
   echo "Removing Trident 24.02"
   echo "#######################################################################################################"
   sh ../trident_uninstall.sh
+fi
+
+helm_version=$(helm version --template='{{.Version}}' 2>/dev/null || true)
+if [ "$helm_version" != "v4.0.5" ]; then
+  echo
+  echo "#######################################################################################################"
+  echo "Upgrade Helm"
+  echo "#######################################################################################################"
+  wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+  tar -xvf helm-v4.0.5-linux-amd64.tar.gz
+  /bin/cp -f linux-amd64/helm /usr/local/bin/
+  rm -f helm-v4.0.5-linux-amd64.tar.gz
 fi
 
 echo

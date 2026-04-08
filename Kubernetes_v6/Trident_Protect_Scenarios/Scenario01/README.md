@@ -15,6 +15,7 @@ The default lab configuration does not permit testing all of those.
 Let's see how we can customize this environment.  
 
 This chapter will guide you through the following tasks:  
+- Helm update  
 - Trident update  
 - Extra Hosts start up  
 - Secondary Kubernetes cluster creation  
@@ -33,7 +34,28 @@ kubectl taint nodes win1 win=true:NoSchedule
 kubectl taint nodes win2 win=true:NoSchedule
 ```
 
-## B. Trident update  
+## B. Helm version verification
+
+Helm is already present in the LabOnDemand. You may already have upgraded it in a previous scenario.  
+If the current version is _v3.9.4_, please upgrade it to _v4.0.5_:  
+```bash
+$ helm version
+version.BuildInfo{Version:"v3.9.4", GitCommit:"dbc6d8e20fe1d58d50e6ed30f09a04a77e4c68db", GitTreeState:"clean", GoVersion:"go1.17.13"}
+```
+It is however recommened to upgrade Helm to a more recent version in order to avoid issues later in the lab:  
+```bash
+wget https://get.helm.sh/helm-v4.0.5-linux-amd64.tar.gz
+tar -xvf helm-v4.0.5-linux-amd64.tar.gz
+/bin/cp -f linux-amd64/helm /usr/local/bin/
+rm -f helm-v4.0.5-linux-amd64.tar.gz
+```
+You should now see the following:  
+```bash
+$ helm version --short
+v4.0.5+g1b6053d
+```
+
+## C. Trident update  
 
 Trident Protect is compatible with Trident 24.02 (with ACP installed).  
 However, I recommend using at least Trident 25.10 to get the best of both products.  
@@ -44,7 +66,7 @@ You can follow the scenario for this upgrade, or you can directly run the follow
 sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario01/1_Helm/all_in_one.sh
 ```
 
-## C. Hosts _RHEL4_ & _RHEL5_ start up  
+## D. Hosts _RHEL4_ & _RHEL5_ start up  
 
 The lab contains two hosts that are offline by default (_RHEL4_ & _RHEL5_).  
 We are going to use them to build our secondary Kubernetes cluster.  
@@ -54,7 +76,7 @@ In order to power them on, you need to navigate to the Lab on Demand "MyLabs" pa
 
 From there, you can easily start those 2 hosts.  
 
-## D. Secondary Kubernetes cluster creation and setup 
+## E. Secondary Kubernetes cluster creation and setup 
 
 A secondary Kubernetes cluster is required to test the following features:  
 - Application disaster recovery  
@@ -76,7 +98,7 @@ scp -p ~/LabNetApp/Kubernetes_v6/Addendum/Addenda12/all_in_one.sh rhel5:
 ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh all_in_one.sh"
 ```
 
-## E. Secondary SVM Creation  
+## F. Secondary SVM Creation  
 
 A secondary SVM is required to test the following features:  
 - Application disaster recovery  
@@ -97,7 +119,7 @@ The IP addresses configured for that environment are the following:
 
 The user created for Trident is called _trident_. It has a _vsadmin_ role.
 
-## F. Peering between the 2 NAS SVM  
+## G. Peering between the 2 NAS SVM  
 
 In order to use the Disaster Recovery feature of Trident Protect, you first need to peer the 2 storage environments.  
 In a nutshell, peering 2 clusters simply means they know each other and are ready for mirroring.  
@@ -106,7 +128,7 @@ A playbook is already available to perform such configuration:
 ansible-playbook ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario24/svm_peering.yaml
 ```
 
-## G. SVM creation for S3
+## H. SVM creation for S3
 
 A S3 Compatible bucket is required by Trident Protect to:  
 - Save all the application's metadata  
@@ -124,7 +146,7 @@ If you have not done so, no worries, you can also retrieve those keys with the O
 
 Last, the IP address (endpoint) configured for the bucket is the following: 192.168.0.230  
 
-## H. Create a Volume Snapshot Class on the primary cluster  
+## I. Create a Volume Snapshot Class on the primary cluster  
 
 Creating CSI Snapshots also requires a _Volume Snapshot Class_, which is not installed by default.  
 An example can be found in Trident's [Scenario13](../../Trident_Scenarios/Scenario13/1_CSI_Snapshots/) folder:  
@@ -132,7 +154,7 @@ An example can be found in Trident's [Scenario13](../../Trident_Scenarios/Scenar
 kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/1_CSI_Snapshots/sc-volumesnapshot.yaml
 ```
 
-## I. Clone the Verda repository on the primary cluster  
+## J. Clone the Verda repository on the primary cluster  
 
 >> Trident protect can execute app-specific custom scripts called execution hooks.
 
@@ -145,7 +167,7 @@ Let's clone that repository on the primary cluster:
 git clone https://github.com/NetApp/Verda ~/Verda
 ```
 
-## J. Trident configuration on the secondary cluster  
+## K. Trident configuration on the secondary cluster  
 
 The last part of this chapter is the Trident configuration on the secondary cluster.  
 The following will:  
