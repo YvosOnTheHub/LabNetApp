@@ -83,7 +83,7 @@ $ tridentctl-protect get eh -n wpargo2
 Let's proceed with the snapshot schedule:  
 ```bash
 $ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/2_DR/3-argocd-wordpress-protect.yaml
-application.argoproj.io/trident-protect-wordpress2-app-definition created
+application.argoproj.io/trident-protect-wordpress2-app-protect created
 ```
 You will immediately see a new card in the ArgoCD GUI. As auto-sync is enabled, ArgoCD will automatically create the snapshot schedule in Trident Protect, which in turn triggers a snapshot creation:  
 <p align="center"><img src="Images/ArgoCD_tp_app_protect.png" width="384"></p>
@@ -346,6 +346,8 @@ $ tridentctl-protect get ehr -n wpargo2 --context kub2-admin@kub2
 | pre-snapshot-9aa52d87-f43f-4542-a8e5-94f5f331994b  | wordpress | Snapshot | Pre   | false           | Completed |       | 1m59s |
 +----------------------------------------------------+-----------+----------+-------+-----------------+-----------+-------+-------+
 ```
+
+And voilà !
 
 About the reconciliation timeout, you can check the value in one of the ArgoCD config maps:  
 ```bash
