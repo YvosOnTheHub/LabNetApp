@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: trident-protect-wordpress-app
+  name: trident-protect-wordpress2-app-mirror
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'http://192.168.0.65:3000/demo/wordpress'
-    path: Wordpress_Snapshot/App_protect
+    path: Wordpress_DR/App_schedule_mirror
     targetRevision: master
     directory:
       recurse: true
   destination:
-    server: 'https://kubernetes.default.svc'
-    namespace: wpargo1
+    server: 'https://192.168.0.65:6443'
+    namespace: wpargo2
   syncPolicy:
     automated: {}
     syncOptions:
-      - ApplyOutOfSyncOnly=true
+      - CreateNamespace=true

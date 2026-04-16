@@ -7,7 +7,8 @@ It makes it very easy to add a protection manifest while deploying an applicatio
 You can also use the same logic to manage the DR of your applications.  
 
 We will cover such scenario here with Wordpress & ArgoCD.  
-
+When following GitOps methodologies, the code repository is the source of truth.  
+Hence you may not need to protect all the application manifest, data present in the persistent volumes should be enough.  
 
 ## A. Prerequisites
 

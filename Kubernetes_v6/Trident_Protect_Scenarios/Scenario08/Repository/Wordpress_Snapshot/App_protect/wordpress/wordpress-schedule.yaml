@@ -1,16 +1,16 @@
 apiVersion: protect.trident.netapp.io/v1
 kind: Schedule
 metadata:
-  name: wordpress-fronted
+  name: wordpress-frontend
   namespace: wpargo1
   annotations:
     argocd.argoproj.io/sync-wave: "4"
 spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress-frontend
-  backupRetention: "2"
-  dataMover: Restic
+  backupRetention: "0"
   enabled: true
   granularity: Hourly
   minute: "10"
   snapshotRetention: "2"
+  runImmediately: true

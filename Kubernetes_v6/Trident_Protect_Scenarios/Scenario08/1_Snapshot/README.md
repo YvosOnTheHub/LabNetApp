@@ -21,7 +21,7 @@ In a nutshell, we defined in the _argocd_wordpress_deploy.yaml_ file the followi
 If all went well, you would see the app in the ArgoCD GUI:
 <p align="center"><img src="Images/ArgoCD_wordpress_create_missing.png" width="384"></p>
 
-This card does not automatically sync its content.  
+For the purpose of this exercice, this card does not automatically sync its content. A production grade configuration would look differently.  
 In order for ArgoCD to deploy Wordpress, you can press on the **Sync** button on the app tile (leave all options as is).  
 The application will immediately appear on the Kubernetes cluster:   
 ```bash
@@ -51,12 +51,12 @@ Time to protect this application!
 The repo also has a few files in the _App_protect_ folder to create some Trident Protect CR:
 - _wordpress-application.yaml_ to define the frontend as a Trident Protect application
 - _mysql-application.yaml_ to define the backend as a Trident Protect application  
-- _wordpress-schedule.yaml_ to automatically take snapshots & backups of the frontend  
-- _mysql-schedule.yaml_ to automatically take snapshots & backups of the backend  
+- _wordpress-schedule.yaml_ to automatically take snapshots of the frontend  
+- _mysql-schedule.yaml_ to automatically take snapshots of the backend  
 - _mysql-hook-pre-snap.yaml_ to quiesce the database so that the snapshot is consistent  
 - _mysql-hook-post-snap.yaml_ to thaw the database  
 
->> Note that the pre snapshot hook used in this scenario will freeze the database for about a minute.    
+>> Note that the pre snapshot hook used in this scenario will freeze the database for some time.    
 >> The effect is that if you try to update the blog while the snapshot process is running, saving the result will wait for the database to be thawed.  
 >> If you do not setup the hooks, the snapshot is almost immediate, which is fine for a demo, but maybe not for production...  
 
@@ -66,12 +66,13 @@ We defined in the _argocd_wordpress_protect.yaml_ file the following:
 
 The protecting schedule is configured this way:  
 - frontend: hourly (10 minutes after the top of the hour) 
-- backend: every 5 minutes  
+- backend: every 15 minutes  
 
-You may want to change the frontend schedule if you want to witness quickly the creation of snapshots.  
+You may want to change the frontend schedule if you want to witness quickly the creation of scheduled snapshots.  
+The schedule also contain the parameter "runImmediately: true", which triggers the creation of snapshot as soon as the configuration is deployed.  
 ```bash
 $ kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario08/1_Snapshot/argocd_wordpress_protect.yaml
-application.argoproj.io/tp-wordpress-app created
+application.argoproj.io/trident-protect-wordpress-app created
 ```
 If all went well, you would see the app in the ArgoCD GUI:
 <p align="center"><img src="Images/ArgoCD_wordpress_protected.png" width="384"></p>
@@ -87,13 +88,13 @@ $ tridentctl-protect get application -n wpargo1
 +--------------------+------------+-------+-------+
 
 $ tridentctl-protect get schedule -n wpargo1
-+--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
-|        NAME        |        APP         |            SCHEDULE            | ENABLED | STATE | AGE | ERROR |
-+--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
-| wordpress-frontend | wordpress-frontend | Hourly:min=10                  | true    |       | 15s |       |
-| wordpress-mysql    | wordpress-mysql    | DTSTART:20250106T000100Z       | true    |       | 15s |       |
-|                    |                    | RRULE:FREQ=MINUTELY;INTERVAL=5 |         |       |     |       |
-+--------------------+--------------------+--------------------------------+---------+-------+-----+-------+
++--------------------+--------------------+---------------------------------+---------+-------+-----+-------+
+|        NAME        |        APP         |            SCHEDULE             | ENABLED | STATE | AGE | ERROR |
++--------------------+--------------------+---------------------------------+---------+-------+-----+-------+
+| wordpress-frontend | wordpress-frontend | Hourly:min=10                   | true    |       | 15s |       |
+| wordpress-mysql    | wordpress-mysql    | DTSTART:20250106T000100Z        | true    |       | 15s |       |
+|                    |                    | RRULE:FREQ=MINUTELY;INTERVAL=15 |         |       |     |       |
++--------------------+--------------------+---------------------------------+---------+-------+-----+-------+
 
 $ tridentctl-protect get exechook -n wpargo1
 +-----------------+-----------------+---------------------+----------+-------+---------+-----+-------+
@@ -107,20 +108,33 @@ Depending on the schedule set, you should see soon or later snapshots appear.
 Notice the difference of timing
 ```bash
 $ tridentctl-protect get snapshot -n wpargo1
-+-----------------------------+--------------------+-----------+--------+-------+
-|            NAME             |      APP REF       |   STATE   |  AGE   | ERROR |
-+-----------------------------+--------------------+-----------+--------+-------+
-| custom-cc413-20250126160600 | wordpress-mysql    | Completed | 10m37s |       |
-| custom-cc413-20250126161100 | wordpress-mysql    | Completed | 5m37s  |       |
-| custom-cc413-20250126161600 | wordpress-mysql    | Completed | 37s    |       |
-| hourly-03413-20250126161000 | wordpress-frontend | Completed | 6m37s  |       |
-+-----------------------------+--------------------+-----------+--------+-------+
++-----------------------------+--------------------+----------------+-----------+-------+--------+
+|            NAME             |        APP         | RECLAIM POLICY |   STATE   | ERROR |   AGE  |
++-----------------------------+--------------------+----------------+-----------+-------+--------+
+| custom-cc413-20250126160600 | wordpress-mysql    | Delete         | Completed |       | 30m37s |
+| custom-cc413-20250126162100 | wordpress-mysql    | Delete         | Completed |       | 15m37s |
+| custom-cc413-20250126163600 | wordpress-mysql    | Delete         | Completed |       | 37s    |
+| hourly-03413-20250126161000 | wordpress-frontend | Delete         | Completed |       | 1m24s  |
++-----------------------------+--------------------+----------------+-----------+-------+--------+
 ```
 
 ## C. Snapshot Restore
 
 Now what?  
 SEEK & DESTROY !!  
+
+In order to break stuff, you need write access to the database. If a snasphot is running, the pre-Hook runs the SQL command _FLUSH TABLES WITH READ LOCK_, which removes momentarily write access.  
+Check that there is no snapshot running at this point (and if it is the case, wait for it to finish).  
+```bash
+kubectl get -n wpargo1 snapshot | grep wordpress-mysql  | grep -v Completed
+```
+Or if you want to move forward quickly, you can just kill all the hook's Sleep processes to release the lock:  
+```bash
+kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- \
+  sh -c 'export MYSQL_PWD=Netapp1!; \
+  mysql -Nse "SELECT id FROM information_schema.processlist WHERE info LIKE '\''SELECT SLEEP%'\'';" \
+  | while read id; do mysql -e "KILL $id"; done'
+```
 
 Let's delete the **wordpress** database, just for fun ...  
 ```bash
@@ -153,10 +167,9 @@ Trident Protect allows to you to restore:
 - all the objects (full restore)  
 - a subset of objects (partial restore)  
 
-Let's restore only the PVC & the POD the latest mysql snapshot:  
+Let's restore the latest snapshot for the application _wordpress-mysql_, which contains what we need, ie the snapshot:  
 ```bash
-$ tridentctl-protect create sir mysqlsir1 --snapshot wpargo1/custom-cc413-20250126161600 -n wpargo1 \
-  --resource-filter-exclude='[{"kind":"Secret"},{"kind":"Service"}]'
+$ tridentctl-protect create sir mysqlsir1 --snapshot wpargo1/custom-cc413-20250126161600 -n wpargo1
 SnapshotInplaceRestore "mysqlsir1" created.
 
 $ tridentctl-protect get sir -n wpargo1
@@ -166,23 +179,35 @@ $ tridentctl-protect get sir -n wpargo1
 | mysqlsir1 | ontap-vault | Completed | 1m1s |       |
 +-----------+-------------+-----------+------+-------+
 ```
-Once done, you can see from the "AGE" fields that the _excluded_ objects were indeed not restored from the snapshot:  
+Once done, you can see the PVC is restored, but the rest of the application is gone.  
+This is expected, as to replace the PVC, the app had to be scaled down.  
 ```bash
-$ kubectl get -n wpargo1 pod,pvc,svc,secret
+$ kubectl get -n wpargo1 all,pvc -l tier=mysql
+NAME                              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/mysql-pvc   Bound    pvc-878d7606-5666-4459-b79a-704609348b53   20Gi       RWO            storage-class-nfs   <unset>                 83s
+```
+If you check ArgoCD, you can see that the wordpress tile is back to _OutOfSync_:  
+<p align="center"><img src="Images/ArgoCD_wordpress_create_missing.png" width="384"></p>
+
+If you press on the _Sync_ button, ArgoCD will redeploy the whole application on top of the PVC:  
+
+```bash
+$ kubectl get -n wpargo1 all,pvc -l tier=mysql
+Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                   READY   STATUS    RESTARTS   AGE
-pod/wordpress-7c945b79c8-zv7sl         1/1     Running   0          37m
-pod/wordpress-mysql-5d8b966d55-lx8bn   1/1     Running   0          88s
+pod/wordpress-mysql-5d8b966d55-cjh5p   1/1     Running   0          11s
+
+NAME                      TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+service/wordpress-mysql   ClusterIP   None         <none>        3306/TCP   11s
+
+NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/wordpress-mysql   1/1     1            1           11s
+
+NAME                                         DESIRED   CURRENT   READY   AGE
+replicaset.apps/wordpress-mysql-5d8b966d55   1         1         1       11s
 
 NAME                              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
-persistentvolumeclaim/mysql-pvc   Bound    pvc-95ed0695-dbd3-4161-90a7-2e7a564c8886   20Gi       RWO            storage-class-nfs   <unset>                 89s
-persistentvolumeclaim/wp-pvc      Bound    pvc-86ec7250-3566-48db-be92-107dd7e5eb88   20Gi       RWO            storage-class-nfs   <unset>                 37m
-
-NAME                      TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)        AGE
-service/wordpress         LoadBalancer   172.28.187.240   192.168.0.213   80:30912/TCP   37m
-service/wordpress-mysql   ClusterIP      None             <none>          3306/TCP       15m
-
-NAME                TYPE     DATA   AGE
-secret/mysql-pass   Opaque   1      15m
+persistentvolumeclaim/mysql-pvc   Bound    pvc-878d7606-5666-4459-b79a-704609348b53   20Gi       RWO            storage-class-nfs   <unset>                 3m47s
 ```
 
 Next, you can also verify that the **mysql** database is back:  
@@ -196,3 +221,25 @@ sys
 wordpress
 ```
 Last, if you refresh the browser, Wordpress will be back on its feet, with the blog you created earlier. 
+
+
+<!-- NOTES
+
+# How to copy the mysql.sh script from the host to the mysql pod and make it writable
+kubectl cp ./mysql.sh wpargo1/$(kubectl get pod -n wpargo1 -l tier=mysql -o name | cut -d/ -f2):/tmp/mysql.sh
+kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- chmod +x /tmp/mysql.sh
+
+# How to manually run the hook script
+kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- \
+  sh -c 'MYSQL_ROOT_PASSWORD=Netapp1! /tmp/mysql.sh post'
+
+# How to display the PROCESSLIST table
+kubectl exec -n wpargo1 $(kubectl get pod -n wpargo1 -l tier=mysql -o name) -- sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SHOW PROCESSLIST;"'
+
+# How to display if Trident Protect finds a match for all ExecHooksRun
+kubectl get exechooksrun -n wpargo1 -o custom-columns='NAME:.metadata.name,APP:.spec.applicationRef,STATE:.status.state,AGE:.metadata.creationTimestamp,MATCHES:.status.conditions[0].message'
+
+# How to delete all 4 apps in one command
+argocd app delete -y trident-protect-wordpress-app wordpress
+
+-->

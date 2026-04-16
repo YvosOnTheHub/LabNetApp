@@ -6,7 +6,7 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
-  applicationRef: wordpress-mysql
+  applicationRef: wordpress
   stage: Post
   action: Snapshot
   enabled: true

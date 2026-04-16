@@ -8,11 +8,11 @@ metadata:
 spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress-mysql
-  backupRetention: "12"
-  dataMover: Restic
+  backupRetention: "0"
   enabled: true
   granularity: Custom
   recurrenceRule: |-
     DTSTART:20250106T000100Z
-    RRULE:FREQ=MINUTELY;INTERVAL=5
-  snapshotRetention: "6"
+    RRULE:FREQ=MINUTELY;INTERVAL=15
+  snapshotRetention: "8"
+  runImmediately: true

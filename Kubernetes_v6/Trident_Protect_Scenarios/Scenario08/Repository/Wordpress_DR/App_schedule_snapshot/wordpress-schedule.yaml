@@ -4,15 +4,15 @@ metadata:
   name: wordpress
   namespace: wpargo2
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   appVaultRef: ontap-vault
   applicationRef: wordpress
-  backupRetention: "12"
-  dataMover: Restic
+  backupRetention: "0"
   enabled: true
   granularity: Custom
   recurrenceRule: |-
     DTSTART:20250106T000100Z
     RRULE:FREQ=MINUTELY;INTERVAL=5
   snapshotRetention: "6"
+  runImmediately: true

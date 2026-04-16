@@ -11,3 +11,10 @@ spec:
         matchLabels:
           tier: frontend
       namespace: wpargo1
+  resourceFilter:
+    resourceMatchers:
+    - kind: PersistentVolumeClaim
+      version: v1
+    - kind: Pod
+      version: v1
+    resourceSelectionCriteria: Include
