@@ -62,10 +62,10 @@ echo "##########################################################################
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 26.02.0 && cd 26.02.0
-wget https://github.com/NetApp/trident/releases/download/v26.02.0/trident-installer-26.02.0.tar.gz
-tar -xf trident-installer-26.02.0.tar.gz
-ln -sf /root/26.02.0/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.02.1 && cd 26.02.1
+wget https://github.com/NetApp/trident/releases/download/v26.02.1/trident-installer-26.02.1.tar.gz
+tar -xf trident-installer-26.02.1.tar.gz
+ln -sf /root/26.02.1/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -76,14 +76,14 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Upgrade the Trident Operator (26.02.0) with Helm"
+echo "Upgrade the Trident Operator (26.02.1) with Helm"
 echo "#######################################################################################################"
 
 helm repo update
-helm upgrade --install trident netapp-trident/trident-operator --version 100.2602.0 -n trident \
+helm upgrade --install trident netapp-trident/trident-operator --version 100.2602.1 -n trident \
 --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:26.02.0 \
---set tridentImage=registry.demo.netapp.com/trident:26.02.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.02.1 \
+--set tridentImage=registry.demo.netapp.com/trident:26.02.1 \
 --set tridentSilenceAutosupport=true \
 --set windows=true \
 --set imagePullSecrets[0]=regcred
@@ -101,7 +101,7 @@ until kubectl get crd tridentversions.trident.netapp.io >/dev/null 2>&1; do
     done
 done
 echo
-until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.02.0" ]; do
+until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.02.1" ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame"
     done

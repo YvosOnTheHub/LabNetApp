@@ -333,21 +333,17 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod2 \
-  --version 100.2602.0 \
+  --version 100.2602.1 \
   --namespace trident-protect -f protectValues.yaml
 
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.1/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 
-curl -L -O https://github.com/NetApp/tridentctl-protect/releases/download/26.02.0/tridentctl-completion.bash
 mkdir -p ~/.bash/completions
-mv tridentctl-completion.bash ~/.bash/completions/
+tridentctl-protect completion bash > ~/.bash/completions/tridentctl-completion.bash
 source ~/.bash/completions/tridentctl-completion.bash
-
-cat <<EOT >> ~/.bashrc
-source ~/.bash/completions/tridentctl-completion.bash
-EOT
+echo 'source ~/.bash/completions/tridentctl-completion.bash' >> ~/.bashrc
 
 kubectl create secret generic -n trident-protect s3-creds --from-literal=accessKeyID=$1 --from-literal=secretAccessKey=$2
 

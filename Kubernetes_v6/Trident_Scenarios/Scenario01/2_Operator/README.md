@@ -23,16 +23,16 @@ secret/regcred created
 We first need to modify the image repository in the bundle provided in the 26.02 TGZ package downloaded earlier.  
 Once done, you can apply this file to your environment.  
 ```bash
-$ sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.02.0/trident-installer/deploy/bundle.yaml
+$ sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.02.1/trident-installer/deploy/bundle.yaml
 
-$ kubectl create -f ~/26.02.0/trident-installer/deploy/bundle.yaml
+$ kubectl create -f ~/26.02.1/trident-installer/deploy/bundle.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
 deployment.apps/trident-operator created
 ```
 Then, you need to create a Trident Orchestrator, which is highly customizable.  
-Several examples can be found in the _~/26.02.0/trident-installer/deploy/crds_ folder.  
+Several examples can be found in the _~/26.02.1/trident-installer/deploy/crds_ folder.  
 
 Let's create our own:
 ```bash
@@ -44,7 +44,7 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:26.02.0
+  tridentImage: registry.demo.netapp.com/trident:26.02.1
   autosupportImage: registry.demo.netapp.com/trident-autosupport:26.02.0
   silenceAutosupport: true
   windows: true
@@ -82,7 +82,7 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2026-02-27T15:37:16Z
+  Creation Timestamp:  2026-05-18T09:37:16Z
   Generation:          1
   Resource Version:    328110
   UID:                 405b28df-22ac-4b31-b9c8-e28362a0e378
@@ -93,7 +93,7 @@ Spec:
     regcred
   Namespace:            trident
   Silence Autosupport:  true
-  Trident Image:        registry.demo.netapp.com/trident:26.02.0
+  Trident Image:        registry.demo.netapp.com/trident:26.02.1
   Windows:              true
 Status:
   Acp Version:  v26.02.0
@@ -177,11 +177,11 @@ Status:
               Cpu:        10m
               Memory:     60Mi
     Silence Autosupport:  true
-    Trident Image:        registry.demo.netapp.com/trident:26.02.0
+    Trident Image:        registry.demo.netapp.com/trident:26.02.1
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v26.02.0
+  Version:                v26.02.1
 Events:
   Type    Reason      Age                  From                        Message
   ----    ------      ----                 ----                        -------
@@ -192,12 +192,12 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 26.02.0        | 26.02.0        |
+| 26.02.1        | 26.02.1        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   26.02.0
+trident   26.02.1
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -212,7 +212,7 @@ $ kubectl describe torc trident | grep Message: -A 3
   Message:          Trident installed
   Namespace:        trident
   Status:           Installed
-  Version:          v26.02.0
+  Version:          v26.02.1
 ```
 
 ## D. What's next

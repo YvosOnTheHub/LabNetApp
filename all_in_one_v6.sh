@@ -5,7 +5,7 @@
 #
 # FUNCTION THAT WILL PERFORM THE FOLLOWING TASKS:
 # 1. UPGRADE HELM
-# 2. INSTALL TRIDENT OPERATOR TO 26.02.0 WITH HELM
+# 2. INSTALL TRIDENT OPERATOR TO 26.02.1 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
 # 5. MONITORING CUSTOMIZATION & HARVEST
@@ -30,7 +30,7 @@ rm -f helm-v4.0.5-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. INSTALL TRIDENT OPERATOR TO 26.02.0 WITH HELM"
+echo "# 2. INSTALL TRIDENT OPERATOR TO 26.02.1 WITH HELM"
 echo "#######################################################################################################"
 echo
 
@@ -147,8 +147,8 @@ if [[ $? == 1 ]];then
   exit 0
 fi
 
-# Upgrade Trident to 26.02.0 if needed
-if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "26.02.0" ]; then K8S1_trident_upgrade; fi
+# Upgrade Trident to 26.02.1 if needed
+if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "26.02.1" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation
@@ -393,7 +393,7 @@ check_trident_version() {
 
 echo "Checking primary cluster (default kubeconfig)..."
 check_pods_running "" trident "Trident"
-check_trident_version "" "26.02.0"
+check_trident_version "" "26.02.1"
 check_tbc_status ""
 check_pods_running "" kubevirt "KubeVirt"
 check_pods_running "" cdi "CDI"
@@ -406,7 +406,7 @@ echo
 SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
 echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
 check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
-check_trident_version "$SECONDARY_KUBECONFIG" "26.02.0"
+check_trident_version "$SECONDARY_KUBECONFIG" "26.02.1"
 check_tbc_status "$SECONDARY_KUBECONFIG"
 check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
 check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
