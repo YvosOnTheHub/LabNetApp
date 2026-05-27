@@ -179,7 +179,7 @@ cat << EOF > metallb-values.yaml
 EOF
 
 helm repo add metallb https://metallb.github.io/metallb
-helm install metallb metallb/metallb -n metallb-system --create-namespace -f metallb-values.yaml
+helm install metallb metallb/metallb --version 0.14.5 -n metallb-system --create-namespace -f metallb-values.yaml
 
 frames="/ | \\ -"
 while [ $(kubectl get -n metallb-system pod | grep Running | grep -e '1/1' | wc -l) -ne 3 ]; do
