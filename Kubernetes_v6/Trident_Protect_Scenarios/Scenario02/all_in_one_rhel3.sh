@@ -6,7 +6,7 @@ echo "### Trident Protect install"
 echo "############################################"
 cd
 
-cat <<EOF >> protectValues.yaml
+cat <<EOF >> protectValues_rhel3.yaml
 imageRegistry: registry.demo.netapp.com
 imagePullSecrets:
 - name: regcred
@@ -22,7 +22,7 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
   --version 100.2602.1 \
-  --namespace trident-protect -f protectValues.yaml
+  --namespace trident-protect -f protectValues_rhel3.yaml
   
 echo
 echo "############################################"

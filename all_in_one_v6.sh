@@ -163,8 +163,7 @@ cd ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario02
 bash all_in_one_rhel3.sh
 
 # Trident Protect on K8S#2
-scp -p ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario02/all_in_one_rhel5.sh rhel5:all_in_one_tp_setup.sh
-ssh -o "StrictHostKeyChecking no" root@rhel5 -t "bash all_in_one_tp_setup.sh"
+bash all_in_one_rhel5.sh
 
 echo
 echo "############################################"
@@ -225,60 +224,19 @@ ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh kv_setup.sh"
 }
 
 
+
 # ------------------------------------------------------------------------------------------
+# lab_setup_check()
 #
-# Main Menu
-#
+# Functions:
+# check_pods_running
+# check_appvault_available
+# check_tbc_status
+# check_trident_version
+# check_tridentctl_protect  
 # ------------------------------------------------------------------------------------------
 
-read -n 1 -p "Which task would you like to perform?
-1. Upgrade Trident, Configure Monitoring & install KubeVirt
-2. Setup the lab for Trident Protect 
-0. Exit the script
-" ans;
 
-echo
-case $ans in
-    0)
-        exit;;
-    1)
-        K8S1_trident_upgrade;;
-    2)
-        lab_setup_trident_protect;;
-    *)
-        echo "Please restart the script with a valid option (0|1|2)";;
-esac
-
-
-if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
-cat <<EOT >> ~/.bashrc
-alias kc='kubectl create'
-alias kg='kubectl get'
-alias kdel='kubectl delete'
-alias kx='kubectl exec -it'
-alias kdesc='kubectl describe'
-alias kedit='kubectl edit'
-alias kl='kubectl logs'
-alias trident='tridentctl -n trident'
-EOT
-fi
-
-echo
-echo "#######################################################################################################"
-echo "# CHECK DOCKER HUB PULL TOKEN"
-echo "#######################################################################################################"
-echo
-
-TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
-RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
-
-echo "# Your anonymous login to the Docker Hub currently has $RATEREMAINING pulls left."
-
-echo
-echo "#######################################################################################################"
-echo "# SETUP CHECKS"
-echo "#######################################################################################################"
-echo
 print_ok() { printf "\e[32m✓\e[0m %s\n" "$1"; }
 print_fail() { printf "\e[31m✗\e[0m %s\n" "$1"; }
 
@@ -408,31 +366,109 @@ check_tridentctl_protect() {
   fi
 }
 
-echo "Checking primary cluster (default kubeconfig)..."
-check_pods_running "" trident "Trident"
-check_trident_version "" "26.02.1"
-check_tbc_status ""
-check_pods_running "" kubevirt "KubeVirt"
-check_pods_running "" cdi "CDI"
-check_pods_running "" kubevirt-manager "KubeVirt Manager"
-if [ "$ans" = "2" ]; then
-  check_pods_running "" trident-protect "Trident Protect"
-  check_tridentctl_protect "cluster1"
-  check_appvault_available "" "ontap-vault" "AppVault"
+lab_setup_check() {
+  local menu=$1
+  echo
+  echo "#######################################################################################################"
+  echo "# SETUP CHECKS"
+  echo "#######################################################################################################"
+  echo
+
+  echo "Checking primary cluster (default kubeconfig)..."
+  check_pods_running "" trident "Trident"
+  check_trident_version "" "26.02.1"
+  check_tbc_status ""
+  check_pods_running "" kubevirt "KubeVirt"
+  check_pods_running "" cdi "CDI"
+  check_pods_running "" kubevirt-manager "KubeVirt Manager"
+  if [ "$menu" = "2" ]; then
+    check_pods_running "" trident-protect "Trident Protect"
+    check_tridentctl_protect "cluster1"
+    check_appvault_available "" "ontap-vault" "AppVault"
+
+  echo
+  SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
+  echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
+  check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
+  check_trident_version "$SECONDARY_KUBECONFIG" "26.02.1"
+  check_tbc_status "$SECONDARY_KUBECONFIG"
+  check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
+  check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
+  check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"
+  check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Trident Protect"
+  check_tridentctl_protect "cluster2"
+  check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
+  fi
+
+if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
+cat <<EOT >> ~/.bashrc
+alias kc='kubectl create'
+alias kg='kubectl get'
+alias kdel='kubectl delete'
+alias kx='kubectl exec -it'
+alias kdesc='kubectl describe'
+alias kedit='kubectl edit'
+alias kl='kubectl logs'
+alias trident='tridentctl -n trident'
+EOT
+fi
+
+  echo
+  echo "#######################################################################################################"
+  echo "# CHECK DOCKER HUB PULL TOKEN"
+  echo "#######################################################################################################"
+  echo
+
+  TOKEN=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:ratelimitpreview/test:pull" | jq -r .token)
+  RATEREMAINING=$(curl --head -H "Authorization: Bearer $TOKEN" https://registry-1.docker.io/v2/ratelimitpreview/test/manifests/latest 2>&1 | grep -i ratelimit-remaining | cut -d ':' -f 2 | cut -d ';' -f 1 | cut -b 1- | tr -d ' ')
+
+  echo "# Your anonymous login to the Docker Hub currently has $RATEREMAINING pulls left."
+}
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------------------------
+#
+# Main Menu
+#
+# ------------------------------------------------------------------------------------------
+
+read -n 1 -p "Which task would you like to perform?
+1. Upgrade Trident, Configure Monitoring & install KubeVirt
+2. Setup the lab for Trident Protect
+3. Check Setup
+0. Exit the script
+" ans;
 
 echo
-SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
-echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
-check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
-check_trident_version "$SECONDARY_KUBECONFIG" "26.02.1"
-check_tbc_status "$SECONDARY_KUBECONFIG"
-check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
-check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
-check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"
-check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Trident Protect"
-check_tridentctl_protect "cluster2"
-check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
-fi
+case $ans in
+    0)
+        exit
+        ;;
+    1)
+        K8S1_trident_upgrade
+        lab_setup_check "1"
+        ;;
+    2)
+        lab_setup_trident_protect
+        lab_setup_check "2"
+        ;;
+    3)
+        if ping -c1 -W1 -q rhel5 &>/dev/null; then
+          lab_setup_check "2"
+        else
+          lab_setup_check "1"
+        fi
+        ;;
+    *)
+        echo "Please restart the script with a valid option (0|1|2|3)"
+        ;;
+esac
+
 
 echo
 echo "-----------------------"
