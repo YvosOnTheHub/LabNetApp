@@ -391,6 +391,23 @@ check_trident_version() {
   fi
 }
 
+check_tridentctl_protect() {
+  local cluster=$1
+  local packsize
+
+  if [[ "$cluster" == "cluster1" ]]; then
+    packsize=$(du --apparent-size --block-size=1 /usr/local/bin/tridentctl-protect 2>/dev/null | awk '{ print $1 }')
+  else
+    packsize=$(ssh -o "StrictHostKeyChecking no" root@rhel5 "du --apparent-size --block-size=1 /usr/local/bin/tridentctl-protect 2>/dev/null | awk '{ print \$1 }'" | tr -d '\r')
+  fi
+
+  if [[ -z "$packsize" ]] || [[ "$packsize" -lt 10000 ]]; then
+    print_fail "Tridentctl Protect: binary missing or size too small (size=${packsize:-0} bytes)"
+  else
+    print_ok "Tridentctl Protect: binary OK (size=${packsize} bytes)"
+  fi
+}
+
 echo "Checking primary cluster (default kubeconfig)..."
 check_pods_running "" trident "Trident"
 check_trident_version "" "26.02.1"
@@ -400,6 +417,7 @@ check_pods_running "" cdi "CDI"
 check_pods_running "" kubevirt-manager "KubeVirt Manager"
 if [ "$ans" = "2" ]; then
   check_pods_running "" trident-protect "Trident Protect"
+  check_tridentctl_protect "cluster1"
   check_appvault_available "" "ontap-vault" "AppVault"
 
 echo
@@ -412,6 +430,7 @@ check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
 check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
 check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"
 check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Trident Protect"
+check_tridentctl_protect "cluster2"
 check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
 fi
 
