@@ -445,15 +445,22 @@ read -n 1 -p "Which task would you like to perform?
 " ans;
 
 echo
+setup_start=""
+selected_task=""
+
 case $ans in
     0)
         exit
         ;;
     1)
+        setup_start=$(date +%s)
+        selected_task="1"
         K8S1_trident_upgrade
         lab_setup_check "1"
         ;;
     2)
+        setup_start=$(date +%s)
+        selected_task="2"
         lab_setup_trident_protect
         lab_setup_check "2"
         ;;
@@ -469,6 +476,15 @@ case $ans in
         ;;
 esac
 
+
+if [[ -n "$setup_start" ]]; then
+    setup_end=$(date +%s)
+    elapsed=$((setup_end - setup_start))
+    minutes=$((elapsed / 60))
+    seconds=$((elapsed % 60))
+
+    echo "Task $selected_task completed in ${minutes}m ${seconds}s (${elapsed}s)."
+fi
 
 echo
 echo "-----------------------"
