@@ -9,13 +9,10 @@ While snapshots can be used for many use cases, we will see here 2 different one
 - Create a new POD which uses a PVC created from the snapshot
 
 There is also a chapter that will show you the impact of deletion between PVC, Snapshots & Clones (spoiler alert: no impact).  
-Last, we will also cover the management of CSI snapshots with ONTAP-NAS-ECONOMY.  
-
 I would recommended checking that the CSI Snapshot feature is actually enabled on this platform.  
 
 This [link](https://github.com/kubernetes-csi/external-snapshotter) is a good read if you want to know more details about installing the CSI Snapshotter.  
-The **CRD** & **Snapshot-Controller** to enable this feature have already been installed in this cluster. Let's see what we find:
-
+The **CRD** & **Snapshot-Controller** to enable this feature have already been installed in this cluster. Let's see what we find:  
 ```bash
 $ kubectl get crd | grep volumesnapshot
 volumesnapshotclasses.snapshot.storage.k8s.io         2024-04-27T21:06:08Z

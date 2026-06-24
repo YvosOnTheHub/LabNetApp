@@ -1,9 +1,9 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: alpine-vm-clone2
+  name: alpine-vm-clone5
   labels:
-    method: clone2
+    method: clone5
 spec:
   runStrategy: Always
   template:
@@ -28,4 +28,4 @@ spec:
       volumes:
         - name: rootdisk
           persistentVolumeClaim:
-            claimName: alpine-boot-clone
+            claimName: alpine-boot-clone5

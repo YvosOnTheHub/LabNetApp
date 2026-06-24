@@ -163,7 +163,11 @@ echo "#"
 echo "# Volume Snapshot Class Creation"
 echo "#"
 echo "############################################"
-kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/1_CSI_Snapshots/sc-volumesnapshot.yaml
+if ! kubectl get volumesnapshotclass csi-snap-class >/dev/null 2>&1; then
+  kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/1_CSI_Snapshots/sc-volumesnapshot.yaml
+else
+  echo "VolumeSnapshotClass csi-snap-class already exists, skipping creation"
+fi
 
 echo
 echo "####################################################"

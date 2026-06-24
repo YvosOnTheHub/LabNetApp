@@ -35,7 +35,7 @@ if [[ $(skopeo list-tags docker://registry.demo.netapp.com/gitea/gitea 2> /dev/n
   echo "# Skopeo Copy Gitea 1.14.2 Into Private Repo"
   echo "##############################################################"
   
-  skopeo copy docker://docker.io/gitea/gitea:1.14.2 docker://registry.demo.netapp.com/gitea/gitea:1.14.2
+  skopeo copy docker://quay.io/yvosonthehub/gitea/gitea:1.14.2 docker://registry.demo.netapp.com/gitea/gitea:1.14.2
 else
   echo
   echo "##############################################################"
@@ -48,7 +48,7 @@ if [[ $(skopeo list-tags docker://registry.demo.netapp.com/mysql 2> /dev/null | 
   echo "##############################################################"
   echo "# Skopeo Copy MySQL 8.0 Into Private Repo"
   echo "##############################################################"
-  skopeo copy docker://docker.io/mysql:8.0 docker://registry.demo.netapp.com/mysql:8.0
+  skopeo copy docker://quay.io/yvosonthehub/mysql:8.0 docker://registry.demo.netapp.com/mysql:8.0
 else
   echo
   echo "################################################################################"

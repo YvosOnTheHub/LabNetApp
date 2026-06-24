@@ -16,5 +16,9 @@ spec:
     namespace: wpargo2
   syncPolicy:
     automated: {}
-    syncOptions:
-      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 1m

@@ -37,9 +37,9 @@ If you prefer to use a FQDN (http://gitea.demo.netapp.com:3000) instead of the I
 $ podman-compose up -d
 
 $ podman ps
-CONTAINER ID  IMAGE                          COMMAND               CREATED         STATUS         PORTS                                        NAMES
-473214e43a74  docker.io/library/mysql:8.0    mysqld                32 seconds ago  Up 32 seconds                                               db
-d1ba524ea54b  docker.io/gitea/gitea:1.14.2   /bin/s6-svscan /e...  30 seconds ago  Up 30 seconds  0.0.0.0:222->22/tcp, 0.0.0.0:3000->3000/tcp  gitea
+CONTAINER ID  IMAGE                                         COMMAND               CREATED         STATUS         PORTS                                        NAMES
+473214e43a74  registry.demo.netapp.com/library/mysql:8.0    mysqld                32 seconds ago  Up 32 seconds                                               db
+d1ba524ea54b  registry.demo.netapp.com/gitea/gitea:1.14.2   /bin/s6-svscan /e...  30 seconds ago  Up 30 seconds  0.0.0.0:222->22/tcp, 0.0.0.0:3000->3000/tcp  gitea
 ```
 
 This will also create a bunch of folders & files, including Gitea's own init file.  

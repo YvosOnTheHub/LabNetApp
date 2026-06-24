@@ -50,12 +50,9 @@ pod/cdi-upload-alpine-boot   1/1     Running   0          9m56s
 NAME                             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
 service/cdi-upload-alpine-boot   ClusterIP   10.101.97.11   <none>        443/TCP   9m56s
 
-NAME                                        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEAT
-TRIBUTESCLASS   AGE
-persistentvolumeclaim/alpine-boot           Bound    pvc-7e299aeb-fb94-47de-85aa-b20afd2ccc33   1Gi        RWX            storage-class-iscsi   <unset>
-                9m57s
-persistentvolumeclaim/alpine-boot-scratch   Bound    pvc-2ba57685-5208-46a1-bcbc-19b323987c1f   1086Mi     RWO            storage-class-iscsi   <unset>
-                9m56s
+NAME                                        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/alpine-boot           Bound    pvc-7e299aeb-fb94-47de-85aa-b20afd2ccc33   1Gi        RWX            storage-class-iscsi            <unset>                9m57s
+persistentvolumeclaim/alpine-boot-scratch   Bound    pvc-2ba57685-5208-46a1-bcbc-19b323987c1f   1086Mi     RWO            storage-class-iscsi-econonmy   <unset>                9m56s
 ```
 Both volumes are mounted on the _cdi-upload_ pod:  
 ```bash
@@ -95,7 +92,7 @@ Uploading /root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 completed
 ```
 Let's dive a bit into this upload process:  
 - the _virtctl image-upload_ command will first connect to the CDI Upload Proxy  
-- within the target namespace, Kubevirt will use the scratch PVC is a temporary work space, especially to convert the image from QCOW to RAW if required  
+- within the target namespace, Kubevirt will use the scratch PVC is a temporary work space (on a different storage class), especially to convert the image from QCOW to RAW if required  
 - when the RAW file is ready, the _CDI upload pod_ will write this file to the _alpine-boot_ pvc  
 - at this point, the upload process it complete and the temporary resources are deleted.  
 

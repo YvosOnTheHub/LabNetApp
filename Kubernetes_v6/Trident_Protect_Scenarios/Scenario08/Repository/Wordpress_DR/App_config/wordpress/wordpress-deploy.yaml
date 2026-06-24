@@ -18,6 +18,8 @@ spec:
         app: wordpress
         tier: frontend
     spec:
+      nodeSelector:
+        kubernetes.io/os: linux
       containers:
       - image: registry.demo.netapp.com/wordpress:6.2.1-apache
         name: wordpress

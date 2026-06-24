@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: amr-uid-hook
+  namespace: wpargo2
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: amr-uid-hook
+  namespace: wpargo2
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+rules:
+  - apiGroups:
+      - protect.trident.netapp.io
+    resources:
+      - applications
+    verbs:
+      - get
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: amr-uid-hook
+  namespace: wpargo2
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+subjects:
+  - kind: ServiceAccount
+    name: amr-uid-hook
+    namespace: wpargo2
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: amr-uid-hook
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: amr-uid-hook
+  namespace: wpargo2
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded,BeforeHookCreation
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: amr-uid-hook
+      restartPolicy: Never
+      containers:
+        - name: update-git-uid
+          image: alpine/git:latest
+          env:
+            - name: PRIMARY_BEARER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: primary-api-token
+                  key: token
+                  optional: true
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              apk add --no-cache kubectl
+
+              APP_NAME="wordpress"
+              APP_NS="wpargo2"
+              PRIMARY_API_SERVER="https://192.168.0.63:6443"
+              GIT_REPO="http://192.168.0.65:3000/demo/wordpress.git"
+              GIT_BRANCH="master"
+              MANIFEST_FILE="Wordpress_DR/App_schedule_mirror/wordpress-mirror.yaml"
+              GIT_USERNAME="demo"
+              GIT_PASSWORD="netapp123"
+
+              cd /tmp
+              git clone -q "http://${GIT_USERNAME}:${GIT_PASSWORD}@192.168.0.65:3000/demo/wordpress.git" repo
+              cd repo
+
+              DESIRED_STATE=$(awk '/^[[:space:]]*desiredState:[[:space:]]*/ {print $2; exit}' "${MANIFEST_FILE}" | tr -d '"' || true)
+              if [ "${DESIRED_STATE}" = "Promoted" ]; then
+                echo "AMR desiredState is Promoted; skipping sourceApplicationUID refresh hook."
+                exit 0
+              fi
+
+              if [ -z "${PRIMARY_BEARER_TOKEN}" ]; then
+                echo "Missing primary token. Create secret primary-api-token in namespace wpargo2 with key 'token'." >&2
+                exit 1
+              fi
+
+              for i in $(seq 1 30); do
+                APP_UID=$(kubectl --server="${PRIMARY_API_SERVER}" --token="${PRIMARY_BEARER_TOKEN}" --insecure-skip-tls-verify get application.protect.trident.netapp.io "${APP_NAME}" -n "${APP_NS}" -o jsonpath='{.metadata.uid}' 2>/dev/null || true)
+                if [ -n "${APP_UID}" ]; then
+                  break
+                fi
+                echo "Waiting for Trident Protect Application UID on primary (${i}/30)..."
+                sleep 5
+              done
+
+              if [ -z "${APP_UID}" ]; then
+                echo "Could not resolve Application UID for ${APP_NAME} in ${APP_NS} on primary cluster." >&2
+                exit 1
+              fi
+
+              echo "Retrieved App UID: ${APP_UID}"
+
+              git config user.name "Trident Hook"
+              git config user.email "hook@trident-protect.local"
+
+              awk -v uid="${APP_UID}" '
+                /^[[:space:]]*sourceApplicationUID:[[:space:]]*/ {
+                  sub(/:.*/, ": " uid)
+                  found=1
+                }
+                { print }
+                END { if (!found) exit 2 }
+              ' "${MANIFEST_FILE}" > "${MANIFEST_FILE}.tmp" && mv "${MANIFEST_FILE}.tmp" "${MANIFEST_FILE}"
+
+              if git diff --quiet "${MANIFEST_FILE}"; then
+                echo "No changes needed (UID already set or matches)"
+                exit 0
+              fi
+
+              git add "${MANIFEST_FILE}"
+              git commit -m "auto: set sourceApplicationUID to ${APP_UID}"
+              git push -q origin "${GIT_BRANCH}"
+
+              echo "Successfully pushed APP UID update to Git"

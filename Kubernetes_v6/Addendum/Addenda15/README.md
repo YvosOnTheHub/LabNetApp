@@ -92,10 +92,11 @@ kubevirt.kubevirt.io/kubevirt patched
 
 >> Containerized-Data-Importer (CDI) is a persistent storage management add-on for Kubernetes. It's primary goal is to provide a declarative way to build Virtual Machine Disks on PVCs for Kubevirt VMs. More information here: https://github.com/kubevirt/containerized-data-importer
 
-Creating a book disk can be achieved easily in a few steps:  
+Creating a boot disk can be achieved easily in a few steps:  
 - create a PVC with the annotation _cdi.kubevirt.io/storage.upload.target: ""_
 - this will trigger the launch of a _cdi-upload_ pod
-- use virtcl image-upload to copy an image onto the PVC. 
+- use virtcl image-upload to copy an image onto the PVC  
+- this will trigger the creation of a temporary _scratch_ PVC  
 - once the operation is done and successful, the _cdi-upload_ pod will be terminated
 
 Installe the CDI is pretty straightforward. First deploy the operator in its own namespace _cdi_:  
@@ -136,10 +137,26 @@ spec:
   type: LoadBalancer
 EOF
 ```
-Once done, you can patch the cdi CR in order to modify the proxy address:  
+Once done, you can patch the CDI CR in order to modify the proxy address:  
 ```bash
 CDILBDIP=$(kubectl -n cdi get svc cdi-uploadproxy-lb -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 kubectl -n cdi patch cdi cdi --type merge -p "{\"spec\":{\"config\":{\"uploadProxyURLOverride\":\"https://$CDILBDIP:443\"}}}"
+```
+
+As this is a demo environment, let's define the lab registry as insecure so that we don't have to worry about users and passwords:  
+```bash
+kubectl patch cdi cdi --type=merge -p '{"spec": {"config": {"insecureRegistries": ["registry.demo.netapp.com"]}}}'
+```
+
+CDI also brings the concept of **scratch PVC** which is a temporary working volume CDI creates to stage data during import, upload, or conversion workflows.
+It is typically used when CDI cannot write directly from source to the target DataVolume, for example:  
+- Downloading and unpacking/compressing image content.  
+- Converting formats before final write.  
+- Handling transfer paths that need intermediate buffering.  
+
+As this is a temporary space, which also requires a filesystem, you may want to chose a storage class that does not use up too many ONTAP volumes, especially in environment with lots of VM operations... Hence moving such task to the *storage-class-iscsi-economy* is more efficient in terms of volumes management:  
+```bash
+kubectl patch cdi cdi --type=merge -p '{"spec": {"config": {"scratchSpaceStorageClass":"storage-class-iscsi-economy"}}}'
 ```
 
 There you go, KubeVirt and CDI are both installed and ready to be used !

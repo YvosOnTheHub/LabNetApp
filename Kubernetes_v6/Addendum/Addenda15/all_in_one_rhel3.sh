@@ -46,7 +46,7 @@ mv virtctl-v1.6.2-linux-amd64 /usr/local/bin/virtctl
 
 echo
 echo "#######################################################################################################"
-echo "Install Containerized Data Importer (CDI)"
+echo "Install & Customize Containerized Data Importer (CDI)"
 echo "#######################################################################################################"
 kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/v1.63.1/cdi-operator.yaml
 echo
@@ -64,6 +64,7 @@ while [ $(kubectl get -n cdi po | grep -e '1/1' | wc -l) -ne 4 ]; do
     done
 done
 
+kubectl patch cdi cdi --type=merge -p '{"spec":{"config":{"insecureRegistries":["registry.demo.netapp.com"], "scratchSpaceStorageClass":"storage-class-iscsi-economy"}}}'
 
 echo
 echo "#######################################################################################################"
@@ -88,8 +89,6 @@ EOF
 CDILBDIP=$(kubectl -n cdi get svc cdi-uploadproxy-lb -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
 kubectl patch cdi cdi --type merge -p "{\"spec\":{\"config\":{\"uploadProxyURLOverride\":\"https://$CDILBDIP:443\"}}}"
 
-kubectl patch cdi cdi --type merge -p '{"spec": {"config": {"insecureRegistries": ["registry.demo.netapp.com"]}}}'
-
 echo
 echo "#######################################################################################################"
 echo "Install Kubevirt Dashboard"
@@ -112,6 +111,7 @@ done
 
 KVMGR=$(kubectl -n kubevirt-manager get svc kubevirt-manager -o jsonpath="{.spec.ports[0].nodePort}")
 
+: '
 echo
 echo "#######################################################################################################"
 echo "Install ORAS"
@@ -122,7 +122,7 @@ tar -C /tmp/ -xzf /tmp/oras.tar.gz
 mv /tmp/oras /usr/local/bin/oras
 chmod +x /usr/local/bin/oras
 rm -rf /tmp/oras
-
+'
 
 
 if [[ -z "$(kubectl get volumesnapshotclass  2>/dev/null | grep -i 'trident')" ]]; then

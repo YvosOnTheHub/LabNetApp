@@ -1,0 +1,27 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: alpine-tmpl1
+  namespace: vm-templates
+  labels:
+    kubevirt.io/template: "true"
+    kubevirt.io/os: "linux"
+    template: alpine-tmpl1
+spec:
+  volumeSnapshotClassName: csi-snap-class
+  source:
+    persistentVolumeClaimName: alpine-tmpl1
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: alpine-tmpl2
+  namespace: vm-templates
+  labels:
+    kubevirt.io/template: "true"
+    kubevirt.io/os: "linux"
+    template: alpine-tmpl2
+spec:
+  volumeSnapshotClassName: csi-snap-class
+  source:
+    persistentVolumeClaimName: alpine-tmpl2

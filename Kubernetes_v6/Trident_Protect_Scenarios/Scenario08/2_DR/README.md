@@ -119,27 +119,56 @@ There you go, the application is now protected locally.
 Time to setup the mirror.  
 
 You can see in the repository a specific manifest in the *App_schedule_mirror* folder.  
-It contains the configuration of the Trident Protect AMR (_AppMirrorRelationship_) object.  
+It contains the configuration of the Trident Protect AMR (_AppMirrorRelationship_) object, including the `sourceApplicationUID` field.
 
-Configuring an AMR requires knowing the UUID of the source app.  
-As wordpress is now managed by Trident, we can retrieve that information and update the Git repository:  
+The hook workflow is now **Git-first**: 
+1. The Wordpress application is created by ArgoCD (from step B)
+2. A hook linked to the mirror ArgoCD app retrieves the App UID from the **primary** cluster and **updates the Git repository** by replacing the value of `sourceApplicationUID` in the wordpress-mirror.yaml manifest
+3. ArgoCD detects the change in Git and automatically syncs the AMR with the correct UID
+
+For this demo, Git credentials are written directly in the hook manifest.  
+Of course, in a production environment, you would use a secret or an external vault...  
+
+The AMR itself is still created on the **secondary** cluster by the mirror ArgoCD application.  
+To retrieve the UID from primary explicitly, this scenario now uses a **token-centric** model.  
+Create a dedicated ServiceAccount on the **primary** cluster and give it read access to Trident Protect applications:
 ```bash
-$ APP_UUID=$(kubectl get application.protect.trident.netapp.io wordpress -o=jsonpath='{.metadata.uid}' -n wpargo2) && echo $APP_UUID
-a9a1c12c-d4dd-4203-bb89-8691ab37e45c
+$ kubectl -n wpargo2 create sa amr-source-reader
 
-$ sed -e s/CHANGE_ME/$APP_UUID/ -i ~/Repository/Wordpress_DR/App_schedule_mirror/wordpress-mirror.yaml
+$ cat << EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: amr-source-reader
+  namespace: wpargo2
+rules:
+  - apiGroups: ["protect.trident.netapp.io"]
+    resources: ["applications"]
+    verbs: ["get","list"]
+EOF
 
-$ git adcom "added App ID"
-[master e71098d] added App ID
- 1 file changed, 1 insertions(+), 1 deletions(-)
-
-$ git push
-...
-remote: Processed 1 references in total
-To http://192.168.0.65:3000/demo/wordpress.git
-   d8719d6..e71098d  master -> master
+$ kubectl -n wpargo2 create rolebinding amr-source-reader \
+  --role=amr-source-reader --serviceaccount=wpargo2:amr-source-reader
 ```
-The Git repo is now up to date.  
+
+Retrieve the token from primary and store it as a Secret in the **secondary** cluster (used by the hook):
+```bash
+$ PRIMARY_TOKEN=$(kubectl --kubeconfig=/root/.kube/config_rhel3 -n wpargo2 create token amr-source-reader --duration=168h) && echo $PRIMARY_TOKEN
+
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 create ns wpargo2
+
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 create secret generic primary-api-token \
+  --from-literal=token="$PRIMARY_TOKEN"
+secret/primary-api-token created
+```
+The hook reads `PRIMARY_BEARER_TOKEN` from that Secret and queries the primary API server directly.
+With this mode, no primary kubeconfig file is needed in the hook pod.
+
+During failover (`desiredState: Promoted`), the hook automatically skips the UID refresh logic.  
+This avoids unnecessary dependency on the primary cluster/token when ArgoCD reconciles the promotion commit.
+
+The hook manifest is in the same Git path as the AMR (`Wordpress_DR/App_schedule_mirror`), so syncing `trident-protect-wordpress2-app-mirror` runs it automatically. Once the hook completes, ArgoCD will automatically detect the update in Git and deploy the AMR with the correct sourceApplicationUID.  
+
 But as you have noticed, ArgoCD is not yet connected to the secondary Kubernetes cluster.  
 This can be achieved with the argocd binary, which will retrieve the kub2 context.  
 Note that even if ArgoCD is configured without a password, that only applies to the GUI.  
@@ -169,7 +198,15 @@ application.argoproj.io/trident-protect-wordpress2-app-mirror created
 A new card will appear in the ArgoCD GUI:  
 <p align="center"><img src="Images/ArgoCD_tp_app_mirror.png" width="384"></p>
 
-This will launch the configuration of the AppMirrorRelationship in the target namespace:  
+You can also monitor the hook progress by watching the job logs:
+```bash
+$ kubectl logs -n wpargo2 job/amr-uid-hook --kubeconfig=/root/.kube/config_rhel5 -f
+Waiting for Trident Protect Application UID on primary (1/30)...
+Retrieved App UID: a9a1c12c-d4dd-4203-bb89-8691ab37e45c
+Successfully pushed APP UID update to Git
+```
+
+Now a new AppMirrorRelationship is launched in the target cluster:  
 ```bash
 $ tridentctl-protect get amr -n wpargo2 --context kub2-admin@kub2
 +-----------+------------+------------------+-----------------+-----------------------+---------------+-------------+-------+-------+
@@ -213,7 +250,7 @@ Let's delete the whole primary namespace:
 $ kubectl delete ns wpargo2
 namespace "wpargo2" deleted
 ```
-While it takes a few seconds to complete, you can immediately see in ArgoCR that there is an issue:
+While it takes a few seconds to complete, you can immediately see in ArgoCD that there is an issue:
 <p align="center"><img src="Images/ArgoCD_wordpress_missing2.png" width="384"></p>
 
 In order to failover your application, you could change the target AMR manually...  
@@ -243,10 +280,10 @@ $ tridentctl-protect get amr -n wpargo2 --context kub2-admin@kub2
 | wordpress | wordpress  | ontap-vault      | wordpress       | ontap-vault           | Promoted      | Promoted |       | 33m38s |
 +-----------+------------+------------------+-----------------+-----------------------+---------------+----------+-------+--------+
 
-$ kubectl --context=kub2-admin@kub2 get -n wpargo2 all,pvc
-NAME                                   READY   STATUS    RESTARTS   AGE
-pod/wordpress-7755d84f78-lmgb7         1/1     Running   0          2m33s
-pod/wordpress-mysql-5d8b966d55-jlc6b   1/1     Running   0          2m33s
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 get -n wpargo2 all,pvc
+NAME                              STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/mysql-pvc   Bound    pvc-3cb65351-2867-4860-a25d-bae943cc1067   20Gi       RWO            sc-nfs         <unset>                 30m
+persistentvolumeclaim/wp-pvc      Bound    pvc-2d554711-9e05-49e2-a874-629de4e3fb0c   20Gi       RWO            sc-nfs         <unset>                 30m
 ```
 At this point, the PVC are now available on the secondary cluster.  
 You then need to tell ArgoCD to redeploy the whole app on the secondary cluster.  
@@ -264,7 +301,7 @@ Notice that the card displays the correct cluster name:
 
 If you check the content of the namespace, you will see now that Wordpress is back on its feet:  
 ```bash
-$ kubectl --context=kub2-admin@kub2 get -n wpargo2 pod,svc,pvc
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 get -n wpargo2 pod,svc,pvc
 NAME                                   READY   STATUS    RESTARTS   AGE
 pod/wordpress-7755d84f78-tq24w         1/1     Running   0          3m17s
 pod/wordpress-mysql-5d8b966d55-5l726   1/1     Running   0          3m17s
@@ -284,7 +321,7 @@ By connecting to the IP address provided by the Load Balancer (192.168.0.220 in 
 Note that in this lab, Wordpress is accessed with an IP address, not a FQDN.  
 This information is also stored in the MySQL Database:  
 ```bash
-$ kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) --   sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SELECT option_name, option_value FROM wordpress.wp_options WHERE option_name IN ('\''siteurl'\'', '\''home'\'');"'
+$ kubectl exec --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 $(kubectl get pod --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 -l tier=mysql -o name) --  sh -c 'export MYSQL_PWD=Netapp1!; mysql -e "SELECT option_name, option_value FROM wordpress.wp_options WHERE option_name IN ('\''siteurl'\'', '\''home'\'');"'
 option_name     option_value
 home    http://192.168.0.214
 siteurl http://192.168.0.214
@@ -292,8 +329,8 @@ siteurl http://192.168.0.214
 If you start navigating through the failed over Wordpress instance, you will quickly see that it is trying to reach the old IP address, which does not exist anymore...  
 Here is a command to update it to the correct value:  
 ```bash
-SITEIP=$(kubectl -n wpargo2 get svc wordpress -o jsonpath="{.status.loadBalancer.ingress[0].ip}") && echo $SITEIP
-kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) -- \
+SITEIP=$(kubectl --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 get svc wordpress -o jsonpath="{.status.loadBalancer.ingress[0].ip}") && echo $SITEIP
+kubectl --kubeconfig=/root/.kube/config_rhel5 exec -n wpargo2 $(kubectl --kubeconfig=/root/.kube/config_rhel5 get pod -n wpargo2 -l tier=mysql -o name) -- \
   sh -c "export MYSQL_PWD=Netapp1\!; mysql -e \"UPDATE wordpress.wp_options SET option_value = 'http://$SITEIP' WHERE option_name IN ('siteurl', 'home');\""
 ``` 
 
@@ -365,7 +402,11 @@ kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) -- s
 kubectl get exechooksrun -n wpargo2 -o custom-columns='NAME:.metadata.name,APP:.spec.applicationRef,STATE:.status.state,AGE:.metadata.creationTimestamp,MATCHES:.status.conditions[0].message'
 
 # How to delete all 4 apps in one command
-argocd app delete -y trident-protect-wordpress2-app-mirror trident-protect-wordpress2-app-protect trident-protect-wordpress2-app-definition wordpress2
+argocd app delete -y \
+    trident-protect-wordpress2-app-mirror \
+    trident-protect-wordpress2-app-protect \
+    trident-protect-wordpress2-app-definition \
+    wordpress2
 
 # How to display the sites URL stored in the MySQL database
 kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) -- \
@@ -375,5 +416,13 @@ kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) -- \
 SITEIP=$(kubectl -n wpargo2 get svc wordpress -o jsonpath="{.status.loadBalancer.ingress[0].ip}") && echo $SITEIP
 kubectl exec -n wpargo2 $(kubectl get pod -n wpargo2 -l tier=mysql -o name) -- \
   sh -c "export MYSQL_PWD=Netapp1\!; mysql -e \"UPDATE wordpress.wp_options SET option_value = 'http://$SITEIP' WHERE option_name IN ('siteurl', 'home');\""
+
+# If the token rotates or expires, recreate the Secret on secondary:
+```bash
+$ PRIMARY_TOKEN=$(kubectl --kubeconfig=/root/.kube/config_rhel3 -n wpargo2 create token amr-source-reader --duration=168h)
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 delete secret primary-api-token --ignore-not-found
+$ kubectl --kubeconfig=/root/.kube/config_rhel5 -n wpargo2 create secret generic primary-api-token \
+  --from-literal=token="$PRIMARY_TOKEN"
+```
 
 -->

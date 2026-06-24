@@ -50,15 +50,15 @@ service/cdi-upload-prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d   ClusterIP   10.9
 NAME                                     PHASE         PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot   UploadReady   N/A                   21s
 
-NAME                                                                       STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEATTRIBUTESCLASS   AGE
-persistentvolumeclaim/alpine-boot                                          Pending                                                                        storage-class-iscsi   <unset>                 21s
-persistentvolumeclaim/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d           Bound     pvc-b4a4895e-878a-4e0e-9c9d-cfd7290eb61c   1Gi        RWX            storage-class-iscsi   <unset>                 21s
-persistentvolumeclaim/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d-scratch   Bound     pvc-ea056716-6f2a-49c5-b2d2-9c9c5cc98aa2   1086Mi     RWO            storage-class-iscsi   <unset>                 21s
+NAME                                                                       STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                  VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/alpine-boot                                          Pending                                                                        storage-class-iscsi           <unset>                 21s
+persistentvolumeclaim/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d           Bound     pvc-b4a4895e-878a-4e0e-9c9d-cfd7290eb61c   1Gi        RWX            storage-class-iscsi           <unset>                 21s
+persistentvolumeclaim/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d-scratch   Bound     pvc-ea056716-6f2a-49c5-b2d2-9c9c5cc98aa2   1086Mi     RWO            storage-class-iscsi-economy   <unset>                 21s
 ```
 Here is a description of what we see:  
 - the **pod** is managed by CDI and will perform the conversion  
 - the **datavolume** in state _UploadReady_  
-- the **scratch** PVC is used as a temporary resource to convert the image  
+- the **scratch** RWO PVC is used as a temporary resource to convert the image  
 - the **prime** PVC will host the target content of the disk  
 - an _alpine-boot_ PVC was automatically created, following the same name as the DataVolume  
 - the alpine-boot PVC is currently in _pending_ state, while for CDI to finish its job  
@@ -149,6 +149,6 @@ $ virtctl console -n sc26-alpine-c alpine-vm
 Successfully connected to alpine-vm console. Press Ctrl+] or Ctrl+5 to exit console.
 alpine-vm.sc26-alpine-c.svc.cluster.local login: alpine
 Password:
-Welcome to Alpine on KubeVirt in the NetApp LoD!
+Welcome to Alpine Linux on KubeVirt in the NetApp LoD!
 ```
 There you go. You managed to create your third Virtual Machine!

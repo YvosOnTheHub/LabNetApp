@@ -8,10 +8,11 @@
 # 2. INSTALL TRIDENT OPERATOR TO 26.02.1 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
-# 5. MONITORING CUSTOMIZATION & HARVEST
-# 6. ENABLE POD SCHEDULING ON THE CONTROL PLANE"
-# 7. ADD TOOLS
-# 8. INSTALL KUBEVIRT
+# 5. INSTALL VOLUME SNAPSHOT CONTROLLER 8.2 & CREATE A VOLUMESNAPSHOTCLASS FOR TRIDENT
+# 6. MONITORING CUSTOMIZATION & HARVEST
+# 7. ENABLE POD SCHEDULING ON THE CONTROL PLANE"
+# 8. ADD TOOLS
+# 9. INSTALL KUBEVIRT
 # ------------------------------------------------------------------------------------------
 
 
@@ -56,7 +57,16 @@ sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario05/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
-echo "# 5. MONITORING CUSTOMIZATION & HARVEST"
+echo "# 5. INSTALL VOLUME SNAPSHOT CONTROLLER 8.2 & CREATE A VOLUMESNAPSHOTCLASS FOR TRIDENT"
+echo "#######################################################################################################"
+echo
+
+  sleep 2s
+sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario13/vscontroller_install_8.sh
+
+echo
+echo "#######################################################################################################"
+echo "# 6. MONITORING CUSTOMIZATION & HARVEST"
 echo "#######################################################################################################"
 echo
 
@@ -65,7 +75,7 @@ sh ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario03/all_in_one.sh
 
 echo
 echo "#######################################################################################################"
-echo "# 6. ENABLE POD SCHEDULING ON THE CONTROL PLANE"
+echo "# 7. ENABLE POD SCHEDULING ON THE CONTROL PLANE"
 echo "#######################################################################################################"
 echo
 
@@ -73,7 +83,7 @@ kubectl taint nodes rhel3 node-role.kubernetes.io/control-plane:NoSchedule-
 
 echo
 echo "#######################################################################################################"
-echo "# 7. ADD TOOLS"
+echo "# 8. ADD TOOLS"
 echo "#######################################################################################################"
 echo
 
@@ -99,7 +109,7 @@ kubectl krew install view-serviceaccount-kubeconfig
 
 echo
 echo "#######################################################################################################"
-echo "# 8. INSTALL KUBEVIRT"
+echo "# 9. INSTALL KUBEVIRT"
 echo "#######################################################################################################"
 echo
 sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
@@ -154,7 +164,7 @@ if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != 
 # S3 SVM & Bucket Creation
 # Secondary K8S cluster Creation
 # Install Trident on KS8#2
-# Install a VSCass on K8S#1
+# Install a VSClass on K8S#1
 # Git Clone Verda on RHEL3
 bash ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario01/all_in_one.sh
 
@@ -366,6 +376,65 @@ check_tridentctl_protect() {
   fi
 }
 
+check_volume_snapshot_controller() {
+  local kubeconfig=$1; local version=$2
+  local kc; kc=$(_kc_arg "$kubeconfig")
+
+  local rc=0
+  local image image_no_digest tag major expected_major vsc_count
+
+  # Check snapshot-controller deployment presence
+  if ! kubectl $kc -n kube-system get deploy snapshot-controller >/dev/null 2>&1; then
+    print_fail "Volume Snapshot Controller: deployment 'snapshot-controller' not found in namespace 'kube-system'"
+    return 1
+  fi
+
+  # Read controller image and compare only major version against expected version
+  image=$(kubectl $kc -n kube-system get deploy snapshot-controller -ojsonpath='{.spec.template.spec.containers[0].image}' 2>/dev/null || true)
+  if [ -z "$image" ]; then
+    print_fail "Volume Snapshot Controller: unable to read controller image"
+    rc=1
+  else
+    image_no_digest=${image%@*}
+    if [ "$image_no_digest" = "$image" ] && [[ "$image" != *:* ]]; then
+      tag=""
+    else
+      tag=${image_no_digest##*:}
+    fi
+
+    major=$(printf "%s" "$tag" | sed -E 's/^v//; s/^([0-9]+).*/\1/')
+    expected_major=$(printf "%s" "$version" | sed -E 's/^v//; s/^([0-9]+).*/\1/')
+
+    if [[ "$major" =~ ^[0-9]+$ ]] && [[ "$expected_major" =~ ^[0-9]+$ ]]; then
+      if [ "$major" = "$expected_major" ]; then
+        print_ok "Volume Snapshot Controller:  tag=$tag matches expected major version=$expected_major"
+      else
+        print_fail "Volume Snapshot Controller: tag=$tag does not match expected major version=$expected_major"
+        rc=1
+      fi
+    else
+      print_fail "Volume Snapshot Controller: could not parse major version from image tag '$tag'"
+      rc=1
+    fi
+  fi
+
+  # Check that at least one VolumeSnapshotClass exists
+  if ! kubectl $kc get volumesnapshotclass >/dev/null 2>&1; then
+    print_fail "VolumeSnapshotClass: resource not found or cluster unreachable"
+    rc=1
+  else
+    vsc_count=$(kubectl $kc get volumesnapshotclass --no-headers 2>/dev/null | awk 'NF{c++}END{print c+0}')
+    if [ "$vsc_count" -gt 0 ]; then
+      print_ok "Volume Snapshot Class: found $vsc_count class(es)"
+    else
+      print_fail "Volume Snapshot Class: no class found"
+      rc=1
+    fi
+  fi
+
+  return "$rc"
+}
+
 lab_setup_check() {
   local menu=$1
   echo
@@ -378,6 +447,7 @@ lab_setup_check() {
   check_pods_running "" trident "Trident"
   check_trident_version "" "26.02.1"
   check_tbc_status ""
+  check_volume_snapshot_controller "" "8"
   check_pods_running "" kubevirt "KubeVirt"
   check_pods_running "" cdi "CDI"
   check_pods_running "" kubevirt-manager "KubeVirt Manager"
@@ -392,6 +462,7 @@ lab_setup_check() {
   check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
   check_trident_version "$SECONDARY_KUBECONFIG" "26.02.1"
   check_tbc_status "$SECONDARY_KUBECONFIG"
+  check_volume_snapshot_controller "$SECONDARY_KUBECONFIG" "8"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
   check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"

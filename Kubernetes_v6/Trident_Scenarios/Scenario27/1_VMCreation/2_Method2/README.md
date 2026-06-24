@@ -14,12 +14,13 @@ For this exercise, we need to embed it in a container. Let's create a quick Dock
 ```bash
 $ cat <<EOF > ~/images/Dockerfile
 FROM alpine:3.19
-ADD nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 /disk/
+COPY nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 /disk/
 EOF
 ```
 We can now create the container image and push it to the registry:  
 ```bash
 cd ~/images
+podman login -u registryuser -p Netapp1! registry.demo.netapp.com
 podman build -t registry.demo.netapp.com/kubevirt/alpine:qcow .
 podman push registry.demo.netapp.com/kubevirt/alpine:qcow
 ```
@@ -78,18 +79,14 @@ pod/importer-prime-1c65d555-9926-45a5-a4c1-6c53b6afca31   1/1     Running   0   
 NAME                                     PHASE              PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot   ImportInProgress   N/A                   21s
 
-NAME                                                                       STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGE
-CLASS          VOLUMEATTRIBUTESCLASS   AGE
-persistentvolumeclaim/alpine-boot                                          Pending                                                                        storage
--class-iscsi   <unset>                 22s
-persistentvolumeclaim/prime-1c65d555-9926-45a5-a4c1-6c53b6afca31           Bound     pvc-478d2ea2-0c94-4800-b802-da334fbab147   1Gi        RWX            storage
--class-iscsi   <unset>                 22s
-persistentvolumeclaim/prime-1c65d555-9926-45a5-a4c1-6c53b6afca31-scratch   Bound     pvc-ac1fcfa2-64a1-4bc3-a5f1-48d37486852e   1086Mi     RWO            storage
--class-iscsi   <unset>                 22s
+NAME                                                                       STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                  VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/alpine-boot                                          Pending                                                                        storage-class-iscsi           <unset>                 22s
+persistentvolumeclaim/prime-1c65d555-9926-45a5-a4c1-6c53b6afca31           Bound     pvc-478d2ea2-0c94-4800-b802-da334fbab147   1Gi        RWX            storage-class-iscsi           <unset>                 22s
+persistentvolumeclaim/prime-1c65d555-9926-45a5-a4c1-6c53b6afca31-scratch   Bound     pvc-ac1fcfa2-64a1-4bc3-a5f1-48d37486852e   1086Mi     RWO            storage-class-iscsi-economy   <unset>                 22s
 ```
 Here is a description of what we see:  
 - the **pod** is managed by CDI and will perform the image import & conversion  
-- the **scratch** PVC is used as a temporary resource to convert the image  
+- the **scratch** RWO PVC is used as a temporary resource to convert the image  
 - the **prime** PVC will host the target content of the disk  
 - an _alpine-boot_ PVC was automatically created, following the same name as the DataVolume  
 - the alpine-boot PVC is currently in _pending_ state, while for CDI to finish its job

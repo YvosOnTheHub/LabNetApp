@@ -1,9 +1,33 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-alpine3
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: alpine-boot
+  namespace: my-alpine3
+spec:
+  storage:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 1Gi
+    volumeMode: Block
+    storageClassName: storage-class-iscsi
+  contentType: kubevirt
+  source:
+    snapshot:
+      name: alpine-tmpl2
+      namespace: vm-templates
+---
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: alpine-vm-clone2
-  labels:
-    method: clone2
+  name: alpine-vm
+  namespace: my-alpine3
 spec:
   runStrategy: Always
   template:
@@ -28,4 +52,4 @@ spec:
       volumes:
         - name: rootdisk
           persistentVolumeClaim:
-            claimName: alpine-boot-clone
+            claimName: alpine-boot

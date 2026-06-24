@@ -18,6 +18,8 @@ spec:
         app: wordpress
         tier: mysql
     spec:
+      nodeSelector:
+        kubernetes.io/os: linux
       containers:
       - image: registry.demo.netapp.com/mysql:8.0
         name: mysql
