@@ -536,7 +536,7 @@ case $ans in
         lab_setup_check "2"
         ;;
     3)
-        if ping -c1 -W1 -q rhel5 &>/dev/null; then
+        if [[ -f /root/.kube/config_rhel5 ]]; then
           lab_setup_check "2"
         else
           lab_setup_check "1"

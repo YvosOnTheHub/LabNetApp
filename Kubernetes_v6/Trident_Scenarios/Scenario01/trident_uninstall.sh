@@ -12,6 +12,7 @@ while [ $(kubectl get -n trident pod --no-headers | wc -l) -ne 0 ]; do
 done
 sleep 5
 
+echo
 tridentctl obliviate crd --yesireallymeanit
 while [ $(kubectl get crd | grep trident. | wc -l) -ne 1 ]; do
     for frame in $frames; do

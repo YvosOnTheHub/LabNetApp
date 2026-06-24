@@ -20,6 +20,7 @@ You could also override that value to _csi-clone_, which can even be slightly fa
 | copy | slowest | slowest |
 | snapshot | fast | fast |
 | csi-clone | fastest | fastest |
+
 **TL;DR STOP**
 
 For the purpose of creating a disk from an existing one, a new CRD is introduced here, the **storageProfile**. It maps a Kubernetes StorageClass to CDI import/clone/snapshot behaviors used when creating DataVolumes. It is not a KubeVirt core API, but CDI uses it for VM disk import/clone workflows.  
@@ -62,7 +63,7 @@ status:
   provisioner: csi.trident.netapp.io
   storageClass: storage-class-iscsi
 ```
-Notice that the **cloneStrategy** is set to **copy**. This is because I don't have a **volumeSnapshotClass** available just yet. If you have one, delete it in order continue with this chapter.  
+Notice that the **cloneStrategy** is set to **copy**. This is because I don't have a **volumeSnapshotClass** available just yet. If you have one, delete it in order continue with the beginning of this chapter (_kubectl delete vsclass --all_). Don't worry you are going to recreate it faily soon.   
 
 For this chapter, let's suppose you have already gone through the [third method](../3_Method3/), and the content is still present. Cloning a disk requires the source Virtual Machine to be offline.  
 Let's stop the VM using _virtctl_:  
