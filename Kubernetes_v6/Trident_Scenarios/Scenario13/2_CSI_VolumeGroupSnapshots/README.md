@@ -50,62 +50,15 @@ rhel2   Ready    <none>          451d   v1.32.7
 rhel3   Ready    control-plane   451d   v1.32.7
 ```
 
-## B. Install the Volume Group Snapshots CRD.
+## B. Update the Snapshot Controller and activate the Volume Group Snapshot feature gate.    
 
-This new feature comes with a new set of APIs, as well as 3 new CRD:  
-- volumegroupsnapshots.  
-- volumegroupsnapshotcontents.  
-- volumegroupsnapshotclasses.  
-
-The current version of the snapshot controller being 6.2, upgrading the environment to the version 8.2 will also update the CSI Snapshots CRD:  
+We need to activate the Volume Group Snapshots through a **feature gate** in the snapshot controller.  
+As the snapshot controller is already deployed and you just need to enable the feature gate quickly, you can use a direct patch without redeploying:
 ```bash
-$ kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.2.0 | kubectl apply -f -
-customresourcedefinition.apiextensions.k8s.io/volumegroupsnapshotclasses.groupsnapshot.storage.k8s.io created
-customresourcedefinition.apiextensions.k8s.io/volumegroupsnapshotcontents.groupsnapshot.storage.k8s.io created
-customresourcedefinition.apiextensions.k8s.io/volumegroupsnapshots.groupsnapshot.storage.k8s.io created
-customresourcedefinition.apiextensions.k8s.io/volumesnapshotclasses.snapshot.storage.k8s.io configured
-customresourcedefinition.apiextensions.k8s.io/volumesnapshotcontents.snapshot.storage.k8s.io configured
-customresourcedefinition.apiextensions.k8s.io/volumesnapshots.snapshot.storage.k8s.io configured
+kubectl patch deploy snapshot-controller -n kube-system --type='json' \
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--feature-gates=CSIVolumeGroupSnapshot=true"}]'
 ```
-
-## C. Update the Snapshot Controller and activate the Volume Group Snapshot feature gate.    
-
-As we need to activate the Volume Group Snapshots through a **feature gate** in the snapshot controller, let's clone its repository to tailor the configuration. In order not to download the whole repository, let's filter on the required folder only:  
-```bash
-cd
-git clone --depth 1 --no-checkout --filter=tree:0 https://github.com/kubernetes-csi/external-snapshotter.git
-cd external-snapshotter
-git switch -c release-8.2.0
-git sparse-checkout set --no-cone /deploy/kubernetes/snapshot-controller
-git checkout
-```
-
-Activating a feature gate could be done directly by modifying the controller pod, but as we need to also update it, let's just modify the yaml manifest:  
-```bash
-cd deploy/kubernetes/snapshot-controller
-sed -i '40 a \            - "--feature-gates=CSIVolumeGroupSnapshot=true"' setup-snapshot-controller.yaml
-```
-
-Also, this YAML manifest does not contain any _nodeSelector_ field.  
-If you kept the Windows nodes in the Kubernetes cluster, you would also need to add those 2 lines to make sure the controller pods run on the Linux nodes:  
-```bash
-sed -i '33 a \      nodeSelector:' setup-snapshot-controller.yaml
-sed -i '34 a \        kubernetes.io/os: linux' setup-snapshot-controller.yaml
-```
-
-You can now apply this new configuration, after cleaning the existing controller:  
-```bash
-$ kubectl -n kube-system delete deploy snapshot-controller
-deployment.apps "snapshot-controller" deleted
-
-$ kubectl -n kube-system kustomize . | kubectl create -f -
-serviceaccount/snapshot-controller unchanged
-role.rbac.authorization.k8s.io/snapshot-controller-leaderelection unchanged
-clusterrole.rbac.authorization.k8s.io/snapshot-controller-runner unchanged
-rolebinding.rbac.authorization.k8s.io/snapshot-controller-leaderelection unchanged
-clusterrolebinding.rbac.authorization.k8s.io/snapshot-controller-role unchanged
-deployment.apps/snapshot-controller created
-```
+This will immediately add the flag and the controller will restart. Note that this approach does not persist in the manifest source, so it's suitable for temporary testing environments.
 
 Once the Controller is up to date, Trident will detect the change, apply the feature gate flag to the CSI sidecar it carries and restart its controller. You can notice the change in the pod's age:  
 ```bash
@@ -118,7 +71,7 @@ trident-node-linux-sc9px              2/2     Running   2 (30h ago)   30h
 trident-operator-797d4c9b65-2h7zj     1/1     Running   0             30h
 ```
 
-## D. Volume Group Snapshot Class
+## C. Volume Group Snapshot Class
 
 Similarly to the CSI Snapshots, creating a Volume Group Snapshot (ie **VGS**) is done against a specific class.  
 Let's create one before deploying our app.  
@@ -128,7 +81,7 @@ $ kubectl create -f vgsclass.yaml
 volumegroupsnapshotclass.groupsnapshot.storage.k8s.io/csi-group-snap-class created
 ```
 
-## E. Create an application with 2 PVC
+## D. Create an application with 2 PVC
 
 In order to test the VGS feature, let's create a busybox app with 2 RWO PVC mounted as iSCSI LUNs:  
 ```bash
@@ -155,7 +108,7 @@ kubectl exec -n vgs $(kubectl get pod -n vgs -o name) -- sh -c 'echo "bbox test1
 kubectl exec -n vgs $(kubectl get pod -n vgs -o name) -- sh -c 'echo "bbox test1 in folder data2!" > /data2/file.txt'
 ```
 
-## F. Create a Volume Group Snapshot
+## E. Create a Volume Group Snapshot
 
 Configuring a VGS requires a specific a label positionned on all the PVC to protect.  
 In our example, the 2 PVC of the application are labelled with _consistencygroup=group1_.  
@@ -196,7 +149,7 @@ volumesnapshot.snapshot.storage.k8s.io/snapshot-9803be62d4495517a455ef15523e21ec
 ```
 As expected, you now have one Volume Group Snapshot which contains the Volume Snapshots on the two PVC of our app.
 
-## G. Restore data
+## F. Restore data
 
 You currently cannot restore an entire VGS, you can however restore individual Volume Snapshots that are part of the VGS.  
 To test this, let's first delete the content of both PVC:  
