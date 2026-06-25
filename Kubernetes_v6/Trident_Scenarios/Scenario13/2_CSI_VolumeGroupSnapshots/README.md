@@ -17,8 +17,6 @@ Trident 25.06 brings you the support of that feature, currently only for the ONT
 In order to test Volume Group Snapshots:  
 - make sure you have upgraded Trident to 25.06 minimum. You can refer to the [Scenario01](../../Scenario01/) for this.  
 - upgrade the Kubernetes cluster to 1.32.  
-- install the Volume Group Snapshot CRD.  
-- upgrade the Snapshot Controller to v8.2 minimum (Beta support for Volume Group Snapshots).  
 - enable the Volume Group Snapshot feature gate in the snapshot controller.  
 
 This chapter will guide you through the configuration of this feature, as well as its test with a simple application with 2 volumes.  
@@ -56,7 +54,7 @@ We need to activate the Volume Group Snapshots through a **feature gate** in the
 As the snapshot controller is already deployed and you just need to enable the feature gate quickly, you can use a direct patch without redeploying:
 ```bash
 kubectl patch deploy snapshot-controller -n kube-system --type='json' \
-  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--feature-gates=CSIVolumeGroupSnapshot=true"}]'
+  -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"\"--feature-gates=CSIVolumeGroupSnapshot=true\""}]'
 ```
 This will immediately add the flag and the controller will restart. Note that this approach does not persist in the manifest source, so it's suitable for temporary testing environments.
 

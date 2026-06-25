@@ -258,8 +258,12 @@ check_pods_running() {
   local kubeconfig=$1; local ns=$2; local title=$3
   local kc; kc=$(_kc_arg "$kubeconfig")
   local notok
+  if ! kubectl $kc get ns "$ns" >/dev/null 2>&1; then
+    print_fail "$title: namespace/$ns not found"
+    return 1
+  fi
   if ! kubectl $kc -n "$ns" get pods --no-headers >/dev/null 2>&1; then
-    print_fail "$title: namespace/$ns not found or cluster unreachable"
+    print_fail "$title: cluster unreachable while checking namespace/$ns"
     return 1
   fi
   # find pods whose STATUS is not Running or Completed

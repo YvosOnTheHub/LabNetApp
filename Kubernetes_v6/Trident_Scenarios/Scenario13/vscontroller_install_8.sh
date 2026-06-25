@@ -11,10 +11,10 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/external-snap
 
 echo
 echo "##############################################################"
-echo "# Apply snapshot controller and CRDs for v8.2"
+echo "# Apply snapshot controller and CRDs for v8.6.0"
 echo "##############################################################"
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.2.0 | kubectl apply -f -
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.2.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.6.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.6.0 | kubectl apply -f -
 kubectl patch -n kube-system deploy snapshot-controller --type=json -p='[{"op": "add", "path": "/spec/template/spec/nodeSelector", "value":{"kubernetes.io/os":"linux"}}]'
 
 

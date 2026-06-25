@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if kubectl get namespace kubevirt >/dev/null 2>&1; then
+  echo "#######################################################################################################" 
+  echo "Scaling down KubeVirt components running on the control plane to avoid issues during upgrade"
+  echo "#######################################################################################################"
+  for deploy in virt-operatorvirt-api virt-controller; do
+    if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
+      kubectl -n kubevirt scale deploy "$deploy" --replicas=0
+    fi
+  done
+fi
+
+echo
 echo "#######################################################################################################"
 echo "Upgrading Kubernetes Master RHEL3 to K8s 1.31"
 echo "#######################################################################################################"
@@ -53,6 +65,19 @@ do
     fi
 done
 
+if kubectl get namespace kubevirt >/dev/null 2>&1; then
+  echo
+  echo "#######################################################################################################" 
+  echo "Scaling KubeVirt components back up"
+  echo "#######################################################################################################"
+  for deploy in virt-operator virt-api virt-controller; do
+    if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
+      kubectl -n kubevirt scale deploy "$deploy" --replicas=2
+    fi
+  done
+fi
+
+echo
 echo "#######################################################################################################"
 echo "Upgrade to Kubernetes 1.30 finished"
 echo "#######################################################################################################"

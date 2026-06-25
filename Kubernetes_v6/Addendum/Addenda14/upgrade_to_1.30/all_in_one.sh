@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if kubectl get namespace kubevirt >/dev/null 2>&1; then
+  echo "#######################################################################################################" 
+  echo "Scaling down KubeVirt components running on the control plane to avoid issues during upgrade"
+  echo "#######################################################################################################"
+  for deploy in virt-operator virt-api virt-controller; do
+    if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
+      kubectl -n kubevirt scale deploy "$deploy" --replicas=0
+    fi
+  done
+fi
+
+echo
 KUBELET_KUBEADM_CONF="/var/lib/kubelet/kubeadm-flags.env"
 CURRENT_IMAGE=$(grep -i KUBELET_KUBEADM_ARGS /var/lib/kubelet/kubeadm-flags.env | awk -F ':' '{print $3}' | tr -d '"')
 if [ "$CURRENT_IMAGE" != "3.10" ]; then
@@ -80,6 +92,19 @@ do
     fi
 done
 
+if kubectl get namespace kubevirt >/dev/null 2>&1; then
+  echo
+  echo "#######################################################################################################" 
+  echo "Scaling KubeVirt components back up"
+  echo "#######################################################################################################"
+  for deploy in virt-operator virt-api virt-controller; do
+    if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
+      kubectl -n kubevirt scale deploy "$deploy" --replicas=2
+    fi
+  done
+fi
+
+echo
 echo "#######################################################################################################"
 echo "Upgrade to Kubernetes 1.30 finished"
 echo "#######################################################################################################"

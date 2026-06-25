@@ -257,8 +257,8 @@ echo "############################################"
 echo "### Snap Class & snapshot controller"
 echo "############################################"
 
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.2.0 | kubectl apply -f -
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.2.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.6.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.6.0 | kubectl apply -f -
 
 
 cat << EOF | kubectl apply -f -
