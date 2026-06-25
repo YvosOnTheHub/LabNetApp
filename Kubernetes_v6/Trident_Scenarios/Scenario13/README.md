@@ -17,8 +17,8 @@ kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/external-snap
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.2.0 | kubectl apply -f -
-kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.2.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.6.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.6.0 | kubectl apply -f -
 kubectl patch -n kube-system deploy snapshot-controller --type=json -p='[{"op": "add", "path": "/spec/template/spec/nodeSelector", "value":{"kubernetes.io/os":"linux"}}]'
 ```
 

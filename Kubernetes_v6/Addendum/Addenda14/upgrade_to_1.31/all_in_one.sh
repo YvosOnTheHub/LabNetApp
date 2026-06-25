@@ -4,7 +4,7 @@ if kubectl get namespace kubevirt >/dev/null 2>&1; then
   echo "#######################################################################################################" 
   echo "Scaling down KubeVirt components running on the control plane to avoid issues during upgrade"
   echo "#######################################################################################################"
-  for deploy in virt-operatorvirt-api virt-controller; do
+  for deploy in virt-operator virt-api virt-controller; do
     if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
       kubectl -n kubevirt scale deploy "$deploy" --replicas=0
     fi
