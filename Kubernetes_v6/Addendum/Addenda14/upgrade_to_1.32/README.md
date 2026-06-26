@@ -14,17 +14,17 @@ This means that you first need to modify the repo address, in order for the upgr
 sed -i 's/1.31/1.32/' /etc/yum.repos.d/kubernetes.repo
 ```
 
-This page will guide you through the upgrade to the minor version _1.32.7_. However, if you would to use a different minor version, you can use the following command to list all available packages:  
+This page will guide you through the upgrade to the minor version _1.32.13_. However, if you would to use a different minor version, you can use the following command to list all available packages:  
 ```bash
 yum list --showduplicates kubeadm --disableexcludes=kubernetes
 ```
 
 The following set of commands must of performed on the Control Plane (ie _rhel3_)
 ```bash
-$ yum install -y kubeadm-1.32.7-150500.1.1 kubelet-1.32.7-150500.1.1 kubectl-1.32.7-150500.1.1 --disableexcludes=kubernetes
+$ yum install -y kubeadm-1.32.13-150500.1.1 kubelet-1.32.13-150500.1.1 kubectl-1.32.13-150500.1.1 --disableexcludes=kubernetes
 
 $ kubeadm version
-kubeadm version: &version.Info{Major:"1", Minor:"32", GitVersion:"v1.32.7", GitCommit:"158eee9fac884b429a92465edd0d88a43f81de34", GitTreeState:"clean", BuildDate:"2025-07-15T18:06:15Z", GoVersion:"go1.23.10", Compiler:"gc", Platform:"linux/amd64"}
+kubeadm version: &version.Info{Major:"1", Minor:"32", GitVersion:"v1.32.13", GitCommit:"158eee9fac884b429a92465edd0d88a43f81de34", GitTreeState:"clean", BuildDate:"2025-07-15T18:06:15Z", GoVersion:"go1.23.10", Compiler:"gc", Platform:"linux/amd64"}
 
 $ kubeadm upgrade plan
 ...
@@ -85,7 +85,7 @@ win2    Ready    <none>          451d   v1.31.11
 Let's process with the worker node _rhel1_, on which you need to connect to run the 3 following commands:  
 ```bash
 sed -i 's/1.31/1.32/' /etc/yum.repos.d/kubernetes.repo
-yum install -y kubeadm-1.32.7-150500.1.1 kubelet-1.32.7-150500.1.1 kubectl-1.32.7-150500.1.1 --disableexcludes=kubernetes
+yum install -y kubeadm-1.32.13-150500.1.1 kubelet-1.32.13-150500.1.1 kubectl-1.32.13-150500.1.1 --disableexcludes=kubernetes
 kubeadm upgrade node
 ```
 Next, you need to restart Kubelet. Note that is also good practice to isolate the worker node (drain/uncordon).  
@@ -102,7 +102,7 @@ After a few seconds, you will see the following, which means the first worker no
 $ kubectl get nodes
 NAME    STATUS   ROLES           AGE    VERSION
 rhel1   Ready    <none>          451d   v1.32.7
-rhel2   Ready    <none>          451d   v1.31.11
+rhel2   Ready    <none>          451d   v1.31.13
 rhel3   Ready    control-plane   451d   v1.32.7
 win1    Ready    <none>          451d   v1.31.11
 win2    Ready    <none>          451d   v1.31.11
@@ -112,9 +112,9 @@ You now can repeat this procedure on the second linux worker node (_rhel2_), unt
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES           AGE    VERSION
-rhel1   Ready    <none>          451d   v1.32.7
-rhel2   Ready    <none>          451d   v1.32.7
-rhel3   Ready    control-plane   451d   v1.32.7
+rhel1   Ready    <none>          451d   v1.32.13
+rhel2   Ready    <none>          451d   v1.32.13
+rhel3   Ready    control-plane   451d   v1.32.13
 win1    Ready    <none>          451d   v1.31.11
 win2    Ready    <none>          451d   v1.31.11
 ```
@@ -127,11 +127,11 @@ node/win1 drained
 ```
 To move on with the upgrade, you can use the Remote Desktop Connection to access those hosts, and run the following commands in a powershell window:  
 ```powershell
-curl.exe -Lo c:\k\kubeadm.exe  "https://dl.k8s.io/v1.32.7/bin/windows/amd64/kubeadm.exe"
+curl.exe -Lo c:\k\kubeadm.exe  "https://dl.k8s.io/v1.32.13/bin/windows/amd64/kubeadm.exe"
 kubeadm upgrade node
 
 stop-service kubelet
-curl.exe -Lo c:\k\kubelet.exe "https://dl.k8s.io/v1.32.7/bin/windows/amd64/kubelet.exe"
+curl.exe -Lo c:\k\kubelet.exe "https://dl.k8s.io/v1.32.13/bin/windows/amd64/kubelet.exe"
 restart-service kubelet
 ```
 
@@ -148,7 +148,7 @@ Next, apply the same method to the second Windows node _win2_.
 Last, you also need to update the Windows Kube Proxy, which runs as a Daemonset:  
 ```bash
 $ kubectl -n kube-system patch daemonset kube-proxy-windows --type='json' \
-  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "sigwindowstools/kube-proxy:v1.32.7-calico-hostprocess"}]'
+  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "sigwindowstools/kube-proxy:v1.32.13-calico-hostprocess"}]'
 daemonset.apps/kube-proxy-windows patched
 ```
 
@@ -156,11 +156,11 @@ Finally, you should now see the following on the control plane:
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES           AGE    VERSION
-rhel1   Ready    <none>          451d   v1.32.7
-rhel2   Ready    <none>          451d   v1.32.7
-rhel3   Ready    control-plane   451d   v1.32.7
-win1    Ready    <none>          451d   v1.32.7
-win2    Ready    <none>          451d   v1.32.7
+rhel1   Ready    <none>          451d   v1.32.13
+rhel2   Ready    <none>          451d   v1.32.13
+rhel3   Ready    control-plane   451d   v1.32.13
+win1    Ready    <none>          451d   v1.32.13
+win2    Ready    <none>          451d   v1.32.13
 ```
 
 Tadaaa, all the nodes are up to date !

@@ -43,9 +43,9 @@ Once this is all done, you should have the following:
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES           AGE    VERSION
-rhel1   Ready    <none>          451d   v1.32.7
-rhel2   Ready    <none>          451d   v1.32.7
-rhel3   Ready    control-plane   451d   v1.32.7
+rhel1   Ready    <none>          451d   v1.32.13
+rhel2   Ready    <none>          451d   v1.32.13
+rhel3   Ready    control-plane   451d   v1.32.13
 ```
 
 ## B. Update the Snapshot Controller and activate the Volume Group Snapshot feature gate.    
@@ -56,7 +56,7 @@ As the snapshot controller is already deployed and you just need to enable the f
 kubectl patch deploy snapshot-controller -n kube-system --type='json' \
   -p='[{"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"\"--feature-gates=CSIVolumeGroupSnapshot=true\""}]'
 ```
-This will immediately add the flag and the controller will restart. Note that this approach does not persist in the manifest source, so it's suitable for temporary testing environments.
+This will immediately add the flag and the controller pods will restart. Note that this approach does not persist in the manifest source, so it's suitable for temporary testing environments.
 
 Once the Controller is up to date, Trident will detect the change, apply the feature gate flag to the CSI sidecar it carries and restart its controller. You can notice the change in the pod's age:  
 ```bash
@@ -121,7 +121,7 @@ mydata2   Bound    pvc-1b702512-513b-49e3-9b7b-cd965a129b64   1Gi        RWO    
 You can now create a VGS that will take into account the 2 PVC of your app:  
 ```bash
 $ cat << EOF | kubectl apply -f -
-apiVersion: groupsnapshot.storage.k8s.io/v1beta1
+apiVersion: groupsnapshot.storage.k8s.io/v1
 kind: VolumeGroupSnapshot
 metadata:
   name: vgs1
