@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -Eeuo pipefail
+trap 'echo "ERROR at line $LINENO while running: $BASH_COMMAND"; kubectl get nodes 2>/dev/null || true' ERR
+
 ##############################################################
 # sleep_with_progress()
 # Sleeps for the specified duration while displaying remaining
@@ -16,6 +19,26 @@ sleep_with_progress() {
     elapsed=$((elapsed + 1))
   done
   printf "\r%*s\r" $((${#1} + 35)) ""  # Clear the line
+}
+
+check_local_kubeadm_version() {
+  local expected=$1
+  local current
+  current=$(kubeadm version -o short 2>/dev/null || true)
+  if [ "$current" != "$expected" ]; then
+    echo "ERROR: local kubeadm version is '$current' but expected '$expected'"
+    return 1
+  fi
+}
+
+check_remote_kubeadm_version() {
+  local host=$1; local expected=$2
+  local current
+  current=$(ssh -o "StrictHostKeyChecking no" "root@$host" "kubeadm version -o short" 2>/dev/null | tr -d '\r' || true)
+  if [ "$current" != "$expected" ]; then
+    echo "ERROR: kubeadm version on $host is '$current' but expected '$expected'"
+    return 1
+  fi
 }
 
 if kubectl get namespace kubevirt >/dev/null 2>&1; then
@@ -38,12 +61,14 @@ sed -i 's/1.31/1.32/' /etc/yum.repos.d/kubernetes.repo
 # yum list --showduplicates kubeadm --disableexcludes=kubernetes
 yum install -y kubeadm-1.32.13-150500.1.1 kubelet-1.32.13-150500.1.1 kubectl-1.32.13-150500.1.1 --disableexcludes=kubernetes
 # kubeadm upgrade plan
+check_local_kubeadm_version "v1.32.13"
+sleep_with_progress 10
 kubeadm upgrade apply v1.32.13 -y
 kubectl drain rhel3 --ignore-daemonsets --delete-emptydir-data
 systemctl daemon-reload && systemctl restart kubelet
 kubectl wait --for=condition=Ready node/rhel3 --timeout=300s
 kubectl uncordon rhel3
-sleep_with_progress "30"
+sleep_with_progress 60
 
 
 echo "#######################################################################################################"
@@ -52,12 +77,14 @@ echo "##########################################################################
 
 ssh -o "StrictHostKeyChecking no" root@rhel1 "sed -i 's/1.31/1.32/' /etc/yum.repos.d/kubernetes.repo"
 ssh -o "StrictHostKeyChecking no" root@rhel1 yum install -y kubeadm-1.32.13-150500.1.1 kubelet-1.32.13-150500.1.1 kubectl-1.32.13-150500.1.1 --disableexcludes=kubernetes
+check_remote_kubeadm_version "rhel1" "v1.32.13"
+sleep_with_progress 10
 ssh -o "StrictHostKeyChecking no" root@rhel1 kubeadm upgrade node 
 kubectl drain rhel1 --ignore-daemonsets --delete-emptydir-data
 ssh -o "StrictHostKeyChecking no" root@rhel1 "systemctl daemon-reload && systemctl restart kubelet"
 kubectl wait --for=condition=Ready node/rhel1 --timeout=300s
 kubectl uncordon rhel1
-sleep_with_progress "30"
+sleep_with_progress 60
 
 
 echo "#######################################################################################################"
@@ -66,12 +93,14 @@ echo "##########################################################################
 
 ssh -o "StrictHostKeyChecking no" root@rhel2 "sed -i 's/1.31/1.32/' /etc/yum.repos.d/kubernetes.repo"
 ssh -o "StrictHostKeyChecking no" root@rhel2 yum install -y kubeadm-1.32.13-150500.1.1 kubelet-1.32.13-150500.1.1 kubectl-1.32.13-150500.1.1 --disableexcludes=kubernetes
+check_remote_kubeadm_version "rhel2" "v1.32.13"
+sleep_with_progress 10
 ssh -o "StrictHostKeyChecking no" root@rhel2 kubeadm upgrade node 
 kubectl drain rhel2 --ignore-daemonsets --delete-emptydir-data
 ssh -o "StrictHostKeyChecking no" root@rhel2 "systemctl daemon-reload && systemctl restart kubelet"
 kubectl wait --for=condition=Ready node/rhel2 --timeout=300s
 kubectl uncordon rhel2
-sleep_with_progress "60"
+sleep_with_progress 60
 
 if kubectl get namespace kubevirt >/dev/null 2>&1; then
   echo
@@ -90,13 +119,16 @@ echo "##########################################################################
 echo "Waiting for all pods to reach Running state..."
 echo "#######################################################################################################"
 
+MAX_POD_WAIT_SECONDS=1200
+elapsed_wait=0
 while true; do
-  running=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4=="Running" {c++} END {print c+0}')
-  pending=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4=="Pending" {c++} END {print c+0}')
-  failed=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4=="Failed" {c++} END {print c+0}')
-  crashloop=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4=="CrashLoopBackOff" {c++} END {print c+0}')
-  imagepull=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4=="ImagePullBackOff" {c++} END {print c+0}')
-  other=$(kubectl get pods -A --no-headers 2>/dev/null | awk '$4!="Running" && $4!="Pending" && $4!="Failed" && $4!="CrashLoopBackOff" && $4!="ImagePullBackOff" {c++} END {print c+0}')
+  pod_lines=$(kubectl get pods -A --no-headers 2>/dev/null || true)
+  running=$(printf "%s\n" "$pod_lines" | awk '$4=="Running" {c++} END {print c+0}')
+  pending=$(printf "%s\n" "$pod_lines" | awk '$4=="Pending" {c++} END {print c+0}')
+  failed=$(printf "%s\n" "$pod_lines" | awk '$4=="Failed" {c++} END {print c+0}')
+  crashloop=$(printf "%s\n" "$pod_lines" | awk '$4=="CrashLoopBackOff" {c++} END {print c+0}')
+  imagepull=$(printf "%s\n" "$pod_lines" | awk '$4=="ImagePullBackOff" {c++} END {print c+0}')
+  other=$(printf "%s\n" "$pod_lines" | awk '$4!="Running" && $4!="Pending" && $4!="Failed" && $4!="CrashLoopBackOff" && $4!="ImagePullBackOff" {c++} END {print c+0}')
   total=$((running + pending + failed + crashloop + imagepull + other))
   
   printf "\r[Running: %d | Pending: %d | Failed: %d | CrashLoop: %d | ImagePullErr: %d | Other: %d] Total: %d" \
@@ -107,8 +139,16 @@ while true; do
     echo "✓ All pods are Running!"
     break
   fi
+
+  if [ "$elapsed_wait" -ge "$MAX_POD_WAIT_SECONDS" ]; then
+    echo
+    echo "ERROR: Timed out after ${MAX_POD_WAIT_SECONDS}s waiting for all pods to be Running"
+    kubectl get pods -A --no-headers 2>/dev/null | awk '$4!="Running" {print}' || true
+    exit 1
+  fi
   
   sleep 1
+  elapsed_wait=$((elapsed_wait + 1))
 done
 
 
