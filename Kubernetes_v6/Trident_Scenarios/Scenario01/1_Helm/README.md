@@ -47,9 +47,9 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2602.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0,operatorImage=registry.demo.netapp.com/trident-operator:26.02.1,tridentImage=registry.demo.netapp.com/trident:26.02.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0,operatorImage=registry.demo.netapp.com/trident-operator:26.06.0,tridentImage=registry.demo.netapp.com/trident:26.06.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
-LAST DEPLOYED: Mon May 18 06:29:52 2026
+LAST DEPLOYED: Tue Jun 30 18:01:07 2026
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 2
@@ -72,7 +72,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2026-05-18 06:29:52.165866618 +0000 UTC deployed        trident-operator-100.2602.1     26.02.1
+trident trident         2               2026-06-30 18:01:07.714962103 +0000 UTC deployed        trident-operator-100.2606.0     26.06.0
 ```
 
 Quite easy !  
@@ -84,15 +84,51 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 26.02.1        | 26.02.1        |
+| 26.06.0        | 26.06.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v26.02.1
+  Version:    v26.06.0
 ```
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+**In resource constraint environments, such as this lab, a race condition may not populate all Trident keys when CSI Topology is enabled. If that was the case, creating a PVC would fail.**
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p> 
+
+As CSI Topology is enabled on this lab, you can check whether the configuration is complete.:  
+```bash
+$ kubectl get csinode rhel1 -o yaml | grep -C3 topologyKeys
+  drivers:
+  - name: csi.tigera.io
+    nodeID: rhel1
+    topologyKeys: null
+  - name: csi.trident.netapp.io
+    nodeID: rhel1
+    topologyKeys: null
+```
+The **topologyKeys** Trident parameter is empty for the node _rhel1_, when it should contain some content.  
+In order to fix this, you can rollout the Trident DaemonSet, operation that will read again the topology parameters:  
+```bash
+$ kubectl rollout restart ds/trident-node-linux -n trident
+daemonset.apps/trident-node-linux restarted
+```
+All the Trident DaemonSets will restart. Once done, you can if the configuration is now correct:  
+```bash
+$ kubectl get csinode rhel1 -o yaml | grep -C3 topologyKeys
+  drivers:
+  - name: csi.tigera.io
+    nodeID: rhel1
+    topologyKeys: null
+  - name: csi.trident.netapp.io
+    nodeID: rhel1
+    topologyKeys:
+    - topology.kubernetes.io/region
+    - topology.kubernetes.io/zone
+```
+Alright, now Trident is ready!  
 
 ## What's next
 

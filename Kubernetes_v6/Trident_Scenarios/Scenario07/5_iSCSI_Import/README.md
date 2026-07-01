@@ -1,12 +1,12 @@
 #########################################################################################
-# SCENARIO 7-4: Import a iSCSI Block volume
+# SCENARIO 7-5: Import a iSCSI Block volume
 #########################################################################################
 
 **GOAL:**  
 Trident 20.07 introduced the possibility to import into Kubernetes a iSCSI LUN that exists in an ONTAP platform.  
 An iSCSI Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario5](../../Scenario05)
 
-<p align="center"><img src="../Images/scenario7_4.jpg"></p>
+<p align="center"><img src="../Images/scenario7_5.jpg"></p>
 
 ## A. Import a single LUN with ONTAP-SAN & tridentctl
 
@@ -15,14 +15,14 @@ To create these 2 objects, we will use the CURL command in order to reach ONTAP 
 ```bash
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "aggregates": [{"name": "aggr1"}],
-  "name": "scenario7_4",
+  "name": "scenario7_5",
   "size": "10g",
   "style": "flexvol",
   "svm": {"name": "sansvm"}
 }' "https://cluster1.demo.netapp.com/api/storage/volumes"
 
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
-  "name": "/vol/scenario7_4/lun0",
+  "name": "/vol/scenario7_5/lun0",
   "os_type": "linux",
   "space": {"size": 1073741824},
   "svm": {"name": "sansvm"}
@@ -42,7 +42,7 @@ Please note that:
 - The volume hosting the LUN is going to be renamed once imported in order to follow the CSI specifications
 
 ```bash
-$ tridentctl -n trident import volume BackendForiSCSI scenario7_4 -f pvc_rwo_import.yaml
+$ tridentctl -n trident import volume BackendForiSCSI scenario7_5 -f pvc_rwo_import.yaml
 +------------------------------------------+---------+---------------------+----------+--------------------------------------+--------+---------+
 |                   NAME                   |  SIZE   |    STORAGE CLASS    | PROTOCOL |             BACKEND UUID             | STATE  | MANAGED |
 +------------------------------------------+---------+---------------------+----------+--------------------------------------+--------+---------+
@@ -63,7 +63,7 @@ trident_pvc_6b41338d_0c82_407a_9396_d9e99478a573
 Even though the name of the original PV has changed, you can still see it if you look into its annotations.  
 ```bash
 $ kubectl describe pvc lun-import1 | grep importOriginalName
-               trident.netapp.io/importOriginalName: scenario7_4
+               trident.netapp.io/importOriginalName: scenario7_5
 ```
 
 ## B. Import multiple LUNs with ONTAP-SAN-ECONOMY & kubectl
@@ -75,21 +75,21 @@ But first, let's create a new Flexvol (*scenario7_4_2*) that contains 2 LUNs (*l
 ```bash
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "aggregates": [{"name": "aggr1"}],
-  "name": "scenario7_4_2",
+  "name": "scenario7_5_2",
   "size": "21g",
   "style": "flexvol",
   "svm": {"name": "sansvm"}
 }' "https://cluster1.demo.netapp.com/api/storage/volumes"
 
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
-  "name": "/vol/scenario7_4_2/lun0",
+  "name": "/vol/scenario7_5_2/lun0",
   "os_type": "linux",
   "space": {"size": 1073741824},
   "svm": {"name": "sansvm"}
 }' "https://cluster1.demo.netapp.com/api/storage/luns"
 
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
-  "name": "/vol/scenario7_4_2/lun1",
+  "name": "/vol/scenario7_5_2/lun1",
   "os_type": "linux",
   "space": {"size": 1073741824},
   "svm": {"name": "sansvm"}
@@ -114,7 +114,7 @@ apiVersion: v1
 metadata:
   name: lun-import2
   annotations:
-    trident.netapp.io/importOriginalName: "scenario7_4_2/lun0"
+    trident.netapp.io/importOriginalName: "scenario7_5_2/lun0"
     trident.netapp.io/importBackendUUID: "8a802f70-8782-4acf-bd24-8d287f9e3e6c"
     trident.netapp.io/notManaged: "false"
 spec:
@@ -201,7 +201,7 @@ persistentvolumeclaim "lun-import3" deleted
 ## D. What's next
 
 You can now move on to:  
-- [Scenario07_5](../5_NVMe_import): Importing a NVMe volume  
+- [Scenario07_6](../6_NVMe_import): Importing a NVMe volume  
 - [Scenario08](../../Scenario08): Consumption control  
 - [Scenario09](../../Scenario09): Expanding volumes
 - [Scenario10](../../Scenario10): Using Virtual Storage Pools 

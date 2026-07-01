@@ -1,12 +1,12 @@
 #########################################################################################
-# SCENARIO 7-2: Import a SMB share
+# SCENARIO 7-3: Import a SMB share
 #########################################################################################
 
 **GOAL:**  
 As SMB is supported by Trident, let's see how to import a share.    
 A SMB Backend must already be present in order to complete this scenario. This can be achieved by following the [scenario5](../../Scenario05)
 
-<p align="center"><img src="../Images/scenario7_2.jpg"></p>
+<p align="center"><img src="../Images/scenario7_3.jpg"></p>
 
 ## A. Create a volume on the storage backend
 
@@ -14,14 +14,14 @@ To create these 2 objects, we will use the CURL command in order to reach ONTAP 
 ```bash
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "aggregates": [{"name": "aggr1"}],
-  "name": "scenario7_2",
+  "name": "scenario7_3",
   "size": "10g",
   "style": "flexvol",
   "svm": {"name": "nassvm"}
 }' "https://cluster1.demo.netapp.com/api/storage/volumes"
 ```
 
-A FlexVol called **scenario7_2** has been created.  
+A FlexVol called **scenario7_3** has been created.  
 
 ## B. Import the volume
 
@@ -55,7 +55,7 @@ trident_pvc_3e26eaf7_c81a_42cd_bc27_91fc423b2bd4
 Even though the name of the original PV has changed, you can still see it if you look into its annotations.  
 ```bash
 $ kubectl describe pvc smb-import | grep importOriginalName
-               trident.netapp.io/importOriginalName: scenario7_2
+               trident.netapp.io/importOriginalName: scenario7_3
 ```
 
 ## C. Cleanup (optional)

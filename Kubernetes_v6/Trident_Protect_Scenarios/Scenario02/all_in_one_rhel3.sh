@@ -21,7 +21,7 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 helm install trident-protect netapp-trident-protect/trident-protect \
   --set clusterName=lod1 \
-  --version 100.2602.1 \
+  --version 100.2606.0 \
   --namespace trident-protect -f protectValues_rhel3.yaml
   
 echo
@@ -29,7 +29,7 @@ echo "############################################"
 echo "### Protectctl install"
 echo "############################################"
 cd
-curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/26.02.1/tridentctl-protect-linux-amd64
+curl -L -o tridentctl-protect https://github.com/NetApp/tridentctl-protect/releases/download/v26.06.0/tridentctl-protect-linux-amd64
 chmod +x tridentctl-protect
 mv ./tridentctl-protect /usr/local/bin
 

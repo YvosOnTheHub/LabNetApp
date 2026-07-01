@@ -49,15 +49,15 @@ helm uninstall trident -n trident
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 26.02"
+echo "Download Trident 26.06"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 26.02.1 && cd 26.02.1
-wget https://github.com/NetApp/trident/releases/download/v26.02.1/trident-installer-26.02.1.tar.gz
-tar -xf trident-installer-26.02.1.tar.gz
-ln -sf /root/26.02.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.06.0 && cd 26.06.0
+wget https://github.com/NetApp/trident/releases/download/v26.06.0/trident-installer-26.06.0.tar.gz
+tar -xf trident-installer-26.06.0.tar.gz
+ln -sf /root/26.06.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -67,11 +67,11 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Install new Trident Operator (26.02.1)"
+echo "Install new Trident Operator (26.06.0)"
 echo "#######################################################################################################"
 
-sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.02.1/trident-installer/deploy/bundle.yaml
-kubectl create -f ~/26.02.1/trident-installer/deploy/bundle.yaml
+sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.06.0/trident-installer/deploy/bundle.yaml
+kubectl create -f ~/26.06.0/trident-installer/deploy/bundle.yaml
 
 cat << EOF | kubectl apply -f -
 apiVersion: trident.netapp.io/v1
@@ -81,8 +81,8 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:26.02.1
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.02.0
+  tridentImage: registry.demo.netapp.com/trident:26.06.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.06.0
   silenceAutosupport: true
   windows: true
   imagePullSecrets:
@@ -101,7 +101,7 @@ until kubectl get crd tridentversions.trident.netapp.io >/dev/null 2>&1; do
     done
 done
 echo
-until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.02.1" ]; do
+until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.06.0" ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame"
     done
@@ -112,6 +112,37 @@ until [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e 
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
     done
 done
+
+echo
+echo "#######################################################################################################"
+echo "Check if the topology keys are set in Trident"
+echo "#######################################################################################################"
+echo
+
+check_topology_keys() {
+  kubectl get csinode rhel1 -o jsonpath='{.spec.drivers[?(@.name=="csi.trident.netapp.io")].topologyKeys}' 2>/dev/null
+}
+
+if [ "$(check_topology_keys)" = "null" ] || [ -z "$(check_topology_keys)" ]; then
+  echo "topologyKeys is null for csi.trident.netapp.io on rhel1 — restarting trident-node-linux daemonset..."
+  kubectl rollout restart ds/trident-node-linux -n trident
+
+  echo "Waiting for rollout to complete..."
+  kubectl rollout status ds/trident-node-linux -n trident --timeout=300s
+
+  echo "Rechecking topologyKeys..."
+  TOPO_KEYS=$(check_topology_keys)
+  if [ "$TOPO_KEYS" = "null" ] || [ -z "$TOPO_KEYS" ]; then
+    echo "ERROR: topologyKeys is still null after rollout restart. Please investigate manually."
+    echo "  kubectl get csinode rhel1 -o yaml | grep -C4 topologyKeys"
+    exit 1
+  else
+    echo "topologyKeys is now set: $TOPO_KEYS"
+  fi
+else
+  echo "topologyKeys is already set: $(check_topology_keys)"
+fi
+
 
 echo
 echo "#######################################################################################################"

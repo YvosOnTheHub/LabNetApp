@@ -20,19 +20,19 @@ secret/regcred created
 
 ## B. Install the Trident operator
 
-We first need to modify the image repository in the bundle provided in the 26.02 TGZ package downloaded earlier.  
+We first need to modify the image repository in the bundle provided in the 26.06 TGZ package downloaded earlier.  
 Once done, you can apply this file to your environment.  
 ```bash
-$ sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.02.1/trident-installer/deploy/bundle.yaml
+$ sed -i s,docker.io\/netapp\/,registry.demo.netapp.com\/, ~/26.06.0/trident-installer/deploy/bundle.yaml
 
-$ kubectl create -f ~/26.02.1/trident-installer/deploy/bundle.yaml
+$ kubectl create -f ~/26.06.0/trident-installer/deploy/bundle.yaml
 serviceaccount/trident-operator created
 clusterrole.rbac.authorization.k8s.io/trident-operator created
 clusterrolebinding.rbac.authorization.k8s.io/trident-operator created
 deployment.apps/trident-operator created
 ```
 Then, you need to create a Trident Orchestrator, which is highly customizable.  
-Several examples can be found in the _~/26.02.1/trident-installer/deploy/crds_ folder.  
+Several examples can be found in the _~/26.06.0/trident-installer/deploy/crds_ folder.  
 
 Let's create our own:
 ```bash
@@ -44,8 +44,8 @@ metadata:
 spec:
   debug: true
   namespace: trident
-  tridentImage: registry.demo.netapp.com/trident:26.02.1
-  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.02.0
+  tridentImage: registry.demo.netapp.com/trident:26.06.0
+  autosupportImage: registry.demo.netapp.com/trident-autosupport:26.06.0
   silenceAutosupport: true
   windows: true
   imagePullSecrets:
@@ -66,8 +66,8 @@ pod/trident-node-windows-jnpmj            3/3     Running   0          2m21s
 pod/trident-node-windows-tdxvl            3/3     Running   0          2m21s
 pod/trident-operator-b577897b8-9tnq8      1/1     Running   0          5m30s
 
-NAME                  TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                       AGE
-service/trident-csi   ClusterIP   10.96.34.221   <none>        34571/TCP,9220/TCP,8444/TCP   2m28s
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                       AGE
+service/trident-csi   ClusterIP   10.109.169.151   <none>        34571/TCP,9220/TCP,8444/TCP    2m28s
 ```
 
 ## C. Check the status
@@ -82,26 +82,26 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2026-05-18T09:37:16Z
+  Creation Timestamp:  2026-07-01T06:22:00Z
   Generation:          1
-  Resource Version:    328110
-  UID:                 405b28df-22ac-4b31-b9c8-e28362a0e378
+  Resource Version:    1217408
+  UID:                 36fbc213-e34c-4eee-98cc-6e1defc0e69f
 Spec:
-  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:26.02.0
+  Autosupport Image:  registry.demo.netapp.com/trident-autosupport:26.06.0
   Debug:              true
   Image Pull Secrets:
     regcred
   Namespace:            trident
   Silence Autosupport:  true
-  Trident Image:        registry.demo.netapp.com/trident:26.02.1
+  Trident Image:        registry.demo.netapp.com/trident:26.06.0
   Windows:              true
 Status:
-  Acp Version:  v26.02.0
+  Acp Version:  v26.06.0
   Current Installation Params:
     IPv6:                       false
     Acp Image:
     Autosupport Hostname:
-    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:26.02.0
+    Autosupport Image:          registry.demo.netapp.com/trident-autosupport:26.06.0
     Autosupport Insecure:       false
     Autosupport Proxy:
     Autosupport Serial Number:
@@ -177,27 +177,28 @@ Status:
               Cpu:        10m
               Memory:     60Mi
     Silence Autosupport:  true
-    Trident Image:        registry.demo.netapp.com/trident:26.02.1
+    Trident Image:        registry.demo.netapp.com/trident:26.06.0
   Message:                Trident installed
   Namespace:              trident
   Status:                 Installed
-  Version:                v26.02.1
+  Version:                v26.06.0
 Events:
-  Type    Reason      Age                  From                        Message
-  ----    ------      ----                 ----                        -------
-  Normal  Installing  22m                  trident-operator.netapp.io  Installing Trident
-  Normal  Installed   2m31s (x9 over 22m)  trident-operator.netapp.io  Trident installed
+  Type    Reason      Age               From                        Message
+  ----    ------      ----              ----                        -------
+  Normal  Installing  2m10s             trident-operator.netapp.io  Installing Trident
+  Normal  Installed   6s (x4 over 94s)  trident-operator.netapp.io  Trident installed
+
 
 $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 26.02.1        | 26.02.1        |
+| 26.06.0        | 26.06.0        |
 +----------------+----------------+
 
 $ kubectl -n trident get tridentversions
 NAME      VERSION
-trident   26.02.1
+trident   26.06.0
 ```
 
 The interesting part of this CRD is that you have access to the current status of Trident.
@@ -212,8 +213,45 @@ $ kubectl describe torc trident | grep Message: -A 3
   Message:          Trident installed
   Namespace:        trident
   Status:           Installed
-  Version:          v26.02.1
+  Version:          v26.06.0
 ```
+
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
+
+**In resource constraint environments, such as this lab, a race condition may not populate all Trident keys when CSI Topology is enabled. If that was the case, creating a PVC would fail.**
+<p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p> 
+
+As CSI Topology is enabled on this lab, you can check whether the configuration is complete.:  
+```bash
+$ kubectl get csinode rhel1 -o yaml | grep -C3 topologyKeys
+  drivers:
+  - name: csi.tigera.io
+    nodeID: rhel1
+    topologyKeys: null
+  - name: csi.trident.netapp.io
+    nodeID: rhel1
+    topologyKeys: null
+```
+The **topologyKeys** Trident parameter is empty for the node _rhel1_, when it should contain some content.  
+In order to fix this, you can rollout the Trident DaemonSet, operation that will read again the topology parameters:  
+```bash
+$ kubectl rollout restart ds/trident-node-linux -n trident
+daemonset.apps/trident-node-linux restarted
+```
+All the Trident DaemonSets will restart. Once done, you can if the configuration is now correct:  
+```bash
+$ kubectl get csinode rhel1 -o yaml | grep -C3 topologyKeys
+  drivers:
+  - name: csi.tigera.io
+    nodeID: rhel1
+    topologyKeys: null
+  - name: csi.trident.netapp.io
+    nodeID: rhel1
+    topologyKeys:
+    - topology.kubernetes.io/region
+    - topology.kubernetes.io/zone
+```
+Alright, now Trident is ready!  
 
 ## D. What's next
 

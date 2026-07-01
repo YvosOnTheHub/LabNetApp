@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 7-3: Import a snapshot  
+# SCENARIO 7-4: Import a snapshot  
 #########################################################################################
 
 This feature was introduced in Trident 23.07.  
@@ -91,8 +91,8 @@ namespace "ghost" deleted
 ## D. What's next
 
 You can now move on to:  
-- [Scenario07_4](../4_iSCSI_import): Importing an iSCSI volume  
-- [Scenario07_5](../5_NVMe_import): Importing a NVMe volume  
+- [Scenario07_5](../5_iSCSI_import): Importing an iSCSI volume  
+- [Scenario07_6](../6_NVMe_import): Importing a NVMe volume  
 - [Scenario08](../../Scenario08): Consumption control  
 - [Scenario10](../../Scenario10): Using Virtual Storage Pools 
 - [Scenario11](../../Scenario11): StatefulSets & Storage consumption  

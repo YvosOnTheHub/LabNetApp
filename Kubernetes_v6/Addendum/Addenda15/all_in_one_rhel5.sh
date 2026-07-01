@@ -45,6 +45,29 @@ mv virtctl-v1.6.2-linux-amd64 /usr/local/bin/virtctl
 
 echo
 echo "#######################################################################################################"
+echo "Install & Customize Containerized Data Importer (CDI)"
+echo "#######################################################################################################"
+kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/v1.63.1/cdi-operator.yaml
+echo
+while [ $(kubectl get -n cdi po | grep -e '1/1' | wc -l) -ne 1 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the CDI Operator to be ready $frame" 
+    done
+done
+echo
+kubectl create -f https://github.com/kubevirt/containerized-data-importer/releases/download/v1.63.1/cdi-cr.yaml
+echo
+while [ $(kubectl get -n cdi po | grep -e '1/1' | wc -l) -ne 4 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for the CDI Instance to be ready $frame" 
+    done
+done
+
+kubectl patch cdi cdi --type=merge -p '{"spec":{"config":{"insecureRegistries":["registry.demo.netapp.com"]}}}'
+
+
+echo
+echo "#######################################################################################################"
 echo "Install Kubevirt Dashboard"
 echo "#######################################################################################################"
 wget https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/refs/tags/v1.5.4/kubernetes/bundled.yaml -O kubevirt-manager.yaml

@@ -5,7 +5,7 @@
 #
 # FUNCTION THAT WILL PERFORM THE FOLLOWING TASKS:
 # 1. UPGRADE HELM
-# 2. INSTALL TRIDENT OPERATOR TO 26.02.1 WITH HELM
+# 2. INSTALL TRIDENT OPERATOR TO 26.06.0 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
 # 5. INSTALL VOLUME SNAPSHOT CONTROLLER 8.2 & CREATE A VOLUMESNAPSHOTCLASS FOR TRIDENT
@@ -31,7 +31,7 @@ rm -f helm-v4.0.5-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. INSTALL TRIDENT OPERATOR TO 26.02.1 WITH HELM"
+echo "# 2. INSTALL TRIDENT OPERATOR TO 26.06.0 WITH HELM"
 echo "#######################################################################################################"
 echo
 
@@ -125,13 +125,13 @@ sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
 # lab_setup_trident_protect()
 #
 # Function that will perform the following tasks:
-# 1. UPGRADE TRIDENT TO 26.02.0 ON KUBERNETES#1
+# 1. UPGRADE TRIDENT TO 26.06.0 ON KUBERNETES#1
 # 2. CREATE A SECONDARY SVM
 # 3. CONFIGURE SVM PEERING
 # 4. CREATE A S3 SVM (TARGET FOR BACKUPS)
 # 5. CREATE & CONFIGURE A SECONDARY KUBERNETES CLUSTER
-# 6. INSTALL TRIDENT PROTECT 26.02.0 ON KUBERNETES#1
-# 7. INSTALL TRIDENT & TRIDENT PROTECT 26.02.0 ON KUBERNETES#2
+# 6. INSTALL TRIDENT PROTECT 26.06.0 ON KUBERNETES#1
+# 7. INSTALL TRIDENT & TRIDENT PROTECT 26.06.0 ON KUBERNETES#2
 # 8. CREATE AN APPVAULT ON BOTH CLUSTERS
 # 9. CONFIGURE KUBE STATE METRICS TO MONITOR TRIDENT PROTECT
 # 10. INSTALL KUBEVIRT ON KUBERNETES#2
@@ -157,8 +157,8 @@ if [[ $? == 1 ]];then
   exit 0
 fi
 
-# Upgrade Trident to 26.02.1 if needed
-if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "26.02.1" ]; then K8S1_trident_upgrade; fi
+# Upgrade Trident to 26.06.0 if needed
+if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "26.06.0" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation
@@ -449,7 +449,7 @@ lab_setup_check() {
 
   echo "Checking primary cluster (default kubeconfig)..."
   check_pods_running "" trident "Trident"
-  check_trident_version "" "26.02.1"
+  check_trident_version "" "26.06.0"
   check_tbc_status ""
   check_volume_snapshot_controller "" "8"
   check_pods_running "" kubevirt "KubeVirt"
@@ -464,7 +464,7 @@ lab_setup_check() {
   SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
   echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
   check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
-  check_trident_version "$SECONDARY_KUBECONFIG" "26.02.1"
+  check_trident_version "$SECONDARY_KUBECONFIG" "26.06.0"
   check_tbc_status "$SECONDARY_KUBECONFIG"
   check_volume_snapshot_controller "$SECONDARY_KUBECONFIG" "8"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"

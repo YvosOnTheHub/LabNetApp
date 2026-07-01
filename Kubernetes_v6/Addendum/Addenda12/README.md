@@ -204,10 +204,10 @@ Also, it is here expected that the current Trident installation already runs at 
 If not done yet, check out the [Scenario01](../../Trident_Scenarios/Scenario01/1_Helm/).  
 ```bash
 helm repo add netapp-trident https://netapp.github.io/trident-helm-chart
-helm install trident netapp-trident/trident-operator --version 100.2602.1 -n trident --create-namespace \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.02.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:26.02.1 \
---set tridentImage=registry.demo.netapp.com/trident:26.02.1 \
+helm install trident netapp-trident/trident-operator --version 100.2606.0 -n trident --create-namespace \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.06.0 \
+--set tridentImage=registry.demo.netapp.com/trident:26.06.0 \
 --set tridentSilenceAutosupport=true
 ```
 After a few minutes, Trident should be ready:
@@ -221,19 +221,15 @@ trident-operator-5c4f8bd896-rf8xp    1/1     Running   0          5m20s   192.16
 
 $ kubectl get tver -A
 NAMESPACE   NAME      VERSION
-trident     trident   26.02.1
+trident     trident   26.06.0
 ```
 
 ## H. Install a CSI Snapshot Controller & create a Volume Snapshot Class
 
 Enabling the CSI Snapshot feature is done by installing a Snapshot Controller, as well as 3 different CRD:  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
-kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/client/config/crd?ref=v8.6.0 | kubectl apply -f -
+kubectl kustomize https://github.com/kubernetes-csi/external-snapshotter/deploy/kubernetes/snapshot-controller?ref=v8.6.0 | kubectl apply -f -
 ```
 
 Next, you also need a Volume Snapshot class, which is similar to a storage class, but for volume snapshots...  

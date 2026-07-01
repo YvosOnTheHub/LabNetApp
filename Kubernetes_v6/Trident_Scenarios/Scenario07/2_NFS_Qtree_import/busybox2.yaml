@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: busybox2
+  namespace: scenario7-2
+spec:
+  volumes:
+    - name: volume
+      persistentVolumeClaim:
+       claimName: data2
+  containers:
+    - name: debugger
+      image: busybox:1.35.0
+      imagePullPolicy: IfNotPresent
+      command: ['sleep', '3600']
+      volumeMounts:
+        - mountPath: "/data"
+          name: volume
+  nodeSelector:
+    kubernetes.io/os: linux

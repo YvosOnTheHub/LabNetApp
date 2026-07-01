@@ -1,5 +1,5 @@
 #########################################################################################
-# SCENARIO 7-5: Import a namespace
+# SCENARIO 7-6: Import a namespace
 #########################################################################################
 
 **GOAL:**  
@@ -14,7 +14,7 @@ To create these 2 objects, we will use the CURL command in order to reach ONTAP 
 ```bash
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "aggregates": [{"name": "aggr1"}],
-  "name": "scenario7_5",
+  "name": "scenario7_6",
   "size": "10g",
   "style": "flexvol",
   "svm": {"name": "sansvm"}
@@ -23,7 +23,7 @@ $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type
 $ curl -X POST -ku admin:Netapp1! -H "accept: application/json" -H "Content-Type: application/json" -d '{
   "location": {
     "namespace": "toimport",
-    "volume": {"name": "scenario7_5"}
+    "volume": {"name": "scenario7_6"}
   },
   "os_type": "linux",
   "space": {"size": 1073741824},
@@ -67,7 +67,7 @@ trident_pvc_dc695069_bb72_471f_9574_70a68ad4ce88
 Even though the name of the original PV has changed, you can still see it if you look into its annotations.  
 ```bash
 $ kubectl describe pvc nm-import | grep importOriginalName
-               trident.netapp.io/importOriginalName: scenario7_5
+               trident.netapp.io/importOriginalName: scenario7_6
 ```
 
 ## C. Cleanup (optional)
