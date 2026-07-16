@@ -1,0 +1,175 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+
+  name: Multi Tenancy NAS SVM Network Management
+  tasks:
+  - name: NAS SVM - Create Service Policy for Management (Core)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'create', '-policy', 'tenant_management', '-vserver', 'nassvm',  '-allowed-addresses', '192.168.0.63/32', '-service', 'data-core']
+      privilege: "advanced"
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Create Service Policy for Management (HTTPS)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'tenant_management', '-vserver', 'nassvm',  '-allowed-addresses', '192.168.0.63/32', '-service', 'management-https']
+      privilege: "advanced"
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Create Service Policy for NFS (Core)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'create', '-policy', 'tenant_nfs', '-vserver', 'nassvm', '-service', 'data-core']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Create Service Policy for NFS (Data)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'tenant_nfs', '-vserver', 'nassvm', '-service', 'data-nfs']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Mgmt Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_mgmt_001
+      admin_status: up
+      service_policy: tenant_management
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Mgmt Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_mgmt_002
+      admin_status: up
+      service_policy: tenant_management
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Data Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_001
+      admin_status: up
+      service_policy: tenant_nfs
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Data Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_002
+      admin_status: up
+      service_policy: tenant_nfs
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Create Export Policy
+    netapp.ontap.na_ontap_export_policy:
+      state: present
+      name: tenant1
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Create ExportPolicyRule
+    netapp.ontap.na_ontap_export_policy_rule:
+      state: present
+      policy_name: tenant1
+      vserver: nassvm
+      client_match: 192.168.0.61
+      ro_rule: any
+      rw_rule: any
+      protocol: any
+      super_user_security: any
+      allow_suid: true
+      <<: *ontap_parameters 
+
+  - name: SAN SVM - Create Service Policy for Management (Core)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'create', '-policy', 'tenant_management', '-vserver', 'sansvm',  '-allowed-addresses', '192.168.0.63/32', '-service', 'data-core']
+      privilege: "advanced"
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Create Service Policy for Management (HTTPS)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'tenant_management', '-vserver', 'sansvm',  '-allowed-addresses', '192.168.0.63/32', '-service', 'management-https']
+      privilege: "advanced"
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Create Service Policy for iSCSI (Core)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'create', '-policy', 'tenant_iscsi', '-vserver', 'sansvm', '-service', 'data-core']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Create Service Policy for iSCSI (Data)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'tenant_iscsi', '-vserver', 'sansvm', '-service', 'data-iscsi']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Create Service Policy for NVMe (Core)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'create', '-policy', 'tenant_nvme', '-vserver', 'sansvm', '-service', 'data-core']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Create Service Policy for NVMe (Data)
+    netapp.ontap.na_ontap_command:
+      command: ['network', 'interface', 'service-policy', 'add-service', '-policy', 'tenant_nvme', '-vserver', 'sansvm', '-service', 'data-nvme-tcp']
+      privilege: "advanced"      
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Mgmt Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_san_mgmt_001
+      admin_status: up
+      service_policy: tenant_management
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Mgmt Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_san_mgmt_002
+      admin_status: up
+      service_policy: tenant_management
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_iscsi_001
+      admin_status: up
+      service_policy: tenant_iscsi
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_iscsi_002
+      admin_status: up
+      service_policy: tenant_iscsi
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#3
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nvme_001
+      admin_status: up
+      service_policy: tenant_nvme
+      vserver: sansvm
+      <<: *ontap_parameters

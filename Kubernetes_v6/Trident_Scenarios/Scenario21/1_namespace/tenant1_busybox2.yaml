@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mydata2
+  namespace: tenant1
+  labels:
+    app: busybox2
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: storage-class-tenant1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox2
+  namespace: tenant1
+  labels:
+    app: busybox2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox2
+  template:
+    metadata:
+      labels:
+        app: busybox2
+    spec:
+      nodeSelector:
+        tenant-namespace: tenant1
+      containers:
+      - name: busybox2
+        image: registry.demo.netapp.com/busybox:1.35.0
+        imagePullPolicy: IfNotPresent
+        command: ['sleep', '3600']        
+        volumeMounts:
+        - mountPath: /data
+          name: volume
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: mydata2

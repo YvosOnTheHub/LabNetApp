@@ -1,0 +1,33 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: tenant1
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  backendName: Tenant1
+  nasType: nfs
+  exportPolicy: tenant1
+  defaults:
+    snapshotDir: 'true'
+  credentials:
+    name: secret-nas-svm-creds
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: tenant2
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-san
+  backendName: Tenant2
+  managementLIF: 192.168.0.137
+  sanType: iscsi
+  useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds
+  defaults:
+    formatOptions: -E nodiscard

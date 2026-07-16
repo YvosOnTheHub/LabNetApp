@@ -1,0 +1,95 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    ontap_parameters: &ontap_parameters
+      hostname: "{{ hostname }}" 
+      username: "{{ username }}" 
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+
+  name: Multi Tenancy SVM Network Management
+  tasks:
+  - name: NAS SVM - Modify Mgmt Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_mgmt_001
+      admin_status: up
+      service_policy: default-management
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Mgmt Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_mgmt_002
+      admin_status: up
+      service_policy: default-management
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Data Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_001
+      admin_status: up
+      service_policy: default-data-files
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: NAS SVM - Modify Data Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nas_002
+      admin_status: up
+      service_policy: default-data-files
+      vserver: nassvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Mgmt Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_san_mgmt_001
+      admin_status: up
+      service_policy: default-management
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Mgmt Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_san_mgmt_002
+      admin_status: up
+      service_policy: default-management
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#1
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_iscsi_001
+      admin_status: up
+      service_policy: default-data-iscsi
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#2
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_iscsi_002
+      admin_status: up
+      service_policy: default-data-iscsi
+      vserver: sansvm
+      <<: *ontap_parameters
+
+  - name: SAN SVM - Modify Data Interface#3
+    netapp.ontap.na_ontap_interface:
+      state: present
+      interface_name: lif_nvme_001
+      admin_status: up
+      service_policy: default-data-nvme-tcp
+      vserver: sansvm
+      <<: *ontap_parameters

@@ -1,0 +1,22 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-tenant1
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-nas"
+  nasType: "nfs"
+  storagePools: "Tenant1:.*"
+allowVolumeExpansion: true
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-tenant2
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san"
+  sanType: "iscsi"
+  fsType: "ext4"
+  storagePools: 'Tenant2:.*'
+allowVolumeExpansion: true

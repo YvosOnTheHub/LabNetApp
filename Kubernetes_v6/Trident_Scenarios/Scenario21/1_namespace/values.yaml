@@ -1,0 +1,18 @@
+nodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+tridentControllerPluginNodeSelector:
+  node-role.kubernetes.io/control-plane: ""
+
+tridentControllerPluginTolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+tridentNodePluginNodeSelector:
+  trident.netapp.io/nodeplugin: "true"

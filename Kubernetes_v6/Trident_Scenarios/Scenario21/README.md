@@ -6,13 +6,23 @@ Managing Kubernetes with multiple teams, projects, applications, use cases or en
 
 Now, is a dedicated Kubernetes really necessary? Think about it for a second!  
 
-Maybe the reasons for requesting or building new clusters are valid, however, maybe you don't have the resources to provide new clusters, nor the time, even if it takes juste a few minutes...  
+Maybe the reasons for requesting or building new clusters are valid, however, maybe you don't have the resources to provide new clusters, nor the time, even if it takes juste a few minutes...  Maybe the Control Planes could be shared ?
 
 Maybe using one Kubernetes cluster to securely host several teams/projects/applications could save time & budget.
 
 After all, sharing is caring, right ?
 
-We are going to see in this chapter three products that bring solutions to multi-tenancy in Kubernetes:  
+Also, how do you define Multi-Tenancy?  
+- a way to simply provide multiple environments (tenants) sharing the same hardware, but with logical separation (namespace).  
+- an end to end isolated environment (tenant) from the user to the storage, but physical separation (worker node).  
+
+When it comes to storage, keep in mind that volumes are not mounted directly on pods, but are rather mounted on worker nodes.  
+If a rogue user manages to enter that host, he will have access to all the volumes mounted there, even if they belong to different namespaces.
+
+At the end, there is no "one size fits all" answer, however, there are multiple ways to define and architect multi-tenancy.  
+
+We are going to see in this chapter multiple solutions that answer the multi-tenancy challenget in Kubernetes:  
+- Dedicate a worker node for a specific namespace.      
 - Capsule by Clastix.io  
 - Kamaji by Clastix.io  
 - vClusters by Loft.sh  
@@ -34,6 +44,7 @@ And you thought you had your own dedicated Kubernetes cluster? really ? Think ag
 >> According to Loft.sh, Virtual clusters are fully working Kubernetes clusters that run on top of other Kubernetes clusters. Compared to fully separate "real" clusters, virtual clusters reuse worker nodes and networking of the host cluster. They have their own control plane and schedule all workloads into a single namespace of the host cluster. Like virtual machines, virtual clusters partition a single physical cluster into multiple separate ones (cf https://www.vcluster.com/docs/what-are-virtual-clusters)
 
 Time to jump in all 3 solutions:  
-[1.](Clastix_Capsule) Capsule by Clastix.io  
-[2.](Clastix_Kamaji) Kamaji by Clastix.io  
-[3.](Loft_vClusters) vClusters by Loft.sh  
+[1.](1_namespace) Multi Tenancy level 1  
+[2.](2_Clastix_Capsule) Capsule by Clastix.io  
+[3.](3_Clastix_Kamaji) Kamaji by Clastix.io  
+[4.](4_Loft_vClusters) vClusters by Loft.sh  

@@ -120,6 +120,15 @@ echo
 mkdir ~/calico && cd ~/calico
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
 kubectl create -f tigera-operator.yaml
+
+frames="/ | \\ -"
+while [ $(kubectl get -n tigera-operator pod | grep Running | grep -e '1/1' | wc -l) -ne 1 ]; do
+    for frame in $frames; do
+        sleep 0.5; printf "\rWaiting for Calico to be ready $frame" 
+    done
+done
+echo
+
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml
 sed -i '/^\s*cidr/s/: .*$/: 192.168.20.0\/21/' custom-resources.yaml
 sed -i '/^\s*encapsulation/s/: .*$/: VXLAN/' custom-resources.yaml

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if command -v ansible >/dev/null 2>&1; then
+  echo "Ansible is already installed ($(ansible --version | head -n1)). Skipping setup."
+  exit 0
+fi
+
 echo "#######################################################################################################"
 echo "Install PIP"
 echo "#######################################################################################################"
