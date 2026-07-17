@@ -11,7 +11,7 @@ This chapter will also cover this use case.
 
 This scenario will guide you through both features  
 [1.](1_NFS_Import) Import a NFS volume  
-[2.](2_NFS_Qtree_Import) Import NFS Qtrees
+[2.](2_NFS_Qtree_Import) Import NFS Qtrees  
 3. Import a SMB volume (WORK IN PROGRESS)  
 [4.](4_Snapshot_Import) Import a snapshot  
 [5.](5_iSCSI_Import) Import a iSCSI volume  
