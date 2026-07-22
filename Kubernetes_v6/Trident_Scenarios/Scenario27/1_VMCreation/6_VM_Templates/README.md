@@ -100,7 +100,7 @@ VM alpine-tmpl2 was scheduled to stop
 
 ## C. Creating a VM from a template based on a PVC
 
-<p align="center"><img src="../../Images/M5_Templates_PVC.png" width="768"></p>
+<p align="center"><img src="../../Images/M6_Templates_PVC.png" width="768"></p>
 
 A new user comes on the platform and would like to start a VM based on the second disk.  
 Let's start by creating a new namespace:  
@@ -276,7 +276,7 @@ This also deletes the volume snapshots in the template namespace.
 
 ## D. Creating a VM from a template based on a Snapshot
 
-<p align="center"><img src="../../Images/M5_Templates_Snapshot.png" width="768"></p>
+<p align="center"><img src="../../Images/M6_Templates_Snapshot.png" width="768"></p>
 
 Our first step will be to create a Volume Snapshot for each of our VM template disks:  
 ```bash 

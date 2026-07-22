@@ -70,6 +70,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [9.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario09) Pacman to the rescue  
 [10.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario10) One bucket or two buckets, that is the question  
 [11.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario11) Protecting Virtual Machines  
+[12.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario12) Ch-ch-ch-changes   
 
 ## Addendum  
 

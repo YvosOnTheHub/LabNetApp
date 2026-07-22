@@ -1,15 +1,15 @@
 #########################################################################################
-# SCENARIO 27: Creating Virtual Machines: boot volume clone
+# SCENARIO 27: Creating Virtual Machines: boot volume clone (same storage class)
 #########################################################################################
 
-In this last chapter, we will see how to create a new Virtual Machine after an existing one using an existing PVC.  
+In this last chapter, we will see how to create a new Virtual Machine after an existing one using an existing PVC while keeping the same storage class.  
 Multiple scenarios can be tested:  
-- [Method1](#method1) cloning within the same namespace (strategy: copy)  
-- [Method2](#method2) cloning to a different namespace (strategy: copy)  
-- [Method3](#method3) cloning within the same namespace (strategy: snapshot)  
-- [Method4](#method4) cloning to a different namespace (strategy: snapshot)  
-- [Method5](#method5) cloning within the same namespace (strategy: csi-clone)  
-- [Method6](#method6) cloning to a different namespace (strategy: csi-clone)  
+- [Strategy1](#strategy1) cloning within the same namespace (strategy: copy)  
+- [Strategy2](#strategy2) cloning to a different namespace (strategy: copy)  
+- [Strategy3](#strategy3) cloning within the same namespace (strategy: snapshot)  
+- [Strategy4](#strategy4) cloning to a different namespace (strategy: snapshot)  
+- [Strategy5](#strategy5) cloning within the same namespace (strategy: csi-clone)  
+- [Strategy6](#strategy6) cloning to a different namespace (strategy: csi-clone)  
  
 **TL;DR START**  
 The standard method to clone a volume is simply a full copy, which can be pretty slow for large datasets.  
@@ -73,7 +73,7 @@ VM alpine-vm was scheduled to stop
 ```
 
 ## A. Cloning within the same namespace (strategy: copy) 
-<a name="method1"></a>
+<a name="strategy1"></a>
 
 <p align="center"><img src="../../Images/M4_Copy_local.png" width="768"></p>
 
@@ -214,26 +214,14 @@ virtualmachine.kubevirt.io/alpine-vm-clone created
 ```
 The result would look like the following:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc
-Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
-NAME                                      READY   STATUS    RESTARTS   AGE
-pod/virt-launcher-alpine-vm-4g7jn         2/2     Running   0          57s
-pod/virt-launcher-alpine-vm-clone-r76fm   2/2     Running   0          2m53s
-
+$ kubectl get -n sc26-alpine-c all,pvc -l method=clone1
 NAME                                           PHASE       PROGRESS   RESTARTS   AGE
-datavolume.cdi.kubevirt.io/alpine-boot         Succeeded   N/A                   66m
 datavolume.cdi.kubevirt.io/alpine-boot-clone   Succeeded   100.0%                7m22s
 
-NAME                                                 AGE     PHASE     IP              NODENAME   READY
-virtualmachineinstance.kubevirt.io/alpine-vm         58s     Running   192.168.28.73   rhel2      True
-virtualmachineinstance.kubevirt.io/alpine-vm-clone   2m54s   Running   192.168.26.13   rhel1      True
-
 NAME                                         AGE     STATUS    READY
-virtualmachine.kubevirt.io/alpine-vm         63m     Running   True
 virtualmachine.kubevirt.io/alpine-vm-clone   2m54s   Running   True
 
 NAME                                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEATTRIBUTESCLASS   AGE
-persistentvolumeclaim/alpine-boot         Bound    pvc-dedf8d1e-ae3e-4f84-bfe4-ca5a3d9ab446   1Gi        RWX            storage-class-iscsi   <unset>                 66m
 persistentvolumeclaim/alpine-boot-clone   Bound    pvc-b21e6444-ddcf-4aa6-a893-71653fbbb2a2   1Gi        RWX            storage-class-iscsi   <unset>                 7m22s
 ```
 Finally, let's connect to the new VM:  
@@ -248,11 +236,11 @@ alpine-vm-clone.sc26-alpine-c.svc.cluster.local login: alpine
 Password:
 Welcome to Alpine on KubeVirt in the NetApp LoD!
 ```
-If you managed to log in the VM with the correct password (alpine), and if you see the same message, the prooves you are running with a copy of a disk that was already tailored.  
+If you managed to log in the VM with the correct password (alpine), and if you see the same message, the proves you are running with a copy of a disk that was already tailored.  
 
 
 ## B. Cloning to a different namespace (strategy: copy) 
-<a name="method2"></a>
+<a name="strategy2"></a>
 
 <p align="center"><img src="../../Images/M4_Copy_cross_namespace.png" width="768"></p>
 
@@ -375,7 +363,7 @@ virtctl console -n sc26-alpine-d alpine-vm-clone2
 ```
 
 ## C. Cloning within the same namespace (strategy: snapshot) 
-<a name="method3"></a>
+<a name="strategy3"></a>
 
 <p align="center"><img src="../../Images/M4_Snapshot_local.png" width="768"></p>
 
@@ -517,7 +505,7 @@ virtctl console -n sc26-alpine-d alpine-vm-clone3
 ```
 
 ## D. Cloning to a different namespace (strategy: snapshot) 
-<a name="method4"></a>
+<a name="strategy4"></a>
 
 <p align="center"><img src="../../Images/M4_Snapshot_cross_namespace.png" width="768"></p>
 
@@ -599,7 +587,7 @@ virtctl console -n sc26-alpine-e alpine-vm-clone4
 ```
 
 ## E. Cloning within the same namespace (strategy: csi-clone) 
-<a name="method5"></a>
+<a name="strategy5"></a>
 
 <p align="center"><img src="../../Images/M4_CSIClone_local.png" width="768"></p>
 
@@ -706,7 +694,7 @@ virtctl console -n sc26-alpine-c alpine-vm-clone5
 ```
 
 ## F. Cloning to a different namespace (strategy: csi-clone) 
-<a name="method6"></a>
+<a name="strategy6"></a>
 
 <p align="center"><img src="../../Images/M4_CSIClone_cross_namespace.png" width="768"></p>
 

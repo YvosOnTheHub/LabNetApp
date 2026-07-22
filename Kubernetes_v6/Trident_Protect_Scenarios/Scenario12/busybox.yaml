@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: scenario12
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mydata
+  namespace: scenario12
+  labels:
+    app: busybox
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: sc-topology
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox
+  namespace: scenario12
+  labels:
+    app: busybox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      labels:
+        app: busybox
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values:
+                 - west
+      containers:
+      - name: busybox
+        image: registry.demo.netapp.com/busybox:west
+        imagePullPolicy: IfNotPresent
+        command: ['sleep', '3600']        
+        volumeMounts:
+        - mountPath: /data
+          name: volume
+      volumes:
+      - name: volume
+        persistentVolumeClaim:
+          claimName: mydata

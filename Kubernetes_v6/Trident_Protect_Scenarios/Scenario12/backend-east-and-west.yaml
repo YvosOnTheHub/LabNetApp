@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-topo
+  namespace: trident
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Netapp1!
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nas-east
+  namespace: trident
+spec:
+  version: 1
+  backendName: nas-east
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  dataLIF: 192.168.0.131
+  storagePrefix: east_
+  credentials:
+    name: secret-topo
+  supportedTopologies:
+    - topology.kubernetes.io/region: dc
+      topology.kubernetes.io/zone: east
+---
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nas-west
+  namespace: trident
+spec:
+  version: 1
+  backendName: nas-west
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.134
+  dataLIF: 192.168.0.132
+  storagePrefix: west_
+  credentials:
+    name: secret-topo
+  supportedTopologies:
+    - topology.kubernetes.io/region: dc
+      topology.kubernetes.io/zone: west

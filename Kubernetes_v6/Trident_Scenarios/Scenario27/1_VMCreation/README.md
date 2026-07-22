@@ -32,5 +32,6 @@ Now, let's jump in some methods to create a VM:
 - [Method1](./1_Method1/) import the image on a PVC  
 - [Method2](./2_Method2/) import the image in a dataVolume from a registry  
 - [Method3](./3_Method3/) import the image in a dataVolume with virtctl  
-- [Method4](./4_Method4/) create a boot disk from a PVC clone  
-- [Method5](./5_VM_Templates/) creating a catalogue of bootable disks  
+- [Method4](./4_Method4/) create a boot disk from a PVC clone while keeping the same storage class  
+- [Method5](./5_Method5/) create a boot disk from a PVC clone while changing storage class    
+- [Method6](./6_VM_Templates/) creating a catalogue of bootable disks  
