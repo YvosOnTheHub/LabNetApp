@@ -16,12 +16,12 @@ Multiple scenarios can be tested:
 **TL;DR START**  
 | CloneStrategy | Target Protocol | Result | Comment |
 | :--- | :---: | :---: | :--- | 
-| copy | iSCSI | OK | |
-| copy | NVMe | OK | |
-| copy | NFS | NOK | CDI clone copy does not perform a block-to-filesystem conversion during PVC clone |
-| snapshot | iSCSI | OK | OK, as long as both storage classes use the same Trident backend |
-| snapshot | NVMe | NOK | Trident: cloning with different storage classes that have no common backends is not allowed |
-| snapshot | NFS | NOK | CDI falls back to 'copy' strategy - no block-to-filesystem conversion | 
+| copy | iSCSI | :white_check_mark: | |
+| copy | NVMe | :white_check_mark: | |
+| copy | NFS | :stop_sign: | CDI clone copy does not perform a block-to-filesystem conversion during PVC clone |
+| snapshot | iSCSI | :white_check_mark: | OK, as long as both storage classes use the same Trident backend |
+| snapshot | NVMe | :stop_sign: | Trident: cloning with different storage classes that have no common backends is not allowed |
+| snapshot | NFS | :stop_sign: | CDI falls back to 'copy' strategy - no block-to-filesystem conversion | 
 
 ## A. Scenario preparation.  
 
