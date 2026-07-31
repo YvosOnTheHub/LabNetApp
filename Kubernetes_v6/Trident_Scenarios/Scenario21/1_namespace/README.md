@@ -101,7 +101,7 @@ TASK [SAN SVM - Modify Data Interface#1]
 TASK [SAN SVM - Modify Data Interface#2]
 TASK [SAN SVM - Modify Data Interface#3]
 
-PLAY RECAP ***************************************************************************************************************************************************************
+PLAY RECAP 
 localhost                  : ok=20   changed=20   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ```
 Easy. We then have the following topology:  

@@ -68,7 +68,7 @@ Notice that the **cloneStrategy** is set to **copy**. This is because I don't ha
 For this chapter, let's suppose you have already gone through the [third method](../3_Method3/), and the content is still present. Cloning a disk requires the source Virtual Machine to be offline.  
 Let's stop the VM using _virtctl_:  
 ```bash
-$ virtctl stop -n sc26-alpine-c alpine-vm
+$ virtctl stop -n sc27-alpine-c alpine-vm
 VM alpine-vm was scheduled to stop
 ```
 
@@ -84,7 +84,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone
-  namespace: sc26-alpine-c
+  namespace: sc27-alpine-c
   labels:
     method: clone1
 spec:
@@ -100,7 +100,7 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone created
 ```
@@ -111,7 +111,7 @@ This triggers the creation of multiple objects:
 - a **service**  to expose the second temporary pod to the first one:  
 
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc
+$ kubectl get -n sc27-alpine-c all,pvc
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                                          READY   STATUS          RESTARTS   AGE
 pod/b21e6444-ddcf-4aa6-a893-71653fbbb2a2-source-pod           1/1     Running         0          1s
@@ -134,7 +134,7 @@ persistentvolumeclaim/tmp-pvc-8901a9d1-d945-4b1c-91c5-586a92696cea   Bound     p
 ```
 Here are the logs you can read from the first temporary pod:  
 ```bash
-$ kubectl logs -n sc26-alpine-c pod/b21e6444-ddcf-4aa6-a893-71653fbbb2a2-source-pod -f
+$ kubectl logs -n sc27-alpine-c pod/b21e6444-ddcf-4aa6-a893-71653fbbb2a2-source-pod -f
 VOLUME_MODE=block
 MOUNT_POINT=/dev/cdi-block-volume
 UPLOAD_BYTES=1073741824
@@ -154,11 +154,11 @@ In this pod, the _/dev/cdi-block-volume_ corresponds to the source PVC (_alpine-
 Reading through the POD description, you will see that it will upload the image to the service linked to the second pod:  
 ```yaml
   - name: UPLOAD_URL
-        value: https://cdi-upload-tmp-pvc-fd08a884-d587-41a0-84b4-f45f7607688b.sc26-alpine-c.svc/v1beta1/upload
+        value: https://cdi-upload-tmp-pvc-fd08a884-d587-41a0-84b4-f45f7607688b.sc27-alpine-c.svc/v1beta1/upload
 ```
 Let's look into the second pod:  
 ```bash
-$ kubectl logs -n sc26-alpine-c pod/cdi-upload-tmp-pvc-8901a9d1-d945-4b1c-91c5-586a92696cea -f
+$ kubectl logs -n sc27-alpine-c pod/cdi-upload-tmp-pvc-8901a9d1-d945-4b1c-91c5-586a92696cea -f
 I1111 09:53:28.521523       1 uploadserver.go:81] Running server on 0.0.0.0:8443
 I1111 09:53:38.855537       1 uploadserver.go:410] Content type header is "blockdevice-clone"
 I1111 09:53:38.860307       1 file.go:230] copyWithSparseCheck to /dev/cdi-block-volume
@@ -173,7 +173,7 @@ This time, the _/dev/cdi-block-volume_ device corresponds to the target PVC wher
 Once the copy is completed, temporary resources (POD, SVC, PVC) are deleted.  
 However, the underlying PV is re-bound to the target PVC.  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc -l method=clone1
+$ kubectl get -n sc27-alpine-c all,pvc -l method=clone1
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                           PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone   Succeeded   100.0%                94s
@@ -183,9 +183,9 @@ persistentvolumeclaim/alpine-boot-clone   Bound    pvc-b21e6444-ddcf-4aa6-a893-7
 ```
 You can check the details of the PVC, you will find interesting information in the annotations:  
 ```bash
-$ kubectl describe -n sc26-alpine-c pvc -l method=clone1
+$ kubectl describe -n sc27-alpine-c pvc -l method=clone1
 Name:          alpine-boot-clone
-Namespace:     sc26-alpine-c
+Namespace:     sc27-alpine-c
 StorageClass:  storage-class-iscsi
 ...
 Annotations:   cdi.kubevirt.io/clonePhase: Succeeded
@@ -209,12 +209,12 @@ Let's analyse those fields:
 The disk is now ready to be used.  
 You can use the *alpine_vm_clone1_wo_cloudinit.yaml* file this time. As the boot disk was already customized, no need to go through similar step this time:  
 ```bash
-$ kubectl create -f alpine_vm_clone1_wo_cloudinit.yaml -n sc26-alpine-c
+$ kubectl create -f alpine_vm_clone1_wo_cloudinit.yaml -n sc27-alpine-c
 virtualmachine.kubevirt.io/alpine-vm-clone created
 ```
 The result would look like the following:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc -l method=clone1
+$ kubectl get -n sc27-alpine-c all,pvc -l method=clone1
 NAME                                           PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone   Succeeded   100.0%                7m22s
 
@@ -226,13 +226,13 @@ persistentvolumeclaim/alpine-boot-clone   Bound    pvc-b21e6444-ddcf-4aa6-a893-7
 ```
 Finally, let's connect to the new VM:  
 ```bash
-$ virtctl console -n sc26-alpine-c alpine-vm-clone
+$ virtctl console -n sc27-alpine-c alpine-vm-clone
 Successfully connected to alpine-vm-clone console. Press Ctrl+] or Ctrl+5 to exit console.
 
 Welcome to Alpine Linux 3.22
 Kernel 6.12.38-0-virt on x86_64 (/dev/ttyS0)
 
-alpine-vm-clone.sc26-alpine-c.svc.cluster.local login: alpine
+alpine-vm-clone.sc27-alpine-c.svc.cluster.local login: alpine
 Password:
 Welcome to Alpine on KubeVirt in the NetApp LoD!
 ```
@@ -244,10 +244,10 @@ If you managed to log in the VM with the correct password (alpine), and if you s
 
 <p align="center"><img src="../../Images/M4_Copy_cross_namespace.png" width="768"></p>
 
-First step, let's create a new namespace called _sc26-alpine-d_.  
+First step, let's create a new namespace called _sc27-alpine-d_.  
 ```bash
-$ kubectl create ns sc26-alpine-d
-namespace/sc26-alpine-d created
+$ kubectl create ns sc27-alpine-d
+namespace/sc27-alpine-d created
 ```
 Let's directly create a dataVolume:  
 Let's see how to create a clone of the existing Virtual Machine using a DataVolume:  
@@ -257,7 +257,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone
-  namespace: sc26-alpine-d
+  namespace: sc27-alpine-d
   labels:
     method: clone2
 spec:
@@ -273,14 +273,14 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone created
 ```
-The source of the copy being in the _sc26-alpine-c_ namespace, 2 temporary pods are created there.  
+The source of the copy being in the _sc27-alpine-c_ namespace, 2 temporary pods are created there.  
 You can read there logs here:  
 ```bash
-$ kubectl logs -n sc26-alpine-c cdi-upload-tmp-pvc-e8e705f3-9862-4981-b47c-7f5afda3ff63 -f
+$ kubectl logs -n sc27-alpine-c cdi-upload-tmp-pvc-e8e705f3-9862-4981-b47c-7f5afda3ff63 -f
 I1111 11:37:38.826990       1 uploadserver.go:81] Running server on 0.0.0.0:8443
 I1111 11:37:49.323310       1 uploadserver.go:410] Content type header is "blockdevice-clone"
 I1111 11:37:49.331934       1 file.go:230] copyWithSparseCheck to /dev/cdi-block-volume
@@ -289,7 +289,7 @@ I1111 11:38:08.023725       1 uploadserver.go:436] Wrote data to /dev/cdi-block-
 I1111 11:38:08.024242       1 uploadserver.go:215] Shutting down http server after successful upload
 I1111 11:38:08.029633       1 uploadserver.go:115] UploadServer successfully exited
 
-$ kubectl logs -n sc26-alpine-c 627902f9-6f12-46bb-a938-8ad69e862c4c-source-pod -f
+$ kubectl logs -n sc27-alpine-c 627902f9-6f12-46bb-a938-8ad69e862c4c-source-pod -f
 VOLUME_MODE=block
 MOUNT_POINT=/dev/cdi-block-volume
 UPLOAD_BYTES=1073741824
@@ -308,7 +308,7 @@ I1111 11:38:08.026122       3 clone-source.go:278] clone complete
 As in the previous examples, you will also get a temporary PVC in the target namespace.  
 Once the copy is done, you will end up with a datavolume and a pvc:  
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-d
+$ kubectl get all,pvc -n sc27-alpine-d
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                           PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone   Succeeded   100.0%                100s
@@ -318,29 +318,29 @@ persistentvolumeclaim/alpine-boot-clone   Bound    pvc-627902f9-6f12-46bb-a938-8
 ```
 Let's take a closer look at the DataVolume:  
 ```bash
-$ kubectl get events -n sc26-alpine-d --field-selector involvedObject.kind=DataVolume
+$ kubectl get events -n sc27-alpine-d --field-selector involvedObject.kind=DataVolume
 LAST SEEN   TYPE      REASON            OBJECT                         MESSAGE
 5m6s        Normal    NotFound          datavolume/alpine-boot-clone   No PVC found
-5m6s        Normal    CloneScheduled    datavolume/alpine-boot-clone   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-d/alpine-boot-clone scheduled
+5m6s        Normal    CloneScheduled    datavolume/alpine-boot-clone   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-d/alpine-boot-clone scheduled
 5m5s        Normal    Pending           datavolume/alpine-boot-clone   PVC alpine-boot-clone Pending
 5m5s        Warning   Pending           datavolume/alpine-boot-clone   Clone Pending
-5m5s        Normal    CloneInProgress   datavolume/alpine-boot-clone   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-d/alpine-boot-clone in progress
+5m5s        Normal    CloneInProgress   datavolume/alpine-boot-clone   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-d/alpine-boot-clone in progress
 4m26s       Warning   Completed         datavolume/alpine-boot-clone   Clone Complete
 4m24s       Normal    Bound             datavolume/alpine-boot-clone   PVC alpine-boot-clone Bound
-4m24s       Normal    CloneSucceeded    datavolume/alpine-boot-clone   Successfully cloned from sc26-alpine-c/alpine-boot into sc26-alpine-d/alpine-boot-clone
+4m24s       Normal    CloneSucceeded    datavolume/alpine-boot-clone   Successfully cloned from sc27-alpine-c/alpine-boot into sc27-alpine-d/alpine-boot-clone
 ```
 That describes pretty well the steps happening in the creation of the volume.  
 What can we see in the PVC now:  
 ```bash
-$ kubectl describe -n sc26-alpine-d persistentvolumeclaim/alpine-boot-clone
+$ kubectl describe -n sc27-alpine-d persistentvolumeclaim/alpine-boot-clone
 Name:          alpine-boot-clone
-Namespace:     sc26-alpine-d
+Namespace:     sc27-alpine-d
 StorageClass:  storage-class-iscsi
 ...
 Annotations:   cdi.kubevirt.io/clonePhase: Succeeded
                cdi.kubevirt.io/cloneType: copy
                cdi.kubevirt.io/createdForDataVolume: 876edf9b-4898-4e93-ad5d-59c4abedc562
-               cdi.kubevirt.io/dataSourceNamespace: sc26-alpine-c
+               cdi.kubevirt.io/dataSourceNamespace: sc27-alpine-c
                cdi.kubevirt.io/storage.clone.token: eyJhbGciOiJQUzI1NiJ9....
                cdi.kubevirt.io/storage.condition.running: false
                cdi.kubevirt.io/storage.condition.running.message: Clone Complete
@@ -358,8 +358,8 @@ A few extra fields compared to the previous chapter:
 
 If desired, you can also create a VM on top of this volume, and connect to its console to check the content with the following:  
 ```bash
-kubectl create -f alpine_vm_clone2_wo_cloudinit.yaml -n sc26-alpine-d
-virtctl console -n sc26-alpine-d alpine-vm-clone2
+kubectl create -f alpine_vm_clone2_wo_cloudinit.yaml -n sc27-alpine-d
+virtctl console -n sc27-alpine-d alpine-vm-clone2
 ```
 
 ## C. Cloning within the same namespace (strategy: snapshot) 
@@ -407,7 +407,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone3
-  namespace: sc26-alpine-c
+  namespace: sc27-alpine-c
   labels:
     method: clone3
 spec:
@@ -423,19 +423,19 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone3 created
 ```
 You will quickly see a temporary Volume Snapshot:  
 ```bash
-$ kubectl get -n sc26-alpine-c vs
+$ kubectl get -n sc27-alpine-c vs
 NAME                                                READYTOUSE   SOURCEPVC     SOURCESNAPSHOTCONTENT    RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
 tmp-snapshot-49f5ffe4-a6f5-49ad-9ca9-002e83f15b2b   true         alpine-boot3                           1Gi           csi-snap-class   snapcontent-694c895f-f892-475c-bbd6-7d82648f1962   13s            13s
 ```
 Pretty quickly, a new PVC will be able, built from the snapshot:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc,vs -l method=clone3
+$ kubectl get -n sc27-alpine-c all,pvc,vs -l method=clone3
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                            PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone3   Succeeded   100.0%                4m55s
@@ -457,15 +457,15 @@ sansvm  trident_pvc_32a3652a_a7d5_4536_b132_aec514bcfe04
 
 Now, let's look at the details of the DataVolume:  
 ```bash
-$ kubectl get events -n sc26-alpine-c --field-selector involvedObject.kind=DataVolume
+$ kubectl get events -n sc27-alpine-c --field-selector involvedObject.kind=DataVolume
 LAST SEEN   TYPE     REASON                              OBJECT                          MESSAGE
-3m31s       Normal   CloneScheduled                      datavolume/alpine-boot-clone3   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-c/alpine-boot-clone3 scheduled
+3m31s       Normal   CloneScheduled                      datavolume/alpine-boot-clone3   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-c/alpine-boot-clone3 scheduled
 3m31s       Normal   Pending                             datavolume/alpine-boot-clone3   PVC alpine-boot-clone3 Pending
-3m31s       Normal   SnapshotForSmartCloneInProgress     datavolume/alpine-boot-clone3   Creating snapshot for smart-clone is in progress (for pvc sc26-alpine-c/alpine-boot)
-3m30s       Normal   CloneFromSnapshotSourceInProgress   datavolume/alpine-boot-clone3   Creating PVC from snapshot source is in progress (for pvc sc26-alpine-c/alpine-boot)
-3m29s       Normal   RebindInProgress                    datavolume/alpine-boot-clone3   Rebinding PersistentVolumeClaim for DataVolume sc26-alpine-c/alpine-boot-clone3
+3m31s       Normal   SnapshotForSmartCloneInProgress     datavolume/alpine-boot-clone3   Creating snapshot for smart-clone is in progress (for pvc sc27-alpine-c/alpine-boot)
+3m30s       Normal   CloneFromSnapshotSourceInProgress   datavolume/alpine-boot-clone3   Creating PVC from snapshot source is in progress (for pvc sc27-alpine-c/alpine-boot)
+3m29s       Normal   RebindInProgress                    datavolume/alpine-boot-clone3   Rebinding PersistentVolumeClaim for DataVolume sc27-alpine-c/alpine-boot-clone3
 3m29s       Normal   Bound                               datavolume/alpine-boot-clone3   PVC alpine-boot-clone3 Bound
-3m29s       Normal   CloneSucceeded                      datavolume/alpine-boot-clone3   Successfully cloned from sc26-alpine-c/alpine-boot into sc26-alpine-c/alpine-boot-clone3
+3m29s       Normal   CloneSucceeded                      datavolume/alpine-boot-clone3   Successfully cloned from sc27-alpine-c/alpine-boot into sc27-alpine-c/alpine-boot-clone3
 ```
 Notice the events mention a **smart clone**? In a nutshell, that proves that the process is based on a CSI Snapshot:  
 - SnapshotForSmartCloneInProgress = creating snapshot from source.  
@@ -473,9 +473,9 @@ Notice the events mention a **smart clone**? In a nutshell, that proves that the
 
 What about the PVC details:  
 ```bash
-$ kubectl describe -n sc26-alpine-c pvc -l method=clone3
+$ kubectl describe -n sc27-alpine-c pvc -l method=clone3
 Name:          alpine-boot-clone3
-Namespace:     sc26-alpine-c
+Namespace:     sc27-alpine-c
 StorageClass:  storage-class-iscsi
 ...
 Annotations:   cdi.kubevirt.io/clonePhase: Succeeded
@@ -500,8 +500,8 @@ In the backend, creating a PVC from the snapshot uses the NetApp FlexClone featu
 
 If desired, you can also create a VM on top of this volume, and connect to its console to check the content with the following:  
 ```bash
-kubectl create -f alpine_vm_clone3_wo_cloudinit.yaml -n sc26-alpine-c
-virtctl console -n sc26-alpine-d alpine-vm-clone3
+kubectl create -f alpine_vm_clone3_wo_cloudinit.yaml -n sc27-alpine-c
+virtctl console -n sc27-alpine-d alpine-vm-clone3
 ```
 
 ## D. Cloning to a different namespace (strategy: snapshot) 
@@ -509,10 +509,10 @@ virtctl console -n sc26-alpine-d alpine-vm-clone3
 
 <p align="center"><img src="../../Images/M4_Snapshot_cross_namespace.png" width="768"></p>
 
-First step, let's create a new namespace called _sc26-alpine-e_.  
+First step, let's create a new namespace called _sc27-alpine-e_.  
 ```bash
-$ kubectl create  ns sc26-alpine-e
-namespace/sc26-alpine-e created
+$ kubectl create  ns sc27-alpine-e
+namespace/sc27-alpine-e created
 ```
 
 We can directly move to the datavolume creation:  
@@ -522,7 +522,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone
-  namespace: sc26-alpine-e
+  namespace: sc27-alpine-e
   labels:
     method: clone4
 spec:
@@ -538,17 +538,17 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone created
 ```
 Following the same logic as in the previous chapters, you will see a temporary snapshot in the source volume, and the corresponding new PVC & DV in the new namespace:  
 ```bash
-$ kubectl get vs -n sc26-alpine-c
+$ kubectl get vs -n sc27-alpine-c
 NAME                                                READYTOUSE   SOURCEPVC     SOURCESNAPSHOTCONTENT   RESTORESIZE   SNAPSHOTCLASS    SNAPSHOTCONTENT                                    CREATIONTIME   AGE
 tmp-snapshot-bcb12db3-1c94-4d62-989e-ffd28388586a   true         alpine-boot                           1Gi           csi-snap-class   snapcontent-44c4d4b8-7ed2-445d-9c92-b444fd8cf0af   24s            24s
 
-$ kubectl get all,pvc -n sc26-alpine-e
+$ kubectl get all,pvc -n sc27-alpine-e
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                           PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone   Succeeded   100.0%                10s
@@ -569,21 +569,21 @@ sansvm  trident_pvc_6971cc75_34ba_47f3_b06a_cd63bce53242
 ```
 You will find similar events and annotations as in the previous exercise:  
 ```bash
-$ kubectl get events -n sc26-alpine-e --field-selector involvedObject.kind=DataVolume
+$ kubectl get events -n sc27-alpine-e --field-selector involvedObject.kind=DataVolume
 LAST SEEN   TYPE      REASON                              OBJECT                         MESSAGE
-2m23s       Normal    CloneScheduled                      datavolume/alpine-boot-clone   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-e/alpine-boot-clone scheduled
+2m23s       Normal    CloneScheduled                      datavolume/alpine-boot-clone   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-e/alpine-boot-clone scheduled
 2m23s       Normal    Pending                             datavolume/alpine-boot-clone   PVC alpine-boot-clone Pending
 2m23s       Warning   Pending                             datavolume/alpine-boot-clone   Clone Pending
-2m23s       Normal    SnapshotForSmartCloneInProgress     datavolume/alpine-boot-clone   Creating snapshot for smart-clone is in progress (for pvc sc26-alpine-c/alpine-boot)
-2m22s       Normal    CloneFromSnapshotSourceInProgress   datavolume/alpine-boot-clone   Creating PVC from snapshot source is in progress (for pvc sc26-alpine-c/alpine-boot)
+2m23s       Normal    SnapshotForSmartCloneInProgress     datavolume/alpine-boot-clone   Creating snapshot for smart-clone is in progress (for pvc sc27-alpine-c/alpine-boot)
+2m22s       Normal    CloneFromSnapshotSourceInProgress   datavolume/alpine-boot-clone   Creating PVC from snapshot source is in progress (for pvc sc27-alpine-c/alpine-boot)
 2m21s       Normal    Bound                               datavolume/alpine-boot-clone   PVC alpine-boot-clone Bound
-2m21s       Normal    CloneSucceeded                      datavolume/alpine-boot-clone   Successfully cloned from sc26-alpine-c/alpine-boot into sc26-alpine-e/alpine-boot-clone
+2m21s       Normal    CloneSucceeded                      datavolume/alpine-boot-clone   Successfully cloned from sc27-alpine-c/alpine-boot into sc27-alpine-e/alpine-boot-clone
 ```
 
 If desired, you can also create a VM on top of this volume, and connect to its console to check the content with the following:  
 ```bash
-kubectl create -f alpine_vm_clone4_wo_cloudinit.yaml -n sc26-alpine-e
-virtctl console -n sc26-alpine-e alpine-vm-clone4
+kubectl create -f alpine_vm_clone4_wo_cloudinit.yaml -n sc27-alpine-e
+virtctl console -n sc27-alpine-e alpine-vm-clone4
 ```
 
 ## E. Cloning within the same namespace (strategy: csi-clone) 
@@ -606,7 +606,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone5
-  namespace: sc26-alpine-c
+  namespace: sc27-alpine-c
   labels:
     method: clone5
 spec:
@@ -622,13 +622,13 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone4 created
 ```
 Let's see how fast it takes to be ready:
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc,vs -l method=clone5
+$ kubectl get -n sc27-alpine-c all,pvc,vs -l method=clone5
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                            PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone5   Succeeded   100.0%                10s
@@ -640,20 +640,20 @@ persistentvolumeclaim/alpine-boot-clone5   Bound    pvc-f566a159-75bf-44fe-89e9-
 
 Let's inspects the various elements:  
 ```bash
-$ kubectl get events -n sc26-alpine-c --field-selector involvedObject.kind=DataVolume
+$ kubectl get events -n sc27-alpine-c --field-selector involvedObject.kind=DataVolume
 LAST SEEN   TYPE      REASON               OBJECT                          MESSAGE
-96s         Normal    CloneScheduled       datavolume/alpine-boot-clone5   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-c/alpine-boot-clone5 scheduled
+96s         Normal    CloneScheduled       datavolume/alpine-boot-clone5   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-c/alpine-boot-clone5 scheduled
 96s         Normal    Pending              datavolume/alpine-boot-clone5   PVC alpine-boot-clone5 Pending
 96s         Warning   Pending              datavolume/alpine-boot-clone5   Clone Pending
-96s         Normal    CSICloneInProgress   datavolume/alpine-boot-clone5   CSI Volume clone in progress (for pvc sc26-alpine-c/alpine-boot)
-95s         Normal    CloneSucceeded       datavolume/alpine-boot-clone5   Successfully cloned from sc26-alpine-c/alpine-boot into sc26-alpine-c/alpine-boot-clone5
+96s         Normal    CSICloneInProgress   datavolume/alpine-boot-clone5   CSI Volume clone in progress (for pvc sc27-alpine-c/alpine-boot)
+95s         Normal    CloneSucceeded       datavolume/alpine-boot-clone5   Successfully cloned from sc27-alpine-c/alpine-boot into sc27-alpine-c/alpine-boot-clone5
 95s         Normal    Bound                datavolume/alpine-boot-clone5   PVC alpine-boot-clone5 Bound
 ```
 The order of events is pretty clear. Now let's check the details of the PVC:  
 ```bash
-$ kubectl describe -n sc26-alpine-c persistentvolumeclaim/alpine-boot-clone5
+$ kubectl describe -n sc27-alpine-c persistentvolumeclaim/alpine-boot-clone5
 Name:          alpine-boot-clone5
-Namespace:     sc26-alpine-c
+Namespace:     sc27-alpine-c
 StorageClass:  storage-class-iscsi
 Status:        Bound
 Volume:        pvc-f566a159-75bf-44fe-89e9-137c1fba8ecb
@@ -689,8 +689,8 @@ sansvm  trident_pvc_f566a159_75bf_44fe_89e9_137c1fba8ecb
 ```
 If desired, you can also create a VM on top of this volume, and connect to its console to check the content with the following:  
 ```bash
-kubectl create -f alpine_vm_clone5_wo_cloudinit.yaml -n sc26-alpine-c
-virtctl console -n sc26-alpine-c alpine-vm-clone5
+kubectl create -f alpine_vm_clone5_wo_cloudinit.yaml -n sc27-alpine-c
+virtctl console -n sc27-alpine-c alpine-vm-clone5
 ```
 
 ## F. Cloning to a different namespace (strategy: csi-clone) 
@@ -698,17 +698,17 @@ virtctl console -n sc26-alpine-c alpine-vm-clone5
 
 <p align="center"><img src="../../Images/M4_CSIClone_cross_namespace.png" width="768"></p>
 
-First step, let's create a new namespace called _sc26-alpine-f_, followed by a new Data Volume.  
+First step, let's create a new namespace called _sc27-alpine-f_, followed by a new Data Volume.  
 ```bash
-$ kubectl create  ns sc26-alpine-f
-namespace/sc26-alpine-f created
+$ kubectl create  ns sc27-alpine-f
+namespace/sc27-alpine-f created
 
 $ cat << EOF | kubectl apply  -f -
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot-clone6
-  namespace: sc26-alpine-f
+  namespace: sc27-alpine-f
   labels:
     method: clone6
 spec:
@@ -724,13 +724,13 @@ spec:
   source:
     pvc:
       name: alpine-boot
-      namespace: sc26-alpine-c
+      namespace: sc27-alpine-c
 EOF
 datavolume.cdi.kubevirt.io/alpine-boot-clone6 created
 ```
 Here again, it is super fast:  
 ```bash
-$ kubectl get  -n sc26-alpine-f all,pvc,vs
+$ kubectl get  -n sc27-alpine-f all,pvc,vs
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                            PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot-clone6   Succeeded   100.0%                3s
@@ -740,19 +740,19 @@ persistentvolumeclaim/alpine-boot-clone6   Bound    pvc-44c6093b-80dc-4824-ab0f-
 ```
 Check the events and details will confirm what we already know by now:
 ```bash  
-$ kubectl get events -n sc26-alpine-f --field-selector involvedObject.kind=DataVolume
+$ kubectl get events -n sc27-alpine-f --field-selector involvedObject.kind=DataVolume
 LAST SEEN   TYPE      REASON               OBJECT                          MESSAGE
 62s         Normal    NotFound             datavolume/alpine-boot-clone6   No PVC found
-62s         Normal    CloneScheduled       datavolume/alpine-boot-clone6   Cloning from sc26-alpine-c/alpine-boot into sc26-alpine-f/alpine-boot-clone6 scheduled
+62s         Normal    CloneScheduled       datavolume/alpine-boot-clone6   Cloning from sc27-alpine-c/alpine-boot into sc27-alpine-f/alpine-boot-clone6 scheduled
 62s         Normal    Pending              datavolume/alpine-boot-clone6   PVC alpine-boot-clone6 Pending
 62s         Warning   Pending              datavolume/alpine-boot-clone6   Clone Pending
-61s         Normal    CSICloneInProgress   datavolume/alpine-boot-clone6   CSI Volume clone in progress (for pvc sc26-alpine-c/alpine-boot)
+61s         Normal    CSICloneInProgress   datavolume/alpine-boot-clone6   CSI Volume clone in progress (for pvc sc27-alpine-c/alpine-boot)
 61s         Normal    Bound                datavolume/alpine-boot-clone6   PVC alpine-boot-clone6 Bound
-61s         Normal    CloneSucceeded       datavolume/alpine-boot-clone6   Successfully cloned from sc26-alpine-c/alpine-boot into sc26-alpine-f/alpine-boot-clone6
+61s         Normal    CloneSucceeded       datavolume/alpine-boot-clone6   Successfully cloned from sc27-alpine-c/alpine-boot into sc27-alpine-f/alpine-boot-clone6
 
-$ kubectl describe -n sc26-alpine-f persistentvolumeclaim/alpine-boot-clone6
+$ kubectl describe -n sc27-alpine-f persistentvolumeclaim/alpine-boot-clone6
 Name:          alpine-boot-clone6
-Namespace:     sc26-alpine-f
+Namespace:     sc27-alpine-f
 StorageClass:  storage-class-iscsi
 Status:        Bound
 Volume:        pvc-44c6093b-80dc-4824-ab0f-9ac63124f5c1
@@ -763,7 +763,7 @@ Labels:        app=containerized-data-importer
 Annotations:   cdi.kubevirt.io/clonePhase: Succeeded
                cdi.kubevirt.io/cloneType: csi-clone
                cdi.kubevirt.io/createdForDataVolume: f2ec04dd-8bdf-4f5c-9db2-d6d245220a86
-               cdi.kubevirt.io/dataSourceNamespace: sc26-alpine-c
+               cdi.kubevirt.io/dataSourceNamespace: sc27-alpine-c
                cdi.kubevirt.io/storage.clone.token:
                  eyJhbGciOiJQUzI1NiJ9.eyJleHAiOjE3ODIxNTc0OTAsImlhdCI6MTc4MjE1NzE5MCwiaXNzIjoiY2RpLWFwaXNlcnZlciIsIm5hbWUiOiJhbHBpbmUtYm9vdCIsIm5hbWVzcGFjZ...
                cdi.kubevirt.io/storage.condition.running: false
@@ -793,13 +793,14 @@ sansvm  trident_pvc_44c6093b_80dc_4824_ab0f_9ac63124f5c1
 ```
 And of course, if desired, you can also create a VM on top of this volume, and connect to its console to check the content with the following:  
 ```bash
-kubectl create -f alpine_vm_clone6_wo_cloudinit.yaml -n sc26-alpine-f
-virtctl console -n sc26-alpine-f alpine-vm-clone6
+kubectl create -f alpine_vm_clone6_wo_cloudinit.yaml -n sc27-alpine-f
+virtctl console -n sc27-alpine-f alpine-vm-clone6
 ```
 
 ## F. Clean up
 
 Let's remove some of the things we created:  
 ```bash
-kubectl delete ns sc26-alpine-f sc26-alpine-e sc26-alpine-d sc26-alpine-c
+kubectl delete ns sc27-alpine-f sc27-alpine-e sc27-alpine-d
 ```
+If you are planning on testing the following chapter, you need to keep the namespace _sc27-alpine-c_.

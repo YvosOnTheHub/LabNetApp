@@ -6,10 +6,10 @@ This chapter is a mix of both methods presented previously:
 - a DataVolume is created to manage the PVC  
 - virtctl is used to upload the image  
 
-This chapter will use the namespace _sc26-alpine-c_. Let's start by creating it first:  
+This chapter will use the namespace _sc27-alpine-c_. Let's start by creating it first:  
 ```bash
-$ kubectl create  ns sc26-alpine-c
-namespace/sc26-alpine-c created
+$ kubectl create  ns sc27-alpine-c
+namespace/sc27-alpine-c created
 ```
 
 <p align="center"><img src="../../Images/M3_DV_upload_process.png" width="768"></p>
@@ -21,7 +21,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot
-  namespace: sc26-alpine-c
+  namespace: sc27-alpine-c
 spec:
   pvc:
     accessModes:
@@ -39,7 +39,7 @@ datavolume.cdi.kubevirt.io/alpine-boot created
 ```
 What does that give us in the namespace:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc
+$ kubectl get -n sc27-alpine-c all,pvc
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                                        READY   STATUS    RESTARTS   AGE
 pod/cdi-upload-prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d   1/1     Running   0          21s
@@ -67,12 +67,12 @@ Here is a description of what we see:
 Let's launch the image upload. Notice that, compared to the first method, the command is "image-upload dv":  
 ```bash
 $ virtctl image-upload dv alpine-boot \
-  --namespace sc26-alpine-c \
+  --namespace sc27-alpine-c \
   --image-path=/root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 \
   --size=1Gi \
   --insecure \
   --uploadproxy-url=https://192.168.0.212:443
-Using existing PVC sc26-alpine-c/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d
+Using existing PVC sc27-alpine-c/prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d
 Uploading data to https://192.168.0.212:443
 
 114.31 MiB / 114.31 MiB [------------------------------------------------------------------------------------------------------------------------] 100.00% 99.86 MiB p/s 1.3s
@@ -84,7 +84,7 @@ Uploading /root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 completed
 While the upload was in process, here are the logs you could see in the temporary pod.  
 You will see that the Qemu image was written on the _scratch_ volume, and then converted on the target volume.  
 ```bash
-$ kubectl logs -n sc26-alpine-c cdi-upload-prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d -f
+$ kubectl logs -n sc27-alpine-c cdi-upload-prime-5c54db0c-beda-4b8a-a75a-11738cd7bd7d -f
 I1111 08:27:43.284325       1 uploadserver.go:81] Running server on 0.0.0.0:8443
 I1111 08:35:35.163489       1 uploadserver.go:361] Content type header is ""
 I1111 08:35:35.164084       1 data-processor.go:361] Calculating available size
@@ -111,7 +111,7 @@ I1111 08:35:37.404828       1 uploadserver.go:115] UploadServer successfully exi
 ```
 Once the upload and conversion processes are done, you will only have the datavolume and the pvc left in the namespace:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc
+$ kubectl get -n sc27-alpine-c all,pvc
 Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
 NAME                                     PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot   Succeeded   N/A                   8m44s
@@ -121,12 +121,12 @@ persistentvolumeclaim/alpine-boot   Bound    pvc-b4a4895e-878a-4e0e-9c9d-cfd7290
 ```
 You can now deploy the Virtual Machine on top of disk.  
 ```bash
-$ kubectl create -f ../alpine_vm.yaml -n sc26-alpine-c
+$ kubectl create -f ../alpine_vm.yaml -n sc27-alpine-c
 virtualmachine.kubevirt.io/alpine-vm created
 ```
 And here is the expected result:  
 ```bash
-$ kubectl get -n sc26-alpine-c all,pvc
+$ kubectl get -n sc27-alpine-c all,pvc
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/virt-launcher-alpine-vm-c29k2   2/2     Running   0          58s
 
@@ -145,9 +145,9 @@ persistentvolumeclaim/alpine-boot   Bound    pvc-b4a4895e-878a-4e0e-9c9d-cfd7290
 Let's connect to the VM (it takes a bit less than 2 minutes for the boot procedure to complete).  
 As set in the CloudInit configuration, the password of the _alpine_ user is _alpine_:  
 ```bash
-$ virtctl console -n sc26-alpine-c alpine-vm
+$ virtctl console -n sc27-alpine-c alpine-vm
 Successfully connected to alpine-vm console. Press Ctrl+] or Ctrl+5 to exit console.
-alpine-vm.sc26-alpine-c.svc.cluster.local login: alpine
+alpine-vm.sc27-alpine-c.svc.cluster.local login: alpine
 Password:
 Welcome to Alpine Linux on KubeVirt in the NetApp LoD!
 ```

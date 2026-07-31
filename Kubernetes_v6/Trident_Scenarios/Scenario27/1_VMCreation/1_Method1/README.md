@@ -4,8 +4,8 @@
 
 This chapter will use the namespace _sc26-alpine-a_. Let's start by creating it:  
 ```bash
-$ kubectl create  ns sc26-alpine-a
-namespace/sc26-alpine-a created
+$ kubectl create  ns sc27-alpine-a
+namespace/sc27-alpine-a created
 ```
 
 The method described here requires you to have a virtual machine image locally. Multiple formats are supported, such as _iso_, _img_ or _qcow2_. An image for Alpine linux is alrady present in the folder "~/images".  
@@ -19,7 +19,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: alpine-boot
-  namespace: sc26-alpine-a
+  namespace: sc27-alpine-a
   annotations:
     cdi.kubevirt.io/storage.upload.target: ""
 spec:
@@ -43,7 +43,7 @@ Creating that PVC will trigger a few things:
 - Creation of a pod and a service **cdi-upload**  
 
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-a
+$ kubectl get all,pvc -n sc27-alpine-a
 NAME                         READY   STATUS    RESTARTS   AGE
 pod/cdi-upload-alpine-boot   1/1     Running   0          9m56s
 
@@ -56,7 +56,7 @@ persistentvolumeclaim/alpine-boot-scratch   Bound    pvc-2ba57685-5208-46a1-bcbc
 ```
 Both volumes are mounted on the _cdi-upload_ pod:  
 ```bash
-$ kubectl get -n sc26-alpine-a po -o yaml | grep volumeDev -A 7
+$ kubectl get -n sc27-alpine-a po -o yaml | grep volumeDev -A 7
       volumeDevices:
       - devicePath: /dev/cdi-block-volume
         name: cdi-data-vol
@@ -69,19 +69,19 @@ $ kubectl get -n sc26-alpine-a po -o yaml | grep volumeDev -A 7
 I recommend reading the logs of the _cdi-upload_ pod while uploading the image to see all the steps performed.  
 This can be achieved (in a different window) with the command:  
 ```bash
-kubectl logs cdi-upload-alpine-boot -n sc26-alpine-a -f
+kubectl logs cdi-upload-alpine-boot -n sc27-alpine-a -f
 ```
 
 We can now upload our image to the PVC using the _virtctl_ command line:  
 ```bash
 $ virtctl image-upload pvc alpine-boot \
-  --namespace sc26-alpine-a \
+  --namespace sc27-alpine-a \
   --image-path=/root/images/nocloud_alpine-3.22.1-x86_64-bios-tiny-r0.qcow2 \
   --size=1Gi \
   --insecure \
   --uploadproxy-url=https://192.168.0.212:443
 
-Using existing PVC sc26-alpine-a/alpine-boot
+Using existing PVC sc27-alpine-a/alpine-boot
 Uploading data to https://192.168.0.212:443
 
 114.31 MiB / 114.31 MiB [-------------------------------------------------------------------------------------------------------] 100.00% 91.36 MiB p/s 1.5s
@@ -100,7 +100,7 @@ Let's dive a bit into this upload process:
 
 The logs in the pod should have displayed something similar to:  
 ```bash
-$ kubectl logs cdi-upload-alpine-boot-pvc -n sc26-alpine-a -f
+$ kubectl logs cdi-upload-alpine-boot-pvc -n sc27-alpine-a -f
 I1007 07:20:28.429190       1 uploadserver.go:81] Running server on 0.0.0.0:8443
 ...
 I1007 07:20:53.033234       1 file.go:230] copyWithSparseCheck to /scratch/tmpimage
@@ -120,7 +120,7 @@ I1007 07:20:54.552068       1 uploadserver.go:115] UploadServer successfully exi
 
 Checking the content of the namespace, you will now see that only the boot PVC is left:  
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-a
+$ kubectl get all,pvc -n sc27-alpine-a
 NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEATTRIBUTES
 CLASS   AGE
 persistentvolumeclaim/alpine-boot   Bound    pvc-7e299aeb-fb94-47de-85aa-b20afd2ccc33   1Gi        RWX            storage-class-iscsi   <unset>
@@ -129,10 +129,10 @@ persistentvolumeclaim/alpine-boot   Bound    pvc-7e299aeb-fb94-47de-85aa-b20afd2
 
 The disk is ready. You can create the VM that will use it to boot, using the *alpine_vm.yaml* manifest:  
 ```bash
-$ kubectl create -f ../alpine_vm.yaml -n sc26-alpine-a
+$ kubectl create -f ../alpine_vm.yaml -n sc27-alpine-a
 virtualmachine.kubevirt.io/alpine-vm created
 
-$ kubectl get all,pvc -n sc26-alpine-a
+$ kubectl get all,pvc -n sc27-alpine-a
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/virt-launcher-alpine-vm-vgcwp   2/2     Running   0          7m36s
 
@@ -153,7 +153,7 @@ KubeVirt automatically created ephemeral objects to support the VM:
 
 Let's get some more details on those ephemeral objects:  
 ```bash
-$ kubectl get vmi,po -n sc26-alpine-a -o wide 
+$ kubectl get vmi,po -n sc27-alpine-a -o wide 
 NAME                                           AGE   PHASE     IP              NODENAME   READY   LIVE-MIGRATABLE   PAUSED
 virtualmachineinstance.kubevirt.io/alpine-vm   11m   Running   192.168.28.99   rhel2      True    True
 
@@ -167,9 +167,9 @@ You can notice:
 Let's connect to the VM (it takes a bit less than 2 minutes for the boot procedure to complete).  
 As set in the CloudInit configuration, the password of the _alpine_ user is _alpine_:  
 ```bash
-$ virtctl console -n sc26-alpine-a alpine-vm
+$ virtctl console -n sc27-alpine-a alpine-vm
 Successfully connected to alpine-vm console. Press Ctrl+] or Ctrl+5 to exit console.
-alpine-vm.sc26-alpine-a.svc.cluster.local login: alpine
+alpine-vm.sc27-alpine-a.svc.cluster.local login: alpine
 Password:
 Welcome to Alpine on KubeVirt in the NetApp LoD!
 
@@ -186,5 +186,5 @@ There you go, you managed to create your first Virtual Machine & to log into it!
 
 You can now remove the namespace:  
 ```bash
-kubectl delete ns sc26-alpine-a
+kubectl delete ns sc27-alpine-a
 ```

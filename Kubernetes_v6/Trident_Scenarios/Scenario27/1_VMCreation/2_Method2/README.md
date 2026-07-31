@@ -3,10 +3,10 @@
 #########################################################################################
 
 In this chapter, we will see how to create a DataVolume from a container registry.  
-This chapter will use the namespace _sc26-alpine-b_. Let's start by creating it first:  
+This chapter will use the namespace _sc27-alpine-b_. Let's start by creating it first:  
 ```bash
-$ kubectl create  ns sc26-alpine-b
-namespace/sc26-alpine-b created
+$ kubectl create  ns sc27-alpine-b
+namespace/sc27-alpine-b created
 ```
 
 We already have an Alpine image, but only in a Qcow format.  
@@ -32,7 +32,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: endpoint-secret
-  namespace: sc26-alpine-b
+  namespace: sc27-alpine-b
   labels:
     app: containerized-data-importer
 type: Opaque
@@ -52,7 +52,7 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: DataVolume
 metadata:
   name: alpine-boot
-  namespace: sc26-alpine-b
+  namespace: sc27-alpine-b
 spec:
   pvc:
     accessModes:
@@ -72,7 +72,7 @@ datavolume.cdi.kubevirt.io/alpine-boot created
 ```
 What does that trigger? Let's check the content of the namespace:  
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-b 
+$ kubectl get all,pvc -n sc27-alpine-b 
 NAME                                                      READY   STATUS    RESTARTS   AGE
 pod/importer-prime-1c65d555-9926-45a5-a4c1-6c53b6afca31   1/1     Running   0          21s
 
@@ -93,7 +93,7 @@ Here is a description of what we see:
 
 Looking at the pod defition, you will see both _prime_ volume attached:  
 ```bash
-$ kubectl get -n sc26-alpine-b po -o yaml | grep volumeDev -A 7
+$ kubectl get -n sc27-alpine-b po -o yaml | grep volumeDev -A 7
       volumeDevices:
       - devicePath: /dev/cdi-block-volume
         name: cdi-data-vol
@@ -101,7 +101,7 @@ $ kubectl get -n sc26-alpine-b po -o yaml | grep volumeDev -A 7
       - mountPath: /scratch
         name: cdi-scratch-vol
 
-$ kubectl get -n sc26-alpine-b po -o yaml | grep volumes: -A 6
+$ kubectl get -n sc27-alpine-b po -o yaml | grep volumes: -A 6
     volumes:
     - name: cdi-data-vol
       persistentVolumeClaim:
@@ -112,7 +112,7 @@ $ kubectl get -n sc26-alpine-b po -o yaml | grep volumes: -A 6
 ```
 You can also check the logs of the pod to follow up with the import process. Note that the pod will be deleted once the task is complete:  
 ```bash
-$ kubectl logs -n sc26-alpine-b pod/importer-prime-1c65d555-9926-45a5-a4c1-6c53b6afca31 -f
+$ kubectl logs -n sc27-alpine-b pod/importer-prime-1c65d555-9926-45a5-a4c1-6c53b6afca31 -f
 I1108 17:39:30.540587       1 importer.go:107] Starting importer
 I1108 17:39:30.542412       1 importer.go:182] begin import process
 I1108 17:39:30.542556       1 registry-datasource.go:191] Copying proxy certs
@@ -146,7 +146,7 @@ I1108 17:39:37.333828       1 importer.go:231] {"scratchSpaceRequired":false,"pr
 The _import_ process is done. Checking the resources of the namespace, you will see that the POD, as well as the prime PVCs, are deleted.  
 The DataVolume is also labelled as **succeeded**:  
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-b                                                                     
+$ kubectl get all,pvc -n sc27-alpine-b                                                                     
 NAME                                     PHASE       PROGRESS   RESTARTS   AGE
 datavolume.cdi.kubevirt.io/alpine-boot   Succeeded   100.0%                38s
 
@@ -163,12 +163,12 @@ If you delete the PVC, the DataVolume is automatically going to recreate it.
 
 You can now deploy the Virtual Machine on top of disk.  
 ```bash
-$ kubectl create -f ../alpine_vm.yaml -n sc26-alpine-b
+$ kubectl create -f ../alpine_vm.yaml -n sc27-alpine-b
 virtualmachine.kubevirt.io/alpine-vm created
 ```
 You will quickly see the environment ready:  
 ```bash
-$ kubectl get all,pvc -n sc26-alpine-b
+$ kubectl get all,pvc -n sc27-alpine-b
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/virt-launcher-alpine-vm-6jhdv   2/2     Running   0          42s
 
@@ -188,9 +188,9 @@ persistentvolumeclaim/alpine-boot   Bound    pvc-478d2ea2-0c94-4800-b802-da334fb
 Let's connect to the VM (it takes a bit less than 2 minutes for the boot procedure to complete).  
 As set in the CloudInit configuration, the password of the _alpine_ user is _alpine_:  
 ```bash
-$ virtctl console -n sc26-alpine-b alpine-vm
+$ virtctl console -n sc27-alpine-b alpine-vm
 Successfully connected to alpine-vm console. Press Ctrl+] or Ctrl+5 to exit console.
-alpine-vm.sc26-alpine-b.svc.cluster.local login: alpine
+alpine-vm.sc27-alpine-b.svc.cluster.local login: alpine
 Password:
 Welcome to Alpine on KubeVirt in the NetApp LoD!
 ```
@@ -198,5 +198,5 @@ There you go. You managed to create your second Virtual Machine!
 
 You can now delete this namespace:  
 ```bash
-kubectl delete ns c26-alpine-b
+kubectl delete ns sc27-alpine-b
 ```
