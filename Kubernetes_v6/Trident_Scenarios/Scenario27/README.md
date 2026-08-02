@@ -27,5 +27,6 @@ Managing 10 datastores (with 100 disks each) is very different from managing 100
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p> 
 
 And now, let the fun start:  
-[1.](./1_VMCreation) Creating a Virtual Machine  
-[2.](./2_SecondaryDisks/) Secondary disks management
+[1.](./1_VMCreation) Creating a Virtual Machine.  
+[2.](./2_SecondaryDisks/) Secondary disks management.  
+<!--[3.](./3_UEFI/) UEFI & Secure Boot.  -->

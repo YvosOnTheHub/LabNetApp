@@ -1,0 +1,59 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: ubuntu-uefisb-vm
+  namespace: uefisb
+spec:
+  runStrategy: Always
+  template:
+    spec:
+      domain:
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: true
+        features:
+          smm:
+            enabled: true
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 1Gi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: ubuntu-uefisb-boot
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            secretRef:
+              name: ubuntu-uefisb-cloudinit-userdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ubuntu-uefisb-vm-ssh-lb
+  namespace: uefisb
+spec:
+  type: LoadBalancer
+  selector:
+    vm.kubevirt.io/name: ubuntu-uefisb-vm
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+    protocol: TCP

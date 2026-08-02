@@ -1,0 +1,56 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: alpine-uefi-vm
+  namespace: uefi
+spec:
+  runStrategy: Always
+  template:
+    spec:
+      domain:
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: false
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 1Gi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: alpine-uefi-boot
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            secretRef:
+              name: alpine-uefi-cloudinit-userdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpine-uefi-vm-ssh-lb
+  namespace: uefi
+spec:
+  type: LoadBalancer
+  selector:
+    vm.kubevirt.io/name: alpine-uefi-vm
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+    protocol: TCP
