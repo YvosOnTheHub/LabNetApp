@@ -93,6 +93,8 @@ kind: AppMirrorRelationship
 metadata:
   name: pacamr1
   namespace: pacmandr
+  annotations:
+    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault

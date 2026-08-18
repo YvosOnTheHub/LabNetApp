@@ -123,6 +123,8 @@ kind: AppMirrorRelationship
 metadata:
   name: bboxamr1
   namespace: sc06bbox2dr
+  annotations:
+    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: sc06bbox2-vault

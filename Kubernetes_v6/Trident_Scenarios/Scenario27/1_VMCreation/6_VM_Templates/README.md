@@ -307,7 +307,7 @@ Before you create a new VM, let's take a look at the YAML manifest (_vm3.yaml_):
 You can indeed see that this time the DataVolume refers to the snapshot you created earlier.  
 Let's apply that manifest:  
 ```bash 
-$ kubect create -f vm3.yaml
+$ kubectl create -f vm3.yaml
 namespace/my-alpine3 created
 datavolume.cdi.kubevirt.io/alpine-boot created
 virtualmachine.kubevirt.io/alpine-vm created
