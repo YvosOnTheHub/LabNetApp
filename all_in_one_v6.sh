@@ -439,6 +439,154 @@ check_volume_snapshot_controller() {
   return "$rc"
 }
 
+compare_registry_images() {
+  local version=$1
+  local menu=$2
+  local all_ok=1
+  local failed_images=()
+  
+  # Always test these images
+  local base_images=("trident" "trident-operator" "trident-autosupport")
+  
+  # Multi-arch images: digest comparison is unreliable due to manifest list normalization
+  local multiarch_images=("trident" "trident-operator" "trident-autosupport")
+  
+  # Add Trident Protect images if menu = 2
+  local protect_images=()
+  if [ "$menu" = "2" ]; then
+    protect_images=("controller" "exechook" "resourcebackup" "resourcerestore" "resourcedelete" "restic" "kopia" "kopiablockrestore")
+  fi
+  
+  local all_images=("${base_images[@]}" "${protect_images[@]}")
+  
+  echo
+  echo "#######################################################################################################"
+  echo "# COMPARE REGISTRY IMAGE DIGESTS (docker.io vs quay.io)"
+  echo "#######################################################################################################"
+  echo
+  
+  for image in "${all_images[@]}"; do
+    local digest1 digest2
+    local tag="$version"
+    
+    # For trident-protect-utils when menu=2, use v1.0.0 instead of the version
+    if [ "$image" = "trident-protect-utils" ] && [ "$menu" = "2" ]; then
+      tag="v1.0.0"
+    fi
+    
+    # Special handling for trident-protect-utils in base menu
+    if [ "$image" = "trident-protect-utils" ]; then
+      continue
+    fi
+    
+      # For multi-arch images, compare linux/amd64 arch digest specifically
+      if [[ " ${multiarch_images[@]} " =~ " ${image} " ]]; then
+        # Get Docker Hub token scoped to this specific image
+        local docker_token
+        docker_token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:netapp/$image:pull" 2>/dev/null | jq -r '.token' || true)
+        
+        # Fetch manifest list from docker.io with authentication
+        local manifest_list1
+        manifest_list1=$(curl -s -H "Authorization: Bearer $docker_token" \
+          -H "Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json" \
+          "https://registry-1.docker.io/v2/netapp/$image/manifests/$tag" 2>/dev/null)
+        
+        # Prefer an OCI or Docker image index; Quay can otherwise return a legacy schema-v1 manifest.
+        local manifest_list2
+        manifest_list2=$(curl -s -H "Accept: application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json" \
+          "https://quay.io/v2/yvosonthehub/netapp/$image/manifests/$tag" 2>/dev/null)
+        
+        # Extract linux/amd64 digest from docker.io manifest list
+        digest1=$(echo "$manifest_list1" | jq -r '[.manifests[]? | select(.platform.os == "linux" and .platform.architecture == "amd64") | .digest][0] // empty' 2>/dev/null || true)
+        
+        # Extract linux/amd64 digest from quay.io manifest list
+        digest2=$(echo "$manifest_list2" | jq -r '[.manifests[]? | select(.platform.os == "linux" and .platform.architecture == "amd64") | .digest][0] // empty' 2>/dev/null || true)
+        
+        if [ -z "$digest1" ]; then
+          print_fail "Image comparison: docker.io did not return a linux/amd64 manifest for $image:$tag"
+          all_ok=0
+          failed_images+=("$image")
+        elif [ -z "$digest2" ]; then
+          print_fail "Image comparison: quay.io did not return an OCI or Docker manifest index for $image:$tag"
+          all_ok=0
+          failed_images+=("$image")
+        elif [ "$digest1" = "$digest2" ]; then
+          print_ok "Image match: $image:$tag linux/amd64 (digest: ${digest1:0:19}...)"
+        else
+          print_fail "the mirror image $image does not correspond to the source repo (docker.io: ${digest1:0:19}... vs quay.io: ${digest2:0:19}...)"
+          all_ok=0
+          failed_images+=("$image")
+        fi
+    else
+      # For single-arch images, compare digests
+      # Get Docker Hub token scoped to this specific image
+      local docker_token
+      docker_token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:netapp/$image:pull" 2>/dev/null | jq -r '.token' || true)
+      
+      # Get manifest digest from docker.io/netapp using Docker Registry V2 API with authentication
+      # Use HEAD request to get Docker-Content-Digest header without downloading full manifest
+      digest1=$(curl -s -I -H "Authorization: Bearer $docker_token" \
+        -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+        "https://registry-1.docker.io/v2/netapp/$image/manifests/$tag" 2>/dev/null | \
+        grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+      
+      # Get manifest digest from quay.io/yvosonthehub/netapp (public, no auth needed)
+      digest2=$(curl -s -I -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+        "https://quay.io/v2/yvosonthehub/netapp/$image/manifests/$tag" 2>/dev/null | \
+        grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+      
+      if [ -z "$digest1" ] || [ -z "$digest2" ]; then
+        print_fail "Image comparison: could not retrieve digest for $image:$tag"
+        all_ok=0
+        failed_images+=("$image")
+      elif [ "$digest1" = "$digest2" ]; then
+        print_ok "Image match: $image:$tag (digest: ${digest1:0:19}...)"
+      else
+        print_fail "the mirror image $image does not correspond to the source repo (docker.io: ${digest1:0:19}... vs quay.io: ${digest2:0:19}...)"
+        all_ok=0
+        failed_images+=("$image")
+      fi
+    fi
+  done
+  
+  # Handle trident-protect-utils specially when menu=2
+  if [ "$menu" = "2" ]; then
+    local image="trident-protect-utils"
+    local tag="v1.0.0"
+    local digest1 digest2
+    
+    # Get Docker Hub token scoped to this specific image
+    local docker_token
+    docker_token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:netapp/$image:pull" 2>/dev/null | jq -r '.token' || true)
+    
+    digest1=$(curl -s -I -H "Authorization: Bearer $docker_token" \
+      -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+      "https://registry-1.docker.io/v2/netapp/$image/manifests/$tag" 2>/dev/null | \
+      grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+    
+    digest2=$(curl -s -I -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+      "https://quay.io/v2/yvosonthehub/netapp/$image/manifests/$tag" 2>/dev/null | \
+      grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+    
+    if [ -z "$digest1" ] || [ -z "$digest2" ]; then
+      print_fail "Image comparison: could not retrieve digest for $image:$tag"
+      all_ok=0
+      failed_images+=("$image")
+    elif [ "$digest1" = "$digest2" ]; then
+      print_ok "Image match: $image:$tag (digest: ${digest1:0:19}...)"
+    else
+      print_fail "the mirror image $image does not correspond to the source repo"
+      all_ok=0
+      failed_images+=("$image")
+    fi
+  fi
+  
+  echo
+  if [ $all_ok -eq 1 ]; then
+    print_ok "all mirror images conformant with the source repo"
+  fi
+}
+
 lab_setup_check() {
   local menu=$1
   echo
@@ -474,6 +622,9 @@ lab_setup_check() {
   check_tridentctl_protect "cluster2"
   check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
   fi
+
+  # Compare registry images between docker.io and quay.io
+  compare_registry_images "26.06.0" "$menu"
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
 cat <<EOT >> ~/.bashrc

@@ -53,8 +53,6 @@ kind: AppMirrorRelationship
 metadata:
   name: bboxamr1
   namespace: tpsc05busyboxdr
-  annotations:
-    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault
@@ -203,8 +201,6 @@ kind: AppMirrorRelationship
 metadata:
   name: bboxamr2
   namespace: tpsc05busybox
-  annotations:
-    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault
@@ -320,8 +316,6 @@ kind: AppMirrorRelationship
 metadata:
   name: bboxamr3
   namespace: tpsc05busyboxdr
-  annotations:
-    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault

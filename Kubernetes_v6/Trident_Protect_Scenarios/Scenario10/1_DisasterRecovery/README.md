@@ -55,8 +55,6 @@ kind: AppMirrorRelationship
 metadata:
   name: bboxamr1
   namespace: tpsc10busyboxdr
-  annotations:
-    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault2

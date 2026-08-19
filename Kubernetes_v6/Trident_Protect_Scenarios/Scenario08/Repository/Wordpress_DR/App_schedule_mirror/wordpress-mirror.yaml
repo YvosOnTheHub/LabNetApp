@@ -3,8 +3,6 @@ kind: AppMirrorRelationship
 metadata:
   name: wordpress
   namespace: wpargo2
-  annotations:
-    protect.trident.netapp.io/skip-storage-class-validation: "true"
 spec:
   desiredState: Established
   destinationAppVaultRef: ontap-vault
