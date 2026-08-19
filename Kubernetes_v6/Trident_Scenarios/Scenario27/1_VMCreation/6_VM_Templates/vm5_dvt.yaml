@@ -1,0 +1,47 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: alpine-vm
+  namespace: my-alpine5
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: alpine-boot
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 1Gi
+          volumeMode: Block
+          storageClassName: storage-class-iscsi
+        contentType: kubevirt
+        source:
+          snapshot:
+            name: alpine-tmpl2
+            namespace: vm-templates
+  template:
+    spec:
+      domain:
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 128Mi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          dataVolume:
+            name: alpine-boot

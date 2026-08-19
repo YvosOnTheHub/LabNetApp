@@ -391,9 +391,99 @@ The interesting information here is that both disks/PVC clones from the same ONT
 And voilà, you have successfully created a catalogue of customized bootable disks!  
 You are now the expert!
 
+## E. Introducing DataVolumeTemplates
 
-## D. Clean up time
+Until now, we have disks and VM managed separately, so that you can see each part individually.  
+Comes the concept of **DataVolumeTemplates**:  
+>> In KubeVirt, dataVolumeTemplates is a spec field inside a VirtualMachine definition used to automate the preparation of a VM's virtual disks during its deployment.
+>> Instead of you manually downloading a disk image, creating a PersistentVolumeClaim (PVC), and loading the image onto it before launching a VM, the dataVolumeTemplates (DVT) block lets you define a blueprint for a DataVolume (DV)
+
+In order to use DVT in a different namespace, you first need to grant access to DataVolumes, otherwise you would get the following error in the Virtual Machine:  
+```bash
+$ kubectl get events -n my-alpine5 --field-selector involvedObject.kind=VirtualMachine
+LAST SEEN   TYPE      REASON                         OBJECT                     MESSAGE
+63s         Warning   UnauthorizedDataVolumeCreate   virtualmachine/alpine-vm   Not authorized to create DataVolume alpine-boot: User system:serviceaccount:my-alpine5:default has insufficient permissions in clone source namespace vm-templates
+```
+
+Let's create a role to clone our volume:  
+```bash
+$ kubectl auth can-i create datavolumes --subresource=source --namespace=vm-templates --as=system:serviceaccount:my-alpine5:default
+no
+
+$ kubectl create -f vm5_rbac.yaml
+namespace/my-alpine5 created
+role.rbac.authorization.k8s.io/datavolume-clone-source-reader created
+rolebinding.rbac.authorization.k8s.io/allow-my-alpine5-datavolume-clone created
+
+$ kubectl auth can-i create datavolumes --subresource=source --namespace=vm-templates --as=system:serviceaccount:my-alpine5:default
+yes
+```
+Before moving to the VM creation, let's take a few seconds to look at its manifest.  
+The DVT block is set in the VM specs and essentially looks like the DataVolume you have been using until now:  
+```yaml
+  dataVolumeTemplates:
+    - metadata:
+        name: alpine-boot
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 1Gi
+          volumeMode: Block
+          storageClassName: storage-class-iscsi
+        contentType: kubevirt
+        source:
+          snapshot:
+            name: alpine-tmpl2
+            namespace: vm-templates
+```
+One difference however sits in the _volumes_ block which points to a DataVolume, instead of a PVC or a snapshot:  
+```yaml
+      volumes:
+        - name: rootdisk
+          dataVolume:
+            name: alpine-boot
+```
+Now  that we right to create a DataVolume, let's launch our Virtual Machine creation:  
+```bash
+$ kubectl create -f vm5_dvt.yaml
+virtualmachine.kubevirt.io/alpine-vm created
+
+$ kubectl get -n my-alpine5 all,pvc
+Warning: kubevirt.io/v1 VirtualMachineInstancePresets is now deprecated and will be removed in v2.
+NAME                                READY   STATUS    RESTARTS   AGE
+pod/virt-launcher-alpine-vm-kwh2j   2/2     Running   0          99s
+
+NAME                                     PHASE       PROGRESS   RESTARTS   AGE
+datavolume.cdi.kubevirt.io/alpine-boot   Succeeded   100.0%                101s
+
+NAME                                           AGE   PHASE     IP             NODENAME   READY
+virtualmachineinstance.kubevirt.io/alpine-vm   99s   Running   192.168.26.5   rhel1      True
+
+NAME                                   AGE    STATUS    READY
+virtualmachine.kubevirt.io/alpine-vm   101s   Running   True
+
+NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS          VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/alpine-boot   Bound    pvc-d5326e73-9465-4ffc-b6b5-60efe65989a0   1Gi        RWX            storage-class-iscsi   <unset>                 101s
+```
+You can read the chain of operations done during the setup in the DV events:  
+```bash
+$ kubectl get events -n my-alpine5 --field-selector involvedObject.kind=DataVolume
+LAST SEEN   TYPE      REASON                              OBJECT                   MESSAGE
+2m53s       Normal    NotFound                            datavolume/alpine-boot   No PVC found
+2m53s       Normal    CloneScheduled                      datavolume/alpine-boot   Cloning from vm-templates/alpine-tmpl2 into my-alpine5/alpine-boot scheduled
+2m53s       Normal    Pending                             datavolume/alpine-boot   PVC alpine-boot Pending
+2m53s       Warning   Pending                             datavolume/alpine-boot   Clone Pending
+2m53s       Normal    CloneFromSnapshotSourceInProgress   datavolume/alpine-boot   Creating PVC from snapshot source is in progress (for snapshot vm-templates/alpine-tmpl2)
+2m51s       Normal    Bound                               datavolume/alpine-boot   PVC alpine-boot Bound
+2m51s       Normal    CloneSucceeded                      datavolume/alpine-boot   Successfully cloned from vm-templates/alpine-tmpl2 into my-alpine5/alpine-boot
+```
+Pretty neat, right ?
+
+## F. Clean up time
 
 ```bash
-kubectl delete ns my-alpine4 my-alpine3
+kubectl delete ns my-alpine5 my-alpine4 my-alpine3
 ```
