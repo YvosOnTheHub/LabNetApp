@@ -440,8 +440,10 @@ check_volume_snapshot_controller() {
 }
 
 compare_registry_images() {
-  local version=$1
-  local menu=$2
+  local trident_version=$1
+  local autosupport_version=$2
+  local protect_version=$3
+  local menu=$4
   local all_ok=1
   local failed_images=()
   
@@ -467,7 +469,17 @@ compare_registry_images() {
   
   for image in "${all_images[@]}"; do
     local digest1 digest2
-    local tag="$version"
+    local tag="$trident_version"
+    
+    # trident-autosupport follows its own release schedule
+    if [ "$image" = "trident-autosupport" ]; then
+      tag="$autosupport_version"
+    fi
+    
+    # Trident Protect images follow their own release schedule
+    if [[ " ${protect_images[@]} " =~ " ${image} " ]]; then
+      tag="$protect_version"
+    fi
     
     # For trident-protect-utils when menu=2, use v1.0.0 instead of the version
     if [ "$image" = "trident-protect-utils" ] && [ "$menu" = "2" ]; then
@@ -597,7 +609,7 @@ lab_setup_check() {
 
   echo "Checking primary cluster (default kubeconfig)..."
   check_pods_running "" trident "Trident"
-  check_trident_version "" "26.06.0"
+  check_trident_version "" "26.06.1"
   check_tbc_status ""
   check_volume_snapshot_controller "" "8"
   check_pods_running "" kubevirt "KubeVirt"
@@ -612,7 +624,7 @@ lab_setup_check() {
   SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
   echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
   check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
-  check_trident_version "$SECONDARY_KUBECONFIG" "26.06.0"
+  check_trident_version "$SECONDARY_KUBECONFIG" "26.06.1"
   check_tbc_status "$SECONDARY_KUBECONFIG"
   check_volume_snapshot_controller "$SECONDARY_KUBECONFIG" "8"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
@@ -624,7 +636,7 @@ lab_setup_check() {
   fi
 
   # Compare registry images between docker.io and quay.io
-  compare_registry_images "26.06.0" "$menu"
+  compare_registry_images "26.06.1" "26.06.0" "26.06.0" "$menu"
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
 cat <<EOT >> ~/.bashrc

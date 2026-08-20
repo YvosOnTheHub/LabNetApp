@@ -20,24 +20,25 @@ EOT
   fi
 fi
 
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/trident/tags/list' | jq -r '.tags[]? | select(.=="26.06.0")')" ]]; then
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/trident/tags/list' | jq -r '.tags[]? | select(.=="26.06.1")')" ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy Multi-Arch TRIDENT Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --multi-arch all --dest-creds 'registryuser:Netapp1!' \
-  docker://quay.io/yvosonthehub/netapp/trident:26.06.0 docker://registry.demo.netapp.com/trident:26.06.0 \
+  docker://quay.io/yvosonthehub/netapp/trident:26.06.1 docker://registry.demo.netapp.com/trident:26.06.1 \
   --src-tls-verify=false --dest-tls-verify=false
 fi
 
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/trident-operator/tags/list' | jq -r '.tags[]? | select(.=="26.06.0")')" ]]; then
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/trident-operator/tags/list' | jq -r '.tags[]? | select(.=="26.06.1")')" ]]; then
   echo
   echo "##############################################################"
   echo "# Skopeo Copy TRIDENT OPERATOR Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-  docker://quay.io/yvosonthehub/netapp/trident-operator:26.06.0 docker://registry.demo.netapp.com/trident-operator:26.06.0 \
-  --src-tls-verify=false --dest-tls-verify=false
+  docker://quay.io/yvosonthehub/netapp/trident-operator:26.06.1 docker://registry.demo.netapp.com/trident-operator:26.06.1 \
+  --src-tls-verify=false --dest-tls-verify=false \
+  --override-arch amd64 --override-os linux 
 fi
 
 if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/trident-autosupport/tags/list' | jq -r '.tags[]? | select(.=="26.06.0")')" ]]; then

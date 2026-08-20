@@ -43,7 +43,7 @@ Next, we want to modify Trident to reflect the following:
 ```bash
 kubectl label node rhel1 trident.netapp.io/nodeplugin=true
 kubectl label node rhel2 trident.netapp.io/nodeplugin=true
-helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.0 -n trident --reuse-values -f values.yaml
+helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.1 -n trident --reuse-values -f values.yaml
 ```
 With that command, you should get the following within a minute, which confirm the correct placement:  
 ```bash

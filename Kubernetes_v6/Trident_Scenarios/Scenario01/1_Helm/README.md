@@ -47,9 +47,9 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0,operatorImage=registry.demo.netapp.com/trident-operator:26.06.0,tridentImage=registry.demo.netapp.com/trident:26.06.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0,operatorImage=registry.demo.netapp.com/trident-operator:26.06.1,tridentImage=registry.demo.netapp.com/trident:26.06.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
-LAST DEPLOYED: Tue Jun 30 18:01:07 2026
+LAST DEPLOYED: Thu Aug 20 07:40:23 2026
 NAMESPACE: trident
 STATUS: deployed
 REVISION: 2
@@ -72,7 +72,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2026-06-30 18:01:07.714962103 +0000 UTC deployed        trident-operator-100.2606.0     26.06.0
+trident trident         2               2026-08-20 07:40:23.653276551 +0000 UTC deployed        trident-operator-100.2606.1     26.06.1
 ```
 
 Quite easy !  
@@ -84,14 +84,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 26.06.0        | 26.06.0        |
+| 26.06.1        | 26.06.1        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v26.06.0
+  Version:    v26.06.1
 ```
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
