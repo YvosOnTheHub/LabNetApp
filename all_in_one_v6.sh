@@ -321,7 +321,7 @@ check_kubernetes_version() {
   local kc; kc=$(_kc_arg "$kubeconfig")
   local server nodes unique_count
 
-  server=$(kubectl $kc version -o jsonpath='{.serverVersion.gitVersion}' 2>/dev/null || true)
+  server=$(kubectl $kc get --raw /version 2>/dev/null | sed -n 's/.*"gitVersion"[ ]*:[ ]*"\([^"]*\)".*/\1/p')
   if [ -z "$server" ]; then
     print_fail "$title: unable to read apiserver version"
     return 1
