@@ -1,0 +1,87 @@
+########################################
+### Prerequisites
+########################################
+# KubeVirt on the primary cluster (Addenda15)
+# Trident Protect + AppVault ontap-vault (Scenario 01 / 03)
+# Follow 1_Setup/README.md and 2_Protection/README.md for the full text.
+
+###########################################################
+# Namespace + image + VM
+###########################################################
+kubectl create ns alpinedb
+
+podman login -u registryuser -p Netapp1! registry.demo.netapp.com
+podman pull quay.io/yvosonthehub/vm/alpine:qcow
+podman tag quay.io/yvosonthehub/vm/alpine:qcow registry.demo.netapp.com/kubevirt/alpine:qcow
+podman push registry.demo.netapp.com/kubevirt/alpine:qcow
+
+ssh-keygen -t rsa -N "" -f /root/.ssh/alpine-db
+kubectl create secret generic alpinepub -n alpinedb --from-file=key1=/root/.ssh/alpine-db.pub
+# cloud-init secret: copy from 1_Setup/README.md section B (includes qemu-guest-agent start)
+
+kubectl create -f ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario13/1_Setup/alpine_vm.yaml
+kubectl get -n alpinedb vm,vmi,pod,pvc,svc
+
+ALPINE_LB_IP=$(kubectl get svc -n alpinedb alpine-vm-ssh-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}') && echo $ALPINE_LB_IP
+ssh alpine@$ALPINE_LB_IP -i /root/.ssh/alpine-db
+
+kubectl get vmi -n alpinedb alpine-db-vm -o jsonpath='{.status.conditions[?(@.type=="AgentConnected")].status}{"\n"}'
+
+######################################################
+# Inside the VM: data disk + MariaDB + OpenRC unit
+######################################################
+# Follow 1_Setup/README.md section D (fstab, demo.cnf, replacement /etc/init.d/mariadb,
+# mariadb-install-db, rc-update, rc-service mariadb start).
+# Expect: rc-service mariadb status -> started
+
+######################################################
+# Copy in-guest hook
+######################################################
+ALPINE_LB_IP=$(kubectl get svc -n alpinedb alpine-vm-ssh-lb -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+scp -i /root/.ssh/alpine-db \
+  ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario13/1_Setup/db-hook.sh \
+  alpine@$ALPINE_LB_IP:/tmp/db-hook.sh
+ssh -i /root/.ssh/alpine-db alpine@$ALPINE_LB_IP 'doas mv /tmp/db-hook.sh /usr/local/bin/db-hook.sh && doas chmod 755 /usr/local/bin/db-hook.sh'
+
+######################################################
+# Remove cloud-init disk (required before snapshot restore)
+######################################################
+kubectl -n alpinedb patch vm alpine-db-vm --type='json' -p='[
+  {"op": "remove", "path": "/spec/template/spec/domain/devices/disks/2"},
+  {"op": "remove", "path": "/spec/template/spec/volumes/2"}
+]'
+virtctl restart alpine-db-vm -n alpinedb
+
+######################################################
+# Trident Protect
+######################################################
+# Manual hook test: 2_Protection/README.md section A (qemu:///session, sh -c for guest-ping)
+
+tridentctl-protect create app alpinedb --virtual-machines 'alpinedb(alpine-db-vm)' -n alpinedb
+
+tridentctl-protect create exechook mysql-snap-pre --app alpinedb --action snapshot --stage pre \
+  --source-file ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario13/2_Protection/virt-launcher-hook.sh --arg pre \
+  --match 'podLabel:kubevirt.io=virt-launcher' \
+  --match 'containerName:compute' -n alpinedb
+
+tridentctl-protect create exechook mysql-snap-post --app alpinedb --action snapshot --stage post \
+  --source-file ~/LabNetApp/Kubernetes_v6/Trident_Protect_Scenarios/Scenario13/2_Protection/virt-launcher-hook.sh --arg post \
+  --match 'podLabel:kubevirt.io=virt-launcher' \
+  --match 'containerName:compute' -n alpinedb
+
+tridentctl-protect create snapshot alpinedbsnap1 --app alpinedb --appvault ontap-vault -n alpinedb
+tridentctl-protect get snapshot -n alpinedb
+kubectl get exechooksrun -n alpinedb
+
+######################################################
+# Break & restore
+######################################################
+# doas mariadb -e "DROP DATABASE demo;"
+#
+# kubectl create ns alpinedbsr
+# tridentctl-protect create sr alpinedbsr1 --namespace-mapping alpinedb:alpinedbsr \
+#   --snapshot alpinedb/alpinedbsnap1 -n alpinedbsr
+#
+# virtctl console alpine-db-vm -n alpinedbsr
+# Recreate alpine-vm-ssh-lb in alpinedbsr before SSH (see 2_Protection/README.md section E).
+# doas mariadb -e "SELECT * FROM demo.t1;"

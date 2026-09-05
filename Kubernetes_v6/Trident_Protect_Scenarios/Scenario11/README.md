@@ -16,6 +16,7 @@ In this scenario, you will perform the following tasks:
 - configure Disaster Recovery and fail over the VM on the secondary cluster  
 
 This scenario does not yet cover Virtual Machine backup, which is also fully supported with Trident Protect.  
+[Scenario 13](../Scenario13/) adds application-consistent snapshots of a MariaDB instance running **inside** a KubeVirt VM.  
 
 <p align="center"><img src="Images/KV_Architecture.png" width="768"></p>
 

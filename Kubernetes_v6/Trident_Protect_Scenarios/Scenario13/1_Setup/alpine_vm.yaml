@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: endpoint-secret
+  namespace: alpinedb
+  labels:
+    app: containerized-data-importer
+type: Opaque
+data:
+  accessKeyId: "cmVnaXN0cnl1c2Vy"   # registryuser
+  secretKey:   "TmV0YXBwMSE="       # Netapp1!
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: alpine-data-pvc
+  namespace: alpinedb
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: storage-class-iscsi
+  volumeMode: Block
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: alpine-db-vm
+  namespace: alpinedb
+  labels:
+    protect: "yes"
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: alpine-boot-pvc
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: 1Gi
+          volumeMode: Block
+          storageClassName: storage-class-iscsi
+        contentType: kubevirt
+        source:
+          registry:
+            url: "docker://registry.demo.netapp.com/kubevirt/alpine:qcow"
+            secretRef: endpoint-secret
+  template:
+    metadata:
+      labels:
+        protect: "yes"
+    spec:
+      domain:
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 1Gi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: datadisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: alpine-boot-pvc
+        - name: datadisk
+          persistentVolumeClaim:
+            claimName: alpine-data-pvc
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            secretRef:
+              name: alpine-cloudinit-userdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpine-vm-ssh-lb
+  namespace: alpinedb
+spec:
+  type: LoadBalancer
+  selector:
+    vm.kubevirt.io/name: alpine-db-vm
+  ports:
+  - name: ssh
+    port: 22
+    targetPort: 22
+    protocol: TCP
