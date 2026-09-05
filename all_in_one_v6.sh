@@ -117,6 +117,68 @@ sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
 }
 
 
+# ------------------------------------------------------------------------------------------
+# K8S1_kubernetes_upgrade()
+#
+# Upgrades the primary Kubernetes cluster from 1.29 to 1.32 (one minor version at a time)
+# using the Addenda14 all_in_one.sh scripts. Linux nodes only.
+# ------------------------------------------------------------------------------------------
+
+k8s_server_minor() {
+  local v
+  v=$(kubectl version -o jsonpath='{.serverVersion.gitVersion}' 2>/dev/null || true)
+  printf '%s' "$v" | sed -E 's/^v?1\.([0-9]+).*/\1/'
+}
+
+K8S1_kubernetes_upgrade() {
+  echo
+  echo "#######################################################################################################"
+  echo "# UPGRADE KUBERNETES TO 1.32 (Addenda14)"
+  echo "#######################################################################################################"
+  echo
+  echo "This path upgrades Linux nodes only (rhel1, rhel2, rhel3)."
+  echo "Windows nodes (win1, win2) are left unchanged; follow Addenda14 if you also want to upgrade them."
+  echo
+
+  local current
+  current=$(k8s_server_minor)
+  if ! [[ "$current" =~ ^[0-9]+$ ]]; then
+    echo "ERROR: unable to determine the current Kubernetes server version"
+    return 1
+  fi
+  echo "Current Kubernetes server minor version: 1.${current}"
+
+  if [ "$current" -lt 30 ]; then
+    echo
+    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.30/all_in_one.sh || return 1
+  else
+    echo "Skipping 1.29 -> 1.30 (already at 1.${current} or later)"
+  fi
+
+  current=$(k8s_server_minor)
+  if [ "$current" -lt 31 ]; then
+    echo
+    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.31/all_in_one.sh || return 1
+  else
+    echo "Skipping 1.30 -> 1.31 (already at 1.${current} or later)"
+  fi
+
+  current=$(k8s_server_minor)
+  if [ "$current" -lt 32 ]; then
+    echo
+    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.32/all_in_one.sh || return 1
+  else
+    echo "Skipping 1.31 -> 1.32 (already at 1.${current} or later)"
+  fi
+
+  echo
+  echo "#######################################################################################################"
+  echo "# Kubernetes upgrade to 1.32 finished"
+  echo "#######################################################################################################"
+  kubectl get nodes
+}
+
+
 
 
 
@@ -239,6 +301,7 @@ ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh kv_setup.sh"
 # lab_setup_check()
 #
 # Functions:
+# check_kubernetes_version
 # check_pods_running
 # check_appvault_available
 # check_tbc_status
@@ -252,6 +315,35 @@ print_fail() { printf "\e[31m✗\e[0m %s\n" "$1"; }
 
 _kc_arg() {
   [ -n "$1" ] && printf '%s' "--kubeconfig=$1"
+}
+
+check_kubernetes_version() {
+  local kubeconfig=$1
+  local title=${2:-Kubernetes}
+  local kc; kc=$(_kc_arg "$kubeconfig")
+  local server nodes unique_count
+
+  server=$(kubectl $kc version -o jsonpath='{.serverVersion.gitVersion}' 2>/dev/null || true)
+  if [ -z "$server" ]; then
+    print_fail "$title: unable to read apiserver version"
+    return 1
+  fi
+
+  nodes=$(kubectl $kc get nodes -o jsonpath='{range .items[*]}{.metadata.name}={.status.nodeInfo.kubeletVersion}{"\n"}{end}' 2>/dev/null || true)
+  if [ -z "$nodes" ]; then
+    print_fail "$title: apiserver $server, but no nodes were found"
+    return 2
+  fi
+
+  unique_count=$(printf "%s\n" "$nodes" | awk -F= 'NF{print $2}' | sort -u | awk 'NF{c++}END{print c+0}')
+  if [ "$unique_count" -eq 1 ]; then
+    print_ok "$title: apiserver $server (all kubelets $(printf "%s\n" "$nodes" | awk -F= 'NF{print $2; exit}'))"
+  else
+    print_fail "$title: apiserver $server, mixed kubelet versions:"
+    printf "%s\n" "$nodes"
+    return 3
+  fi
+  return 0
 }
 
 check_pods_running() {
@@ -608,6 +700,7 @@ lab_setup_check() {
   echo
 
   echo "Checking primary cluster (default kubeconfig)..."
+  check_kubernetes_version "" "Kubernetes"
   check_pods_running "" trident "Trident"
   check_trident_version "" "26.06.1"
   check_tbc_status ""
@@ -623,6 +716,7 @@ lab_setup_check() {
   echo
   SECONDARY_KUBECONFIG="/root/.kube/config_rhel5"
   echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
+  check_kubernetes_version "$SECONDARY_KUBECONFIG" "Kubernetes"
   check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
   check_trident_version "$SECONDARY_KUBECONFIG" "26.06.1"
   check_tbc_status "$SECONDARY_KUBECONFIG"
@@ -678,7 +772,8 @@ fi
 read -n 1 -p "Which task would you like to perform?
 1. Upgrade Trident, Configure Monitoring & install KubeVirt
 2. Setup the lab for Trident Protect
-3. Check Setup
+3. Upgrade Kubernetes to 1.32
+4. Check Setup
 0. Exit the script
 " ans;
 
@@ -703,6 +798,17 @@ case $ans in
         lab_setup_check "2"
         ;;
     3)
+        setup_start=$(date +%s)
+        selected_task="3"
+        if K8S1_kubernetes_upgrade; then
+          if [[ -f /root/.kube/config_rhel5 ]]; then
+            lab_setup_check "2"
+          else
+            lab_setup_check "1"
+          fi
+        fi
+        ;;
+    4)
         if [[ -f /root/.kube/config_rhel5 ]]; then
           lab_setup_check "2"
         else
@@ -710,7 +816,7 @@ case $ans in
         fi
         ;;
     *)
-        echo "Please restart the script with a valid option (0|1|2|3)"
+        echo "Please restart the script with a valid option (0|1|2|3|4)"
         ;;
 esac
 

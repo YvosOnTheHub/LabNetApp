@@ -22,14 +22,20 @@ Last, if you want to automate the whole KubeVirt installation & configuration, y
 
 ## A. KubeVirt installation  
   
+The KubeVirt version depends on the Kubernetes version of the cluster:  
+- Kubernetes 1.29 (default lab): **KubeVirt v1.6.6**  
+- Kubernetes 1.32 (after [Addenda14](../Addenda14)): **KubeVirt v1.7.4**  
+
+The commands below use v1.6.6. If you already upgraded to Kubernetes 1.32, replace `v1.6.6` with `v1.7.4`.  
+
 We are going to use an operator in this lab to install KubeVirt:  
 ```bash
-kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/kubevirt-operator.yaml
+kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.6/kubevirt-operator.yaml
 ```
 This is going to create a KubeVirt deployment in its own namespace _kubevirt_, as well as a new CRD _kubevirts.kubevirt.io_.  
 It is rather quick. When done, you can proceed with the creation of the KubeVirt CR:  
 ```bash
-$ kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/kubevirt-cr.yaml
+$ kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.6/kubevirt-cr.yaml
 kubevirt.kubevirt.io/kubevirt created
 ```
 It takes about 2 minutes to complete on the main Kubernetes cluster.  
@@ -52,11 +58,11 @@ kubevirt.kubevirt.io/kubevirt patched
 
 When it comes to Virtual Machines and Kubernetes, you can perform basic operations with _kubectl_.  
 However, you may quickly opt for _virtctl_ which provides advanced features to interact with VMs; perfect example **console access**.  
-Let's proceed with the installation of that tool on the control plane:  
+Let's proceed with the installation of that tool on the control plane (use v1.7.4 instead if the cluster is on Kubernetes 1.32):  
 ```bash
-wget https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/virtctl-v1.6.2-linux-amd64
-chmod +x virtctl-v1.6.2-linux-amd64
-mv virtctl-v1.6.2-linux-amd64 /usr/local/bin/virtctl
+wget https://github.com/kubevirt/kubevirt/releases/download/v1.6.6/virtctl-v1.6.6-linux-amd64
+chmod +x virtctl-v1.6.6-linux-amd64
+mv virtctl-v1.6.6-linux-amd64 /usr/local/bin/virtctl
 ```
 
 ## D. KubeVirt Feature Gates  

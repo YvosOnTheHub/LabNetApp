@@ -1,9 +1,18 @@
+# Default lab is Kubernetes 1.29 → KubeVirt 1.6.6
+# After Addenda14 (Kubernetes 1.32) → KubeVirt 1.7.4
+K8S_MINOR=$(kubectl version -o jsonpath='{.serverVersion.minor}' 2>/dev/null | tr -dc '0-9')
+if [ "${K8S_MINOR:-0}" -ge 32 ]; then
+  KUBEVIRT_VERSION="1.7.4"
+else
+  KUBEVIRT_VERSION="1.6.6"
+fi
+
 echo
 echo "#######################################################################################################"
-echo "Install KubeVirt"
+echo "Install KubeVirt v${KUBEVIRT_VERSION} (Kubernetes 1.${K8S_MINOR})"
 echo "#######################################################################################################"
 
-kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/kubevirt-operator.yaml
+kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v${KUBEVIRT_VERSION}/kubevirt-operator.yaml
 echo
 frames="/ | \\ -"
 while [ $(kubectl get -n kubevirt deploy | grep -e '2/2' | wc -l) -ne 1 ]; do
@@ -13,7 +22,7 @@ while [ $(kubectl get -n kubevirt deploy | grep -e '2/2' | wc -l) -ne 1 ]; do
 done
 echo
 
-kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/kubevirt-cr.yaml
+kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v${KUBEVIRT_VERSION}/kubevirt-cr.yaml
 echo
 while [ $(kubectl get -n kubevirt deploy | grep -e '2/2' | wc -l) -ne 3 ]; do
     for frame in $frames; do
@@ -40,9 +49,9 @@ echo "##########################################################################
 echo "Install virtctl"
 echo "#######################################################################################################"
 mkdir -p ~/kubevirt && cd ~/kubevirt
-wget https://github.com/kubevirt/kubevirt/releases/download/v1.6.2/virtctl-v1.6.2-linux-amd64
-chmod +x virtctl-v1.6.2-linux-amd64
-mv virtctl-v1.6.2-linux-amd64 /usr/local/bin/virtctl
+wget https://github.com/kubevirt/kubevirt/releases/download/v${KUBEVIRT_VERSION}/virtctl-v${KUBEVIRT_VERSION}-linux-amd64
+chmod +x virtctl-v${KUBEVIRT_VERSION}-linux-amd64
+mv virtctl-v${KUBEVIRT_VERSION}-linux-amd64 /usr/local/bin/virtctl
 
 echo
 echo "#######################################################################################################"

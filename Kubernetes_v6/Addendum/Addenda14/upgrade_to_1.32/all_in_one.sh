@@ -41,16 +41,82 @@ check_remote_kubeadm_version() {
   fi
 }
 
-if kubectl get namespace kubevirt >/dev/null 2>&1; then
-  echo "#######################################################################################################" 
+KV_REPLICA_FILE="/tmp/addenda14-kubevirt-replicas.$$"
+
+scale_down_kubevirt() {
+  rm -f "$KV_REPLICA_FILE"
+  if ! kubectl get namespace kubevirt >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "#######################################################################################################"
   echo "Scaling down KubeVirt components running on the control plane to avoid issues during upgrade"
   echo "#######################################################################################################"
   for deploy in virt-operator virt-api virt-controller; do
     if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
+      replicas=$(kubectl -n kubevirt get deploy "$deploy" -o jsonpath='{.spec.replicas}')
+      printf '%s %s\n' "$deploy" "${replicas:-1}" >> "$KV_REPLICA_FILE"
       kubectl -n kubevirt scale deploy "$deploy" --replicas=0
     fi
   done
-fi
+}
+
+scale_up_kubevirt() {
+  if [ ! -f "$KV_REPLICA_FILE" ]; then
+    return 0
+  fi
+  echo
+  echo "#######################################################################################################"
+  echo "Scaling KubeVirt components back up"
+  echo "#######################################################################################################"
+  while read -r deploy replicas; do
+    [ -n "${deploy:-}" ] || continue
+    kubectl -n kubevirt scale deploy "$deploy" --replicas="$replicas"
+  done < "$KV_REPLICA_FILE" || true
+  rm -f "$KV_REPLICA_FILE"
+}
+
+wait_for_healthy_pods() {
+  echo
+  echo "#######################################################################################################"
+  echo "Waiting for all pods to reach Running or Succeeded state..."
+  echo "#######################################################################################################"
+
+  local MAX_POD_WAIT_SECONDS=1200
+  local elapsed_wait=0
+  local pod_lines running pending failed crashloop imagepull succeeded other total
+  while true; do
+    pod_lines=$(kubectl get pods -A --no-headers 2>/dev/null || true)
+    running=$(printf "%s\n" "$pod_lines" | awk '$4=="Running" {c++} END {print c+0}')
+    pending=$(printf "%s\n" "$pod_lines" | awk '$4=="Pending" {c++} END {print c+0}')
+    failed=$(printf "%s\n" "$pod_lines" | awk '$4=="Failed" {c++} END {print c+0}')
+    crashloop=$(printf "%s\n" "$pod_lines" | awk '$4=="CrashLoopBackOff" {c++} END {print c+0}')
+    imagepull=$(printf "%s\n" "$pod_lines" | awk '$4=="ImagePullBackOff" {c++} END {print c+0}')
+    succeeded=$(printf "%s\n" "$pod_lines" | awk '$4=="Succeeded" || $4=="Completed" {c++} END {print c+0}')
+    other=$(printf "%s\n" "$pod_lines" | awk '$4!="Running" && $4!="Pending" && $4!="Failed" && $4!="CrashLoopBackOff" && $4!="ImagePullBackOff" && $4!="Succeeded" && $4!="Completed" {c++} END {print c+0}')
+    total=$((running + pending + failed + crashloop + imagepull + succeeded + other))
+
+    printf "\r[Running: %d | Succeeded: %d | Pending: %d | Failed: %d | CrashLoop: %d | ImagePullErr: %d | Other: %d] Total: %d" \
+      "$running" "$succeeded" "$pending" "$failed" "$crashloop" "$imagepull" "$other" "$total"
+
+    if [ "$pending" -eq 0 ] && [ "$failed" -eq 0 ] && [ "$crashloop" -eq 0 ] && [ "$imagepull" -eq 0 ] && [ "$other" -eq 0 ]; then
+      echo
+      echo "All pods are Running or Succeeded."
+      break
+    fi
+
+    if [ "$elapsed_wait" -ge "$MAX_POD_WAIT_SECONDS" ]; then
+      echo
+      echo "ERROR: Timed out after ${MAX_POD_WAIT_SECONDS}s waiting for all pods to be Running or Succeeded"
+      kubectl get pods -A --no-headers 2>/dev/null | awk '$4!="Running" && $4!="Succeeded" && $4!="Completed" {print}' || true
+      exit 1
+    fi
+
+    sleep 1
+    elapsed_wait=$((elapsed_wait + 1))
+  done
+}
+
+scale_down_kubevirt
 
 echo
 echo "#######################################################################################################"
@@ -102,59 +168,13 @@ kubectl wait --for=condition=Ready node/rhel2 --timeout=300s
 kubectl uncordon rhel2
 sleep_with_progress 60
 
-if kubectl get namespace kubevirt >/dev/null 2>&1; then
-  echo
-  echo "#######################################################################################################" 
-  echo "Scaling KubeVirt components back up"
-  echo "#######################################################################################################"
-  for deploy in virt-operator virt-api virt-controller; do
-    if kubectl -n kubevirt get deploy "$deploy" >/dev/null 2>&1; then
-      kubectl -n kubevirt scale deploy "$deploy" --replicas=2
-    fi
-  done
-fi
+scale_up_kubevirt
+
+wait_for_healthy_pods
 
 echo
 echo "#######################################################################################################"
-echo "Waiting for all pods to reach Running state..."
-echo "#######################################################################################################"
-
-MAX_POD_WAIT_SECONDS=1200
-elapsed_wait=0
-while true; do
-  pod_lines=$(kubectl get pods -A --no-headers 2>/dev/null || true)
-  running=$(printf "%s\n" "$pod_lines" | awk '$4=="Running" {c++} END {print c+0}')
-  pending=$(printf "%s\n" "$pod_lines" | awk '$4=="Pending" {c++} END {print c+0}')
-  failed=$(printf "%s\n" "$pod_lines" | awk '$4=="Failed" {c++} END {print c+0}')
-  crashloop=$(printf "%s\n" "$pod_lines" | awk '$4=="CrashLoopBackOff" {c++} END {print c+0}')
-  imagepull=$(printf "%s\n" "$pod_lines" | awk '$4=="ImagePullBackOff" {c++} END {print c+0}')
-  other=$(printf "%s\n" "$pod_lines" | awk '$4!="Running" && $4!="Pending" && $4!="Failed" && $4!="CrashLoopBackOff" && $4!="ImagePullBackOff" {c++} END {print c+0}')
-  total=$((running + pending + failed + crashloop + imagepull + other))
-  
-  printf "\r[Running: %d | Pending: %d | Failed: %d | CrashLoop: %d | ImagePullErr: %d | Other: %d] Total: %d" \
-    "$running" "$pending" "$failed" "$crashloop" "$imagepull" "$other" "$total"
-  
-  if [ "$pending" -eq 0 ] && [ "$failed" -eq 0 ] && [ "$crashloop" -eq 0 ] && [ "$imagepull" -eq 0 ] && [ "$other" -eq 0 ]; then
-    echo
-    echo "✓ All pods are Running!"
-    break
-  fi
-
-  if [ "$elapsed_wait" -ge "$MAX_POD_WAIT_SECONDS" ]; then
-    echo
-    echo "ERROR: Timed out after ${MAX_POD_WAIT_SECONDS}s waiting for all pods to be Running"
-    kubectl get pods -A --no-headers 2>/dev/null | awk '$4!="Running" {print}' || true
-    exit 1
-  fi
-  
-  sleep 1
-  elapsed_wait=$((elapsed_wait + 1))
-done
-
-
-echo
-echo "#######################################################################################################"
-echo "Upgrade to Kubernetes 1.30 finished"
+echo "Upgrade to Kubernetes 1.32 finished"
 echo "#######################################################################################################"
 
 kubectl get nodes

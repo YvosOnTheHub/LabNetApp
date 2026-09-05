@@ -14,12 +14,12 @@ This means that you first need to modify the repository address, in order for th
 sed -i 's/1.29/1.30/' /etc/yum.repos.d/kubernetes.repo
 ```
 
-This page will guide you through the upgrade to the minor version _1.30.14_. However, if you would to use a different minor version, you can use the following command to list all available packages:  
+This page will guide you through the upgrade to the patch version _1.30.14_. However, if you would like to use a different patch version, you can use the following command to list all available packages:  
 ```bash
 yum list --showduplicates kubeadm --disableexcludes=kubernetes
 ```
 
-The following set of commands must of performed on the Control Plane (ie _rhel3_)
+The following set of commands must be performed on the Control Plane (ie _rhel3_)
 ```bash
 $ yum install -y kubeadm-1.30.14-150500.1.1 kubelet-1.30.14-150500.1.1 kubectl-1.30.14-150500.1.1 --disableexcludes=kubernetes
 
@@ -59,8 +59,8 @@ $ kubeadm upgrade apply v1.30.14 --ignore-preflight-errors=all -y
 [upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.30.14". Enjoy!
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
-The control plan upgrade is almost finalized. You just need to restart the Kubelet service to take into account the new version.  
-Restart Kubelet takes a few seconds to complete. However it is also recommend to isolate (drain/uncordon) that node beforehand:    
+The control plane upgrade is almost finalized. You just need to restart the Kubelet service to take into account the new version.  
+Restarting Kubelet takes a few seconds to complete. However it is also recommended to isolate (drain/uncordon) that node beforehand:    
 ```bash
 $ kubectl drain rhel3 --ignore-daemonsets --delete-emptydir-data
 $ systemctl daemon-reload
@@ -76,7 +76,7 @@ win1    Ready    <none>          450d   v1.29.4
 win2    Ready    <none>          450d   v1.29.4
 ```
 
-Let's process with the worker node _rhel1_, on which you need to connect to run the 3 following commands:  
+Let's proceed with the worker node _rhel1_, on which you need to connect to run the 3 following commands:  
 ```bash
 sed -i 's/1.29/1.30/' /etc/yum.repos.d/kubernetes.repo
 yum install -y kubeadm-1.30.14-150500.1.1 kubelet-1.30.14-150500.1.1 kubectl-1.30.14-150500.1.1 --disableexcludes=kubernetes
@@ -91,7 +91,7 @@ ssh -o "StrictHostKeyChecking no" root@rhel1  systemctl restart kubelet
 kubectl uncordon rhel1
 ```
 
-After a few seconds, you will see the following, which means the first worker node was succesfully updated:  
+After a few seconds, you will see the following, which means the first worker node was successfully updated:  
 ```bash
 $ kubectl get nodes
 NAME    STATUS   ROLES           AGE    VERSION
@@ -107,7 +107,7 @@ You now can repeat this procedure on the second linux worker node (_rhel2_), unt
 $ kubectl get nodes
 NAME    STATUS     ROLES           AGE    VERSION
 rhel1   Ready      <none>          450d   v1.30.14
-rhel2   NotReady   <none>          450d   v1.30.14
+rhel2   Ready      <none>          450d   v1.30.14
 rhel3   Ready      control-plane   450d   v1.30.14
 win1    Ready      <none>          450d   v1.29.4
 win2    Ready      <none>          450d   v1.29.4
@@ -160,4 +160,4 @@ Tadaaa, all the nodes are up to date !
 
 ## What's next
 
-You can now go back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp)?
+You can now go back to the [frontpage](https://github.com/YvosOnTheHub/LabNetApp).
