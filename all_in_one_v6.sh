@@ -125,9 +125,7 @@ sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
 # ------------------------------------------------------------------------------------------
 
 k8s_server_minor() {
-  local v
-  v=$(kubectl version -o jsonpath='{.serverVersion.gitVersion}' 2>/dev/null || true)
-  printf '%s' "$v" | sed -E 's/^v?1\.([0-9]+).*/\1/'
+  kubectl get --raw /version 2>/dev/null | sed -n 's/.*"minor"[ ]*:[ ]*"\([0-9]*\).*/\1/p'
 }
 
 K8S1_kubernetes_upgrade() {
