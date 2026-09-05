@@ -82,6 +82,7 @@ YAML:
 kubectl create -f mysql-hook-pre-snap.yaml -f mysql-hook-post-snap.yaml
 ```
 
+Verify both hooks are enabled:  
 ```bash
 $ tridentctl-protect get exechook -n alpinedb
 +-----------------+----------+-------------------------------------+----------+-------+---------+-------+-----+

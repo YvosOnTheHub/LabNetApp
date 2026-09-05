@@ -165,15 +165,17 @@ doas rc-update add mariadb default
 doas rc-service mariadb start
 doas rc-service mariadb status
 # expect: status: started
+```
 
+The packaged init script starts `mysqld_safe` but the pidfile is `mariadbd`'s. OpenRC waits 50s for a process name that never matches, reports failure, and `rc-service mariadb status` stays `stopped` even though the database is up. The replacement init script above runs `mariadbd` directly.
+
+Create a database and add some content to test its reachability:  
+```bash
 doas mariadb -e "CREATE DATABASE demo;"
 doas mariadb -e "CREATE TABLE demo.t1 (id INT AUTO_INCREMENT PRIMARY KEY, comment VARCHAR(40), ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP);"
 doas mariadb -e "INSERT INTO demo.t1(comment) VALUES ('seed');"
 doas mariadb -e "SELECT * FROM demo.t1;"
 ```
-
-The packaged init script starts `mysqld_safe` but the pidfile is `mariadbd`'s. OpenRC waits 50s for a process name that never matches, reports failure, and `rc-service mariadb status` stays `stopped` even though the database is up. The replacement init script above runs `mariadbd` directly.
-
 
 ## E. In-guest freeze script
 
