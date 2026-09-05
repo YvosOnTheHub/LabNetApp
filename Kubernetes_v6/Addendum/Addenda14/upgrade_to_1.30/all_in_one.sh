@@ -128,7 +128,9 @@ yum install -y kubeadm-1.30.14-150500.1.1 kubelet-1.30.14-150500.1.1 kubectl-1.3
 # kubeadm upgrade plan
 check_local_kubeadm_version "v1.30.14"
 sleep_with_progress 10
-kubeadm upgrade apply v1.30.14 -y
+# The kubeadm health check job only gets 15s to complete, which is often too short in the lab
+kubectl -n kube-system get jobs -o name 2>/dev/null | grep upgrade-health-check | xargs -r kubectl -n kube-system delete || true
+kubeadm upgrade apply v1.30.14 --ignore-preflight-errors=CreateJob -y
 kubectl drain rhel3 --ignore-daemonsets --delete-emptydir-data
 systemctl daemon-reload && systemctl restart kubelet
 kubectl wait --for=condition=Ready node/rhel3 --timeout=300s

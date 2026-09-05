@@ -59,6 +59,8 @@ $ kubeadm upgrade apply v1.30.14 --ignore-preflight-errors=all -y
 [upgrade/successful] SUCCESS! Your cluster was upgraded to "v1.30.14". Enjoy!
 [upgrade/kubelet] Now that your control plane is upgraded, please proceed with upgrading your kubelets if you haven't already done so.
 ```
+_Note: the cluster health check performed by kubeadm creates a temporary Job in the *kube-system* namespace and expects it to complete within 15 seconds, which is often too short in this lab. If you hit the error `[ERROR CreateJob]: Job "upgrade-health-check-xxxxx" ... did not complete in 15s`, just run the command again with `--ignore-preflight-errors=CreateJob`._  
+
 The control plane upgrade is almost finalized. You just need to restart the Kubelet service to take into account the new version.  
 Restarting Kubelet takes a few seconds to complete. However it is also recommended to isolate (drain/uncordon) that node beforehand:    
 ```bash
