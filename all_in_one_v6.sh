@@ -266,7 +266,8 @@ ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh kv_setup.sh"
 # check_appvault_available
 # check_tbc_status
 # check_trident_version
-# check_tridentctl_protect  
+# check_tridentctl_protect
+# check_kubevirt_version  
 # ------------------------------------------------------------------------------------------
 
 
@@ -412,6 +413,43 @@ check_trident_version() {
     print_ok "Trident: version is $value"
   else
     print_fail "Trident: version is $value"
+  fi
+}
+
+check_kubevirt_version() {
+  local kubeconfig=$1
+  local kc; kc=$(_kc_arg "$kubeconfig")
+  local k8s_minor expected value
+
+  if ! kubectl $kc -n kubevirt get kubevirt kubevirt >/dev/null 2>&1; then
+    print_fail "KubeVirt: CR kubevirt/kubevirt not found"
+    return 1
+  fi
+
+  k8s_minor=$(kubectl $kc get --raw /version 2>/dev/null | sed -n 's/.*"minor"[ ]*:[ ]*"\([0-9]*\).*/\1/p')
+  if [ "${k8s_minor:-0}" -ge 36 ]; then
+    expected="1.9.0"
+  elif [ "${k8s_minor:-0}" -ge 32 ]; then
+    expected="1.7.4"
+  else
+    expected="1.6.6"
+  fi
+
+  value=$(kubectl $kc -n kubevirt get kubevirt kubevirt -o jsonpath='{.status.observedKubeVirtVersion}' 2>/dev/null || true)
+  if [ -z "$value" ]; then
+    value=$(kubectl $kc -n kubevirt get kubevirt kubevirt -o jsonpath='{.status.operatorVersion}' 2>/dev/null || true)
+  fi
+  value=${value#v}
+
+  if [ -z "$value" ]; then
+    print_fail "KubeVirt: unable to read version (expected $expected for Kubernetes 1.${k8s_minor})"
+    return 2
+  fi
+
+  if [ "$value" = "$expected" ]; then
+    print_ok "KubeVirt: version is $value"
+  else
+    print_fail "KubeVirt: version is $value (expected $expected for Kubernetes 1.${k8s_minor})"
   fi
 }
 
@@ -666,6 +704,7 @@ lab_setup_check() {
   check_tbc_status ""
   check_volume_snapshot_controller "" "8"
   check_pods_running "" kubevirt "KubeVirt"
+  check_kubevirt_version ""
   check_pods_running "" cdi "CDI"
   check_pods_running "" kubevirt-manager "KubeVirt Manager"
   if [ "$menu" = "2" ]; then
@@ -682,6 +721,7 @@ lab_setup_check() {
   check_tbc_status "$SECONDARY_KUBECONFIG"
   check_volume_snapshot_controller "$SECONDARY_KUBECONFIG" "8"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
+  check_kubevirt_version "$SECONDARY_KUBECONFIG"
   check_pods_running "$SECONDARY_KUBECONFIG" cdi "CDI"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt-manager "KubeVirt Manager"
   check_pods_running "$SECONDARY_KUBECONFIG" trident-protect "Trident Protect"

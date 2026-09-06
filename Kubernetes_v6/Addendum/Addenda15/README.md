@@ -24,9 +24,10 @@ Last, if you want to automate the whole KubeVirt installation & configuration, y
   
 The KubeVirt version depends on the Kubernetes version of the cluster:  
 - Kubernetes 1.29 (default lab): **KubeVirt v1.6.6**  
-- Kubernetes 1.32 (after [Addenda14](../Addenda14)): **KubeVirt v1.7.4**  
+- Kubernetes 1.32: **KubeVirt v1.7.4**  
+- Kubernetes 1.36 (after [Addenda14](../Addenda14) reset): **KubeVirt v1.9.0**  
 
-The commands below use v1.6.6. If you already upgraded to Kubernetes 1.32, replace `v1.6.6` with `v1.7.4`.  
+The commands below use v1.6.6. If the cluster is on Kubernetes 1.32, replace `v1.6.6` with `v1.7.4`. If it is on Kubernetes 1.36, replace `v1.6.6` with `v1.9.0`.  
 
 We are going to use an operator in this lab to install KubeVirt:  
 ```bash
@@ -58,7 +59,7 @@ kubevirt.kubevirt.io/kubevirt patched
 
 When it comes to Virtual Machines and Kubernetes, you can perform basic operations with _kubectl_.  
 However, you may quickly opt for _virtctl_ which provides advanced features to interact with VMs; perfect example **console access**.  
-Let's proceed with the installation of that tool on the control plane (use v1.7.4 instead if the cluster is on Kubernetes 1.32):  
+Let's proceed with the installation of that tool on the control plane (use v1.7.4 on Kubernetes 1.32, or v1.9.0 on Kubernetes 1.36):  
 ```bash
 wget https://github.com/kubevirt/kubevirt/releases/download/v1.6.6/virtctl-v1.6.6-linux-amd64
 chmod +x virtctl-v1.6.6-linux-amd64

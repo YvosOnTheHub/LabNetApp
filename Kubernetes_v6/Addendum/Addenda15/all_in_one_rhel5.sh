@@ -1,7 +1,10 @@
 # Default lab is Kubernetes 1.29 → KubeVirt 1.6.6
-# After Addenda14 (Kubernetes 1.32) → KubeVirt 1.7.4
+# Kubernetes 1.32 → KubeVirt 1.7.4
+# Kubernetes 1.36 → KubeVirt 1.9.0
 K8S_MINOR=$(kubectl get --raw /version 2>/dev/null | sed -n 's/.*"minor"[ ]*:[ ]*"\([0-9]*\).*/\1/p')
-if [ "${K8S_MINOR:-0}" -ge 32 ]; then
+if [ "${K8S_MINOR:-0}" -ge 36 ]; then
+  KUBEVIRT_VERSION="1.9.0"
+elif [ "${K8S_MINOR:-0}" -ge 32 ]; then
   KUBEVIRT_VERSION="1.7.4"
 else
   KUBEVIRT_VERSION="1.6.6"
