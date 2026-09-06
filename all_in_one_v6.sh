@@ -118,62 +118,24 @@ sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda15/all_in_one_rhel3.sh
 
 
 # ------------------------------------------------------------------------------------------
-# K8S1_kubernetes_upgrade()
+# K8S1_kubernetes_reset()
 #
-# Upgrades the primary Kubernetes cluster from 1.29 to 1.32 (one minor version at a time)
-# using the Addenda14 all_in_one.sh scripts. Linux nodes only.
+# Destructively rebuilds the primary Linux cluster at Kubernetes 1.36.4 using the
+# Addenda14 reset script. Windows nodes are not reset or rejoined.
 # ------------------------------------------------------------------------------------------
 
-k8s_server_minor() {
-  kubectl get --raw /version 2>/dev/null | sed -n 's/.*"minor"[ ]*:[ ]*"\([0-9]*\).*/\1/p'
-}
-
-K8S1_kubernetes_upgrade() {
+K8S1_kubernetes_reset() {
   echo
   echo "#######################################################################################################"
-  echo "# UPGRADE KUBERNETES TO 1.32 (Addenda14)"
+  echo "# RESET KUBERNETES TO 1.36.4 (Addenda14)"
   echo "#######################################################################################################"
   echo
-  echo "This path upgrades Linux nodes only (rhel1, rhel2, rhel3)."
-  echo "Windows nodes (win1, win2) are left unchanged; follow Addenda14 if you also want to upgrade them."
+  echo "This rebuilds the primary cluster on rhel1, rhel2 and rhel3 at Kubernetes 1.36.4."
+  echo "Windows nodes (win1, win2) are removed from the API and are not rejoined."
+  echo "Existing workloads are destroyed; Calico and MetalLB are reinstalled."
   echo
 
-  local current
-  current=$(k8s_server_minor)
-  if ! [[ "$current" =~ ^[0-9]+$ ]]; then
-    echo "ERROR: unable to determine the current Kubernetes server version"
-    return 1
-  fi
-  echo "Current Kubernetes server minor version: 1.${current}"
-
-  if [ "$current" -lt 30 ]; then
-    echo
-    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.30/all_in_one.sh || return 1
-  else
-    echo "Skipping 1.29 -> 1.30 (already at 1.${current} or later)"
-  fi
-
-  current=$(k8s_server_minor)
-  if [ "$current" -lt 31 ]; then
-    echo
-    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.31/all_in_one.sh || return 1
-  else
-    echo "Skipping 1.30 -> 1.31 (already at 1.${current} or later)"
-  fi
-
-  current=$(k8s_server_minor)
-  if [ "$current" -lt 32 ]; then
-    echo
-    sh ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/upgrade_to_1.32/all_in_one.sh || return 1
-  else
-    echo "Skipping 1.31 -> 1.32 (already at 1.${current} or later)"
-  fi
-
-  echo
-  echo "#######################################################################################################"
-  echo "# Kubernetes upgrade to 1.32 finished"
-  echo "#######################################################################################################"
-  kubectl get nodes
+  bash ~/LabNetApp/Kubernetes_v6/Addendum/Addenda14/reset_to_1.36.4.sh
 }
 
 
@@ -770,7 +732,7 @@ fi
 read -n 1 -p "Which task would you like to perform?
 1. Upgrade Trident, Configure Monitoring & install KubeVirt
 2. Setup the lab for Trident Protect
-3. Upgrade Kubernetes to 1.32
+3. Reset Kubernetes to 1.36
 4. Check Setup
 0. Exit the script
 " ans;
@@ -798,13 +760,7 @@ case $ans in
     3)
         setup_start=$(date +%s)
         selected_task="3"
-        if K8S1_kubernetes_upgrade; then
-          if [[ -f /root/.kube/config_rhel5 ]]; then
-            lab_setup_check "2"
-          else
-            lab_setup_check "1"
-          fi
-        fi
+        K8S1_kubernetes_reset
         ;;
     4)
         if [[ -f /root/.kube/config_rhel5 ]]; then

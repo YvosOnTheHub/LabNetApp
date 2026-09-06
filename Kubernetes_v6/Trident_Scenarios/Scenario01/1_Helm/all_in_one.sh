@@ -50,10 +50,10 @@ kubectl label node rhel1 "topology.kubernetes.io/zone=west" --overwrite
 kubectl label node rhel2 "topology.kubernetes.io/zone=west" --overwrite
 kubectl label node rhel3 "topology.kubernetes.io/zone=east" --overwrite
 
-if [ $(kubectl get nodes | wc -l) = 7 ]; then
+if kubectl get node rhel4 >/dev/null 2>&1; then
   kubectl label node rhel4 "topology.kubernetes.io/region=dc" --overwrite
   kubectl label node rhel4 "topology.kubernetes.io/zone=east" --overwrite
-fi      
+fi
 
 echo
 echo "#######################################################################################################"
@@ -79,13 +79,22 @@ echo "##########################################################################
 echo "Upgrade the Trident Operator (26.06.1) with Helm"
 echo "#######################################################################################################"
 
+windows_nodes=$(kubectl get nodes -l kubernetes.io/os=windows --no-headers 2>/dev/null | awk 'NF{c++} END{print c+0}')
+if [ "$windows_nodes" -gt 0 ]; then
+  trident_windows=true
+  echo "Windows nodes present (${windows_nodes}); enabling Trident Windows support."
+else
+  trident_windows=false
+  echo "No Windows nodes found; installing Trident for Linux nodes only."
+fi
+
 helm repo update
 helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.1 -n trident \
 --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0 \
 --set operatorImage=registry.demo.netapp.com/trident-operator:26.06.1 \
 --set tridentImage=registry.demo.netapp.com/trident:26.06.1 \
 --set tridentSilenceAutosupport=true \
---set windows=true \
+--set windows=${trident_windows} \
 --set imagePullSecrets[0]=regcred
 
 echo
@@ -107,9 +116,17 @@ until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 
     done
 done
 echo
-until [ $(kubectl get -n trident pod | grep Running | grep -e '1/1' -e '2/2' -e '3/3' -e '6/6' | wc -l) -eq 7 ]; do
+while true; do
+    # Count every pod & those not yet Running with all their containers ready,
+    # so the wait works whatever the number of nodes (Windows nodes or not).
+    pod_state=$(kubectl get -n trident pod --no-headers 2>/dev/null | awk '
+        { total++; split($2, ready, "/"); if ($3 != "Running" || ready[1] != ready[2]) pending++ }
+        END { print total+0, pending+0 }')
+    total=${pod_state% *}
+    pending=${pod_state#* }
+    if [ "$total" -gt 0 ] && [ "$pending" -eq 0 ]; then break; fi
     for frame in $frames; do
-        sleep 0.5; printf "\rWaiting for Trident to be ready $frame" 
+        sleep 0.5; printf "\rWaiting for Trident to be ready [$((total - pending))/$total pods] $frame"
     done
 done
 

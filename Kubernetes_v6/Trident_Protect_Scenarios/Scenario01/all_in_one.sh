@@ -18,8 +18,8 @@ echo "#"
 echo "### Windows Nodes: Taint: No Schedule"
 echo "#"
 echo "############################################"
-kubectl taint nodes win1 win=true:NoSchedule
-kubectl taint nodes win2 win=true:NoSchedule
+kubectl taint nodes win1 win=true:NoSchedule --overwrite 2>/dev/null || true
+kubectl taint nodes win2 win=true:NoSchedule --overwrite 2>/dev/null || true
 
 helm_version=$(helm version --template='{{.Version}}' 2>/dev/null || true)
 if [ "$helm_version" != "v4.0.5" ]; then
@@ -81,8 +81,14 @@ echo "#"
 echo "# Secondary K8S cluster creation"
 echo "#"
 echo "#################################################################"
+primary_version=$(kubectl get --raw /version 2>/dev/null | sed -n 's/.*"gitVersion"[ ]*:[ ]*"v\([^"]*\)".*/\1/p')
+if [ -z "$primary_version" ]; then
+  echo "ERROR: unable to read the primary Kubernetes version"
+  exit 1
+fi
+echo "Primary cluster is ${primary_version}; the secondary cluster will use the same version."
 scp -p /root/LabNetApp/Kubernetes_v6/Addendum/Addenda12/all_in_one.sh rhel5:all_in_one_K8S_setup.sh
-ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh all_in_one_K8S_setup.sh"
+ssh -o "StrictHostKeyChecking no" root@rhel5 -t "sh all_in_one_K8S_setup.sh ${primary_version}"
 
 
 echo "#################################################################"

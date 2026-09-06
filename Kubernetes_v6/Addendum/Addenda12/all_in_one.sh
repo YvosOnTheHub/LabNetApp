@@ -19,19 +19,109 @@ if ! dnf -q list installed sshpass >/dev/null 2>&1; then
   fi
 fi
 
+# Optional first argument: Kubernetes version (for example 1.36.4 or v1.36.4).
+# With no argument the preinstalled binaries are used (LoD ships 1.29).
+CRI_SOCKET="unix:///var/run/crio/crio.sock"
+PAUSE_IMAGE="registry.k8s.io/pause:3.10"
+TARGET_VERSION="${1:-}"
+TARGET_VERSION="${TARGET_VERSION#v}"
+
+if [ -n "$TARGET_VERSION" ]; then
+  TARGET_VERSION_V="v${TARGET_VERSION}"
+else
+  TARGET_VERSION_V=$(kubeadm version -o short 2>/dev/null || true)
+  TARGET_VERSION="${TARGET_VERSION_V#v}"
+fi
+TARGET_MINOR="${TARGET_VERSION%.*}"
+K8S_MINOR_NUM="${TARGET_MINOR#1.}"
+
+ensure_k8s_packages_local() {
+  if rpm -q kubeadm 2>/dev/null | grep -q "$TARGET_VERSION"; then
+    return 0
+  fi
+  echo "Installing Kubernetes ${TARGET_VERSION} on $(hostname -s)"
+  sed -E -i "s#/v1\.[0-9]+/rpm/#/v${TARGET_MINOR}/rpm/#" /etc/yum.repos.d/kubernetes.repo
+  yum install -y \
+    "kubeadm-${TARGET_VERSION}*" \
+    "kubelet-${TARGET_VERSION}*" \
+    "kubectl-${TARGET_VERSION}*" \
+    --disableexcludes=kubernetes
+}
+
+ensure_k8s_packages_remote() {
+  local host=$1
+  sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" "root@${host}" "bash -s" <<EOF
+if rpm -q kubeadm 2>/dev/null | grep -q '${TARGET_VERSION}'; then
+  exit 0
+fi
+echo "Installing Kubernetes ${TARGET_VERSION} on \$(hostname -s)"
+sed -E -i 's#/v1\.[0-9]+/rpm/#/v${TARGET_MINOR}/rpm/#' /etc/yum.repos.d/kubernetes.repo
+yum install -y \
+  'kubeadm-${TARGET_VERSION}*' \
+  'kubelet-${TARGET_VERSION}*' \
+  'kubectl-${TARGET_VERSION}*' \
+  --disableexcludes=kubernetes
+EOF
+}
+
+ensure_pause_image_local() {
+  [ "${K8S_MINOR_NUM:-0}" -ge 31 ] || return 0
+  crictl pull "$PAUSE_IMAGE" || true
+  mkdir -p /etc/crio/crio.conf.d
+  printf '%s\n' '[crio.image]' "pause_image = \"${PAUSE_IMAGE}\"" \
+    >/etc/crio/crio.conf.d/99-pause-image.conf
+  systemctl daemon-reload
+  systemctl restart crio
+}
+
+ensure_pause_image_remote() {
+  local host=$1
+  [ "${K8S_MINOR_NUM:-0}" -ge 31 ] || return 0
+  sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" "root@${host}" "bash -s" <<EOF
+crictl pull '${PAUSE_IMAGE}' || true
+mkdir -p /etc/crio/crio.conf.d
+printf '%s\n' '[crio.image]' 'pause_image = "${PAUSE_IMAGE}"' \
+  >/etc/crio/crio.conf.d/99-pause-image.conf
+systemctl daemon-reload
+systemctl restart crio
+EOF
+}
+
 echo
 echo "#######################################################################################################"
-echo "# Create a K8S cluster on RHEL5"
+echo "# Create a K8S cluster on RHEL5 (${TARGET_VERSION_V})"
 echo "#######################################################################################################"
 echo
 
-cat << EOF > ~/kubeadm-values.yaml
+ensure_k8s_packages_local
+ensure_k8s_packages_remote rhel4
+ensure_pause_image_local
+ensure_pause_image_remote rhel4
+
+if [ "${K8S_MINOR_NUM:-0}" -ge 31 ]; then
+  cat << EOF > ~/kubeadm-values.yaml
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: ${CRI_SOCKET}
+  name: rhel5
+---
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+clusterName: kub2
+kubernetesVersion: ${TARGET_VERSION_V}
+networking:
+  podSubnet: "192.168.20.0/21"
+EOF
+else
+  cat << EOF > ~/kubeadm-values.yaml
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 networking:
   podSubnet: "192.168.20.0/21"
 clusterName: kub2
 EOF
+fi
 
 kubeadm init --config ~/kubeadm-values.yaml
 
@@ -119,7 +209,7 @@ echo
 
 mkdir ~/calico && cd ~/calico
 wget https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
-kubectl create -f tigera-operator.yaml
+kubectl apply --server-side --force-conflicts -f tigera-operator.yaml
 
 frames="/ | \\ -"
 while [ $(kubectl get -n tigera-operator pod | grep Running | grep -e '1/1' | wc -l) -ne 1 ]; do
@@ -149,6 +239,9 @@ echo "##########################################################################
 echo
 
 KUBEADMJOIN=$(kubeadm token create --print-join-command)
+if [ "${K8S_MINOR_NUM:-0}" -ge 31 ]; then
+  KUBEADMJOIN="${KUBEADMJOIN} --cri-socket ${CRI_SOCKET}"
+fi
 sshpass -p Netapp1! ssh -o "StrictHostKeyChecking no" root@rhel4 $KUBEADMJOIN
 
 
