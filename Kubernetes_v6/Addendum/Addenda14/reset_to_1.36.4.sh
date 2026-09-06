@@ -623,8 +623,6 @@ prometheus-node-exporter:
     kubernetes.io/os: linux
 windowsMonitoring:
   enabled: false
-prometheus-windows-exporter:
-  enabled: false
 EOF
 
   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update
