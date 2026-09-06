@@ -20,6 +20,7 @@ readonly DNS_DOMAIN="cluster.local"
 readonly CALICO_VERSION="v3.27.3"
 readonly METALLB_CHART_VERSION="0.14.5"
 readonly METALLB_POOL="192.168.0.210-192.168.0.219"
+readonly PROMETHEUS_CHART_VERSION="59.0.0"
 readonly LAB_REGISTRY="registry.demo.netapp.com"
 readonly LAB_REGISTRY_USER="registryuser"
 readonly LAB_REGISTRY_PASSWORD="Netapp1!"
@@ -56,6 +57,7 @@ Destructively rebuild the primary Kubernetes cluster at ${TARGET_VERSION_V}:
   Linux workers: ${WORKERS[*]}
   Calico:        ${CALICO_VERSION}, VXLAN, BGP disabled
   MetalLB:       ${METALLB_CHART_VERSION}, pool ${METALLB_POOL}
+  Prometheus:    kube-prometheus-stack ${PROMETHEUS_CHART_VERSION}
 
 Windows nodes are removed from the Kubernetes API and are not reset or rejoined.
 All Kubernetes API objects and workloads in the primary cluster are destroyed.
@@ -64,7 +66,7 @@ Options:
   --backup-only        Export configuration without changing the cluster.
   --yes-i-understand   Skip the interactive destructive confirmation.
   --resume-from PHASE  Continue an interrupted rebuild without resetting again.
-                       PHASE is one of: calico, join, metallb, verify.
+                       PHASE is one of: calico, join, metallb, prometheus, verify.
   -h, --help           Show this help.
 EOF
 }
@@ -102,10 +104,10 @@ parse_arguments() {
         shift
         RESUME_FROM=${1:-}
         case "$RESUME_FROM" in
-          calico|join|metallb|verify)
+          calico|join|metallb|prometheus|verify)
             ;;
           *)
-            echo "ERROR: --resume-from expects calico, join, metallb or verify" >&2
+            echo "ERROR: --resume-from expects calico, join, metallb, prometheus or verify" >&2
             exit 2
             ;;
         esac
@@ -214,6 +216,10 @@ backup_configuration() {
     helm -n metallb-system list
   backup_optional "metallb-values.yaml" \
     helm -n metallb-system get values metallb --all
+  backup_optional "prometheus-helm-list.txt" \
+    helm -n monitoring list
+  backup_optional "prometheus-values.yaml" \
+    helm -n monitoring get values prometheus --all
 
   rpm -q kubeadm kubelet kubectl cri-o >"${BACKUP_DIR}/packages-${CONTROL_PLANE}.txt"
   crio config 2>/dev/null >"${BACKUP_DIR}/crio-${CONTROL_PLANE}.conf"
@@ -578,6 +584,63 @@ EOF
   kubectl -n metallb-system rollout status daemonset/metallb-speaker --timeout=300s
 }
 
+install_prometheus() {
+  PHASE="Prometheus installation"
+  log_section "Installing kube-prometheus-stack ${PROMETHEUS_CHART_VERSION}"
+
+  local work_dir="/root/addenda14-prometheus-${PROMETHEUS_CHART_VERSION}"
+  mkdir -p "$work_dir"
+  cat >"${work_dir}/values.yaml" <<'EOF'
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      kubernetes.io/os: linux
+  service:
+    type: LoadBalancer
+grafana:
+  nodeSelector:
+    kubernetes.io/os: linux
+  service:
+    type: LoadBalancer
+kube-state-metrics:
+  nodeSelector:
+    kubernetes.io/os: linux
+prometheusOperator:
+  admissionWebhooks:
+    patch:
+      nodeSelector:
+        kubernetes.io/os: linux
+  nodeSelector:
+    kubernetes.io/os: linux
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      kubernetes.io/os: linux
+  service:
+    type: LoadBalancer
+prometheus-node-exporter:
+  nodeSelector:
+    kubernetes.io/os: linux
+windowsMonitoring:
+  enabled: false
+prometheus-windows-exporter:
+  enabled: false
+EOF
+
+  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update
+  helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+    --version "$PROMETHEUS_CHART_VERSION" \
+    --namespace monitoring \
+    --create-namespace \
+    --values "${work_dir}/values.yaml" \
+    --wait \
+    --timeout 15m
+
+  kubectl -n monitoring rollout status deployment/prometheus-grafana --timeout=300s
+  kubectl -n monitoring rollout status deployment/prometheus-kube-state-metrics --timeout=300s
+  kubectl -n monitoring rollout status deployment/prometheus-kube-prometheus-operator --timeout=300s
+}
+
 verify_cluster() {
   PHASE="final verification"
   log_section "Verifying the rebuilt cluster"
@@ -604,6 +667,10 @@ verify_cluster() {
   kubectl get pods -n calico-system
   kubectl get pods -n metallb-system
   kubectl -n metallb-system get ipaddresspool,l2advertisement
+  helm -n monitoring list
+  kubectl get pods -n monitoring
+  kubectl -n monitoring get svc -l app=kube-prometheus-stack-prometheus
+  kubectl -n monitoring get svc -l app.kubernetes.io/name=grafana
 
   echo
   echo "Cluster rebuild completed successfully."
@@ -623,13 +690,19 @@ resume_rebuild() {
       install_calico
       join_workers
       install_metallb
+      install_prometheus
       ;;
     join)
       join_workers
       install_metallb
+      install_prometheus
       ;;
     metallb)
       install_metallb
+      install_prometheus
+      ;;
+    prometheus)
+      install_prometheus
       ;;
   esac
 
@@ -670,6 +743,7 @@ main() {
   install_calico
   join_workers
   install_metallb
+  install_prometheus
   verify_cluster
 }
 
