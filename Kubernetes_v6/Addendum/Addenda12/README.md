@@ -14,6 +14,9 @@ If you have cloned the github repo on _rhel3_, you can transfer this file to _rh
 scp -p /root/LabNetApp/Kubernetes_v6/Addendum/Addenda12/all_in_one.sh rhel5:
 ```
 
+Note that this script will create a cluster running v1.29 which is the one configured by default in the lab.  
+If you have gone through the lab reset and are running v1.36, you can pass this version as a parameter for the script, in order to deploy the newest version.  
+
 ## A. Kubernetes cluster creation  
 
 Let's follow the same method used to create the first cluster.  

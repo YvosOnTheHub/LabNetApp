@@ -160,6 +160,18 @@ else
   echo "topologyKeys is already set: $(check_topology_keys)"
 fi
 
+echo
+echo "#######################################################################################################"
+echo "Create Service Monitor for Trident"
+echo "#######################################################################################################"
+echo
+
+if kubectl get servicemonitor trident-sm -n monitoring >/dev/null 2>&1; then
+  echo "ServiceMonitor trident-sm already exists in the monitoring namespace."
+else
+  echo "ServiceMonitor trident-sm not found; creating it..."
+  kubectl apply -f ~/LabNetApp/Kubernetes_v6/Trident_Scenarios/Scenario03/1_Prometheus/Trident_ServiceMonitor.yml
+fi
 
 echo
 echo "#######################################################################################################"

@@ -8,12 +8,18 @@ This addenda will give you the step by step commands to run, but keep in mind th
 
 The upgrade of Kubernetes is mostly required for [Scenario13](../../Trident_Scenarios/Scenario13/2_CSI_VolumeGroupSnapshots), which introduces the **Volume Group Snapshot** feature (Beta in Kubernetes 1.32). This addenda only upgrades the cluster. Enabling the Volume Group Snapshot feature gate is done later in that scenario.
 
-The following links were used to build this chapter:
-
+The following links were used to build this chapter:  
 - Upgrade from 1.29 to 1.30: https://v1-30.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/  
 - Upgrade from 1.30 to 1.31: https://v1-31.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
 - Upgrade from 1.31 to 1.32: https://v1-32.docs.kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
 
+An alternative would be to totally reset the cluster, which proves to be faster if you have nothing to lose...  
+the *reset_to_1.36.4.sh* script in this folder will do exactly that. It will wipe the current cluster and create a brand new one with v1.36.  
+Note that the Windows nodes are not going to be recreated.  
+The script will also:  
+- reinstall Calico networking  
+- reinstall MetalLB Load Balancer  
+- reinstall the Prometheus stack  
 
 **Time to do some upgrades !**
 

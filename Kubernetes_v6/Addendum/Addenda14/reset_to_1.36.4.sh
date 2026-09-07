@@ -541,7 +541,10 @@ speaker:
     enabled: false
 prometheus:
   scrapeAnnotations: false
-  rbacPrometheus: false
+  rbacPrometheus: true
+  rbacProxy:
+    repository: registry.demo.netapp.com/kubebuilder/kube-rbac-proxy
+    tag: v0.12.0
   podMonitor:
     enabled: false
   serviceMonitor:
