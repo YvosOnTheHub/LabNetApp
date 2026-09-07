@@ -18,7 +18,14 @@ echo "##########################################################################
 kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v${KUBEVIRT_VERSION}/kubevirt-operator.yaml
 echo
 frames="/ | \\ -"
-while [ $(kubectl get -n kubevirt deploy | grep -e '2/2' | wc -l) -ne 1 ]; do
+# Deployments not fully ready in a namespace (returns 1 when the namespace has none yet)
+# The KubeVirt component list & their replica counts vary between releases, so never hardcode them
+not_ready_deploy() {
+    kubectl get deploy -n "$1" --no-headers 2>/dev/null | \
+        awk '{split($2,r,"/"); if (r[1]=="0" || r[1]!=r[2]) n++} END {if (NR==0) print 1; else print n+0}'
+}
+
+while [ "$(not_ready_deploy kubevirt)" -ne 0 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for the KubeVirt Operator to be ready $frame" 
     done
@@ -27,7 +34,8 @@ echo
 
 kubectl create -f https://github.com/kubevirt/kubevirt/releases/download/v${KUBEVIRT_VERSION}/kubevirt-cr.yaml
 echo
-while [ $(kubectl get -n kubevirt deploy | grep -e '2/2' | wc -l) -ne 3 ]; do
+while [ "$(kubectl -n kubevirt get kubevirt kubevirt -o jsonpath='{.status.phase}' 2>/dev/null)" != "Deployed" ] || \
+      [ "$(not_ready_deploy kubevirt)" -ne 0 ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for the KubeVirt instance to be ready $frame" 
     done
