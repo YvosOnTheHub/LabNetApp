@@ -180,7 +180,7 @@ if [[ $? == 1 ]];then
 fi
 
 # Upgrade Trident to 26.06.1 if needed
-if [ $(kubectl get tver trident -n trident -o jsonpath={".trident_version"}) != "26.06.1" ]; then K8S1_trident_upgrade; fi
+if [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" != "26.06.1" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation
