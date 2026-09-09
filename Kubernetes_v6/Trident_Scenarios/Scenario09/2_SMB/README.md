@@ -30,54 +30,68 @@ NAME            READY   STATUS    RESTARTS   AGE
 pod/webserver   1/1     Running   0          35s
 
 NAME                            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
-persistentvolumeclaim/pvc-smb   Bound    pvc-7e856490-5c7c-4b6c-a969-ce33a37e6b8a   1Gi        RWX            storage-class-smb   <unset>                 35s
+persistentvolumeclaim/pvc-smb   Bound    pvc-dc12b9c0-84cf-4437-94b7-6be4c02a7bdc   5Gi        RWX            storage-class-smb   <unset>                 35s
 ```
 
 You can now check that the 5G volume is indeed mounted into the POD.  
+Not as easy as in unix environments as you will see. Easier to read from within the container:  
 ```bash
-$ kubectl -n resize exec busyboxnfs -- df -h /data
-Filesystem                Size      Used Available Use% Mounted on
-192.168.0.131:/trident_pvc_38f580ef_6a0a_4d72_8beb_7e9a68d1b2ed
-                          5.0G    256.0K      5.0G   0% /data
+$ kubectl -n resize exec webserver -- powershell.exe
+
+PS C:\> $free = $total = $totalfree = [uint64]0
+PS C:\> Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class Disk {
+  [DllImport("kernel32.dll", CharSet=CharSet.Auto)]
+  public static extern bool GetDiskFreeSpaceEx(string p, out ulong a, out ulong b, out ulong c);
+}
+"@
+
+PS C:\> [Disk]::GetDiskFreeSpaceEx('C:\Data', [ref]$free, [ref]$total, [ref]$totalfree)
+True
+
+PS C:\> "Total: {0:N2} GB" -f ($total/1GB)
+Total: 5.00 GB
+
+PS C:\> "Free:  {0:N2} GB" -f ($free/1GB)
+Free: 5.00 GB
 ```
-
-kubectl -n resize exec webserver -it -- powershell.exe
-
 
 ## C. Resize the PVC & check the result
 
-Resizing a PVC can be done in different ways. We will here edit the definition of the PVC & manually modify it.  
-Look for the *storage* parameter in the spec part of the definition & change the value (here for the example, we will use 15GB)  
+Let's resize the volume by simply patching the PVC:    
 ```bash
-$ kubectl -n resize edit pvc pvc-to-resize-nfs
-persistentvolumeclaim/pvc-to-resize-nfs edited
-
-spec:
-  accessModes:
-  - ReadWriteMany
-  resources:
-    requests:
-      storage: 15Gi
-  storageClassName: storage-class-nfs
-  volumeMode: Filesystem
-  volumeName: pvc-38f580ef-6a0a-4d72-8beb-7e9a68d1b2ed
+$ kubectl patch -n resize pvc pvc-smb -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
+persistentvolumeclaim/pvc-smb patched
 ```
 
-Let's see the result.
-
+Let's see the result:  
 ```bash
 $ kubectl -n resize get pvc
-NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        AGE
-pvc-to-resize-nfs   Bound    pvc-38f580ef-6a0a-4d72-8beb-7e9a68d1b2ed   15Gi       RWX            storage-class-nfs   5m
+NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS        VOLUMEATTRIBUTESCLASS   AGE
+pvc-smb   Bound    pvc-dc12b9c0-84cf-4437-94b7-6be4c02a7bdc   20Gi       RWX            storage-class-smb   <unset>                 23m
 
-$ kubectl -n resize exec busyboxnfs -- df -h /data
-192.168.0.131:/trident_pvc_38f580ef_6a0a_4d72_8beb_7e9a68d1b2ed
-                         15.0G    256.0K     15.0G   0% /data
-```
- 
-This could also have been achieved by using the _kubectl patch_ command. Try the following one:  
-```bash
-kubectl patch -n resize pvc pvc-to-resize-nfs -p '{"spec":{"resources":{"requests":{"storage":"20Gi"}}}}'
+$ kubectl -n resize exec webserver -- powershell.exe
+
+PS C:\> $free = $total = $totalfree = [uint64]0
+PS C:\> Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class Disk {
+  [DllImport("kernel32.dll", CharSet=CharSet.Auto)]
+  public static extern bool GetDiskFreeSpaceEx(string p, out ulong a, out ulong b, out ulong c);
+}
+"@
+
+PS C:\> [Disk]::GetDiskFreeSpaceEx('C:\Data', [ref]$free, [ref]$total, [ref]$totalfree)
+True
+
+PS C:\> "Total: {0:N2} GB" -f ($total/1GB)
+Total: 20.00 GB
+
+PS C:\> "Free:  {0:N2} GB" -f ($free/1GB)
+Free: 20.00 GB
 ```
 
 ## C. Cleanup the environment

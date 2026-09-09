@@ -20,6 +20,6 @@ Notice the fifth column?
 
 This scenario will guide you through examples with each protocol:    
 [1.](1_NFS) Expanding a NFS PVC  
-2. Expanding a SMB PVC (**_Work in progress_**)  
+[2.](2_SMB) Expanding a SMB PVC  
 [3.](3_iSCSI) Expanding an iSCSI PVC  
 [4.](4_NVMe) Expanding a NVMe PVC  
