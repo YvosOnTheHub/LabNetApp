@@ -104,7 +104,7 @@ namespace "resize" deleted
 ## D. What's next
 
 You can now move on to:  
-- [Scenario9.2](../2_SMB): Resize a SMB PVC  
+- [Scenario9.3](../3_iSCSI): Resize an iSCSI PVC  
 - [Scenario10](../../Scenario10): Using Virtual Storage Pools  
 - [Scenario11](../../Scenario11): StatefulSets & Storage consumption  
 
