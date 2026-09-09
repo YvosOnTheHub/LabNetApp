@@ -1,0 +1,19 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: alpine-boot-vm2
+  namespace: share
+spec:
+  pvc:
+    accessModes:
+      - ReadWriteMany
+    resources:
+      requests:
+        storage: 1Gi
+    volumeMode: Block
+    storageClassName: storage-class-iscsi
+  contentType: kubevirt
+  source:
+    pvc:
+      namespace: share
+      name: alpine-boot-vm1

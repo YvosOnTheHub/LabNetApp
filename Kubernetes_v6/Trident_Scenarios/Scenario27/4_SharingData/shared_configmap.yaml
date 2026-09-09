@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-config
+  namespace: share
+data:
+  welcome.txt: |
+    Shared ConfigMap presented to both VMs through VirtioFS.
+    Edit this ConfigMap and the file is refreshed inside the guests
+    without a reboot (that is the point of filesystem vs ISO disk).
+  app.conf: |
+    environment=lab
+    owner=scenario27

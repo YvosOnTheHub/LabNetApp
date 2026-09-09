@@ -30,3 +30,4 @@ And now, let the fun start:
 [1.](./1_VMCreation) Creating a Virtual Machine.  
 [2.](./2_SecondaryDisks/) Secondary disks management.  
 [3.](./3_UEFI/) UEFI & Secure Boot Virtual Machines.  
+[4.](./4_SharingData/) Sharing data between Virtual Machines.  
