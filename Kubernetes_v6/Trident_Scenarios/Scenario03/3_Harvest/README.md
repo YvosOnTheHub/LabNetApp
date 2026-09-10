@@ -2,24 +2,23 @@
 # SCENARIO 3: Integrating with NetApp Harvest
 #########################################################################################
 
-NetApp Harvest 2.0 is the swiss-army knife for monitoring datacenters. The default package collects performance,capacity and hardware metrics from ONTAP clusters. New metrics can be collected by editing the config files. Metrics can be delivered to multiple databases - Prometheus, InfluxDB and Graphite - and displayed in Grafana dashboards.
+NetApp Harvest is the swiss-army knife for monitoring datacenters. The default package collects performance,capacity and hardware metrics from ONTAP clusters. New metrics can be collected by editing the config files. Metrics can be delivered to multiple databases - Prometheus, InfluxDB and Graphite - and displayed in Grafana dashboards.
 In the context of Kubernetes, you could use performance metrics gathered by Harvest and create neat dashboards in Grafana with regards to Persistent Volumes.
 
-More information about Harvest can be found here: https://www.github.com/netapp/harvest  
+More information about Harvest can be found here: https://netapp.github.io/harvest/latest/  
 
 The scenario will guide you through the installation of Harvest on _rhel3_ (port _31000_) and how to connect it to the Prometheus instance running in Kubernetes.
 The file _harvest.yml_ in this repo can be used to configure Harvest to work on this lab.
 
-Let's start by downloading Harvest and installing it (on _rhel3_):
+Let's start by downloading Harvest and installing it (on _rhel3_):  
 ```bash
-$ VERSION=25.11.0
-$ wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1_linux_amd64.tar.gz -O ~/harvest-${VERSION}.tar.gz
-$ mkdir -p ~/harvest
-$ tar -xf ~/harvest-${VERSION}.tar.gz -C ~/harvest --strip-components=1
-$ mv ~/harvest/harvest.yml ~/harvest/harvest.bak
-$ cp harvest.yml ~/harvest/
-$ cd ~/harvest
-$ bin/harvest start
+$ VERSION=26.08.0
+$ wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1.x86_64.rpm -O ~/harvest-${VERSION}.rpm
+$ dnf install -y ~/harvest-${VERSION}.rpm
+$ mv /opt/harvest/harvest.yml /opt/harvest/harvest.yml.bak
+$ cp harvest.yml /opt/harvest/
+$ systemctl restart harvest
+$ /opt/harvest/bin/harvest status
   Datacenter |  Poller  |  PID   | PromPort | Status
 -------------+----------+--------+----------+----------
   lod        | cluster1 | 639779 |    31000 | running
@@ -71,3 +70,19 @@ OK - imported ONTAP9 / [harvest_dashboard_volume.json]
 OK - imported ONTAP9 / [harvest_dashboard_volume_details.json]
 Imported 34 dashboards to [ONTAP9] from [grafana/dashboards/cmode]
 ```
+
+<!-- OLD INSTALL
+
+$ VERSION=26.08.0
+$ wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1_linux_amd64.tar.gz -O ~/harvest-${VERSION}.tar.gz
+$ mkdir -p ~/harvest
+$ tar -xf ~/harvest-${VERSION}.tar.gz -C ~/harvest --strip-components=1
+$ mv ~/harvest/harvest.yml ~/harvest/harvest.bak
+$ cp harvest.yml ~/harvest/
+$ cd ~/harvest
+$ bin/harvest start
+  Datacenter |  Poller  |  PID   | PromPort | Status
+-------------+----------+--------+----------+----------
+  lod        | cluster1 | 639779 |    31000 | running
+
+>

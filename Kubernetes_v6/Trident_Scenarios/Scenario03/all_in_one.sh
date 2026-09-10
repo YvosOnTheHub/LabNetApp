@@ -19,14 +19,12 @@ echo
 echo "#######################################################################################################"
 echo "Install Harvest"
 echo "#######################################################################################################"
-VERSION=25.11.0
-wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1_linux_amd64.tar.gz -O ~/harvest-${VERSION}.tar.gz
-mkdir -p ~/harvest
-tar -xf ~/harvest-${VERSION}.tar.gz -C ~/harvest --strip-components=1
-mv ~/harvest/harvest.yml ~/harvest/harvest.bak
-cp 3_Harvest/harvest.yml ~/harvest/
-cd ~/harvest
-bin/harvest start
+VERSION=26.08.0
+wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1.x86_64.rpm -O ~/harvest-${VERSION}.rpm
+dnf install -y ~/harvest-${VERSION}.rpm
+mv /opt/harvest/harvest.yml /opt/harvest/harvest.yml.bak
+cp harvest.yml /opt/harvest/
+systemctl restart harvest
 
 echo
 echo "#######################################################################################################"
