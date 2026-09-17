@@ -1,0 +1,30 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-nfs-vault
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-nas
+  managementLIF: 192.168.0.133
+  backendName: BackendForNFSVault
+  nasType: nfs
+  autoExportCIDRs:
+  - 192.168.0.0/24
+  autoExportPolicy: true
+  defaults:
+    snapshotDir: "true"
+  credentials:
+    name: secret-nas-svm-vault
+  deletionPolicy: delete
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-nfs-vault
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: ontap-nas
+  nasType: nfs
+  storagePools: "BackendForNFSVault:.*"
+allowVolumeExpansion: true

@@ -56,6 +56,7 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [27.](Kubernetes_v6/Trident_Scenarios/Scenario27) Demystifying Virtual Machines  
 [28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover   
 [29.](Kubernetes_v6/Trident_Scenarios/Scenario29) Space Management   
+[30.](Kubernetes_v6/Trident_Scenarios/Scenario30) Vault-backed Trident credentials   
 
 ## Trident Protect Scenarios (Application data protection)  
 
