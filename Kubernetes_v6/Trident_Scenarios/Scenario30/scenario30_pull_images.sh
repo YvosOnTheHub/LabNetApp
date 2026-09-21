@@ -38,7 +38,7 @@ fi
 if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/external-secrets/external-secrets/tags/list' | jq -r '.tags[]? | select(.=="v0.19.2")')" ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy Vault 2.0.4 Into Private Repo"
+  echo "# Skopeo ESO 0.19.2 Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
     docker://ghcr.io/external-secrets/external-secrets:v0.19.2 docker://registry.demo.netapp.com/external-secrets/external-secrets:v0.19.2 \
@@ -46,21 +46,21 @@ if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v
 else
   echo
   echo "##############################################################"
-  echo "# Vault 2.0.4 already in the Private Repo - nothing to do"
+  echo "# ESO 0.19.2 already in the Private Repo - nothing to do"
   echo "##############################################################"
 fi
 
-if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/busybox/tags/list' | jq -r '.tags[]? | select(.=="1.35.0")')" ]]; then
+if [[ -z "$(curl -s -u registryuser:Netapp1! 'https://registry.demo.netapp.com/v2/vault/tags/list' | jq -r '.tags[]? | select(.=="2.0.4")')" ]]; then
   echo
   echo "##############################################################"
-  echo "# Skopeo Copy Busybox 1.35.0 Into Private Repo"
+  echo "# Skopeo Copy Vault 2.0.4 Into Private Repo"
   echo "##############################################################"
   podman run --rm quay.io/containers/skopeo:latest copy --dest-creds 'registryuser:Netapp1!' \
-    docker://quay.io/yvosonthehub/busybox:1.35.0 docker://registry.demo.netapp.com/busybox:1.35.0 \
+    docker://quay.io/yvosonthehub/hashicorp/vault:2.0.4 docker://registry.demo.netapp.com/vault:2.0.4 \
     --src-tls-verify=false --dest-tls-verify=false 
 else
   echo
   echo "##############################################################"
-  echo "# Busybox 1.35.0 already in the Private Repo - nothing to do"
+  echo "# Vault 2.0.4 already in the Private Repo - nothing to do"
   echo "##############################################################"
 fi
