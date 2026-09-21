@@ -184,6 +184,19 @@ $ kubectl get secret secret-nas-svm-vault -n trident -o jsonpath="{.data.passwor
 Netapp1!
 ```
 
+At this point a fair question is: **if the password still lands in a Kubernetes Secret that anyone with `get secrets` can decode, why use a vault at all?**
+
+Using a vault is **not** more secure because that Secret is encrypted. It is not. Kubernetes Secrets are Base64-encoded in etcd by default, and Trident still needs that Secret at runtime. Anyone who can already `kubectl get secret` in the `trident` namespace can read the SVM password, vault or not.
+
+Vault is more secure as the **source of truth and control plane**, not as a replacement for the Secret Trident consumes:  
+- **Git and GitOps stop holding the password.** The backend YAML only names `secret-nas-svm-vault`. A leaked repository or a pull request does not contain `Netapp1!`.  
+- **One place to rotate and revoke.** Change the SVM password in Vault; ESO refreshes the Secret on its `refreshInterval`; Trident reloads backend credentials from that Secret. You do not hunt through manifests, Helm values, and leftover `kubectl create secret` objects.  
+- **Access is policy, not "whoever can apply YAML".** In production, Vault policies decide who can *read* `secret/trident/ontap`. Cluster RBAC still decides who can *read* the generated Secret. Those are two independent gates.  
+- **Audit.** Vault records who fetched the path and when. A static Secret in etcd has no comparable history unless you add extra tooling.  
+- **The Secret can be short-lived.** Production setups use Kubernetes or AppRole authentication, TLS, HA, and often **dynamic** credentials so a dump of the Secret is only useful until the next rotation.
+
+This lab deliberately skips those controls (dev-mode Vault, HTTP, token `root`, a static `vsadmin` password) so the chain is easy to follow. The architecture still holds: **Vault holds and governs the credential; the Kubernetes Secret is only the delivery format Trident understands.** If an attacker already has cluster-admin rights, they have the password either way. Vault helps against git leakage, credential sprawl, rotation, and unauthorized *issuance*, not against an already compromised cluster.
+
 ## D. Create the Trident backend
 
 The backend manifest references only the generated Kubernetes Secret. No ONTAP credential is present in the backend definition:  
