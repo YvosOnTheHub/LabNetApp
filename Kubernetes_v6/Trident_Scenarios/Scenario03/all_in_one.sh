@@ -23,7 +23,7 @@ VERSION=26.08.0
 wget https://github.com/NetApp/harvest/releases/download/v${VERSION}/harvest-${VERSION}-1.x86_64.rpm -O ~/harvest-${VERSION}.rpm
 dnf install -y ~/harvest-${VERSION}.rpm
 mv /opt/harvest/harvest.yml /opt/harvest/harvest.yml.bak
-cp harvest.yml /opt/harvest/
+cp 3_Harvest/harvest.yml /opt/harvest/
 systemctl restart harvest
 
 echo
