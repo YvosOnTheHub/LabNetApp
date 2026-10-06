@@ -8,4 +8,6 @@ parameters:
   sanType: "nvme"
   fsType: "ext4"
   storagePools: 'BackendForNVMe:.*'
+mountOptions:
+   - discard
 allowVolumeExpansion: true

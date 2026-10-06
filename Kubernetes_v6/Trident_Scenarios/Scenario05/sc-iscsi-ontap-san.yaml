@@ -8,4 +8,6 @@ parameters:
   sanType: "iscsi"
   fsType: "ext4"
   storagePools: 'BackendForiSCSI:.*'
+mountOptions:
+   - discard
 allowVolumeExpansion: true

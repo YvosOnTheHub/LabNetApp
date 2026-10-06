@@ -1,0 +1,410 @@
+autoSupport:
+  enabled: true
+  insecure: false
+  proxy: ""
+  url: "https://support.netapp.com/put/AsupPut"
+  image:
+    registry: ""
+    repository: ""
+    tag: ""
+
+clusterName: ""
+
+logLevel: ""
+
+# -- Trident namespace for dynamic discovery.
+# Leave empty (default) to auto-discover the namespace by querying TridentVersion CRs.
+# Set to a specific namespace (e.g., "trident") to skip auto-discovery.
+# Override with: --set tridentNamespace=custom-trident-ns
+tridentNamespace: ""
+
+controller:
+  image:
+    # -- Image registry, defaults to global imageRegistry if omitted
+    registry: ~
+    repository: "controller"
+    pullPolicy: IfNotPresent
+    tag: ""
+    # -- Image pull secrets, defaults to global imagePullSecrets if omitted
+    imagePullSecrets: []
+  resources:
+    limits:
+      memory: 2Gi
+    requests:
+      cpu: ".5"
+      memory: 2Gi
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+      - ALL
+    seccompProfile:
+      type: RuntimeDefault
+  metrics:
+    tlsSecretName: tp-metrics-tls # this separate secret is only used when useOpenshiftServiceCA is true, by default it reuses the webhook tls secret
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+customLabels: {}
+
+# Controls the ClusterRoles bound to the resourcebackup, resourcerestore, and
+# resourcedelete ServiceAccounts. Most users should leave the defaults; this
+# exists so security-sensitive deployments can scope these Jobs down.
+#
+# The mode is derived from which field you set; do NOT set rbac.mode (it has
+# been removed and will fail loudly if present):
+#
+#   neither field set
+#     -> "full" mode (default). Wildcard permissions on every API group and
+#        resource. Backup gets get/list/use; restore gets every verb; delete
+#        gets delete/use. Recommended unless you have a reason not to.
+#
+#   rbac.managedResources non-empty
+#     -> "custom" mode. Render all three ClusterRoles from `managedResources`.
+#        Backup, restore, and delete are driven by the same list so the three
+#        roles cannot drift; the chart picks verbs per role:
+#          resourcebackup  -> get, list (plus discovery non-resource URLs)
+#          resourcerestore -> get, list, create, update, patch, delete (plus discovery)
+#          resourcedelete  -> delete (plus discovery non-resource URLs)
+#        Backup tolerates 401/403 by skipping the GVR (partial backup, logged),
+#        but restore does NOT: if a backup contains a GVR missing from
+#        `managedResources`, the restore Job fails. List every resource type
+#        your apps use.
+#
+#        The chart auto-injects a read-only ([get,list]) baseline for the
+#        cluster-scoped storage plumbing that backup/restore always need, so
+#        you do NOT need to add these yourself:
+#          - storage.k8s.io/storageclasses
+#          - snapshot.storage.k8s.io/volumesnapshotclasses
+#          - trident.netapp.io/tridentvolumes, tridentbackends
+#        The resourcedelete role never gets the baseline; it only ever deletes
+#        the resources you list.
+#
+#        The in-cluster HelmUpgrade Job (which needs */* due to RBAC escalation
+#        prevention) is NOT rendered in custom mode. Run `helm upgrade`
+#        externally with admin credentials instead.
+#
+#   rbac.existingClusterRoleName non-empty
+#     -> "external" mode. Skip rendering all three ClusterRoles. Bind the
+#        named ClusterRole to ALL three ServiceAccounts (resourcebackup,
+#        resourcerestore, resourcedelete). Because the same role is reused for
+#        all three Jobs, it must include every verb each Job needs - at minimum
+#        the union of:
+#          - backup:  get, list (plus discovery non-resource URLs)
+#          - restore: get, list, create, update, patch, delete (plus discovery)
+#          - delete:  delete (plus discovery non-resource URLs)
+#        over every resource type your apps use. The chart still creates the
+#        ServiceAccounts and ClusterRoleBindings.
+#
+# Setting BOTH fields is rejected (ambiguous).
+rbac:
+  # Single list of resource rules; the chart derives the per-role verbs, so do
+  # NOT set verbs here (they are ignored). Mutually exclusive with
+  # existingClusterRoleName.
+  # Example:
+  # managedResources:
+  # - apiGroups: [""]
+  #   resources: ["persistentvolumeclaims", "persistentvolumes", "configmaps", "secrets", "services", "serviceaccounts"]
+  # - apiGroups: ["apps"]
+  #   resources: ["deployments", "statefulsets", "daemonsets", "replicasets"]
+  managedResources: []
+  # Name of an existing ClusterRole to bind to the resourcebackup,
+  # resourcerestore, and resourcedelete ServiceAccounts. Must include every
+  # verb each Job needs (see the "external" mode description above for the
+  # required verb union). Mutually exclusive with managedResources.
+  existingClusterRoleName: ""
+  # Note: under custom or external mode the controller-manager auto-
+  # impersonates the <namePrefix>-resourcebackup ServiceAccount on live
+  # resource-collection paths (e.g. ResourceViewer with no snapshot/backup
+  # ref), so those results honor the scoped Job ClusterRole instead of the
+  # controller's wildcard role. Audit logs will show
+  # impersonatedUser=system:serviceaccount:<ns>:<sa>. On clusters that deny
+  # the impersonate verb to the controller (e.g. hardened admission policy
+  # stripping the chart-rendered impersonate rules), live collection will
+  # fail with 403 — there is no automatic fallback to the controller's own
+  # credentials. Either leave the chart-rendered impersonate rules in place
+  # or use the default (full) mode on such clusters.
+
+jobResources:
+  defaults:
+    limits:
+      cpu: "8000m"
+      memory: "10000Mi"
+      ephemeralStorage: ""
+    requests:
+      cpu: "100m"
+      memory: "100Mi"
+      ephemeralStorage: ""
+
+  # -- Adding placeholder for the jobs that would likely be overwritten by the user.
+  resticVolumeBackup:
+    limits:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+    requests:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+  resticVolumeRestore:
+    limits:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+    requests:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+  kopiaVolumeBackup:
+    limits:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+    requests:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+  kopiaVolumeRestore:
+    limits:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+    requests:
+      cpu: ""
+      memory: ""
+      ephemeralStorage: ""
+
+imagePullSecrets: []
+imageRegistry: "netapp"
+
+nameOverride: "trident-protect"
+
+caCertConfigMap:
+  name: ""
+
+scc:
+  create: true
+  name: trident-protect-job
+  priority: 1
+
+webhook:
+  serviceName: tp-webhook-service
+  tlsSecretName: tp-webhook-tls
+
+useOpenshiftServiceCA: false # relevant for webhook and metrics services
+
+# Helm upgrade job image configuration
+helmUpgrade:
+  image:
+    # -- Image registry, defaults to imageRegistry if omitted
+    registry: ~
+    # -- Image repository (trident-protect-utils includes helm + kubectl)
+    repository: trident-protect-utils
+    # -- Image tag
+    tag: 'v2.0.0'
+
+# PvcCopy job image configuration. Must provide GNU coreutils (cp --sparse=always)
+# and GNU dd (conv=sparse) so VM disk images keep their sparseness when copied
+# across NFS-backed PVCs (otherwise a sparse 30 GiB disk thickens to fully allocated
+# on the target FlexVol).
+pvcCopy:
+  image:
+    # -- Image registry, defaults to imageRegistry if omitted
+    registry: ~
+    # -- Image repository (trident-protect-utils provides GNU cp / dd)
+    repository: trident-protect-utils
+    # -- Image tag
+    tag: 'v2.0.0'
+
+# https://github.com/helm/helm/issues/12360
+webhooksCleanup:
+  # -- Create a helm pre-delete hook to cleanup webhooks.
+  enabled: true
+
+  image:
+    # -- Image registry, defaults to imageRegistry if omitted
+    registry: ~
+    # -- Image repository
+    repository: trident-protect-utils
+    # -- Image tag
+    tag: 'v2.0.0'
+    # -- Image pull policy
+    pullPolicy: ~
+
+  # -- Image pull secrets, defaults to global imagePullSecrets if omitted
+  imagePullSecrets: []
+
+  # -- Security context for the pod
+  podSecurityContext: {}
+
+  # -- Node labels for pod assignment
+  nodeSelector: {}
+
+  # -- List of node taints to tolerate
+  tolerations: []
+
+  # -- Pod anti affinity constraints.
+  podAntiAffinity: {}
+
+  # -- Pod affinity constraints.
+  podAffinity: {}
+
+  # -- Pod labels.
+  podLabels: {}
+
+  # -- Pod annotations.
+  podAnnotations: {}
+
+  # -- Node affinity constraints.
+  nodeAffinity: {}
+
+  # -- Security context for the hook containers
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+  # Note: Potential values for securityContext:
+  #    runAsUser: 65534
+  #    runAsGroup: 65534
+  #    runAsNonRoot: true
+  #    privileged: false
+  #    readOnlyRootFilesystem: true
+
+
+crCleanup:
+  # -- Create a helm pre-delete hook to wait for CRDs to be removed.
+  enabled: true
+
+  # -- Timeout in seconds to wait for CRDs to be removed.
+  timeout: 600
+
+  image:
+    # -- Image registry, defaults to global imageRegistry if omitted
+    registry: ~
+    # -- Image repository
+    repository: trident-protect-utils
+    # -- Image tag
+    tag: 'v2.0.0'
+    # -- Image pull policy
+    pullPolicy: ~
+
+  # -- Image pull secrets, defaults to global imagePullSecrets if omitted
+  imagePullSecrets: []
+
+  # -- Security context for the pod
+  podSecurityContext: {}
+
+  # -- Node labels for pod assignment
+  nodeSelector: {}
+
+  # -- List of node taints to tolerate
+  tolerations: []
+
+  # -- Pod anti affinity constraints.
+  podAntiAffinity: {}
+
+  # -- Pod affinity constraints.
+  podAffinity: {}
+
+  # -- Pod labels.
+  podLabels: {}
+
+  # -- Pod annotations.
+  podAnnotations: {}
+
+  # -- Node affinity constraints.
+  nodeAffinity: {}
+
+  # -- Security context for the hook containers
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+  # Note: Potential values for securityContext:
+  #    runAsUser: 65534
+  #    runAsGroup: 65534
+  #    runAsNonRoot: true
+  #    privileged: false
+  #    readOnlyRootFilesystem: true
+
+
+preUpgrade:
+  # -- Create a preupgrade hook to update resources before upgrading.
+  enabled: true
+
+  # -- Security context for the pod
+  podSecurityContext: {}
+
+  # -- Node labels for pod assignment
+  nodeSelector: {}
+
+  # -- List of node taints to tolerate
+  tolerations: []
+
+  # -- Pod anti affinity constraints.
+  podAntiAffinity: {}
+
+  # -- Pod affinity constraints.
+  podAffinity: {}
+
+  # -- Pod labels.
+  podLabels: {}
+
+  # -- Pod annotations.
+  podAnnotations: {}
+
+  # -- Node affinity constraints.
+  nodeAffinity: {}
+
+  # -- Security context for the hook containers
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    seccompProfile:
+      type: RuntimeDefault
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+  # Note: Potential values for securityContext:
+  #    runAsUser: 65534
+  #    runAsGroup: 65534
+  #    runAsNonRoot: true
+  #    privileged: false
+  #    readOnlyRootFilesystem: true
+
+namePrefix: "trident-protect"
+
+# When set to true, snapshot operations will skip PVCs that do not support VolumeSnapshots
+# instead of failing. A warning is recorded in the CR status for each skipped PVC.
+# The same behaviour can be requested per-CR via the
+# protect.trident.netapp.io/skip-unsupported-pvc annotation on a Snapshot, Backup, or Schedule CR.
+skipUnsupportedPVC: false
+
+# Comma-separated list of namespace annotations to skip during restore
+restoreSkipNamespaceAnnotations: []
+
+# Comma-separated list of namespace annotations to always restore, overriding any exclusion list
+restoreForceNamespaceAnnotations: []
+
+# Comma-separated list of namespace labels to skip during restore
+restoreSkipNamespaceLabels: []
+
+# When true, completely skips restoring all namespace annotations
+restoreSkipAllNamespaceAnnotations: false
+
+# When true, completely skips restoring all namespace labels
+restoreSkipAllNamespaceLabels: false
+
+# VM freeze configuration
+vm:
+  freeze: true
