@@ -5,7 +5,7 @@
 #
 # FUNCTION THAT WILL PERFORM THE FOLLOWING TASKS:
 # 1. UPGRADE HELM
-# 2. INSTALL TRIDENT OPERATOR TO 26.06.1 WITH HELM
+# 2. INSTALL TRIDENT OPERATOR TO 26.10.0 WITH HELM
 # 3. CONFIGURE FILE (NFS/SMB) BACKENDS FOR TRIDENT
 # 4. CONFIGURE BLOCK (iSCSI/NVME) BACKENDS FOR TRIDENT
 # 5. INSTALL VOLUME SNAPSHOT CONTROLLER 8.2 & CREATE A VOLUMESNAPSHOTCLASS FOR TRIDENT
@@ -31,7 +31,7 @@ rm -f helm-v4.0.5-linux-amd64.tar.gz
 
 echo
 echo "#######################################################################################################"
-echo "# 2. INSTALL TRIDENT OPERATOR TO 26.06.1 WITH HELM"
+echo "# 2. INSTALL TRIDENT OPERATOR TO 26.10.0 WITH HELM"
 echo "#######################################################################################################"
 echo
 
@@ -147,13 +147,13 @@ K8S1_kubernetes_reset() {
 # lab_setup_trident_protect()
 #
 # Function that will perform the following tasks:
-# 1. UPGRADE TRIDENT TO 26.06.1 ON KUBERNETES#1
+# 1. UPGRADE TRIDENT TO 26.10.0 ON KUBERNETES#1
 # 2. CREATE A SECONDARY SVM
 # 3. CONFIGURE SVM PEERING
 # 4. CREATE A S3 SVM (TARGET FOR BACKUPS)
 # 5. CREATE & CONFIGURE A SECONDARY KUBERNETES CLUSTER
-# 6. INSTALL TRIDENT PROTECT 26.06.0 ON KUBERNETES#1
-# 7. INSTALL TRIDENT 26.06.1 & TRIDENT PROTECT 26.06.0 ON KUBERNETES#2
+# 6. INSTALL TRIDENT PROTECT 26.10.0 ON KUBERNETES#1
+# 7. INSTALL TRIDENT 26.10.0 & TRIDENT PROTECT 26.10.0 ON KUBERNETES#2
 # 8. CREATE AN APPVAULT ON BOTH CLUSTERS
 # 9. CONFIGURE KUBE STATE METRICS TO MONITOR TRIDENT PROTECT
 # 10. INSTALL KUBEVIRT ON KUBERNETES#2
@@ -179,8 +179,8 @@ if [[ $? == 1 ]];then
   exit 0
 fi
 
-# Upgrade Trident to 26.06.1 if needed
-if [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" != "26.06.1" ]; then K8S1_trident_upgrade; fi
+# Upgrade Trident to 26.10.0 if needed
+if [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" != "26.10.0" ]; then K8S1_trident_upgrade; fi
 
 # Secondary SVM Creation + Peering
 # S3 SVM & Bucket Creation
@@ -700,7 +700,7 @@ lab_setup_check() {
   echo "Checking primary cluster (default kubeconfig)..."
   check_kubernetes_version "" "Kubernetes"
   check_pods_running "" trident "Trident"
-  check_trident_version "" "26.06.1"
+  check_trident_version "" "26.10.0"
   check_tbc_status ""
   check_volume_snapshot_controller "" "8"
   check_pods_running "" kubevirt "KubeVirt"
@@ -717,7 +717,7 @@ lab_setup_check() {
   echo "Checking secondary cluster (kubeconfig=$SECONDARY_KUBECONFIG)..."
   check_kubernetes_version "$SECONDARY_KUBECONFIG" "Kubernetes"
   check_pods_running "$SECONDARY_KUBECONFIG" trident "Trident"
-  check_trident_version "$SECONDARY_KUBECONFIG" "26.06.1"
+  check_trident_version "$SECONDARY_KUBECONFIG" "26.10.0"
   check_tbc_status "$SECONDARY_KUBECONFIG"
   check_volume_snapshot_controller "$SECONDARY_KUBECONFIG" "8"
   check_pods_running "$SECONDARY_KUBECONFIG" kubevirt "KubeVirt"
@@ -729,8 +729,8 @@ lab_setup_check() {
   check_appvault_available "$SECONDARY_KUBECONFIG" "ontap-vault" "AppVault"
   fi
 
-  # Compare registry images between docker.io and quay.io
-  compare_registry_images "26.06.1" "26.06.0" "26.06.0" "$menu"
+  # Compare registry images between docker.io and quay.io (trident, autosupport, trident-protect)
+  compare_registry_images "26.10.0" "26.10.0" "26.10.0" "$menu"
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
 cat <<EOT >> ~/.bashrc

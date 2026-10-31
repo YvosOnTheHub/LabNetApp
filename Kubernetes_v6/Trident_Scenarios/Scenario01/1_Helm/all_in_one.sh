@@ -57,15 +57,15 @@ fi
 
 echo
 echo "#######################################################################################################"
-echo "Download Trident 26.06"
+echo "Download Trident 26.10"
 echo "#######################################################################################################"
 
 cd
 mkdir 24.02.0 && mv trident-installer 24.02.0/
-mkdir 26.06.1 && cd 26.06.1
-wget https://github.com/NetApp/trident/releases/download/v26.06.1/trident-installer-26.06.1.tar.gz
-tar -xf trident-installer-26.06.1.tar.gz
-ln -sf /root/26.06.1/trident-installer/tridentctl /usr/local/bin/tridentctl
+mkdir 26.10.0 && cd 26.10.0
+wget https://github.com/NetApp/trident/releases/download/v26.10.0/trident-installer-26.10.0.tar.gz
+tar -xf trident-installer-26.10.0.tar.gz
+ln -sf /root/26.10.0/trident-installer/tridentctl /usr/local/bin/tridentctl
 
 echo
 echo "#######################################################################################################"
@@ -76,7 +76,7 @@ kubectl create secret docker-registry regcred --docker-username=registryuser --d
 
 echo
 echo "#######################################################################################################"
-echo "Upgrade the Trident Operator (26.06.1) with Helm"
+echo "Upgrade the Trident Operator (26.10.0) with Helm"
 echo "#######################################################################################################"
 
 windows_nodes=$(kubectl get nodes -l kubernetes.io/os=windows --no-headers 2>/dev/null | awk 'NF{c++} END{print c+0}')
@@ -89,10 +89,10 @@ else
 fi
 
 helm repo update
-helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.1 -n trident \
---set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0 \
---set operatorImage=registry.demo.netapp.com/trident-operator:26.06.1 \
---set tridentImage=registry.demo.netapp.com/trident:26.06.1 \
+helm upgrade --install trident netapp-trident/trident-operator --version 100.2610.0 -n trident \
+--set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.10.0 \
+--set operatorImage=registry.demo.netapp.com/trident-operator:26.10.0 \
+--set tridentImage=registry.demo.netapp.com/trident:26.10.0 \
 --set tridentSilenceAutosupport=true \
 --set windows=${trident_windows} \
 --set imagePullSecrets[0]=regcred
@@ -110,7 +110,7 @@ until kubectl get crd tridentversions.trident.netapp.io >/dev/null 2>&1; do
     done
 done
 echo
-until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.06.1" ]; do
+until [ "$(kubectl get tver trident -n trident -o jsonpath='{.trident_version}' 2>/dev/null)" = "26.10.0" ]; do
     for frame in $frames; do
         sleep 0.5; printf "\rWaiting for Trident to be ready $frame"
     done

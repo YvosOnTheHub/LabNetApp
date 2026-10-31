@@ -47,7 +47,7 @@ Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "netapp-trident" chart repository
 Update Complete. ⎈Happy Helming!⎈
 
-$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2606.1 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.06.0,operatorImage=registry.demo.netapp.com/trident-operator:26.06.1,tridentImage=registry.demo.netapp.com/trident:26.06.1,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
+$ helm upgrade --install trident netapp-trident/trident-operator --version 100.2610.0 -n trident --set tridentAutosupportImage=registry.demo.netapp.com/trident-autosupport:26.10.0,operatorImage=registry.demo.netapp.com/trident-operator:26.10.0,tridentImage=registry.demo.netapp.com/trident:26.10.0,tridentSilenceAutosupport=true,windows=true,imagePullSecrets[0]=regcred
 NAME: trident
 LAST DEPLOYED: Thu Aug 20 07:40:23 2026
 NAMESPACE: trident
@@ -72,7 +72,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2026-08-20 07:40:23.653276551 +0000 UTC deployed        trident-operator-100.2606.1     26.06.1
+trident trident         2               2026-08-20 07:40:23.653276551 +0000 UTC deployed        trident-operator-100.2610.0     26.10.0
 ```
 
 Quite easy !  
@@ -84,14 +84,14 @@ $ tridentctl -n trident version
 +----------------+----------------+
 | SERVER VERSION | CLIENT VERSION |
 +----------------+----------------+
-| 26.06.1        | 26.06.1        |
+| 26.10.0        | 26.10.0        |
 +----------------+----------------+
 
 $ kubectl describe torc trident -n trident | grep Message: -A 3
   Message:    Trident installed
   Namespace:  trident
   Status:     Installed
-  Version:    v26.06.1
+  Version:    v26.10.0
 ```
 <p align="center">:boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom: :boom:</p>  
 
