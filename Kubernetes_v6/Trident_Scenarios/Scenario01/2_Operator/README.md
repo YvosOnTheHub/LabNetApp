@@ -82,10 +82,10 @@ Annotations:  <none>
 API Version:  trident.netapp.io/v1
 Kind:         TridentOrchestrator
 Metadata:
-  Creation Timestamp:  2026-08-18T11:42:28Z
-  Generation:          2
-  Resource Version:    1217408
-  UID:                 36fbc213-e34c-4eee-98cc-6e1defc0e69f
+  Creation Timestamp:  2026-10-31T09:45:06Z
+  Generation:          1
+  Resource Version:    378954
+  UID:                 13ec4445-3865-4014-a8fe-34aa0b1e7793
 Spec:
   Autosupport Image:  registry.demo.netapp.com/trident-autosupport:26.10.0
   Debug:              true
@@ -108,7 +108,9 @@ Status:
     Debug:                      true
     Disable Audit Log:          true
     Enable ACP:                 false
+    Enable COSI:                false
     Enable Concurrency:         false
+    Enable Data LIF Refresh:    false
     Enable Force Detach:        false
     Host Network:               false
     Http Request Timeout:       90s

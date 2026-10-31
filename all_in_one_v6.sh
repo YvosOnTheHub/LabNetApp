@@ -730,7 +730,7 @@ lab_setup_check() {
   fi
 
   # Compare registry images between docker.io and quay.io (trident, autosupport, trident-protect)
-  compare_registry_images "26.10.0" "26.10.0" "26.10.0" "$menu"
+  compare_registry_images "26.10.0" "26.10.0" "26.06.0" "$menu"
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
 cat <<EOT >> ~/.bashrc

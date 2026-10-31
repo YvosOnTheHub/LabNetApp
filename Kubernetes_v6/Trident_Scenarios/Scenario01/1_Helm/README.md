@@ -72,7 +72,7 @@ To learn more about the release, try:
 
 $ helm ls -n trident
 NAME    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                           APP VERSION
-trident trident         2               2026-08-20 07:40:23.653276551 +0000 UTC deployed        trident-operator-100.2610.0     26.10.0
+trident trident         1               2026-10-31 09:45:05.994409221 +0000 UTC deployed        trident-operator-100.2610.0     26.10.0
 ```
 
 Quite easy !  
