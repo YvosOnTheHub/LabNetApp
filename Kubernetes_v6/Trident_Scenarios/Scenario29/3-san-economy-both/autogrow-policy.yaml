@@ -1,0 +1,8 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentAutogrowPolicy
+metadata:
+  name: s29-both
+spec:
+  usedThreshold: "80%"
+  growthAmount: "1Gi"
+  maxSize: "2Gi"

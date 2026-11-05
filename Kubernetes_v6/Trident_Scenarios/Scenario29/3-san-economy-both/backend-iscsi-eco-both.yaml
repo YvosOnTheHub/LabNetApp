@@ -1,0 +1,22 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-iscsi-eco-both
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-san-economy
+  backendName: BackendForiSCSIEcoBoth
+  managementLIF: 192.168.0.137
+  storagePrefix: san_eco_both_
+  sanType: iscsi
+  svm: sansvm
+  useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds
+  defaults:
+    formatOptions: -E nodiscard
+  ontapAutosize:
+    mode: grow
+    growThresholdPercent: 60
+    maximumSize: "50%"

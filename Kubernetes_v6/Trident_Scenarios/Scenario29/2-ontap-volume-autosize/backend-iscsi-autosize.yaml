@@ -1,0 +1,20 @@
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-iscsi-autosize
+  namespace: trident
+spec:
+  version: 1
+  storageDriverName: ontap-san
+  backendName: BackendForiSCSIAutosize
+  managementLIF: 192.168.0.137
+  sanType: iscsi
+  useCHAP: true
+  credentials:
+    name: secret-iscsi-svm-creds
+  defaults:
+    formatOptions: -E nodiscard
+  ontapAutosize:
+    mode: grow
+    growThresholdPercent: 60
+    maximumSize: "50%"

@@ -1,0 +1,13 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: storage-class-iscsi-economy-both
+  annotations:
+    trident.netapp.io/autogrowPolicy: "s29-both"
+provisioner: csi.trident.netapp.io
+parameters:
+  backendType: "ontap-san-economy"
+  storagePools: "BackendForiSCSIEcoBoth:aggr1"
+  fsType: "ext4"
+  spaceAllocation: "true"
+allowVolumeExpansion: true
