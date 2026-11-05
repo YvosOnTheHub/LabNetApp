@@ -9,5 +9,4 @@ parameters:
   backendType: "ontap-san-economy"
   storagePools: "BackendForiSCSIEcoBoth:aggr1"
   fsType: "ext4"
-  spaceAllocation: "true"
 allowVolumeExpansion: true

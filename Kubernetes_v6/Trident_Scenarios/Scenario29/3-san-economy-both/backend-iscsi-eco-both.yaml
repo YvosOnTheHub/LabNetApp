@@ -16,6 +16,7 @@ spec:
     name: secret-iscsi-svm-creds
   defaults:
     formatOptions: -E nodiscard
+    spaceAllocation: "true"
   ontapAutosize:
     mode: grow
     growThresholdPercent: 60
