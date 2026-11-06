@@ -546,7 +546,7 @@ compare_registry_images() {
   # Add Trident Protect images if menu = 2
   local protect_images=()
   if [ "$menu" = "2" ]; then
-    protect_images=("controller" "exechook" "resourcebackup" "resourcerestore" "resourcedelete" "restic" "kopia" "kopiablockrestore")
+    protect_images=("controller" "exechook" "resourcebackup" "resourcerestore" "resourcedelete" "kopiablockrestore" "filebrowse-transfer" "trident-protect-utils" "trident-protect-guestfs")
   fi
   
   local all_images=("${base_images[@]}" "${protect_images[@]}")
@@ -571,13 +571,18 @@ compare_registry_images() {
       tag="$protect_version"
     fi
     
-    # For trident-protect-utils when menu=2, use v1.0.0 instead of the version
+    # For trident-protect-utils when menu=2, use v6.0.0 instead of the version
     if [ "$image" = "trident-protect-utils" ] && [ "$menu" = "2" ]; then
-      tag="v1.0.0"
+      tag="v6.0.0"
+    fi
+
+    # For trident-protect-guestfs when menu=2, use v2.0.0 instead of the version
+    if [ "$image" = "trident-protect-guestfs" ] && [ "$menu" = "2" ]; then
+      tag="v2.0.0"
     fi
     
-    # Special handling for trident-protect-utils in base menu
-    if [ "$image" = "trident-protect-utils" ]; then
+    # Special handling for trident-protect-utils and trident-protect-guestfs in base menu
+    if [ "$image" = "trident-protect-utils" ] || [ "$image" = "trident-protect-guestfs" ]; then
       continue
     fi
     
@@ -651,36 +656,41 @@ compare_registry_images() {
     fi
   done
   
-  # Handle trident-protect-utils specially when menu=2
+  # Handle trident-protect-utils and trident-protect-guestfs specially when menu=2
   if [ "$menu" = "2" ]; then
-    local image="trident-protect-utils"
-    local tag="v1.0.0"
-    local digest1 digest2
-    
-    # Get Docker Hub token scoped to this specific image
-    local docker_token
-    docker_token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:netapp/$image:pull" 2>/dev/null | jq -r '.token' || true)
-    
-    digest1=$(curl -s -I -H "Authorization: Bearer $docker_token" \
-      -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
-      "https://registry-1.docker.io/v2/netapp/$image/manifests/$tag" 2>/dev/null | \
-      grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
-    
-    digest2=$(curl -s -I -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
-      "https://quay.io/v2/yvosonthehub/netapp/$image/manifests/$tag" 2>/dev/null | \
-      grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
-    
-    if [ -z "$digest1" ] || [ -z "$digest2" ]; then
-      print_fail "Image comparison: could not retrieve digest for $image:$tag"
-      all_ok=0
-      failed_images+=("$image")
-    elif [ "$digest1" = "$digest2" ]; then
-      print_ok "Image match: $image:$tag (digest: ${digest1:0:19}...)"
-    else
-      print_fail "the mirror image $image does not correspond to the source repo"
-      all_ok=0
-      failed_images+=("$image")
-    fi
+    local special_image special_tag special_entry
+    local special_images=("trident-protect-utils:v6.0.0" "trident-protect-guestfs:v2.0.0")
+
+    for special_entry in "${special_images[@]}"; do
+      special_image="${special_entry%%:*}"
+      special_tag="${special_entry#*:}"
+      local digest1 digest2
+
+      # Get Docker Hub token scoped to this specific image
+      local docker_token
+      docker_token=$(curl -s "https://auth.docker.io/token?service=registry.docker.io&scope=repository:netapp/$special_image:pull" 2>/dev/null | jq -r '.token' || true)
+
+      digest1=$(curl -s -I -H "Authorization: Bearer $docker_token" \
+        -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+        "https://registry-1.docker.io/v2/netapp/$special_image/manifests/$special_tag" 2>/dev/null | \
+        grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+
+      digest2=$(curl -s -I -H "Accept: application/vnd.docker.distribution.manifest.v2+json,application/vnd.docker.distribution.manifest.list.v2+json" \
+        "https://quay.io/v2/yvosonthehub/netapp/$special_image/manifests/$special_tag" 2>/dev/null | \
+        grep -i docker-content-digest | cut -d ' ' -f 2 | tr -d '\r' || true)
+
+      if [ -z "$digest1" ] || [ -z "$digest2" ]; then
+        print_fail "Image comparison: could not retrieve digest for $special_image:$special_tag"
+        all_ok=0
+        failed_images+=("$special_image")
+      elif [ "$digest1" = "$digest2" ]; then
+        print_ok "Image match: $special_image:$special_tag (digest: ${digest1:0:19}...)"
+      else
+        print_fail "the mirror image $special_image does not correspond to the source repo"
+        all_ok=0
+        failed_images+=("$special_image")
+      fi
+    done
   fi
   
   echo
@@ -730,7 +740,7 @@ lab_setup_check() {
   fi
 
   # Compare registry images between docker.io and quay.io (trident, autosupport, trident-protect)
-  compare_registry_images "26.10.0" "26.10.0" "26.06.0" "$menu"
+  compare_registry_images "26.10.0" "26.10.0" "26.10.0" "$menu"
 
 if [ $(more ~/.bashrc | grep kdesc | wc -l) -ne 1 ]; then
 cat <<EOT >> ~/.bashrc
