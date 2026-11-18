@@ -154,6 +154,10 @@ For a LUN, the LUN grows with the claim, and the filesystem is extended while th
 Kubernetes remains the source of truth: the capacity you read in the cluster is the capacity ONTAP has.  
 SMB is not covered by this policy today.  
 
+That write is a problem for GitOps.  
+The live PVC is now larger than the manifest in the repository, so a controller that reconciles the desired state either reverts the size or keeps reporting the difference.  
+Autogrow may not be directly usable in that model, unless the tool can ignore the capacity, or some other workaround keeps the size out of what Git is expected to enforce.  
+
 The walkthrough is in [1. Trident Autogrow Policy](1-autogrow-policy).  
 
 ## I. ONTAP volume autosize
@@ -166,6 +170,9 @@ The LUN stays the same size, and so does the guest filesystem.
 The extra room is for snapshots and for the overhead around the LUN.  
 `kubectl get pvc` keeps the original capacity, so Kubernetes and ONTAP no longer advertise the same size.  
 
+GitOps is unaffected.  
+The growth happens on the ONTAP volume, and the PVC stays at the size the repository declared, so a sync still finds what it deployed.  
+
 Supported drivers are `ontap-san` (iSCSI, NVMe, FCP) and `ontap-san-economy` (iSCSI).  
 NAS backends are rejected.  
 Shrinking is not part of the feature: ONTAP volume autosize does not shrink a FlexVol. The [limitations](https://docs.netapp.com/us-en/trident/trident-use/ontap-autosize.html#limitations) list that explicitly, along with the drivers that are out of scope.  
@@ -177,6 +184,7 @@ The walkthrough is in [2. ONTAP volume autosize](2-ontap-volume-autosize).
 | Who grows the storage | Trident, from a policy on the StorageClass or the PVC | ONTAP, from the `ontapAutosize` settings on the backend |
 | What grows | The PVC, then the FlexVol. The LUN as well, for SAN | The backing FlexVol |
 | What `kubectl get pvc` shows afterwards | The new capacity | The original capacity |
+| GitOps | The resized PVC drifts from the manifest, unless capacity is ignored | The PVC is unchanged, so the desired state still matches |
 | SAN filesystem | Gets a larger LUN | Stays the same size |
 | Shrink | No | No |
 | Where it applies | NFS and SAN. SMB is excluded today | `ontap-san` and `ontap-san-economy` |

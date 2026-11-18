@@ -73,6 +73,8 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 [11.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario11) Protecting Virtual Machines  
 [12.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario12) Ch-ch-ch-changes   
 [13.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario13) Consistent snapshot of a database inside a KubeVirt VM  
+[14.](Kubernetes_v6/Trident_Protect_Scenarios/Scenario14) Fail over an old snapshot  
+
 
 ## Addendum  
 
