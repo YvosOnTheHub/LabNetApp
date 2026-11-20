@@ -26,37 +26,24 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 ## Trident Scenarios (Dynamic Storage Provisionning)  
 
-[0.](Kubernetes_v6/Trident_Scenarios/Scenario00) Best Practices & Advices  
-[1.](Kubernetes_v6/Trident_Scenarios/Scenario01) Install Trident (26.10.0)  
-[2.](Kubernetes_v6/Trident_Scenarios/Scenario02) NAS backends for Trident & Storage Classes for Kubernetes  
-[3.](Kubernetes_v6/Trident_Scenarios/Scenario03) Prometheus, Grafana & Harvest integration  
-[4.](Kubernetes_v6/Trident_Scenarios/Scenario04) Create your first NAS Apps  
-[5.](Kubernetes_v6/Trident_Scenarios/Scenario05) Block backends for Trident & Storage Classes for Kubernetes  
-[6.](Kubernetes_v6/Trident_Scenarios/Scenario06) Create your first SAN Apps  
-[7.](Kubernetes_v6/Trident_Scenarios/Scenario07) Importing data with Trident  
-[8.](Kubernetes_v6/Trident_Scenarios/Scenario08) Consumption control  
-[9.](Kubernetes_v6/Trident_Scenarios/Scenario09) Expanding Persistent Volumes  
-[10.](Kubernetes_v6/Trident_Scenarios/Scenario10) Using Virtual Storage Pools  
-[11.](Kubernetes_v6/Trident_Scenarios/Scenario11) StatefulSets & Storage consumption  
-[12.](Kubernetes_v6/Trident_Scenarios/Scenario12) Dynamic export policy management  
-[13.](Kubernetes_v6/Trident_Scenarios/Scenario13) Snapshots here & snapshots there, snapshots everywhere  
-[14.](Kubernetes_v6/Trident_Scenarios/Scenario14) About security  
-[15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Dude, where is my PVC?  
-[16.](Kubernetes_v6/Trident_Scenarios/Scenario16) Performance control  
-[17.](Kubernetes_v6/Trident_Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP  
-[18.](Kubernetes_v6/Trident_Scenarios/Scenario18) Kubernetes, Trident & GitOps  
-[19.](Kubernetes_v6/Trident_Scenarios/Scenario19) Let's talk about protocols & access modes!  
-[20.](Kubernetes_v6/Trident_Scenarios/Scenario20) About Generic Ephemeral Volumes  
-[21.](Kubernetes_v6/Trident_Scenarios/Scenario21) Persistent Volumes and Multi Tenancy  
-[22.](Kubernetes_v6/Trident_Scenarios/Scenario22) Crossing the borders    
-[23.](Kubernetes_v6/Trident_Scenarios/Scenario23) Naming conventions  
-[24.](Kubernetes_v6/Trident_Scenarios/Scenario24) Migrating volumes (snapmirror integration)  
-[25.](Kubernetes_v6/Trident_Scenarios/Scenario25) Storage & Policy Management  
-[26.](Kubernetes_v6/Trident_Scenarios/Scenario26) Working in parallel  
-[27.](Kubernetes_v6/Trident_Scenarios/Scenario27) Demystifying Virtual Machines  
-[28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover   
-[29.](Kubernetes_v6/Trident_Scenarios/Scenario29) Space Management   
-[30.](Kubernetes_v6/Trident_Scenarios/Scenario30) Vault-backed Trident credentials   
+| Scenarios 0–15 | Scenarios 16–30 |
+|---|---|
+| [0.](Kubernetes_v6/Trident_Scenarios/Scenario00) Best Practices & Advices | [16.](Kubernetes_v6/Trident_Scenarios/Scenario16) Performance control |
+| [1.](Kubernetes_v6/Trident_Scenarios/Scenario01) Install Trident (26.10.0) | [17.](Kubernetes_v6/Trident_Scenarios/Scenario17) How to configure HAProxy between Trident & ONTAP |
+| [2.](Kubernetes_v6/Trident_Scenarios/Scenario02) NAS backends for Trident & Storage Classes for Kubernetes | [18.](Kubernetes_v6/Trident_Scenarios/Scenario18) Kubernetes, Trident & GitOps |
+| [3.](Kubernetes_v6/Trident_Scenarios/Scenario03) Prometheus, Grafana & Harvest integration | [19.](Kubernetes_v6/Trident_Scenarios/Scenario19) Let's talk about protocols & access modes! |
+| [4.](Kubernetes_v6/Trident_Scenarios/Scenario04) Create your first NAS Apps | [20.](Kubernetes_v6/Trident_Scenarios/Scenario20) About Generic Ephemeral Volumes |
+| [5.](Kubernetes_v6/Trident_Scenarios/Scenario05) Block backends for Trident & Storage Classes for Kubernetes | [21.](Kubernetes_v6/Trident_Scenarios/Scenario21) Persistent Volumes and Multi Tenancy |
+| [6.](Kubernetes_v6/Trident_Scenarios/Scenario06) Create your first SAN Apps | [22.](Kubernetes_v6/Trident_Scenarios/Scenario22) Crossing the borders |
+| [7.](Kubernetes_v6/Trident_Scenarios/Scenario07) Importing data with Trident | [23.](Kubernetes_v6/Trident_Scenarios/Scenario23) Naming conventions |
+| [8.](Kubernetes_v6/Trident_Scenarios/Scenario08) Consumption control | [24.](Kubernetes_v6/Trident_Scenarios/Scenario24) Migrating volumes (snapmirror integration) |
+| [9.](Kubernetes_v6/Trident_Scenarios/Scenario09) Expanding Persistent Volumes | [25.](Kubernetes_v6/Trident_Scenarios/Scenario25) Storage & Policy Management |
+| [10.](Kubernetes_v6/Trident_Scenarios/Scenario10) Using Virtual Storage Pools | [26.](Kubernetes_v6/Trident_Scenarios/Scenario26) Working in parallel |
+| [11.](Kubernetes_v6/Trident_Scenarios/Scenario11) StatefulSets & Storage consumption | [27.](Kubernetes_v6/Trident_Scenarios/Scenario27) Demystifying Virtual Machines |
+| [12.](Kubernetes_v6/Trident_Scenarios/Scenario12) Dynamic export policy management | [28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover |
+| [13.](Kubernetes_v6/Trident_Scenarios/Scenario13) Snapshots here & snapshots there, snapshots everywhere | [29.](Kubernetes_v6/Trident_Scenarios/Scenario29) Space Management |
+| [14.](Kubernetes_v6/Trident_Scenarios/Scenario14) About security | [30.](Kubernetes_v6/Trident_Scenarios/Scenario30) Vault-backed Trident credentials |
+| [15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Dude, where is my PVC? | |
 
 ## Trident Protect Scenarios (Application data protection)  
 
