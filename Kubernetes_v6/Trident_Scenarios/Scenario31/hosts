@@ -1,0 +1,6 @@
+---
+all:  
+  vars: 
+    hostname: 192.168.0.101
+    username: admin 
+    password: Netapp1!

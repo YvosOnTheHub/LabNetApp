@@ -20,17 +20,18 @@ else
 fi
 
 echo "#######################################################################################################"
-echo "Install Ansible & NetApp Python Library"
+echo "Install Ansible & NetApp Python Library, as well as pywinrm"
 echo "#######################################################################################################"
 
 pip install ansible-core==2.15.13 netapp-lib
+pip install pywinrm
 
 echo "#######################################################################################################"
-echo "Install NetApp ONTAP Collection"
+echo "Install NetApp ONTAP & WindowsCollections"
 echo "#######################################################################################################"
 
 ansible-galaxy collection install git+https://github.com/ansible-collections/netapp.ontap.git --ignore-certs
-
+ansible-galaxy collection install ansible.windows --ignore-certs --force
 
 
 

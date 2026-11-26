@@ -26,6 +26,8 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 
 ## Trident Scenarios (Dynamic Storage Provisionning)  
 
+<div align="center">
+
 | Scenarios 0–15 | Scenarios 16–30 |
 |---|---|
 | [0.](Kubernetes_v6/Trident_Scenarios/Scenario00) Best Practices & Advices | [16.](Kubernetes_v6/Trident_Scenarios/Scenario16) Performance control |
@@ -43,7 +45,9 @@ Try using some of the shortcuts you will find in the the [Addenda0](Kubernetes_v
 | [12.](Kubernetes_v6/Trident_Scenarios/Scenario12) Dynamic export policy management | [28.](Kubernetes_v6/Trident_Scenarios/Scenario28) Automated workload failover |
 | [13.](Kubernetes_v6/Trident_Scenarios/Scenario13) Snapshots everywhere | [29.](Kubernetes_v6/Trident_Scenarios/Scenario29) Space Management |
 | [14.](Kubernetes_v6/Trident_Scenarios/Scenario14) About security | [30.](Kubernetes_v6/Trident_Scenarios/Scenario30) Vault-backed Trident credentials |
-| [15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Dude, where is my PVC? | |
+| [15.](Kubernetes_v6/Trident_Scenarios/Scenario15) Dude, where is my PVC? | [31.](Kubernetes_v6/Trident_Scenarios/Scenario31) COSI fan tutte |
+
+</div>
 
 ## Trident Protect Scenarios (Application data protection)  
 

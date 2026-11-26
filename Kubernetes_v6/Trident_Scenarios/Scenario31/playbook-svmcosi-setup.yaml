@@ -1,0 +1,158 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+
+  vars:
+    svm_name:                       "ontapcosi"
+    mgmt_lif:                       "192.168.0.240"
+    s3_endpoint:                    "192.168.0.241"
+    dns_admin_password:             "{{ password }}"
+    bucket_name:                    "s3lod"
+    bucket_size:                    107374182400  # Bytes = 100GB 
+    
+    ontap_parameters:               &ontap_parameters
+      hostname:                     "{{ hostname }}" 
+      username:                     "{{ username }}" 
+      password:                     "{{ password }}"
+      https:                        true
+      validate_certs:               false
+
+  name: S3 Environment Creation
+  tasks:
+  - name: Create SVM
+    netapp.ontap.na_ontap_svm:
+     state:                         present
+     name:                          "{{ svm_name }}"
+     aggr_list:                     aggr1
+     <<: *ontap_parameters
+
+  - name: Configure SVM Mgmt Service Policy
+    netapp.ontap.na_ontap_service_policy:
+     state:                         present
+     vserver:                       "{{ svm_name }}"
+     name:                          tenant_management
+     services:
+       - data_core
+       - management_https
+     <<: *ontap_parameters
+
+  - name: Create Mgmt LIF
+    netapp.ontap.na_ontap_interface:
+      state:                        present
+      interface_name:               "{{ svm_name }}-mgmt"
+      home_port:                    e0e
+      home_node:                    cluster1-01
+      admin_status:                 up
+      service_policy:               tenant_management
+      address:                      "{{ mgmt_lif }}"
+      netmask:                      255.255.255.0
+      vserver:                      "{{ svm_name }}"
+      <<: *ontap_parameters
+
+  - name: Configure SVM Data Service Policy
+    netapp.ontap.na_ontap_service_policy:
+     state:                         present
+     vserver:                       "{{ svm_name }}"
+     name:                          S3-data-policy
+     services:
+       - data_core
+       - data_s3_server
+     <<: *ontap_parameters
+
+  - name: Create S3 Endpoint
+    netapp.ontap.na_ontap_interface:
+      state:                        present
+      interface_name:               "{{ svm_name }}-endpoint"
+      home_port:                    e0e
+      home_node:                    cluster1-01
+      admin_status:                 up
+      service_policy:               S3-data-policy
+      address:                      "{{ s3_endpoint }}"
+      netmask:                      255.255.255.0
+      vserver:                      "{{ svm_name }}"
+      <<: *ontap_parameters
+
+  # Create self-signed cert for SSL - since module can't disable https
+  - name: create SSL certificate for HTTPS
+    netapp.ontap.na_ontap_security_certificates:
+      state:                        present
+      vserver:                      "{{ svm_name }}"
+      common_name:                  svm_cosi_ca
+      name:                         lod_bucket
+      type:                         server
+      expiry_time:                  P365DT
+      <<: *ontap_parameters
+
+  - name: create S3 service
+    netapp.ontap.na_ontap_s3_services:
+      state:                        present
+      name:                         "{{ svm_name }}.demo.netapp.com"
+      vserver:                      "{{ svm_name }}"
+      enabled:                      true
+      certificate_name:             lod_bucket
+      <<: *ontap_parameters
+
+  - name: Unlock VSadmin
+    netapp.ontap.na_ontap_user:
+     state:                         present
+     name:                          vsadmin
+     set_password:                  Netapp1!
+     lock_user:                     False
+     vserver:                       "{{ svm_name }}"
+     <<: *ontap_parameters
+
+  - name: Create S3 User 
+    netapp.ontap.na_ontap_s3_users:
+      state:                        present
+      name:                         S3user
+      vserver:                      "{{ svm_name }}"
+      <<: *ontap_parameters
+    register:                       s3_creds
+
+  - name: Print ONTAP Response for S3 User create
+    ansible.builtin.debug:
+      msg:
+        - "SAVE THESE credentials for: S3user"
+        - "user access_key: {{ s3_creds.access_key }} "
+        - "user secret_key: {{ s3_creds.secret_key }} "
+
+  - name: Pause for 10 seconds (to avoid bucket creation failure)
+    ansible.builtin.pause:
+      seconds: 10
+
+  - name: Create S3 bucket with a policy
+    netapp.ontap.na_ontap_s3_buckets:
+      state:                        present
+      vserver:                      "{{ svm_name }}"
+      name:                         "{{ bucket_name }}"
+      size:                         "{{ bucket_size }}"
+      type:                         s3
+      policy: 
+        statements:
+          - sid: FullAccessToS3User
+            resources:
+              - "{{ bucket_name }}"
+              - "{{ bucket_name }}/*"
+            actions:
+              - "*"
+            effect: allow
+            principals:
+              - S3user
+      <<: *ontap_parameters
+
+  - name: Add the ONTAP COSI S3 DNS record
+    ansible.windows.win_dns_record:
+      name: "{{ svm_name }}"
+      type: A
+      value: "{{ s3_endpoint }}" 
+      zone: demo.netapp.com
+    delegate_to: 192.168.0.253
+    vars:
+      ansible_connection: winrm
+      ansible_winrm_scheme: http
+      ansible_port: 5985
+      ansible_user: DEMO\Administrator
+      ansible_password: "{{ dns_admin_password }}"
+      ansible_winrm_transport: ntlm
+      ansible_winrm_server_cert_validation: ignore
