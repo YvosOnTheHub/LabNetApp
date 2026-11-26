@@ -3,12 +3,80 @@
 #########################################################################################
 
 You will learn here how to configure Trident and Kubernetes to interact with ONTAP.  
-
 This lab already comes with a SVM with S3 enabled. You can use it, granted it needs some customization, or you can create a new one.
 
-## A. Prerequisites
+## A. What is COSI?
 
-### A.1 Kubernetes 1.36
+The Container Object Storage Interface (COSI) is a Kubernetes standard for provisioning and consuming object storage. It does for buckets what CSI does for volumes. A workload requests a bucket through Kubernetes resources, and a storage driver creates it on the backend. Applications don't need to know which object store sits behind it.
+
+COSI defines these resources:
+
+| Resource | Purpose |
+|---|---|
+| `BucketClass` | Defines how buckets are provisioned, including the deletion policy |
+| `BucketClaim` | Requests a bucket |
+| `BucketAccessClass` | Defines how access to buckets is provisioned |
+| `BucketAccess` | Requests credentials for one or more buckets |
+
+Trident adds one resource of its own, `TridentObjectStore`. It connects Trident to an object store and its credentials.
+
+### A.1 short history of COSI
+
+- **November 2019:** The COSI proposal (KEP-1979, "Object Storage Support") is created in Kubernetes SIG Storage.
+- **Kubernetes v1.25:** The `v1alpha1` API is approved.
+- **Kubernetes v1.36 (targeted):** Approval of the `v1alpha2` API.
+
+`v1alpha2` brings breaking changes. Among them:
+
+- A `BucketAccess` can reference several buckets.
+- Access can be set per bucket as read or write.
+- Access credentials are stored as individual Secret fields instead of a JSON blob.
+- `deletionPolicy` is now required.
+
+`v1alpha1` and `v1alpha2` components are not compatible with each other, and there is no automated migration. COSI is still an alpha API, so it can change.
+
+### A.2 COSI support in Trident 26.10
+
+Trident 26.10 provisions S3 buckets for Kubernetes workloads through COSI. The integration is built on the **`objectstorage.k8s.io/v1alpha2`** API.
+
+| Object store | Status in Trident 26.10 |
+|---|---|
+| StorageGRID | Generally available |
+| ONTAP S3 | Technical preview, not for production use |
+
+Things to know before you enable it:
+
+- COSI is **off by default**. Set both `enableCOSI: true` and `enableConcurrency: true` in the `TridentOrchestrator` custom resource.
+- Only the S3 protocol is supported, and only with path-style addressing.
+- A StorageGRID `TridentObjectStore` connects to one tenant with long-lived tenant root credentials. Keep them in a Kubernetes Secret in the Trident namespace and protect them accordingly.
+- A StorageGRID `BucketAccess` supports up to eight buckets.
+
+### A.3 Controller and CRDs deployed by the Trident installer
+
+The Trident installer deploys **its own forked version of the COSI Controller and the COSI CRDs**. You don't need to install them separately.
+
+> **Do not run Trident COSI alongside the community COSI controller.** The two would conflict.
+
+After you create a `TridentObjectStore`, request a bucket with a `BucketClass` and a `BucketClaim`. Then request credentials with a `BucketAccessClass` and a `BucketAccess`. Trident writes the S3 connection details (endpoint, region, bucket ID, access keys) to a Kubernetes Secret that your workload can consume. Treat that Secret as sensitive.
+
+For the full procedure, see [Provision object storage with COSI](https://docs.netapp.com/us-en/trident/trident-use/cosi.html).
+
+### A.4 Quick comparison of the CSI & COSI constructs
+
+If you are familiar with CSI, you can conceptually compare some constructs with COSI, while others are peculiar to COSI:  
+| CSI | COSI | Description |
+|---|---|---|
+| Trident Backend Config | Trident Object Store | Trident configuration of the underlying storage environment |
+| Storage Class | Bucket Class | Kubernetes construct against which you request storage |
+| - | Bucket Access Class | Contains information, such as keys, to connect to the bucket |
+| Persistent Volume Claim | Bucket Claim | A namespace request for storage |
+| Persistent Volume | Bucket | A cluster scope resource referencing the storage |
+
+Note that there is a strict one-to-one relationship between a `bucket` and `bucketClaim`, as there is between a `PVC` and its corresponding `PV`.  
+
+## B. Prerequisites
+
+### B.1 Kubernetes 1.36
 
 COSI requires Kubernetes 1.32 minimum, and this scenario is tested with **Kubernetes 1.36**.  
 Use the *all_in_one_v6.sh* script located at the root of the repository, from the control plane (RHEL3), and choose the menu **3** (_Reset Kubernetes to 1.36_) to bring the cluster back to a clean 1.36 state:  
@@ -18,7 +86,7 @@ sh all_in_one_v6.sh
 ```
 Do **not** run the menu 1: Trident is going to be installed directly in section A.3, with only what this scenario needs (no backends, no monitoring, no KubeVirt).  
 
-### A.2 Ansible
+### B.2 Ansible
 
 The playbooks in this scenario require Ansible and the NetApp ONTAP collection.  
 If it is not already installed, you can follow the [Addenda04](../../Addendum/Addenda04/), or simply run the dedicated script (it does nothing if Ansible is already there):  
@@ -43,7 +111,7 @@ all:
     password: Netapp1!
 ```
 
-### A.3 Install the AWS CLI tool
+### B.3 Install the AWS CLI tool
 
 If not done yet, you also need to install the AWS CLI tool on the main host (_rhel3_):  
 ```bash
@@ -56,7 +124,7 @@ mkdir -p ~/.aws
 
 You will use this tool to interact with the bucket from the same host.  
 
-### A.4 Install Trident with Concurrency & COSI
+### B.4 Install Trident with Concurrency & COSI
 
 Trident is installed directly with its Helm chart, with the concurrency and COSI (**tech preview**) features enabled.  
  
@@ -114,7 +182,7 @@ $ kubectl get -n trident po -l app=controller.csi.trident.netapp.io -o yaml | gr
       - --enable_cosi=true
 ```
 
-## B. ONTAP Setup
+## C. ONTAP Setup
 
 Let's create a new SVM for this test, you can use the _playbook-svmcosi-setup.yaml_ file in this folder:  
 ```bash
@@ -144,7 +212,7 @@ $ getent hosts ontapcosi.demo.netapp.com
 ```
 The returned address must be the S3 data LIF created by the playbook (192.168.0.241).  
 
-## C. Trident Object Store
+## D. Trident Object Store
 
 You can now proceed with the TOS creation (modify the _accountID_ parameter if needed), as well as the corresponding secret:  
 ```bash
@@ -185,7 +253,7 @@ $ tridentctl -n trident get objectstore cosi-ontap-s3
 └───────────────┴────────────────┴──────────────────────────────────────┴────────┘
 ```
 
-## D. Kubernetes classes
+## E. Kubernetes classes
 
 You can now create a BucketClass, which filters on the Object Store type:
 ```bash
@@ -215,7 +283,7 @@ spec:
 EOF
 ```
 
-## E. Bucket Creation
+## F. Bucket Creation
 
 Time to create your first COSI bucket with ONTAP!  
 The manifest is pretty similar to the one for StorageGRID, the difference being on the classes it refers to:  
@@ -301,7 +369,7 @@ svm3: tiering-cluster1
 
 The creation of the bucket was successful !
 
-## F. Bucket Consumption with aws-cli
+## G. Bucket Consumption with aws-cli
 
 We have a bucket, we have keys! Let's first try to interact with this bucket using the aws-cli tool to validate connectivity.  
 We first need to configure the variables in the tool's configuration files:  
@@ -350,7 +418,7 @@ aws() { command aws "$@" 2> >(grep -v InsecureRequestWarning >&2); }
 
 Now that we have validated we can read & write from the bucket, let's try with a pod!
 
-## G. Bucket Consumption in Kubernetes
+## H. Bucket Consumption in Kubernetes
 
 This time, you will create a pod that mounts the secret containing all the bucket information:  
 ```bash
@@ -421,7 +489,7 @@ $ kubectl exec po/ontap-bucket-client -n cosiontap -- sh -c 'aws s3 ls --no-veri
 
 Once again, you validated how to use COSI with ONTAP S3.
 
-## H. Delete the bucket
+## I. Delete the bucket
 
 A bucket can only be deleted when it is empty.  
 Let's first remove all the files:  
@@ -448,8 +516,13 @@ svm3: tiering-cluster1
 ```
 The bucket created by Trident is indeed gone.
 
-## I. Observations
+## J. Observations
 
 If you created the SVM with the Ansible playbook, you may have noticed it also created a bucket.  
 This triggered the creation of a FlexGroup consistuent that would later be used by the buckets created by Trident.  
-For some reason (currently investigated), if there is no flexgroup, the creation of the bucket fails in the lab...
+For some reason (currently investigated), if there is no flexgroup, the creation of the bucket fails in the lab...  
+
+## K. To go further
+
+As explained earlier, Trident COSI also supports StorageGRID, which is already fit for production.  
+However, this lab does not contain such platform, you can check the repository [LabCOSI](https://github.com/YvosOnTheHub/LabCOSI) to discover how this works.
