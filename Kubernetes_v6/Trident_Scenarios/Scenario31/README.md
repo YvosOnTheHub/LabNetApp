@@ -2,7 +2,7 @@
 # Scenario 31: COSI and ONTAP (**Tech Preview**)
 #########################################################################################
 
-You will learn here how to configure Trident and Kubernetes to interact with ONTAP.  
+You will learn here how to configure Trident and Kubernetes to interact with ONTAP S3.  
 This lab already comes with a SVM with S3 enabled. You can use it, granted it needs some customization, or you can create a new one.
 
 ## A. What is COSI?
@@ -48,8 +48,7 @@ Things to know before you enable it:
 
 - COSI is **off by default**. Set both `enableCOSI: true` and `enableConcurrency: true` in the `TridentOrchestrator` custom resource.
 - Only the S3 protocol is supported, and only with path-style addressing.
-- A StorageGRID `TridentObjectStore` connects to one tenant with long-lived tenant root credentials. Keep them in a Kubernetes Secret in the Trident namespace and protect them accordingly.
-- A StorageGRID `BucketAccess` supports up to eight buckets.
+- An ONTAP S3 `TridentObjectStore` connects to a single SVM (through its `svmName` and `managementEndpoint`) with ONTAP S3 user credentials, here the `vsadmin` account. Keep them in a Kubernetes Secret in the Trident namespace and protect them accordingly.  
 
 ### A.3 Controller and CRDs deployed by the Trident installer
 
